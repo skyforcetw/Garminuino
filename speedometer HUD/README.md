@@ -12,8 +12,11 @@ So I go simple part first: Arduino or CanBUS, it's speedometer HUD.
 Speedometer HUD had two module:
 1. CanBUS parser
 2. GarminHUD controller
+
 Fortunately, GarminHUD has been hacked:
+
 https://hackaday.com/2014/03/30/controlling-the-garmin-hud-with-bluetooth/
+
 https://github.com/gabonator/Work-in-progress/tree/master/GarminHud
 
 So my remain job is parsing CanBUS, and calling the library to control GarminHUD, done!
