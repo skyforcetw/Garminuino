@@ -2,12 +2,16 @@
 
 Speedometer HUD is a relative simple project than navigation HUD.
 The initial complete idea is navigation HUD, but I think the project can split to two parts:
+
 1. Arduino
 2. Android
+
 or
+
 1. CanBUS
 2. GPS
-So I go simple part first: Arduino or CanBUS, it's speedometer HUD.
+
+So I go simple part first: Arduino (CanBUS), it's speedometer HUD.
 
 Speedometer HUD had two module:
 1. CanBUS parser
