@@ -1,7 +1,7 @@
 # speedometer HUD
 
 Speedometer HUD is a relative simple project than navigation HUD.
-The initial complete idea is navigation HUD, but I think the project can split to two parts:
+The initial idea is a speedometer HUD and can fix speed error by GPS, but I think the project can split to two parts:
 
 1. Arduino (CanBus)
 2. Android (GPS)
