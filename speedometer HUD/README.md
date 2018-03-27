@@ -10,7 +10,7 @@ The 1st and simple part: Arduino (CanBUS), it's speedometer HUD.
 
 The 2nd part need use arduino to communicate to any android phone, fetch android's GPS speed.
 
-Combine 1st & 2nd part, we can correct CanBus speed error by GPS, but the benefit is low, so I stop developing 2nd part.
+Combine 1st & 2nd part, we can correct CanBus speed error by GPS, but the benefit is not obvious, so I stop developing 2nd part.
 
 Speedometer HUD had two module:
 1. CanBUS parser
