@@ -8,8 +8,8 @@ We talk about the concept of Navigation HUD later, let's get it on working first
 step by step:
 
 arduino side
-1. Buy a arduino pro micro with 3.3V 8MHz
-2. Buy a USB-Host shield mini
+1. Buy a arduino pro micro with 3.3V 8MHz https://www.sparkfun.com/products/12587
+2. Buy a USB-Host shield mini https://www.circuitsathome.com/usb-host-shield-hardware-manual/
 
 android side
 1. Enable Developer Options on android
