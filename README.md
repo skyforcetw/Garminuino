@@ -3,7 +3,7 @@ This  is a project use GarminHUD as speedometer HUD, or a GoogleMap navigation H
 
 *Speedometer HUD
 
-[![IMAGE ALT TEXT HERE](https://i.ytimg.com/vi/P0d8nm3kuxs/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCPvjGBPGim2hrXltwKitXDO4A4xQ)](https://www.youtube.com/watch?v=P0d8nm3kuxsE)
+[![IMAGE ALT TEXT HERE](https://i.ytimg.com/vi/P0d8nm3kuxs/hqdefault.jpg?sqp=-oaymwEZCPYBEIoBSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLAh96qD5deX_DeYAHk9CHNptn97JQ)](https://www.youtube.com/watch?v=P0d8nm3kuxsE)
 
 A OBD/CanBus parser by Arduino, and a speed info transmitter by bluetooth(to GarminHUD) .
 
