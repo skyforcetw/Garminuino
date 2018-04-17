@@ -9,7 +9,8 @@ We talk about the concept of Navigation HUD later, let's get it on working first
 ### Prerequisites
 1. A Garmin HUD for sure.
 2. An Android phone.
-3. A bluetooth module names HC-05 https://www.amazon.com/LeaningTech-HC-05-Module-Pass-Through-Communication/dp/B00INWZRNC
+3. A bluetooth module names HC-05 x2. https://www.amazon.com/LeaningTech-HC-05-Module-Pass-Through-Communication/dp/B00INWZRNC
+   One for OBD/canbus(fetch speed from OBD), another one for Garmin HUD.
 4. An arduino pro micro with 3.3V 8MHz https://www.sparkfun.com/products/12587
 5. An USB-Host shield mini https://www.circuitsathome.com/usb-host-shield-hardware-manual/
 
