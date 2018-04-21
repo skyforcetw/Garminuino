@@ -37,7 +37,7 @@ This is Speedometer + Navigation HUD prototype, if android is not link with USB-
 
 ![IMAGE ALT TEXT HERE](https://644db4de3505c40a0444-327723bce298e3ff5813fb42baeefbaa.ssl.cf1.rackcdn.com/c2b9da00fd8e9ddd9559f7f09fe38a2c.png)
 
-I create first PCB for Garminuino by fritzing, and order it from OSHPark, hope it can work as well as prototype below.
+I create first PCB for Garminuino by fritzing, and order it from OSHPark, hope it can work as well as prototype above.
 
 ## Authors
 
