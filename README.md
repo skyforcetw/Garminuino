@@ -1,6 +1,16 @@
 # Garminuino
 This  is a project use GarminHUD as speedometer HUD, or a GoogleMap navigation HUD.
 
+### 2018-09-07 update
+A Vega-HUD feature enlightened me a directed way to get turn-by-turn infomation.
+I can get turn-by-turn from google map's notification(android)!
+It's a big change for Garminuino, because it's mean I don't need arduino anymore!
+So navigation port of Garminuino turn into a pure android's app(apk) now!
+
+Hence the infomation below is not necessary anymore, but I still keep it for commemorative.
+The app's development is near the end, I need somebody helo me to do close tesing.
+If you are interesing for it, please mail me: skyforce@gmail.com , with tile "Garminuino Test"
+
 ![Initial concept of Garminuino](https://trello-attachments.s3.amazonaws.com/5604cb6e078e570dfc9c7404/1794x1080/accfe9e4f1f1d10e8bb62d7630130425/sketch-1443154690685.jpg "Initial concept of Garminuino")
 This is the inital concept of Garminuino, but the implment is slight difference to the concept. For example, Garmin Hud is not linked by BLE, so BLE moduble is needless.
 
