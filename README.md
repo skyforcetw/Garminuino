@@ -1,7 +1,7 @@
 # Garminuino
 This  is a project use GarminHUD as speedometer HUD, or a GoogleMap navigation HUD.
 
-### 2018-09-07 update
+### 2018-09-07 _VERY IMPORTANT UPDATE!_
 A Vega-HUD feature enlightened me a directed way to get turn-by-turn infomation.
 I can get turn-by-turn from google map's notification(android)!
 It's a big change for Garminuino, because it's mean I don't need arduino anymore!
