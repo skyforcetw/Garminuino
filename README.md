@@ -8,7 +8,7 @@ It's a big change for Garminuino, because it's mean I don't need arduino anymore
 So navigation part of Garminuino turn into a pure android's app(apk) now!
 
 Hence the infomation below is not necessary anymore, but I still keep it for commemorative.
-The app's development is near the end, I need somebody helo me to do close tesing.
+The app's development is near the end, I need somebody help me to do close tesing.
 If you are interesing for it, please mail me: skyforce@gmail.com , with tile "Garminuino Test"
 
 
