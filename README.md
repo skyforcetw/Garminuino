@@ -2,7 +2,7 @@
 This  is a project use GarminHUD as speedometer HUD, or a GoogleMap navigation HUD.
 
 ### 2018-10-01 _UPDATE!_
-All GarminHud app source code is uploaded!
+All GoogleMaps_HUD app source code is uploaded!
 
 ### 2018-09-07 _VERY IMPORTANT UPDATE!_
 A Vega-HUD feature enlightened me a directed way to get turn-by-turn infomation.
