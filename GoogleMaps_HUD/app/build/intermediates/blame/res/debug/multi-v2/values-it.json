@@ -1,0 +1,60 @@
+{
+    "logs": [
+        {
+            "outputFile": "D:\\workspace\\GitHub\\Garminuino\\GoogleMaps_HUD\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-it\\values-it.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\skyfo\\.gradle\\caches\\transforms-1\\files-1.1\\support-compat-26.1.0.aar\\79a3448aaff77639159ebbecd15bf977\\res\\values-it\\values-it.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "10",
+                        "startColumns": "4",
+                        "startOffsets": "928",
+                        "endColumns": "100",
+                        "endOffsets": "1024"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\skyfo\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-ads-15.0.0.aar\\5db87dc57c11e6c0bd4fc25aaa7b2db9\\res\\values-it\\values.xml",
+                    "from": {
+                        "startLines": "4,5,6,7,8,9,10",
+                        "startColumns": "0,0,0,0,0,0,0",
+                        "startOffsets": "197,268,397,462,527,610,722",
+                        "endColumns": "70,128,64,64,82,111,74",
+                        "endOffsets": "267,396,461,526,609,721,796"
+                    },
+                    "to": {
+                        "startLines": "3,4,5,6,7,8,9",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "300,375,508,577,646,733,849",
+                        "endColumns": "74,132,68,68,86,115,78",
+                        "endOffsets": "370,503,572,641,728,844,923"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\skyfo\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-basement-15.0.1.aar\\00294abaf04978c20f9c77635c4316c6\\res\\values-it\\values.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "0",
+                        "startOffsets": "247",
+                        "endColumns": "194",
+                        "endOffsets": "441"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "105",
+                        "endColumns": "194",
+                        "endOffsets": "295"
+                    }
+                }
+            ]
+        }
+    ]
+}

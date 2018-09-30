@@ -1,0 +1,60 @@
+{
+    "logs": [
+        {
+            "outputFile": "D:\\workspace\\GitHub\\Garminuino\\GoogleMaps_HUD\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-sl\\values-sl.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\skyfo\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-basement-15.0.1.aar\\00294abaf04978c20f9c77635c4316c6\\res\\values-sl\\values.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "0",
+                        "startOffsets": "247",
+                        "endColumns": "198",
+                        "endOffsets": "445"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "105",
+                        "endColumns": "198",
+                        "endOffsets": "299"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\skyfo\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-ads-15.0.0.aar\\5db87dc57c11e6c0bd4fc25aaa7b2db9\\res\\values-sl\\values.xml",
+                    "from": {
+                        "startLines": "4,5,6,7,8,9,10",
+                        "startColumns": "0,0,0,0,0,0,0",
+                        "startOffsets": "197,272,382,447,511,601,709",
+                        "endColumns": "74,109,64,63,89,107,73",
+                        "endOffsets": "271,381,446,510,600,708,782"
+                    },
+                    "to": {
+                        "startLines": "3,4,5,6,7,8,9",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "304,383,497,566,634,728,840",
+                        "endColumns": "78,113,68,67,93,111,77",
+                        "endOffsets": "378,492,561,629,723,835,913"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\skyfo\\.gradle\\caches\\transforms-1\\files-1.1\\support-compat-26.1.0.aar\\79a3448aaff77639159ebbecd15bf977\\res\\values-sl\\values-sl.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "10",
+                        "startColumns": "4",
+                        "startOffsets": "918",
+                        "endColumns": "100",
+                        "endOffsets": "1014"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,60 @@
+{
+    "logs": [
+        {
+            "outputFile": "D:\\workspace\\GitHub\\Garminuino\\GoogleMaps_HUD\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-zh-rHK\\values-zh-rHK.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\skyfo\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-basement-15.0.1.aar\\00294abaf04978c20f9c77635c4316c6\\res\\values-zh-rHK\\values.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "0",
+                        "startOffsets": "251",
+                        "endColumns": "166",
+                        "endOffsets": "417"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "105",
+                        "endColumns": "166",
+                        "endOffsets": "267"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\skyfo\\.gradle\\caches\\transforms-1\\files-1.1\\support-compat-26.1.0.aar\\79a3448aaff77639159ebbecd15bf977\\res\\values-zh-rHK\\values-zh-rHK.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "101",
+                        "endOffsets": "152"
+                    },
+                    "to": {
+                        "startLines": "10",
+                        "startColumns": "4",
+                        "startOffsets": "750",
+                        "endColumns": "101",
+                        "endOffsets": "847"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\skyfo\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-ads-15.0.0.aar\\5db87dc57c11e6c0bd4fc25aaa7b2db9\\res\\values-zh-rHK\\values.xml",
+                    "from": {
+                        "startLines": "4,5,6,7,8,9,10",
+                        "startColumns": "0,0,0,0,0,0,0",
+                        "startOffsets": "201,262,335,395,455,519,589",
+                        "endColumns": "60,72,59,59,63,69,61",
+                        "endOffsets": "261,334,394,454,518,588,650"
+                    },
+                    "to": {
+                        "startLines": "3,4,5,6,7,8,9",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "272,337,414,478,542,610,684",
+                        "endColumns": "64,76,63,63,67,73,65",
+                        "endOffsets": "332,409,473,537,605,679,745"
+                    }
+                }
+            ]
+        }
+    ]
+}

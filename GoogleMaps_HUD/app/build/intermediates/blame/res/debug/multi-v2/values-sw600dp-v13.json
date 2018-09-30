@@ -1,0 +1,26 @@
+{
+    "logs": [
+        {
+            "outputFile": "D:\\workspace\\GitHub\\Garminuino\\GoogleMaps_HUD\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-sw600dp-v13\\values-sw600dp-v13.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\skyfo\\.gradle\\caches\\transforms-1\\files-1.1\\bluetoothspp-1.0.0.aar\\dd001b7ada6ca9f5c9a45a3e85c98676\\res\\values-sw600dp-v13\\values.xml",
+                    "from": {
+                        "startLines": "4,5",
+                        "startColumns": "4,4",
+                        "startOffsets": "234,287",
+                        "endColumns": "52,54",
+                        "endOffsets": "282,337"
+                    },
+                    "to": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,108",
+                        "endColumns": "52,54",
+                        "endOffsets": "103,158"
+                    }
+                }
+            ]
+        }
+    ]
+}

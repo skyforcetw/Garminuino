@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="activity_horizontal_margin">128dp</dimen>
+    <dimen name="bluetooth_spp_padding">15dp</dimen>
+    <dimen name="bluetooth_spp_text_size">30sp</dimen>
+</resources>

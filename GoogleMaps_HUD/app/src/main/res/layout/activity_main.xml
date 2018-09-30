@@ -1,0 +1,136 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".MainActivity" >
+
+    <LinearLayout
+        android:id="@+id/finalLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btnScanBT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="buttonOnClicked"
+            android:text="Scan Bluetooth" />
+
+        <Button
+            android:id="@+id/btnToggle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="buttonOnClicked"
+            android:text="Toggle" />
+
+        <Button
+            android:id="@+id/btnListNotify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="buttonOnClicked"
+            android:text="List of Notification" />
+
+        <Button
+            android:id="@+id/btnEnableUnEnableNotify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/btnCreateNotify"
+            android:layout_alignRight="@+id/btnCreateNotify"
+            android:layout_below="@+id/btnCreateNotify"
+            android:layout_weight="1"
+            android:onClick="buttonOnClicked"
+            android:text="Enable/UnEnable Listener"
+            android:visibility="gone" />
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnCreateNotify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/finalLayout"
+        android:layout_alignRight="@+id/finalLayout"
+        android:layout_below="@+id/finalLayout"
+        android:onClick="buttonOnClicked"
+        android:text="Create Notification"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/clearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btnCreateNotify"
+        android:layout_alignRight="@+id/btnCreateNotify"
+        android:layout_below="@+id/btnCreateNotify"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnClearLastNotify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="buttonOnClicked"
+            android:text="Cancel Last Nos"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnClearAllNotify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="buttonOnClicked"
+            android:text="Cancel All Nos"
+            android:visibility="gone" />
+    </LinearLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@+id/finalLayout"
+        android:layout_alignRight="@+id/finalLayout"
+        android:layout_below="@+id/finalLayout" >
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </ScrollView>
+
+    <!--<com.google.android.gms.ads.AdView-->
+        <!--android:id="@+id/adView"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--ads:adSize="SMART_BANNER"-->
+        <!--ads:adUnitId="@strings/banner_ad_unit_id">-->
+    <!--</com.google.android.gms.ads.AdView>-->
+
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+    </com.google.android.gms.ads.AdView>
+
+</RelativeLayout>
