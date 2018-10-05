@@ -15,7 +15,6 @@ The app's development is near the end, I need somebody help me to do close testi
 If you are interesing for it, please mail me: skyforce@gmail.com , with tile "Garminuino Test"
 
 
-
 ![Initial concept of Garminuino](https://trello-attachments.s3.amazonaws.com/5604cb6e078e570dfc9c7404/1794x1080/accfe9e4f1f1d10e8bb62d7630130425/sketch-1443154690685.jpg "Initial concept of Garminuino")
 This is the inital concept of Garminuino, but the implment is slight difference to the concept. For example, Garmin Hud is not linked by BLE, so BLE moduble is needless.
 
@@ -30,13 +29,9 @@ This is block diagram for now implement.
 
 A OBD/CanBus parser by Arduino, and a speed info transmitter by bluetooth(to GarminHUD) .
 
-
-
 ## [GoogleMaps HUD App](https://github.com/skyforcetw/Garminuino/tree/master/GoogleMaps_HUD)
 A pure android app, for project navi-info of google map navigation.
 Works just like garmin streetpilot with Garmin HUD.
-
-
 
 ## [GoogleMap navigation HUD](https://github.com/skyforcetw/Garminuino/tree/master/navigation%20HUD)      (deprecated now!)
 
