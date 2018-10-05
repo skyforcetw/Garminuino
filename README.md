@@ -30,6 +30,16 @@ This is block diagram for now implement.
 
 A OBD/CanBus parser by Arduino, and a speed info transmitter by bluetooth(to GarminHUD) .
 
+## [GoogleMaps HUD App](https://github.com/skyforcetw/Garminuino/tree/master/GoogleMaps_HUD)
+A pure android app, for project navi-info of google map navigation.
+
+## [GoogleMap navigation HUD](https://github.com/skyforcetw/Garminuino/tree/master/navigation%20HUD)      (deprecated now!)
+
+[![IMAGE ALT TEXT HERE](https://i.ytimg.com/vi/VWV_F9V6yoA/hqdefault.jpg?sqp=-oaymwEZCPYBEIoBSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLDerjxVyOMK8V3hm9DaY-8zb3a1DQ)](https://www.youtube.com/watch?v=VWV_F9V6yoA)
+
+(click image can link to Youtube film)
+
+Besides parts of Speedometer HUD, a USB Host Shield with a Android mobile phone can fetch Google Navigation info, and transmit info by bluetooth to GarminHUD, too.
 
 ## Authors
 
