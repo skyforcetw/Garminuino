@@ -2,7 +2,8 @@
 This  is a project use GarminHUD as speedometer HUD, or a GoogleMap navigation HUD.
 
 ### 2018-10-30
-Add korean language support, thanks for cloddin's help.
+Add english/korean language support, thanks for cloddin's help.
+We have pre-alpha release now, please down and try it from https://github.com/skyforcetw/Garminuino/releases
 
 ### 2018-10-01 _UPDATE!_
 All GoogleMaps_HUD app source code is uploaded!
