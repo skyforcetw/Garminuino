@@ -4,54 +4,20 @@
             "outputFile": "D:\\workspace\\GitHub\\Garminuino\\GoogleMaps_HUD\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-zh-rTW\\values-zh-rTW.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\skyfo\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-ads-15.0.0.aar\\5db87dc57c11e6c0bd4fc25aaa7b2db9\\res\\values-zh-rTW\\values.xml",
+                    "source": "D:\\workspace\\GitHub\\Garminuino\\GoogleMaps_HUD\\app\\src\\main\\res\\values-zh-rTW\\strings.xml",
                     "from": {
-                        "startLines": "4,5,6,7,8,9,10",
-                        "startColumns": "0,0,0,0,0,0,0",
-                        "startOffsets": "201,262,337,397,457,521,592",
-                        "endColumns": "60,74,59,59,63,70,61",
-                        "endOffsets": "261,336,396,456,520,591,653"
+                        "startLines": "6,-1,-1,-1,-1",
+                        "startColumns": "4,-1,-1,-1,-1",
+                        "startOffsets": "148,-1,-1,-1,-1",
+                        "endColumns": "39,-1,-1,-1,-1",
+                        "endOffsets": "183,-1,-1,-1,-1"
                     },
                     "to": {
-                        "startLines": "3,4,5,6,7,8,9",
-                        "startColumns": "4,4,4,4,4,4,4",
-                        "startOffsets": "267,332,411,475,539,607,682",
-                        "endColumns": "64,78,63,63,67,74,65",
-                        "endOffsets": "327,406,470,534,602,677,743"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\skyfo\\.gradle\\caches\\transforms-1\\files-1.1\\support-compat-26.1.0.aar\\79a3448aaff77639159ebbecd15bf977\\res\\values-zh-rTW\\values-zh-rTW.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "100",
-                        "endOffsets": "151"
-                    },
-                    "to": {
-                        "startLines": "10",
-                        "startColumns": "4",
-                        "startOffsets": "748",
-                        "endColumns": "100",
-                        "endOffsets": "844"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\skyfo\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-basement-15.0.1.aar\\00294abaf04978c20f9c77635c4316c6\\res\\values-zh-rTW\\values.xml",
-                    "from": {
-                        "startLines": "4",
-                        "startColumns": "0",
-                        "startOffsets": "251",
-                        "endColumns": "161",
-                        "endOffsets": "412"
-                    },
-                    "to": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "105",
-                        "endColumns": "161",
-                        "endOffsets": "262"
+                        "startLines": "2,3,4,5,6",
+                        "startColumns": "4,4,4,4,4",
+                        "startOffsets": "55,95,131,165,214",
+                        "endColumns": "39,35,33,48,33",
+                        "endOffsets": "90,126,160,209,243"
                     }
                 }
             ]

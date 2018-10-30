@@ -35,8 +35,6 @@ import sky4s.garmin.eUnits;
 //import static android.support.v4.app.ActivityCompatJB.startActivityForResult;
 
 
-
-
 public class NotificationMonitor extends NotificationListenerService {
     private final static boolean STORE_IMG = false;
     private final static String IMAGE_DIR = "/storage/emulated/0/Pictures/";
@@ -48,7 +46,6 @@ public class NotificationMonitor extends NotificationListenerService {
     private static final String TAG = "NCM";
     private static final String TAG_PRE = "[" + NotificationMonitor.class.getSimpleName() + "] ";
     private static final int EVENT_UPDATE_CURRENT_NOS = 0;
-
 
 
     public static List<StatusBarNotification[]> mCurrentNotifications = new ArrayList<StatusBarNotification[]>();
@@ -178,20 +175,25 @@ public class NotificationMonitor extends NotificationListenerService {
         }
     }
 
-    private static String translate(String chinese) {
+    private String translate(String chinese) {
         switch (chinese) {
             case "公里":
+            case "킬로미터":
                 return "km";
             case "公尺":
+            case "미터법":
                 return "m";
             case "分":
             case "分鐘":
+            case "분":
                 return "m";
             case "小時":
             case "時":
+            case "시간":
+//            case getString(R.string.hour):
                 return "h";
             default:
-                return null;
+                return chinese;
         }
     }
 
@@ -369,11 +371,6 @@ public class NotificationMonitor extends NotificationListenerService {
                 String title = extras.getString(Notification.EXTRA_TITLE, "");
                 // 获取通知内容
                 String content = extras.getString(Notification.EXTRA_TEXT, "");
-                int a = 1;
-
-//                if (!TextUtils.isEmpty(content) && content.contains("[微信红包]")) {
-//                    pendingIntent = notification.contentIntent;
-//                }
             }
         } else {
 //            List<String> textList = getText(notification);
@@ -430,7 +427,8 @@ public class NotificationMonitor extends NotificationListenerService {
                     String t = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(parcel).toString().trim();
                     switch (indexOfActions) {
                         case 2:
-                            inNavigation = t.equals("結束導航");
+//                            String exitNavigation = getString(R.string.exit_navigation);
+                            inNavigation = t.equals(getString(R.string.exit_navigation));
                             break;
                         case 3://distance to turn
                             parseDistanceToTurn(t);
@@ -512,32 +510,48 @@ public class NotificationMonitor extends NotificationListenerService {
             if (4 == timeSplit.length) {
                 remainHour = timeSplit[0];
                 remainMinute = timeSplit[2];
-//                String hour = timeSplit[0];
-//                int int_hour = Integer.parseInt(hour);
-//                remainTime = timeSplit[2];
-//                int int_min = Integer.parseInt(remainTime);
-//                remainTime = Integer.toString(int_hour * 60 + int_min);
-//
-//                remainTimeUnit = timeSplit[3];
-//                remainTimeUnit = translate(remainTimeUnit);
             } else if (2 == timeSplit.length) {
-//                remainHour = null;
-                remainMinute = timeSplit[0];
+                final int hour_index = timeToDest.indexOf(getString(R.string.hour));
+                final int minute_index = timeToDest.indexOf(getString(R.string.minute));
+                if (-1 != hour_index && -1 != minute_index) {
+                    remainHour = timeToDest.substring(0, hour_index).trim();
+                    remainMinute = timeToDest.substring(hour_index + getString(R.string.hour).length(), minute_index).trim();
+                } else {
+                    remainMinute = timeSplit[0];
+                }
+
             }
 
 
             String[] distSplit = distanceToDest.split(" ");
+            if (2 != distSplit.length) {
+                distSplit = splitDigitAndAlphabetic(distanceToDest);
+            }
             remainDistance = distSplit[0];
             remainDistanceUnit = distSplit[1];
             remainDistanceUnit = translate(remainDistanceUnit);
 
-            String[] arrivedSplit = timeToArrived.split("：");
-            arrivalTime = arrivedSplit[1];
-            final int amIndex = arrivalTime.indexOf("上午");
-            final int pmIndex = arrivalTime.indexOf("下午");
+            final int indexOfETA = timeToArrived.indexOf(getString(R.string.ETA));
+            String[] arrivedSplit = null;
+            final boolean etaAtFirst = 0 == indexOfETA;
+            if (etaAtFirst) {//前面, 應該是中文
+                arrivedSplit = timeToArrived.split(getString(R.string.ETA));
+                arrivalTime = arrivedSplit[1];
+            } else {//後面，可能是英文
+                arrivedSplit = timeToArrived.split(getString(R.string.ETA));
+                arrivalTime = arrivedSplit[0];
+            }
+//            String[] arrivedSplit = timeToArrived.split(getString(R.string.ETA));
+//            arrivalTime = arrivedSplit[0];
+
+            arrivalTime = null != arrivalTime ? arrivalTime.trim() : arrivalTime;
+            final int amIndex = arrivalTime.indexOf(getString(R.string.am));
+            final int pmIndex = arrivalTime.indexOf(getString(R.string.pm));
+            final boolean ampmAtFirst = 0 == amIndex || 0 == pmIndex;
             if (-1 != amIndex || -1 != pmIndex) {
                 final int index = Math.max(amIndex, pmIndex);
-                arrivalTime = arrivalTime.substring(index + 2);
+                arrivalTime = ampmAtFirst ? arrivalTime.substring(index + 2) : arrivalTime.substring(0, index);
+                arrivalTime = arrivalTime.trim();
 
                 String[] spilit = arrivalTime.split(":");
                 final int hh = Integer.parseInt(spilit[0]);
@@ -550,14 +564,30 @@ public class NotificationMonitor extends NotificationListenerService {
 
     }
 
+    private String[] splitDigitAndAlphabetic(String str) {
+        String[] result = new String[2];
+        for (int x = 0; x < str.length(); x++) {
+            char c = str.charAt(x);
+            if (Character.isAlphabetic(c)) {
+                result[0] = str.substring(0, x);
+                result[1] = str.substring(x);
+                break;
+            }
+        }
+        return result;
+    }
+
     private void parseDistanceToTurn(String distanceString) {
+//        auto afterString = getString(R.string.
         final int indexOfHo = distanceString.indexOf("後");
         if (-1 != indexOfHo) {
             distanceString = distanceString.substring(0, indexOfHo);
 
         }
         String[] splitArray = distanceString.split(" ");
-
+        if (2 != splitArray.length) {
+            splitArray = splitDigitAndAlphabetic(distanceString);
+        }
         String num = null;
         String unit = null;
         if (splitArray.length == 2) {

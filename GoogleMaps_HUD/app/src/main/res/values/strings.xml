@@ -14,4 +14,13 @@
         <item quantity="other">%d active notifications</item>
     </plurals>
 
+    <string name="exit_navigation">EXIT NAVIGATION</string>
+    <string name="after">after</string>
+    <string name="ETA">ETA</string>
+    <string name="am">AM</string>
+    <string name="pm">PM</string>
+    <string name="hour">h</string>
+    <string name="minute">m</string>
+    <string name="km">km</string>
+    <string name="meter">m</string>
 </resources>

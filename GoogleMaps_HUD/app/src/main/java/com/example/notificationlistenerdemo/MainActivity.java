@@ -26,20 +26,22 @@ import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.akexorcist.bluetotohspp.library.BluetoothState;
 import app.akexorcist.bluetotohspp.library.DeviceList;
 
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+//import com.google.android.gms.ads.MobileAds;
+//import com.google.android.gms.ads.AdRequest;
+//import com.google.android.gms.ads.AdView;
 
 
 public class MainActivity extends Activity {
-   public static final boolean IGNORE_BT = false;
+    public static final boolean IGNORE_BT = true;
 
-    private static final String TAG = "SevenNLS";
+    private static final String TAG = "NLS";
     private static final String TAG_PRE = "[" + MainActivity.class.getSimpleName() + "] ";
+
     private static final int EVENT_SHOW_CREATE_NOS = 0;
     private static final int EVENT_LIST_CURRENT_NOS = 1;
     private static final String ENABLED_NOTIFICATION_LISTENERS = "enabled_notification_listeners";
     private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
+
     private boolean isEnabledNLS = false;
     private TextView mTextView;
     private BluetoothSPP bt;
@@ -62,11 +64,11 @@ public class MainActivity extends Activity {
         }
     };
 
-    private AdView mAdView;
+//    private AdView mAdView;
 
 
     @Override
-    protected void  onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTextView = (TextView) findViewById(R.id.textView);
@@ -109,32 +111,16 @@ public class MainActivity extends Activity {
                 }
             });
 
-//            bt.setAutoConnectionListener(new BluetoothSPP.AutoConnectionListener() {
-//                public void onNewConnection(String name, String address) {
-//                    mTextView.setText("Status : onNewConnection " + name);
-//                    NotificationMonitor.bt = bt;
-//                    logNLS("onNewConnection");
-//                }
-//
-//                public void onAutoConnectionStarted() {
-//                    NotificationMonitor.bt = bt;
-//                    logNLS("onAutoConnectionStarted");
-//                }
-//            });
 
         }
 
-//        AdView mAdView = (AdView) findViewById(R.id.adView);
+
+//        String bannerAppID = getResources().getString(R.string.banner_ad_app_id);
+//        MobileAds.initialize(this, bannerAppID);
+//        mAdView = (AdView) findViewById(R.id.adView);
 //        AdRequest adRequest = new AdRequest.Builder().build();
 //        mAdView.loadAd(adRequest);
-        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
-
-//        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713")
-        String bannerAppID = getResources().getString(R.string.banner_ad_app_id);
-        MobileAds.initialize(this, bannerAppID);
-        mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        createNotification(this);
     }
 
     public void onDestroy() {
@@ -276,9 +262,9 @@ public class MainActivity extends Activity {
     private void createNotification(Context context) {
         NotificationManager manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         NotificationCompat.Builder ncBuilder = new NotificationCompat.Builder(context);
-        ncBuilder.setContentTitle("My Notification");
-        ncBuilder.setContentText("Notification Listener Service Example");
-        ncBuilder.setTicker("Notification Listener Service Example");
+        ncBuilder.setContentTitle("GoogleMaps HUD");
+        ncBuilder.setContentText("GoogleMaps HUD");
+        ncBuilder.setTicker("GoogleMaps HUD");
         ncBuilder.setSmallIcon(R.mipmap.ic_launcher);
         ncBuilder.setAutoCancel(true);
         manager.notify((int) System.currentTimeMillis(), ncBuilder.build());
@@ -300,7 +286,7 @@ public class MainActivity extends Activity {
         StatusBarNotification[] currentNos = NotificationMonitor.getCurrentNotifications();
         if (currentNos != null) {
             for (int i = 0; i < currentNos.length; i++) {
-                listNos = i + " " + currentNos[i].getPackageName() + "\n" + listNos;
+                listNos = Integer.toString(i + 1) + " " + currentNos[i].getPackageName() + "\n" + listNos;
             }
         }
         return listNos;

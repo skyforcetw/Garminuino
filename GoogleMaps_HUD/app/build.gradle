@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '28.0.2'
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.example.notificationlistenerdemo"
         minSdkVersion 23
@@ -32,7 +32,7 @@ android {
         versionProps.load(new FileInputStream(versionPropsFile))
         def name = versionProps['VERSION_NAME']
         def code = versionProps['VERSION_CODE'].toInteger() + 1
-        versionProps['VERSION_CODE']=code.toString()
+        versionProps['VERSION_CODE'] = code.toString()
         versionProps.store(versionPropsFile.newWriter(), null)
 
         defaultConfig {
@@ -42,19 +42,18 @@ android {
             minSdkVersion 19
             targetSdkVersion 23
         }
-    }
-    else {
+    } else {
         throw new GradleException("Could not read version.properties!")
     }
 }
 
 dependencies {
     //    compile 'com.android.support:support-v4:19.1.0'
-    //    implementation 'com.android.support:support-v4:23.1.1'
+    implementation 'com.android.support:support-v4:23.1.1'
     implementation 'com.akexorcist:bluetoothspp:1.0.0'
     //    implementation 'com.google.android.gms:play-services:6.+'
     //    implementation 'com.google.android.gms:play-services-location:15.0.1'
-    implementation 'com.google.android.gms:play-services-ads:15.0.0'
+//    implementation 'com.google.android.gms:play-services-ads:15.0.0'
     //    implementation 'com.google.firebase:firebase-core:16.0.3'
     //    implementation 'com.google.firebase:firebase-ads:15.0.1'
 }
