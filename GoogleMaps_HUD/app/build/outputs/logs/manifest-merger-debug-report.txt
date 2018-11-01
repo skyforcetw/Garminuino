@@ -1,16 +1,43 @@
 -- Merging decision tree log ---
 manifest
-ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:2:1-58:12
-INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:2:1-58:12
-INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:2:1-58:12
-INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:2:1-58:12
+ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:2:1-60:12
+INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:2:1-60:12
+INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:2:1-60:12
+INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:2:1-60:12
+MERGED from [com.google.android.gms:play-services:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-8.4.0.aar\51b73987ca9f065907761e28acc19e88\AndroidManifest.xml:16:1-20:12
+MERGED from [com.google.android.gms:play-services-ads:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-ads-8.4.0.aar\e8619ef6373363c91b8fc6dbf0a75e61\AndroidManifest.xml:16:1-33:12
+MERGED from [com.google.android.gms:play-services-analytics:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-analytics-8.4.0.aar\bec948bd9119f4433da443cb418ca3ef\AndroidManifest.xml:16:1-25:12
+MERGED from [com.google.android.gms:play-services-appindexing:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appindexing-8.4.0.aar\10c2230ce87779b9f07b116386116625\AndroidManifest.xml:16:1-20:12
+MERGED from [com.google.android.gms:play-services-appinvite:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appinvite-8.4.0.aar\263b79276ee9a09330ecc2571fd52141\AndroidManifest.xml:16:1-31:12
+MERGED from [com.google.android.gms:play-services-appstate:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appstate-8.4.0.aar\87b65b8515adbd6cdc059e14c4213ea3\AndroidManifest.xml:16:1-20:12
+MERGED from [com.google.android.gms:play-services-auth:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-auth-8.4.0.aar\b155e51315bd38da2e81cba4366a3fb2\AndroidManifest.xml:16:1-33:12
+MERGED from [com.google.android.gms:play-services-cast:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-cast-8.4.0.aar\cf8f2c7d1a389d03f7b0e26d2729e92f\AndroidManifest.xml:16:1-20:12
+MERGED from [com.google.android.gms:play-services-games:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-games-8.4.0.aar\58624e55f6c12d1343e556f12e646fda\AndroidManifest.xml:16:1-20:12
+MERGED from [com.google.android.gms:play-services-drive:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-drive-8.4.0.aar\7b9c9dbde22fb4159ec5d3b162393ef1\AndroidManifest.xml:16:1-20:12
+MERGED from [com.google.android.gms:play-services-fitness:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-fitness-8.4.0.aar\afefe1cfcae9ca6abc38b4a0c7d22a0c\AndroidManifest.xml:16:1-20:12
+MERGED from [com.google.android.gms:play-services-gcm:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-gcm-8.4.0.aar\7e9d02e1fc614b97784bfcf5f1cd2514\AndroidManifest.xml:16:1-25:12
+MERGED from [com.google.android.gms:play-services-wallet:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-wallet-8.4.0.aar\39193d7da1ec7882db7412ab3224c455\AndroidManifest.xml:16:1-21:12
+MERGED from [com.google.android.gms:play-services-identity:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-identity-8.4.0.aar\10aeb99a6df27fe3072fbe0abe5c5823\AndroidManifest.xml:16:1-20:12
+MERGED from [com.google.android.gms:play-services-location:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-location-8.4.0.aar\5e7b0aee3ffef29fd2d4c631c7ec2244\AndroidManifest.xml:16:1-20:12
+MERGED from [com.google.android.gms:play-services-maps:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-maps-8.4.0.aar\c8de3e2e92f8cda39f6c112d8a613f64\AndroidManifest.xml:16:1-28:12
+MERGED from [com.google.android.gms:play-services-nearby:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-nearby-8.4.0.aar\fdd6a65402ddcc7517176b3b53d5434c\AndroidManifest.xml:16:1-21:12
+MERGED from [com.google.android.gms:play-services-panorama:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-panorama-8.4.0.aar\9b90698bfc7506ead99a3616a11277d4\AndroidManifest.xml:16:1-20:12
+MERGED from [com.google.android.gms:play-services-plus:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-plus-8.4.0.aar\65cdcfd1dc9ceaa9c18281218c5e1da6\AndroidManifest.xml:16:1-20:12
+MERGED from [com.google.android.gms:play-services-safetynet:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-safetynet-8.4.0.aar\0a79ae588d8929aeae21685ec5e09dea\AndroidManifest.xml:16:1-20:12
+MERGED from [com.google.android.gms:play-services-vision:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-vision-8.4.0.aar\1d5ded24b92f1bee8828a5f50d7c80cf\AndroidManifest.xml:2:1-6:12
+MERGED from [com.google.android.gms:play-services-wearable:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-wearable-8.4.0.aar\81e21cffee5096d72c18343d12d6a934\AndroidManifest.xml:16:1-20:12
+MERGED from [com.google.android.gms:play-services-base:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-base-8.4.0.aar\d258a9e5ba446d429d78a4e2ca0a7b8f\AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:16:1-47:12
+MERGED from [com.google.android.gms:play-services-basement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-basement-8.4.0.aar\ae8ef17120370975370bd50e09be52b4\AndroidManifest.xml:16:1-26:12
+MERGED from [com.android.support:mediarouter-v7:23.0.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\mediarouter-v7-23.0.0.aar\41c66c79cdd0011ef49d2e9a785a2238\AndroidManifest.xml:17:1-24:12
+MERGED from [com.android.support:appcompat-v7:23.0.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\appcompat-v7-23.0.0.aar\13bb621423df1d5a3ba6a85cdbef9ca0\AndroidManifest.xml:17:1-24:12
 MERGED from [com.android.support:support-v4:23.1.1] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\support-v4-23.1.1.aar\067ebc9444ec4d8409017bab8071ef2c\AndroidManifest.xml:17:1-24:12
 MERGED from [com.akexorcist:bluetoothspp:1.0.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\bluetoothspp-1.0.0.aar\083a7af224de9b904ce670eed0436310\AndroidManifest.xml:2:1-14:12
-INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:2:1-58:12
-INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:2:1-58:12
-INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:2:1-58:12
+INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:2:1-60:12
+INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:2:1-60:12
+INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:2:1-60:12
 	package
-		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:4:5-51
+		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:4:5-47
 		INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml
 		INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml
 	android:versionName
@@ -37,70 +64,204 @@ MERGED from [com.akexorcist:bluetoothspp:1.0.0] C:\Users\skyfo\.gradle\caches\tr
 		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:9:22-71
 uses-permission#android.permission.INTERNET
 ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:11:5-67
+MERGED from [com.google.android.gms:play-services-ads:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-ads-8.4.0.aar\e8619ef6373363c91b8fc6dbf0a75e61\AndroidManifest.xml:20:5-66
+MERGED from [com.google.android.gms:play-services-ads:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-ads-8.4.0.aar\e8619ef6373363c91b8fc6dbf0a75e61\AndroidManifest.xml:20:5-66
+MERGED from [com.google.android.gms:play-services-analytics:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-analytics-8.4.0.aar\bec948bd9119f4433da443cb418ca3ef\AndroidManifest.xml:21:5-67
+MERGED from [com.google.android.gms:play-services-analytics:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-analytics-8.4.0.aar\bec948bd9119f4433da443cb418ca3ef\AndroidManifest.xml:21:5-67
+MERGED from [com.google.android.gms:play-services-appinvite:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appinvite-8.4.0.aar\263b79276ee9a09330ecc2571fd52141\AndroidManifest.xml:19:5-67
+MERGED from [com.google.android.gms:play-services-appinvite:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appinvite-8.4.0.aar\263b79276ee9a09330ecc2571fd52141\AndroidManifest.xml:19:5-67
+MERGED from [com.google.android.gms:play-services-gcm:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-gcm-8.4.0.aar\7e9d02e1fc614b97784bfcf5f1cd2514\AndroidManifest.xml:22:5-67
+MERGED from [com.google.android.gms:play-services-gcm:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-gcm-8.4.0.aar\7e9d02e1fc614b97784bfcf5f1cd2514\AndroidManifest.xml:22:5-67
+MERGED from [com.google.android.gms:play-services-maps:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-maps-8.4.0.aar\c8de3e2e92f8cda39f6c112d8a613f64\AndroidManifest.xml:21:5-66
+MERGED from [com.google.android.gms:play-services-maps:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-maps-8.4.0.aar\c8de3e2e92f8cda39f6c112d8a613f64\AndroidManifest.xml:21:5-66
+MERGED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:21:5-67
+MERGED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:21:5-67
 	android:name
 		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:11:22-64
 uses-permission#android.permission.ACCESS_NETWORK_STATE
 ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:12:5-79
+MERGED from [com.google.android.gms:play-services-ads:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-ads-8.4.0.aar\e8619ef6373363c91b8fc6dbf0a75e61\AndroidManifest.xml:21:5-78
+MERGED from [com.google.android.gms:play-services-ads:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-ads-8.4.0.aar\e8619ef6373363c91b8fc6dbf0a75e61\AndroidManifest.xml:21:5-78
+MERGED from [com.google.android.gms:play-services-analytics:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-analytics-8.4.0.aar\bec948bd9119f4433da443cb418ca3ef\AndroidManifest.xml:22:5-79
+MERGED from [com.google.android.gms:play-services-analytics:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-analytics-8.4.0.aar\bec948bd9119f4433da443cb418ca3ef\AndroidManifest.xml:22:5-79
+MERGED from [com.google.android.gms:play-services-maps:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-maps-8.4.0.aar\c8de3e2e92f8cda39f6c112d8a613f64\AndroidManifest.xml:20:5-78
+MERGED from [com.google.android.gms:play-services-maps:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-maps-8.4.0.aar\c8de3e2e92f8cda39f6c112d8a613f64\AndroidManifest.xml:20:5-78
+MERGED from [com.google.android.gms:play-services-nearby:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-nearby-8.4.0.aar\fdd6a65402ddcc7517176b3b53d5434c\AndroidManifest.xml:19:5-79
+MERGED from [com.google.android.gms:play-services-nearby:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-nearby-8.4.0.aar\fdd6a65402ddcc7517176b3b53d5434c\AndroidManifest.xml:19:5-79
+MERGED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:22:5-79
+MERGED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:22:5-79
 	android:name
 		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:12:22-76
+uses-permission#android.permission.ACCESS_COARSE_LOCATION
+ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:13:5-81
+	android:name
+		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:13:22-78
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:14:5-79
+	android:name
+		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:14:22-76
 application
-ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:16:5-56:19
+ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:18:5-58:19
+MERGED from [com.google.android.gms:play-services:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-8.4.0.aar\51b73987ca9f065907761e28acc19e88\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-8.4.0.aar\51b73987ca9f065907761e28acc19e88\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-ads:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-ads-8.4.0.aar\e8619ef6373363c91b8fc6dbf0a75e61\AndroidManifest.xml:24:5-32:19
+MERGED from [com.google.android.gms:play-services-ads:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-ads-8.4.0.aar\e8619ef6373363c91b8fc6dbf0a75e61\AndroidManifest.xml:24:5-32:19
+MERGED from [com.google.android.gms:play-services-analytics:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-analytics-8.4.0.aar\bec948bd9119f4433da443cb418ca3ef\AndroidManifest.xml:24:5-20
+MERGED from [com.google.android.gms:play-services-analytics:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-analytics-8.4.0.aar\bec948bd9119f4433da443cb418ca3ef\AndroidManifest.xml:24:5-20
+MERGED from [com.google.android.gms:play-services-appindexing:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appindexing-8.4.0.aar\10c2230ce87779b9f07b116386116625\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-appindexing:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appindexing-8.4.0.aar\10c2230ce87779b9f07b116386116625\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-appinvite:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appinvite-8.4.0.aar\263b79276ee9a09330ecc2571fd52141\AndroidManifest.xml:20:5-30:19
+MERGED from [com.google.android.gms:play-services-appinvite:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appinvite-8.4.0.aar\263b79276ee9a09330ecc2571fd52141\AndroidManifest.xml:20:5-30:19
+MERGED from [com.google.android.gms:play-services-appstate:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appstate-8.4.0.aar\87b65b8515adbd6cdc059e14c4213ea3\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-appstate:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appstate-8.4.0.aar\87b65b8515adbd6cdc059e14c4213ea3\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-auth:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-auth-8.4.0.aar\b155e51315bd38da2e81cba4366a3fb2\AndroidManifest.xml:20:5-32:19
+MERGED from [com.google.android.gms:play-services-auth:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-auth-8.4.0.aar\b155e51315bd38da2e81cba4366a3fb2\AndroidManifest.xml:20:5-32:19
+MERGED from [com.google.android.gms:play-services-cast:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-cast-8.4.0.aar\cf8f2c7d1a389d03f7b0e26d2729e92f\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-cast:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-cast-8.4.0.aar\cf8f2c7d1a389d03f7b0e26d2729e92f\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-games:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-games-8.4.0.aar\58624e55f6c12d1343e556f12e646fda\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-games:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-games-8.4.0.aar\58624e55f6c12d1343e556f12e646fda\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-drive:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-drive-8.4.0.aar\7b9c9dbde22fb4159ec5d3b162393ef1\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-drive:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-drive-8.4.0.aar\7b9c9dbde22fb4159ec5d3b162393ef1\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-fitness:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-fitness-8.4.0.aar\afefe1cfcae9ca6abc38b4a0c7d22a0c\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-fitness:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-fitness-8.4.0.aar\afefe1cfcae9ca6abc38b4a0c7d22a0c\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-gcm:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-gcm-8.4.0.aar\7e9d02e1fc614b97784bfcf5f1cd2514\AndroidManifest.xml:24:5-20
+MERGED from [com.google.android.gms:play-services-gcm:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-gcm-8.4.0.aar\7e9d02e1fc614b97784bfcf5f1cd2514\AndroidManifest.xml:24:5-20
+MERGED from [com.google.android.gms:play-services-identity:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-identity-8.4.0.aar\10aeb99a6df27fe3072fbe0abe5c5823\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-identity:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-identity-8.4.0.aar\10aeb99a6df27fe3072fbe0abe5c5823\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-location:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-location-8.4.0.aar\5e7b0aee3ffef29fd2d4c631c7ec2244\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-location:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-location-8.4.0.aar\5e7b0aee3ffef29fd2d4c631c7ec2244\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-maps:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-maps-8.4.0.aar\c8de3e2e92f8cda39f6c112d8a613f64\AndroidManifest.xml:27:5-20
+MERGED from [com.google.android.gms:play-services-maps:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-maps-8.4.0.aar\c8de3e2e92f8cda39f6c112d8a613f64\AndroidManifest.xml:27:5-20
+MERGED from [com.google.android.gms:play-services-nearby:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-nearby-8.4.0.aar\fdd6a65402ddcc7517176b3b53d5434c\AndroidManifest.xml:20:5-20
+MERGED from [com.google.android.gms:play-services-nearby:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-nearby-8.4.0.aar\fdd6a65402ddcc7517176b3b53d5434c\AndroidManifest.xml:20:5-20
+MERGED from [com.google.android.gms:play-services-panorama:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-panorama-8.4.0.aar\9b90698bfc7506ead99a3616a11277d4\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-panorama:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-panorama-8.4.0.aar\9b90698bfc7506ead99a3616a11277d4\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-plus:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-plus-8.4.0.aar\65cdcfd1dc9ceaa9c18281218c5e1da6\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-plus:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-plus-8.4.0.aar\65cdcfd1dc9ceaa9c18281218c5e1da6\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-safetynet:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-safetynet-8.4.0.aar\0a79ae588d8929aeae21685ec5e09dea\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-safetynet:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-safetynet-8.4.0.aar\0a79ae588d8929aeae21685ec5e09dea\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-vision:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-vision-8.4.0.aar\1d5ded24b92f1bee8828a5f50d7c80cf\AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-vision:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-vision-8.4.0.aar\1d5ded24b92f1bee8828a5f50d7c80cf\AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-wearable:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-wearable-8.4.0.aar\81e21cffee5096d72c18343d12d6a934\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-wearable:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-wearable-8.4.0.aar\81e21cffee5096d72c18343d12d6a934\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:26:5-46:19
+MERGED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:26:5-46:19
+MERGED from [com.google.android.gms:play-services-basement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-basement-8.4.0.aar\ae8ef17120370975370bd50e09be52b4\AndroidManifest.xml:20:5-24:19
+MERGED from [com.google.android.gms:play-services-basement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-basement-8.4.0.aar\ae8ef17120370975370bd50e09be52b4\AndroidManifest.xml:20:5-24:19
+MERGED from [com.android.support:mediarouter-v7:23.0.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\mediarouter-v7-23.0.0.aar\41c66c79cdd0011ef49d2e9a785a2238\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:mediarouter-v7:23.0.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\mediarouter-v7-23.0.0.aar\41c66c79cdd0011ef49d2e9a785a2238\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:appcompat-v7:23.0.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\appcompat-v7-23.0.0.aar\13bb621423df1d5a3ba6a85cdbef9ca0\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:appcompat-v7:23.0.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\appcompat-v7-23.0.0.aar\13bb621423df1d5a3ba6a85cdbef9ca0\AndroidManifest.xml:22:5-20
 MERGED from [com.android.support:support-v4:23.1.1] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\support-v4-23.1.1.aar\067ebc9444ec4d8409017bab8071ef2c\AndroidManifest.xml:22:5-20
 MERGED from [com.android.support:support-v4:23.1.1] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\support-v4-23.1.1.aar\067ebc9444ec4d8409017bab8071ef2c\AndroidManifest.xml:22:5-20
 MERGED from [com.akexorcist:bluetoothspp:1.0.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\bluetoothspp-1.0.0.aar\083a7af224de9b904ce670eed0436310\AndroidManifest.xml:10:5-12:19
 MERGED from [com.akexorcist:bluetoothspp:1.0.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\bluetoothspp-1.0.0.aar\083a7af224de9b904ce670eed0436310\AndroidManifest.xml:10:5-12:19
 	android:label
-		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:19:9-41
+		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:21:9-41
 	android:icon
-		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:18:9-43
+		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:20:9-43
 	android:allowBackup
-		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:17:9-35
+		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:19:9-35
 	android:theme
-		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:20:9-40
-activity#com.example.notificationlistenerdemo.MainActivity
-ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:27:9-35:20
+		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:22:9-40
+activity#com.example.notificationlistener.MainActivity
+ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:29:9-37:20
 	android:label
-		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:29:13-45
+		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:31:13-45
 	android:name
-		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:28:13-77
+		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:30:13-73
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:30:13-34:29
+ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:32:13-36:29
 action#android.intent.action.MAIN
-ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:31:17-69
+ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:33:17-69
 	android:name
-		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:31:25-66
+		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:33:25-66
 category#android.intent.category.LAUNCHER
-ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:33:17-77
+ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:35:17-77
 	android:name
-		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:33:27-74
+		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:35:27-74
 activity#app.akexorcist.bluetoothspp.DeviceList
-ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:37:9-75
+ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:39:9-75
 	android:name
-		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:37:19-72
-service#com.example.notificationlistenerdemo.NotificationMonitor
-ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:39:9-46:19
+		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:39:19-72
+service#com.example.notificationlistener.NotificationMonitor
+ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:41:9-48:19
 	android:permission
-		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:41:13-87
+		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:43:13-87
 	android:name
-		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:40:13-84
+		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:42:13-80
 intent-filter#action:name:android.service.notification.NotificationListenerService
-ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:43:13-45:29
+ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:45:13-47:29
 action#android.service.notification.NotificationListenerService
-ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:44:17-99
+ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:46:17-99
 	android:name
-		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:44:25-96
-service#com.example.notificationlistenerdemo.NotificationCollectorMonitorService
-ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:47:9-108
+		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:46:25-96
+service#com.example.notificationlistener.NotificationCollectorMonitorService
+ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:49:9-104
 	android:name
-		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:47:18-105
+		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:49:18-101
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:57:5-81
+ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:59:5-81
 	android:name
-		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:57:22-78
+		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:59:22-78
 uses-sdk
 INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml
 INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml
+MERGED from [com.google.android.gms:play-services:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-8.4.0.aar\51b73987ca9f065907761e28acc19e88\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-8.4.0.aar\51b73987ca9f065907761e28acc19e88\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-ads:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-ads-8.4.0.aar\e8619ef6373363c91b8fc6dbf0a75e61\AndroidManifest.xml:23:5-42
+MERGED from [com.google.android.gms:play-services-ads:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-ads-8.4.0.aar\e8619ef6373363c91b8fc6dbf0a75e61\AndroidManifest.xml:23:5-42
+MERGED from [com.google.android.gms:play-services-analytics:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-analytics-8.4.0.aar\bec948bd9119f4433da443cb418ca3ef\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-analytics:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-analytics-8.4.0.aar\bec948bd9119f4433da443cb418ca3ef\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-appindexing:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appindexing-8.4.0.aar\10c2230ce87779b9f07b116386116625\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-appindexing:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appindexing-8.4.0.aar\10c2230ce87779b9f07b116386116625\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-appinvite:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appinvite-8.4.0.aar\263b79276ee9a09330ecc2571fd52141\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-appinvite:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appinvite-8.4.0.aar\263b79276ee9a09330ecc2571fd52141\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-appstate:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appstate-8.4.0.aar\87b65b8515adbd6cdc059e14c4213ea3\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-appstate:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appstate-8.4.0.aar\87b65b8515adbd6cdc059e14c4213ea3\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-auth:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-auth-8.4.0.aar\b155e51315bd38da2e81cba4366a3fb2\AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-auth:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-auth-8.4.0.aar\b155e51315bd38da2e81cba4366a3fb2\AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-cast:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-cast-8.4.0.aar\cf8f2c7d1a389d03f7b0e26d2729e92f\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-cast:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-cast-8.4.0.aar\cf8f2c7d1a389d03f7b0e26d2729e92f\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-games:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-games-8.4.0.aar\58624e55f6c12d1343e556f12e646fda\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-games:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-games-8.4.0.aar\58624e55f6c12d1343e556f12e646fda\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-drive:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-drive-8.4.0.aar\7b9c9dbde22fb4159ec5d3b162393ef1\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-drive:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-drive-8.4.0.aar\7b9c9dbde22fb4159ec5d3b162393ef1\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-fitness:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-fitness-8.4.0.aar\afefe1cfcae9ca6abc38b4a0c7d22a0c\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-fitness:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-fitness-8.4.0.aar\afefe1cfcae9ca6abc38b4a0c7d22a0c\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-gcm:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-gcm-8.4.0.aar\7e9d02e1fc614b97784bfcf5f1cd2514\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-gcm:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-gcm-8.4.0.aar\7e9d02e1fc614b97784bfcf5f1cd2514\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-wallet:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-wallet-8.4.0.aar\39193d7da1ec7882db7412ab3224c455\AndroidManifest.xml:19:5-42
+MERGED from [com.google.android.gms:play-services-wallet:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-wallet-8.4.0.aar\39193d7da1ec7882db7412ab3224c455\AndroidManifest.xml:19:5-42
+MERGED from [com.google.android.gms:play-services-identity:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-identity-8.4.0.aar\10aeb99a6df27fe3072fbe0abe5c5823\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-identity:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-identity-8.4.0.aar\10aeb99a6df27fe3072fbe0abe5c5823\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-location:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-location-8.4.0.aar\5e7b0aee3ffef29fd2d4c631c7ec2244\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-location:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-location-8.4.0.aar\5e7b0aee3ffef29fd2d4c631c7ec2244\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-maps:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-maps-8.4.0.aar\c8de3e2e92f8cda39f6c112d8a613f64\AndroidManifest.xml:26:5-42
+MERGED from [com.google.android.gms:play-services-maps:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-maps-8.4.0.aar\c8de3e2e92f8cda39f6c112d8a613f64\AndroidManifest.xml:26:5-42
+MERGED from [com.google.android.gms:play-services-nearby:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-nearby-8.4.0.aar\fdd6a65402ddcc7517176b3b53d5434c\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-nearby:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-nearby-8.4.0.aar\fdd6a65402ddcc7517176b3b53d5434c\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-panorama:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-panorama-8.4.0.aar\9b90698bfc7506ead99a3616a11277d4\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-panorama:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-panorama-8.4.0.aar\9b90698bfc7506ead99a3616a11277d4\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-plus:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-plus-8.4.0.aar\65cdcfd1dc9ceaa9c18281218c5e1da6\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-plus:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-plus-8.4.0.aar\65cdcfd1dc9ceaa9c18281218c5e1da6\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-safetynet:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-safetynet-8.4.0.aar\0a79ae588d8929aeae21685ec5e09dea\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-safetynet:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-safetynet-8.4.0.aar\0a79ae588d8929aeae21685ec5e09dea\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-vision:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-vision-8.4.0.aar\1d5ded24b92f1bee8828a5f50d7c80cf\AndroidManifest.xml:4:5-42
+MERGED from [com.google.android.gms:play-services-vision:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-vision-8.4.0.aar\1d5ded24b92f1bee8828a5f50d7c80cf\AndroidManifest.xml:4:5-42
+MERGED from [com.google.android.gms:play-services-wearable:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-wearable-8.4.0.aar\81e21cffee5096d72c18343d12d6a934\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-wearable:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-wearable-8.4.0.aar\81e21cffee5096d72c18343d12d6a934\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-base:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-base-8.4.0.aar\d258a9e5ba446d429d78a4e2ca0a7b8f\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-base:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-base-8.4.0.aar\d258a9e5ba446d429d78a4e2ca0a7b8f\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-basement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-basement-8.4.0.aar\ae8ef17120370975370bd50e09be52b4\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-basement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-basement-8.4.0.aar\ae8ef17120370975370bd50e09be52b4\AndroidManifest.xml:18:5-42
+MERGED from [com.android.support:mediarouter-v7:23.0.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\mediarouter-v7-23.0.0.aar\41c66c79cdd0011ef49d2e9a785a2238\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:mediarouter-v7:23.0.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\mediarouter-v7-23.0.0.aar\41c66c79cdd0011ef49d2e9a785a2238\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:appcompat-v7:23.0.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\appcompat-v7-23.0.0.aar\13bb621423df1d5a3ba6a85cdbef9ca0\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:appcompat-v7:23.0.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\appcompat-v7-23.0.0.aar\13bb621423df1d5a3ba6a85cdbef9ca0\AndroidManifest.xml:20:5-43
 MERGED from [com.android.support:support-v4:23.1.1] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\support-v4-23.1.1.aar\067ebc9444ec4d8409017bab8071ef2c\AndroidManifest.xml:20:5-43
 MERGED from [com.android.support:support-v4:23.1.1] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\support-v4-23.1.1.aar\067ebc9444ec4d8409017bab8071ef2c\AndroidManifest.xml:20:5-43
 INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml
@@ -113,11 +274,109 @@ INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\Android
 		INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml
 		ADDED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml
 		INJECTED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml
+activity#com.google.android.gms.ads.AdActivity
+ADDED from [com.google.android.gms:play-services-ads:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-ads-8.4.0.aar\e8619ef6373363c91b8fc6dbf0a75e61\AndroidManifest.xml:26:9-29:64
+	android:configChanges
+		ADDED from [com.google.android.gms:play-services-ads:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-ads-8.4.0.aar\e8619ef6373363c91b8fc6dbf0a75e61\AndroidManifest.xml:28:13-122
+	android:theme
+		ADDED from [com.google.android.gms:play-services-ads:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-ads-8.4.0.aar\e8619ef6373363c91b8fc6dbf0a75e61\AndroidManifest.xml:29:13-61
+	android:name
+		ADDED from [com.google.android.gms:play-services-ads:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-ads-8.4.0.aar\e8619ef6373363c91b8fc6dbf0a75e61\AndroidManifest.xml:27:13-65
+activity#com.google.android.gms.ads.purchase.InAppPurchaseActivity
+ADDED from [com.google.android.gms:play-services-ads:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-ads-8.4.0.aar\e8619ef6373363c91b8fc6dbf0a75e61\AndroidManifest.xml:30:9-31:52
+	android:theme
+		ADDED from [com.google.android.gms:play-services-ads:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-ads-8.4.0.aar\e8619ef6373363c91b8fc6dbf0a75e61\AndroidManifest.xml:31:13-50
+	android:name
+		ADDED from [com.google.android.gms:play-services-ads:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-ads-8.4.0.aar\e8619ef6373363c91b8fc6dbf0a75e61\AndroidManifest.xml:30:19-91
+activity#com.google.android.gms.appinvite.PreviewActivity
+ADDED from [com.google.android.gms:play-services-appinvite:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appinvite-8.4.0.aar\263b79276ee9a09330ecc2571fd52141\AndroidManifest.xml:21:9-29:20
+	android:exported
+		ADDED from [com.google.android.gms:play-services-appinvite:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appinvite-8.4.0.aar\263b79276ee9a09330ecc2571fd52141\AndroidManifest.xml:23:17-40
+	android:theme
+		ADDED from [com.google.android.gms:play-services-appinvite:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appinvite-8.4.0.aar\263b79276ee9a09330ecc2571fd52141\AndroidManifest.xml:24:17-63
+	android:name
+		ADDED from [com.google.android.gms:play-services-appinvite:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appinvite-8.4.0.aar\263b79276ee9a09330ecc2571fd52141\AndroidManifest.xml:22:17-48
+intent-filter#action:name:com.google.android.gms.appinvite.ACTION_PREVIEW+category:name:android.intent.category.DEFAULT
+ADDED from [com.google.android.gms:play-services-appinvite:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appinvite-8.4.0.aar\263b79276ee9a09330ecc2571fd52141\AndroidManifest.xml:25:13-28:29
+action#com.google.android.gms.appinvite.ACTION_PREVIEW
+ADDED from [com.google.android.gms:play-services-appinvite:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appinvite-8.4.0.aar\263b79276ee9a09330ecc2571fd52141\AndroidManifest.xml:26:17-89
+	android:name
+		ADDED from [com.google.android.gms:play-services-appinvite:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appinvite-8.4.0.aar\263b79276ee9a09330ecc2571fd52141\AndroidManifest.xml:26:25-87
+category#android.intent.category.DEFAULT
+ADDED from [com.google.android.gms:play-services-appinvite:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appinvite-8.4.0.aar\263b79276ee9a09330ecc2571fd52141\AndroidManifest.xml:27:17-75
+	android:name
+		ADDED from [com.google.android.gms:play-services-appinvite:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-appinvite-8.4.0.aar\263b79276ee9a09330ecc2571fd52141\AndroidManifest.xml:27:27-73
+activity#com.google.android.gms.auth.api.signin.internal.SignInHubActivity
+ADDED from [com.google.android.gms:play-services-auth:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-auth-8.4.0.aar\b155e51315bd38da2e81cba4366a3fb2\AndroidManifest.xml:21:9-24:46
+	android:excludeFromRecents
+		ADDED from [com.google.android.gms:play-services-auth:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-auth-8.4.0.aar\b155e51315bd38da2e81cba4366a3fb2\AndroidManifest.xml:23:19-52
+	android:exported
+		ADDED from [com.google.android.gms:play-services-auth:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-auth-8.4.0.aar\b155e51315bd38da2e81cba4366a3fb2\AndroidManifest.xml:24:19-43
+	android:theme
+		ADDED from [com.google.android.gms:play-services-auth:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-auth-8.4.0.aar\b155e51315bd38da2e81cba4366a3fb2\AndroidManifest.xml:22:19-78
+	android:name
+		ADDED from [com.google.android.gms:play-services-auth:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-auth-8.4.0.aar\b155e51315bd38da2e81cba4366a3fb2\AndroidManifest.xml:21:19-72
+service#com.google.android.gms.auth.api.signin.RevocationBoundService
+ADDED from [com.google.android.gms:play-services-auth:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-auth-8.4.0.aar\b155e51315bd38da2e81cba4366a3fb2\AndroidManifest.xml:28:9-31:110
+	android:exported
+		ADDED from [com.google.android.gms:play-services-auth:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-auth-8.4.0.aar\b155e51315bd38da2e81cba4366a3fb2\AndroidManifest.xml:30:13-36
+	android:permission
+		ADDED from [com.google.android.gms:play-services-auth:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-auth-8.4.0.aar\b155e51315bd38da2e81cba4366a3fb2\AndroidManifest.xml:31:13-107
+	android:name
+		ADDED from [com.google.android.gms:play-services-auth:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-auth-8.4.0.aar\b155e51315bd38da2e81cba4366a3fb2\AndroidManifest.xml:29:13-62
+uses-permission#com.google.android.c2dm.permission.RECEIVE
+ADDED from [com.google.android.gms:play-services-gcm:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-gcm-8.4.0.aar\7e9d02e1fc614b97784bfcf5f1cd2514\AndroidManifest.xml:21:5-82
+	android:name
+		ADDED from [com.google.android.gms:play-services-gcm:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-gcm-8.4.0.aar\7e9d02e1fc614b97784bfcf5f1cd2514\AndroidManifest.xml:21:22-79
+uses-feature#0x00020000
+ADDED from [com.google.android.gms:play-services-maps:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-maps-8.4.0.aar\c8de3e2e92f8cda39f6c112d8a613f64\AndroidManifest.xml:22:5-24:33
+	android:glEsVersion
+		ADDED from [com.google.android.gms:play-services-maps:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-maps-8.4.0.aar\c8de3e2e92f8cda39f6c112d8a613f64\AndroidManifest.xml:23:8-40
+	android:required
+		ADDED from [com.google.android.gms:play-services-maps:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-maps-8.4.0.aar\c8de3e2e92f8cda39f6c112d8a613f64\AndroidManifest.xml:24:8-31
+uses-permission#android.permission.WAKE_LOCK
+ADDED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:24:5-67
+	android:name
+		ADDED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:24:22-65
+provider#com.google.android.gms.measurement.AppMeasurementContentProvider
+ADDED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:28:7-31:37
+	android:authorities
+		ADDED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:29:11-76
+	android:exported
+		ADDED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:31:11-35
+	android:name
+		ADDED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:30:11-90
+receiver#com.google.android.gms.measurement.AppMeasurementReceiver
+ADDED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:33:7-39:18
+	android:enabled
+		ADDED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:35:11-33
+	android:name
+		ADDED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:34:11-83
+intent-filter#action:name:com.google.android.gms.measurement.UPLOAD
+ADDED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:36:9-38:25
+action#com.google.android.gms.measurement.UPLOAD
+ADDED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:37:11-77
+	android:name
+		ADDED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:37:19-75
+service#com.google.android.gms.measurement.AppMeasurementService
+ADDED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:41:7-44:37
+	android:enabled
+		ADDED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:43:11-33
+	android:exported
+		ADDED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:44:11-35
+	android:name
+		ADDED from [com.google.android.gms:play-services-measurement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-measurement-8.4.0.aar\dbbab9f304a4b9e161e255b2347b406d\AndroidManifest.xml:42:11-82
+meta-data#com.google.android.gms.version
+ADDED from [com.google.android.gms:play-services-basement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-basement-8.4.0.aar\ae8ef17120370975370bd50e09be52b4\AndroidManifest.xml:21:9-23:69
+	android:value
+		ADDED from [com.google.android.gms:play-services-basement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-basement-8.4.0.aar\ae8ef17120370975370bd50e09be52b4\AndroidManifest.xml:23:13-66
+	android:name
+		ADDED from [com.google.android.gms:play-services-basement:8.4.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\play-services-basement-8.4.0.aar\ae8ef17120370975370bd50e09be52b4\AndroidManifest.xml:22:13-58
 activity#app.akexorcist.bluetotohspp.library.DeviceList
 ADDED from [com.akexorcist:bluetoothspp:1.0.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\bluetoothspp-1.0.0.aar\083a7af224de9b904ce670eed0436310\AndroidManifest.xml:11:9-83
 	android:name
 		ADDED from [com.akexorcist:bluetoothspp:1.0.0] C:\Users\skyfo\.gradle\caches\transforms-1\files-1.1\bluetoothspp-1.0.0.aar\083a7af224de9b904ce670eed0436310\AndroidManifest.xml:11:19-80
 uses-permission#android.permission.READ_PHONE_STATE
-IMPLIED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:2:1-58:12 reason: app.akexorcist.bluetotohspp.library has a targetSdkVersion < 4
+IMPLIED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:2:1-60:12 reason: app.akexorcist.bluetotohspp.library has a targetSdkVersion < 4
 uses-permission#android.permission.READ_EXTERNAL_STORAGE
-IMPLIED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:2:1-58:12 reason: app.akexorcist.bluetotohspp.library requested WRITE_EXTERNAL_STORAGE
+IMPLIED from D:\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\src\main\AndroidManifest.xml:2:1-60:12 reason: app.akexorcist.bluetotohspp.library requested WRITE_EXTERNAL_STORAGE

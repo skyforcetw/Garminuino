@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
-    package="com.example.notificationlistenerdemo"
+    package="com.example.notificationlistener"
     android:versionCode="1"
     android:versionName="1.0">
 
@@ -10,6 +10,8 @@
     <!-- Include required permissions for Google Mobile Ads to run-->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <!--<uses-sdk android:targetSdkVersion="18" />-->
 
@@ -25,7 +27,7 @@
             <!--android:value="@integer/google_play_services_version" />-->
 
         <activity
-            android:name="com.example.notificationlistenerdemo.MainActivity"
+            android:name="com.example.notificationlistener.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,14 +39,14 @@
         <activity android:name="app.akexorcist.bluetoothspp.DeviceList" />
 
         <service
-            android:name="com.example.notificationlistenerdemo.NotificationMonitor"
+            android:name="com.example.notificationlistener.NotificationMonitor"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
 
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-        <service android:name="com.example.notificationlistenerdemo.NotificationCollectorMonitorService" />
+        <service android:name="com.example.notificationlistener.NotificationCollectorMonitorService" />
 
         <!--Include the AdActivity configChanges and theme. -->
         <!--<activity-->

@@ -1,6 +1,6 @@
 package sky4s.garmin;
 
-import com.example.notificationlistenerdemo.MainActivity;
+import com.example.notificationlistener.MainActivity;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 

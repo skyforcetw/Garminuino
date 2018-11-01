@@ -4,6 +4,42 @@
             "outputFile": "D:\\workspace\\GitHub\\Garminuino\\GoogleMaps_HUD\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v11\\values-v11.xml",
             "map": [
                 {
+                    "source": "C:\\Users\\skyfo\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-appinvite-8.4.0.aar\\263b79276ee9a09330ecc2571fd52141\\res\\values-v11\\appinvite_styles.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "4",
+                        "startOffsets": "101",
+                        "endColumns": "117",
+                        "endOffsets": "214"
+                    },
+                    "to": {
+                        "startLines": "163",
+                        "startColumns": "4",
+                        "startOffsets": "11797",
+                        "endColumns": "117",
+                        "endOffsets": "11910"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\skyfo\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-23.0.0.aar\\13bb621423df1d5a3ba6a85cdbef9ca0\\res\\values-v11\\values-v11.xml",
+                    "from": {
+                        "startLines": "4,10,16,22,28,34,42,43,44,49,56,58,62,63,64,115,169",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "286,705,1130,1558,1984,2411,3062,3151,3252,3660,4306,4413,4768,4839,4922,8630,12704",
+                        "endLines": "9,15,21,27,33,39,42,43,48,53,57,59,62,63,114,166,169",
+                        "endColumns": "12,12,12,12,12,12,88,100,12,12,12,12,70,82,12,12,90",
+                        "endOffsets": "700,1125,1553,1979,2406,2831,3146,3247,3655,4075,4408,4537,4834,4917,8625,12473,12790"
+                    },
+                    "to": {
+                        "startLines": "5,11,17,23,29,35,41,42,43,48,53,55,57,58,59,110,162",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "192,611,1036,1464,1890,2317,2742,2831,2932,3340,3760,3867,3996,4067,4150,7858,11706",
+                        "endLines": "10,16,22,28,34,40,41,42,47,52,54,56,57,58,109,161,162",
+                        "endColumns": "12,12,12,12,12,12,88,100,12,12,12,12,70,82,12,12,90",
+                        "endOffsets": "606,1031,1459,1885,2312,2737,2826,2927,3335,3755,3862,3991,4062,4145,7853,11701,11792"
+                    }
+                },
+                {
                     "source": "D:\\workspace\\GitHub\\Garminuino\\GoogleMaps_HUD\\app\\src\\main\\res\\values-v11\\styles.xml",
                     "from": {
                         "startLines": "6",

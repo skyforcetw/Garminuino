@@ -4,6 +4,25 @@
             "outputFile": "D:\\workspace\\GitHub\\Garminuino\\GoogleMaps_HUD\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v14\\values-v14.xml",
             "map": [
                 {
+                    "source": "C:\\Users\\skyfo\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-23.0.0.aar\\13bb621423df1d5a3ba6a85cdbef9ca0\\res\\values-v14\\values-v14.xml",
+                    "from": {
+                        "startLines": "4,11,12,13,19,27,28,29,32,33",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "286,788,859,942,1352,1995,2115,2178,2332,2395",
+                        "endLines": "8,11,12,18,24,27,28,31,32,33",
+                        "endColumns": "12,70,82,12,12,119,62,12,62,131",
+                        "endOffsets": "557,854,937,1347,1769,2110,2173,2327,2390,2522"
+                    },
+                    "to": {
+                        "startLines": "5,10,11,12,18,24,25,26,29,30",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "206,482,553,636,1046,1468,1588,1651,1805,1868",
+                        "endLines": "9,10,11,17,23,24,25,28,29,30",
+                        "endColumns": "12,70,82,12,12,119,62,12,62,131",
+                        "endOffsets": "477,548,631,1041,1463,1583,1646,1800,1863,1995"
+                    }
+                },
+                {
                     "source": "D:\\workspace\\GitHub\\Garminuino\\GoogleMaps_HUD\\app\\src\\main\\res\\values-v14\\styles.xml",
                     "from": {
                         "startLines": "7",
