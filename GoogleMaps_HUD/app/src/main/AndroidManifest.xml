@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
-    package="com.example.notificationlistener"
+    package="com.example.notificationlistenerdemo"
     android:versionCode="1"
     android:versionName="1.0">
 
@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!--<uses-sdk android:targetSdkVersion="18" />-->
 
     <application
@@ -26,8 +26,11 @@
             <!--android:name="com.google.android.gms.version"-->
             <!--android:value="@integer/google_play_services_version" />-->
 
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <activity
-            android:name="com.example.notificationlistener.MainActivity"
+            android:name="com.example.notificationlistenerdemo.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,14 +42,14 @@
         <activity android:name="app.akexorcist.bluetoothspp.DeviceList" />
 
         <service
-            android:name="com.example.notificationlistener.NotificationMonitor"
+            android:name="com.example.notificationlistenerdemo.NotificationMonitor"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
 
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-        <service android:name="com.example.notificationlistener.NotificationCollectorMonitorService" />
+        <service android:name="com.example.notificationlistenerdemo.NotificationCollectorMonitorService" />
 
         <!--Include the AdActivity configChanges and theme. -->
         <!--<activity-->
@@ -56,5 +59,5 @@
 
 
     </application>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 </manifest>

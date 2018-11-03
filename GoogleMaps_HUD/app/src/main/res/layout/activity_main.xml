@@ -33,7 +33,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="buttonOnClicked"
-            android:text="Toggle" />
+            android:text="Toggle Service"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/btnListNotify"
@@ -55,69 +56,38 @@
             android:text="Enable/UnEnable Listener"
             android:visibility="gone" />
 
-        <Button
-            android:id="@+id/btnSendToHUD"
+        <ToggleButton
+            android:id="@+id/tgBtnShowSpeed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:autoText="false"
+            android:checked="false"
             android:onClick="buttonOnClicked"
-            android:text="Send Test To GarminHUD" />
+            android:textOff="No Show Speed"
+            android:textOn="Show Speed"
+            tools:text="1" />
 
 
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btnCreateNotify"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/finalLayout"
-        android:layout_alignRight="@+id/finalLayout"
-        android:layout_below="@+id/finalLayout"
-        android:onClick="buttonOnClicked"
-        android:text="Create Notification"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/clearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/btnCreateNotify"
-        android:layout_alignRight="@+id/btnCreateNotify"
-        android:layout_below="@+id/btnCreateNotify"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnClearLastNotify"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="buttonOnClicked"
-            android:text="Cancel Last Nos"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/btnClearAllNotify"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="buttonOnClicked"
-            android:text="Cancel All Nos"
-            android:visibility="gone" />
     </LinearLayout>
 
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/finalLayout"
         android:layout_alignLeft="@+id/finalLayout"
         android:layout_alignRight="@+id/finalLayout"
-        android:layout_below="@+id/finalLayout" >
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:visibility="visible" />
     </ScrollView>
 
     <!--<com.google.android.gms.ads.AdView-->
