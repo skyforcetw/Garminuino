@@ -42,6 +42,11 @@ Works just like garmin streetpilot with Garmin HUD.
 
 Besides parts of Speedometer HUD, a USB Host Shield with a Android mobile phone can fetch Google Navigation info, and transmit info by bluetooth to GarminHUD, too.
 
+## ToDo List
+1. Add auto-connection function.
+2. Add GPS speed showing.
+3. Comment source-code.
+
 ## Authors
 
 * **skyforce Shen** - *Initial work* - [github](https://github.com/skyforcetw)
