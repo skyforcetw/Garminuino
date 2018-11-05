@@ -8,7 +8,7 @@ Auto connect to last binded bluetooth device(not tested yet).
 Add english/korean language support, thanks for cloddin's help.
 We have pre-release now, please download and try it from https://github.com/skyforcetw/Garminuino/releases
 
-### 2018-10-01 _UPDATE!_
+### 2018-10-01
 All GoogleMaps_HUD app source code is uploaded!
 
 ### 2018-09-07 _VERY IMPORTANT UPDATE!_
