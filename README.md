@@ -1,6 +1,9 @@
 # Garminuino
 This  is a project use GarminHUD as speedometer HUD, or a GoogleMap navigation HUD.
 
+### 2018-11-05
+Auto connect to last binded bluetooth device(not tested yet).
+
 ### 2018-10-30
 Add english/korean language support, thanks for cloddin's help.
 We have pre-release now, please download and try it from https://github.com/skyforcetw/Garminuino/releases
@@ -44,8 +47,9 @@ Besides parts of Speedometer HUD, a USB Host Shield with a Android mobile phone 
 
 ## ToDo List
 1. Add auto-connection function.
-2. Add GPS speed showing.
-3. Comment source-code.
+2. Auto lanunch google map when HUD connected.
+3. Add GPS speed showing.
+4. Comment source-code.
 
 ## Authors
 
