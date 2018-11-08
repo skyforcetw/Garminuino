@@ -12,7 +12,7 @@ We have pre-release now, please download and try it from https://github.com/skyf
 All GoogleMaps_HUD app source code is uploaded!
 
 ### 2018-09-07 _VERY IMPORTANT UPDATE!_
-A Vega-HUD feature enlightened me a directed way to get turn-by-turn infomation.
+A [Vega-HUD](https://visualgoal.com.tw/%E9%A6%96%E9%A0%81/) feature enlightened me a directed way to get turn-by-turn infomation.
 I can get turn-by-turn from google map's notification(android)!
 It's a big change for Garminuino, because it's mean I don't need arduino anymore!
 So navigation part of Garminuino turn into a pure android's app(apk) now!
