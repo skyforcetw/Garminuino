@@ -438,7 +438,7 @@ public class NotificationMonitor extends NotificationListenerService {
                     switch (indexOfActions) {
                         case 2:
 //                            String exitNavigation = getString(R.string.exit_navigation);
-                            inNavigation = t.equals(getString(R.string.exit_navigation));
+                            inNavigation = t.equalsIgnoreCase(getString(R.string.exit_navigation));
                             break;
                         case 3://distance to turn
                             parseDistanceToTurn(t);
