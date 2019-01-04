@@ -53,7 +53,7 @@ Besides parts of Speedometer HUD, a USB Host Shield with a Android mobile phone 
 
 ## Authors
 
-* **skyforce Shen** - *Initial work* - [github](https://github.com/skyforcetw) [gmail](skyforce@gmail.com)
+* **skyforce Shen** - *Initial work* - [github](https://github.com/skyforcetw) skyforce@gmail.com
 
 ## Contributor
 * **Gabriel Valky** / **Frank Huebenthal** - *garmin hud protocol research* - [github](https://github.com/gabonator/Work-in-progress/tree/master/GarminHud) 
