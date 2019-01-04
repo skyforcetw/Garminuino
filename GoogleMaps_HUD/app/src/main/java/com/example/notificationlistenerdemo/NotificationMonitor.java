@@ -524,14 +524,19 @@ public class NotificationMonitor extends NotificationListenerService {
             if (4 == timeSplit.length) {
                 remainHour = timeSplit[0].trim();
                 remainMinute = timeSplit[2].trim();
+                remainHour = remainHour.replaceAll("\u00A0", ""); // Remove spaces, .trim() seems not working
+                remainMinute = remainMinute.replaceAll("\u00A0", "");
             } else if (2 == timeSplit.length) {
                 final int hour_index = timeToDest.indexOf(getString(R.string.hour));
                 final int minute_index = timeToDest.indexOf(getString(R.string.minute));
                 if (-1 != hour_index && -1 != minute_index) {
                     remainHour = timeToDest.substring(0, hour_index).trim();
                     remainMinute = timeToDest.substring(hour_index + getString(R.string.hour).length(), minute_index).trim();
+                    remainHour = remainHour.replaceAll("\u00A0", ""); // Remove spaces, .trim() seems not working
+                    remainMinute = remainMinute.replaceAll("\u00A0", "");
                 } else {
                     remainMinute = timeSplit[0].trim();
+                    remainMinute = remainMinute.replaceAll("\u00A0", "");
 
                 }
 
