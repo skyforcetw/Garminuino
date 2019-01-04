@@ -550,8 +550,8 @@ public class NotificationMonitor extends NotificationListenerService {
                 distSplit = splitDigitAndNonDigit(distanceToDest);
             }
             if (2 == distSplit.length) {
-                remainDistance = distSplit[0];
-                remainDistanceUnit = distSplit[1];
+                remainDistance = distSplit[0].replaceAll("\u00A0", ""); // Remove spaces, .trim() doesn't work
+                remainDistanceUnit = distSplit[1].replaceAll("\u00A0", ""); // Remove spaces
                 remainDistanceUnit = translate(remainDistanceUnit);
             }
 
@@ -596,8 +596,8 @@ public class NotificationMonitor extends NotificationListenerService {
         for (int x = 0; x < str.length(); x++) {
             char c = str.charAt(x);
             if (Character.isAlphabetic(c)) {
-                result[0] = str.substring(0, x);
-                result[1] = str.substring(x);
+                result[0] = str.substring(0, x).replaceAll("\u00A0", ""); // Remove spaces, .trim() doesn't work
+                result[1] = str.substring(x).replaceAll("\u00A0", ""); // Remove spaces
                 break;
             }
         }
