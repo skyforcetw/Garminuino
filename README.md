@@ -1,15 +1,18 @@
 # Garminuino
 This  is a project use GarminHUD as speedometer HUD, or a GoogleMap navigation HUD.
 
+### 2018-11-05
+Auto connect to last binded bluetooth device(not tested yet).
+
 ### 2018-10-30
 Add english/korean language support, thanks for cloddin's help.
 We have pre-release now, please download and try it from https://github.com/skyforcetw/Garminuino/releases
 
-### 2018-10-01 _UPDATE!_
+### 2018-10-01
 All GoogleMaps_HUD app source code is uploaded!
 
 ### 2018-09-07 _VERY IMPORTANT UPDATE!_
-A Vega-HUD feature enlightened me a directed way to get turn-by-turn infomation.
+A [Vega-HUD](https://visualgoal.com.tw/%E9%A6%96%E9%A0%81/) feature enlightened me a directed way to get turn-by-turn infomation.
 I can get turn-by-turn from google map's notification(android)!
 It's a big change for Garminuino, because it's mean I don't need arduino anymore!
 So navigation part of Garminuino turn into a pure android's app(apk) now!
@@ -34,7 +37,7 @@ A OBD/CanBus parser by Arduino, and a speed info transmitter by bluetooth(to Gar
 A pure android app, for project navi-info of google map navigation.
 Works just like garmin streetpilot with Garmin HUD.
 
-## [GoogleMap navigation HUD](https://github.com/skyforcetw/Garminuino/tree/master/navigation%20HUD)      (deprecated now!)
+## [navigation HUD](https://github.com/skyforcetw/Garminuino/tree/master/navigation%20HUD)      (deprecated now!)
 
 [![IMAGE ALT TEXT HERE](https://i.ytimg.com/vi/VWV_F9V6yoA/hqdefault.jpg?sqp=-oaymwEZCPYBEIoBSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLDerjxVyOMK8V3hm9DaY-8zb3a1DQ)](https://www.youtube.com/watch?v=VWV_F9V6yoA)
 
@@ -42,9 +45,15 @@ Works just like garmin streetpilot with Garmin HUD.
 
 Besides parts of Speedometer HUD, a USB Host Shield with a Android mobile phone can fetch Google Navigation info, and transmit info by bluetooth to GarminHUD, too.
 
+## ToDo List
+1. Add auto-connection function.
+2. Auto lanunch google map when HUD connected.
+3. Add GPS speed showing.
+4. Comment source-code.
+
 ## Authors
 
-* **skyforce Shen** - *Initial work* - [github](https://github.com/skyforcetw)
+* **skyforce Shen** - *Initial work* - [github](https://github.com/skyforcetw) skyforce@gmail.com
 
 ## Contributor
 * **Gabriel Valky** / **Frank Huebenthal** - *garmin hud protocol research* - [github](https://github.com/gabonator/Work-in-progress/tree/master/GarminHud) 
