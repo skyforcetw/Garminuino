@@ -551,6 +551,7 @@ public class NotificationMonitor extends NotificationListenerService {
             }
             if (2 == distSplit.length) {
                 remainDistance = distSplit[0].replaceAll("\u00A0", ""); // Remove spaces, .trim() doesn't work
+                remainDistance = remainDistance.replace(",",".");
                 remainDistanceUnit = distSplit[1].replaceAll("\u00A0", ""); // Remove spaces
                 remainDistanceUnit = translate(remainDistanceUnit);
             }
@@ -631,7 +632,7 @@ public class NotificationMonitor extends NotificationListenerService {
         String num = null;
         String unit = null;
         if (splitArray.length == 2) {
-            num = splitArray[0];
+            num = splitArray[0].replace(",",".");
             unit = splitArray[1];
         }
 
