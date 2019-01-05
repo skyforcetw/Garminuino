@@ -179,6 +179,10 @@ public class NotificationMonitor extends NotificationListenerService {
                 return eUnits.Kilometres;
             case "m":
                 return eUnits.Metres;
+            case "mi":
+                return eUnits.Miles;
+            case "ft":
+                return eUnits.Feet;
             default:
                 return eUnits.None;
 
@@ -319,7 +323,7 @@ public class NotificationMonitor extends NotificationListenerService {
                 eUnits units = get_eUnits(distanceUnit);
 
                 int int_distance = (int) float_distance;
-                boolean decimal = eUnits.Kilometres == units && float_distance < 10;
+                boolean decimal = ((eUnits.Kilometres == units)||(eUnits.Miles == units)) && float_distance < 10;
 
                 if (decimal) { //有小數點
                     int_distance = (int) (float_distance * 10);
