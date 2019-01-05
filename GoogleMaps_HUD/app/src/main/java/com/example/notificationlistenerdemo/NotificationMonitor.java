@@ -182,7 +182,7 @@ public class NotificationMonitor extends NotificationListenerService {
             case "mi":
                 return eUnits.Miles;
             case "ft":
-                return eUnits.Feet;
+                return eUnits.Foot;
             default:
                 return eUnits.None;
 
