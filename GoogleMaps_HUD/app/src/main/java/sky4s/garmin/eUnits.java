@@ -9,7 +9,7 @@ public enum eUnits {
     Metres(1),
     Kilometres(3),
     Miles(5),
-    Feet(8);
+    Foot(8);
 
     final public int value;
 
