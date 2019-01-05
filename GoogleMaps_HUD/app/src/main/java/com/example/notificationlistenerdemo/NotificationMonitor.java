@@ -423,10 +423,14 @@ public class NotificationMonitor extends NotificationListenerService {
 
                 // The tag tells which type of action it is (2 is ReflectionAction, from the source)
                 int tag = parcel.readInt();
-                if (tag != 2 && tag != 12) continue;
+                String simpleClassName = p.getClass().getSimpleName();
+                if ( (tag != 2 && tag != 12) && (!simpleClassName.equals("ReflectionAction") && !simpleClassName.equals("BitmapReflectionAction")) )
+                    continue;
 
-                // View ID
-                int viewID = parcel.readInt();
+                if(Build.VERSION.SDK_INT <28) {
+                    // View ID
+                    parcel.readInt();
+                }
 
                 String methodName = parcel.readString();
 
