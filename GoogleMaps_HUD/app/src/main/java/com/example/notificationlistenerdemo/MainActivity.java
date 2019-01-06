@@ -42,7 +42,7 @@ import sky4s.garmin.eUnits;
 
 
 public class MainActivity extends Activity {
-    public static final boolean IGNORE_BT = true;
+    public static final boolean IGNORE_BT = false;
 
     private static final String TAG = "NLS";
     private static final String TAG_PRE = "[" + MainActivity.class.getSimpleName() + "] ";
