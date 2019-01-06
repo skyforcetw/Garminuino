@@ -265,8 +265,21 @@ byte3:  When not LeftDown/RightDown, 箭頭方向: eOutAngle
         SendHud2(arr);
     }
 
-    public void SetSpeedWarning(int nSpeed, int nLimit) {
-        SetSpeedWarning(nSpeed, nLimit, false, false, true);
+    public void SetSpeed(int nSpeed) {
+        boolean bSlash = false;
+        boolean bSpeeding = false;
+        boolean bIcon = true;
+
+        char arr[] = {(char) 0x06,
+                (char) 0x00, (char) 0x00, (char) 0x00, bSlash ? (char) 0xff : (char) 0x00,
+                (char) ((nSpeed / 100) % 10), Digit(nSpeed / 10), Digit(nSpeed), bSpeeding ? (char) 0xff : (char) 0x00,
+                bIcon ? (char) 0xff : (char) 0x00};
+
+        SendHud2(arr);
+    }
+
+    public void SetSpeedAndWarning(int nSpeed, int nLimit) {
+        SetSpeedWarning(nSpeed, nLimit, false, true, true);
     }
 
     public void SetSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash) {
@@ -278,6 +291,14 @@ byte3:  When not LeftDown/RightDown, 箭頭方向: eOutAngle
         SendHud2(arr);
     }
 
+    public void ClearSpeedandWarning() {
+        char arr[] = {(char) 0x06,
+                (char) 0x00, (char) 0x00, (char) 0x00, (char) 0x00,
+                (char) 0x00, (char) 0x00, (char) 0x00, (char) 0x00,
+                (char) 0x00};
+        SendHud2(arr);
+    }
+	
     public void ShowCameraIcon() {
         SetCameraIcon(true);
     }
