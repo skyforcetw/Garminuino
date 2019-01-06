@@ -322,6 +322,8 @@ byte3:  When not LeftDown/RightDown, 箭頭方向: eOutAngle
         sendBuf[len++] = (char) ((-(int) nCrc) & 0xff);
         sendBuf[len++] = 0x10;
         sendBuf[len++] = 0x03;
+
+        sendResult = SendPacket(sendBuf, sendBuf.length);
     }
 
     public void clear() {
