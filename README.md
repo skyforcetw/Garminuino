@@ -1,6 +1,9 @@
 # Garminuino
 This  is a project use GarminHUD as speedometer HUD, or a GoogleMap navigation HUD.
 
+### 2019-01-07
+Thanks for Niklas04's help to improve parsing & add German language support.
+
 ### 2018-11-05
 Auto connect to last binded bluetooth device(not tested yet).
 
