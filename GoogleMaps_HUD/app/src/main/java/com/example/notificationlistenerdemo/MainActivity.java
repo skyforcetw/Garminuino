@@ -109,10 +109,10 @@ public class MainActivity extends Activity {
             }
 
 //
-            String bt_bind_name = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
+            /*String bt_bind_name = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
             if (null != bt_bind_name) {
                 bt.autoConnect(bt_bind_name);
-            }
+            }*/
 
             bt.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() {
                 public void onDeviceDisconnected() {
