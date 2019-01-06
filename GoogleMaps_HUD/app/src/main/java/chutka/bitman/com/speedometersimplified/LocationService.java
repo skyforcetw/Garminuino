@@ -29,6 +29,7 @@ public class LocationService extends Service implements
     Location mCurrentLocation, lStart, lEnd;
     static double distance = 0;
     double speed;
+    private static GarminHUD hud = null;
 
 
     private final IBinder mBinder = new LocalBinder();
@@ -117,23 +118,14 @@ public class LocationService extends Service implements
 
     //The live feed of Distance and Speed are being set in the method below .
     private void updateUI() {
-//        if (MainActivity.p == 0) {
-//            distance = distance + (lStart.distanceTo(lEnd) / 1000.00);
-//            MainActivity.endTime = System.currentTimeMillis();
-//            long diff = MainActivity.endTime - MainActivity.startTime;
-//            diff = TimeUnit.MILLISECONDS.toMinutes(diff);
-//            MainActivity.time.setText("Total Time: " + diff + " minutes");
-//            if (speed > 0.0)
-//                MainActivity.speed.setText("Current speed: " + new DecimalFormat("#.##").format(speed) + " km/hr");
-//            else
-//                MainActivity.speed.setText(".......");
-//
-//            MainActivity.dist.setText(new DecimalFormat("#.###").format(distance) + " Km's.");
-//
-//            lStart = lEnd;
-//
-//        }
+        if(hud==null)
+            hud = NotificationMonitor.getGarminHud();
+        if (speed > 0.0)
+            hud.SetSpeed((int) speed);
+        else
+            hud.ClearSpeedandWarning();
 
+        lStart = lEnd;
     }
 
 
