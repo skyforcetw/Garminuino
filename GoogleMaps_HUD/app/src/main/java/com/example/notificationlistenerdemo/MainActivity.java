@@ -247,7 +247,7 @@ public class MainActivity extends Activity {
         if (null != bt) {
             GarminHUD garminHud = new GarminHUD(bt);
             garminHud.SetDistance(100, eUnits.Metres);
-            garminHud.SetSpeedWarning(100, 100);
+            garminHud.SetSpeedAndWarning(100, 100);
             garminHud.SetDirection(eOutAngle.Right);
         }
     }
