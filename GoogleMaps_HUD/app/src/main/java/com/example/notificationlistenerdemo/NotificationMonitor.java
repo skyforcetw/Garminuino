@@ -58,7 +58,7 @@ public class NotificationMonitor extends NotificationListenerService {
     private CancelNotificationReceiver mReceiver = new CancelNotificationReceiver();
 
     public static BluetoothSPP bt = null;
-    private GarminHUD garminHud = null;
+    private static GarminHUD garminHud = null;
 
     private Handler mMonitorHandler = new Handler() {
         @Override
@@ -733,6 +733,13 @@ public class NotificationMonitor extends NotificationListenerService {
             }
         }
 
+    }
+    
+    public static GarminHUD getGarminHud() {
+        if(garminHud!=null) {
+            return garminHud;
+        } else
+            return null;
     }
 
 }
