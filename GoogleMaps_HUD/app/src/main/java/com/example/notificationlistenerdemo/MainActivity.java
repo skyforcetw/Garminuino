@@ -42,7 +42,7 @@ import sky4s.garmin.eUnits;
 
 
 public class MainActivity extends Activity {
-    public static final boolean IGNORE_BT = true;
+    public static final boolean IGNORE_BT = false;
 
     private static final String TAG = "NLS";
     private static final String TAG_PRE = "[" + MainActivity.class.getSimpleName() + "] ";
@@ -109,10 +109,10 @@ public class MainActivity extends Activity {
             }
 
 //
-            String bt_bind_name = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
+            /*String bt_bind_name = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
             if (null != bt_bind_name) {
                 bt.autoConnect(bt_bind_name);
-            }
+            }*/
 
             bt.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() {
                 public void onDeviceDisconnected() {
