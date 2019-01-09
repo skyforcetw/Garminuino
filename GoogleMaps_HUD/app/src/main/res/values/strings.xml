@@ -23,4 +23,6 @@
     <string name="minute">m</string>
     <string name="km">km</string>
     <string name="meter">m</string>
+
+    <string name="bt_bind_name_key">bt_bind_name_key</string>
 </resources>
