@@ -449,6 +449,7 @@ public class MainActivity extends Activity {
         }
     };
 
+    // bind/activate LocationService
     void bindService() {
         if (locationServiceStatus == true)
             return;
@@ -458,6 +459,7 @@ public class MainActivity extends Activity {
         startTime = System.currentTimeMillis();
     }
 
+    // unbind/deactivate LocationService
     void unbindService() {
         if (locationServiceStatus == false)
             return;
@@ -466,7 +468,7 @@ public class MainActivity extends Activity {
         locationServiceStatus = false;
     }
 
-    //This method leads you to the alert dialog box.
+    // This method check if GPS is activated (and ask user for activation)
     boolean checkGps() {
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -477,7 +479,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    //This method configures the Alert Dialog box.
+    //This method configures the Alert Dialog box for GPS-Activation
     private void showGPSDisabledAlertToUser() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage("Enable GPS to use application")
@@ -500,6 +502,7 @@ public class MainActivity extends Activity {
         alert.show();
     }
     
+    // Check permission for location (and ask user for permission) 
     private boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
