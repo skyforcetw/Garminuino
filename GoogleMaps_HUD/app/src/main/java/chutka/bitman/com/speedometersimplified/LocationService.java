@@ -14,6 +14,12 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import com.example.notificationlistenerdemo.NotificationMonitor;
+import com.example.notificationlistenerdemo.MainActivity;
+import java.util.concurrent.TimeUnit;
+import sky4s.garmin.GarminHUD;
+import sky4s.garmin.eUnits;
+
 /**
  * Created by vipul on 12/13/2015.
  */
@@ -28,7 +34,7 @@ public class LocationService extends Service implements
     GoogleApiClient mGoogleApiClient;
     Location mCurrentLocation, lStart, lEnd;
     static double distance = 0;
-    double speed;
+    public static double speed;
     private static GarminHUD hud = null;
 
 
@@ -37,6 +43,7 @@ public class LocationService extends Service implements
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        hud = NotificationMonitor.getGarminHud();
         createLocationRequest();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
