@@ -20,7 +20,9 @@ import android.os.IBinder;
 import android.os.Message;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -240,11 +242,12 @@ public class MainActivity extends Activity {
                     if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                         return;
                     }
-                    if (locationServiceStatus == false)
+                    if (locationServiceStatus == false) {
                         //Here, the Location Service gets bound and the GPS Speedometer gets Active.
                         if (bt != null && NotificationMonitor.getGarminHud() != null)
                             bindService();
                         showSpeed = true;
+                    }
                 } else {
                     if (locationServiceStatus == true)
                         unbindService();
@@ -473,10 +476,10 @@ public class MainActivity extends Activity {
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-
-
             showGPSDisabledAlertToUser();
+            return false;
         }
+        return true;
     }
 
     //This method configures the Alert Dialog box for GPS-Activation
