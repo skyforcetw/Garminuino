@@ -99,7 +99,11 @@ public class LocationService extends Service implements
             lEnd = mCurrentLocation;
 
         //calculating the speed with getSpeed method it returns speed in m/s so we are converting it into kmph
-        speed = location.getSpeed() * 18 / 5;
+        if( NotificationMonitor.getCurrentUnit()==eUnits.Kilometres)
+            speed = location.getSpeed() * 18 / 5;
+        else if( NotificationMonitor.getCurrentUnit()==eUnits.Miles)
+            speed = location.getSpeed() * 2236 /1000;
+        
         //Calling the method below updates the  live values of distance and speed to the TextViews.
         updateUI();
         
