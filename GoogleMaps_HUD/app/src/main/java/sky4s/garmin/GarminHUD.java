@@ -265,14 +265,25 @@ byte3:  When not LeftDown/RightDown, 箭頭方向: eOutAngle
         SendHud2(arr);
     }
 
-    public void SetSpeed(int nSpeed) {
+    public void SetSpeed(int nSpeed, boolean bIcon) {
         boolean bSlash = false;
         boolean bSpeeding = false;
-        boolean bIcon = true;
+
+        char hundreds_digit, tens_digit, ones_digit;
+        if(nSpeed<10) {
+            // Delete leading zeros
+            hundreds_digit = (char) 0x00;
+            tens_digit = (char) 0x00;
+        } else {
+            hundreds_digit = (char) ((nSpeed / 100) % 10);
+            tens_digit = Digit(nSpeed/10);
+        }
+        ones_digit = Digit(nSpeed);
+
 
         char arr[] = {(char) 0x06,
                 (char) 0x00, (char) 0x00, (char) 0x00, bSlash ? (char) 0xff : (char) 0x00,
-                (char) ((nSpeed / 100) % 10), Digit(nSpeed / 10), Digit(nSpeed), bSpeeding ? (char) 0xff : (char) 0x00,
+                hundreds_digit, tens_digit, ones_digit, bSpeeding ? (char) 0xff : (char) 0x00,
                 bIcon ? (char) 0xff : (char) 0x00};
 
         SendHud2(arr);
