@@ -22,8 +22,8 @@ public class LocationService extends Service implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    private static final long INTERVAL = 1000 * 2;
-    private static final long FASTEST_INTERVAL = 1000 * 1;
+    private static final long INTERVAL = 200 * 2;
+    private static final long FASTEST_INTERVAL = 200 * 1;
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
     Location mCurrentLocation, lStart, lEnd;
@@ -120,8 +120,10 @@ public class LocationService extends Service implements
     private void updateUI() {
         if(hud==null)
             hud = NotificationMonitor.getGarminHud();
+        if(hud==null)
+            return;
         if (speed > 0.0)
-            hud.SetSpeed((int) speed);
+            hud.SetSpeed((int) speed, true);
         else
             hud.ClearSpeedandWarning();
 
