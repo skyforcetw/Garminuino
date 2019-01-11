@@ -79,7 +79,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private Arrow foundArrow = Arrow.None;
     private String distanceNum = null;
-    private String distanceUnit = null;
+    private static String distanceUnit = null;
     private String remainHour = null;
     private String remainMinute = null;
     private String remainDistance = null;
@@ -173,7 +173,7 @@ public class NotificationMonitor extends NotificationListenerService {
         }
     }
 
-    private eUnits get_eUnits(String unit) {
+    private static eUnits get_eUnits(String unit) {
         switch (unit) {
             case "km":
                 return eUnits.Kilometres;
@@ -209,6 +209,16 @@ public class NotificationMonitor extends NotificationListenerService {
             default:
                 return chinese;
         }
+    }
+
+    // Returns the current Unit (Kilometres or Miles) based on distanceToTurn
+    public static eUnits getCurrentUnit() {
+        if( (get_eUnits(distanceUnit)==eUnits.Kilometres) || (get_eUnits(distanceUnit)==eUnits.Metres) )
+            return eUnits.Kilometres;
+        else if( (get_eUnits(distanceUnit)==eUnits.Miles) || (get_eUnits(distanceUnit)==eUnits.Foot) )
+            return eUnits.Miles;
+        else
+            return eUnits.None;
     }
 
     private static Arrow getArrow(ArrowImage image) {
