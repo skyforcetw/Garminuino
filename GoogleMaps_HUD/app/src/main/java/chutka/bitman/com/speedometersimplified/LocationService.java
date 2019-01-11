@@ -98,11 +98,11 @@ public class LocationService extends Service implements
         } else
             lEnd = mCurrentLocation;
 
-        //Calling the method below updates the  live values of distance and speed to the TextViews.
-        updateUI();
         //calculating the speed with getSpeed method it returns speed in m/s so we are converting it into kmph
         speed = location.getSpeed() * 18 / 5;
-
+        //Calling the method below updates the  live values of distance and speed to the TextViews.
+        updateUI();
+        
     }
 
     @Override
