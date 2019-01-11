@@ -57,6 +57,7 @@ public class MainActivity extends Activity {
     private BluetoothSPP bt;
 
     private static MainActivity selfActivity = null;
+    private boolean showSpeed = false;
 
     static void updateMessage(String msg) {
         if (null != selfActivity) {
@@ -131,6 +132,9 @@ public class MainActivity extends Activity {
                     mTextView.setText("Status : Connected to " + name);
                     NotificationMonitor.bt = bt;
                     logNLS("onDeviceConnected");
+                    
+                    if(showSpeed && !locationServiceStatus)
+                        bindService();
 
                     String connected_device_name = bt.getConnectedDeviceName();
                     SharedPreferences.Editor editor = sharedPref.edit();
@@ -230,10 +234,16 @@ public class MainActivity extends Activity {
                     }
                     if (locationServiceStatus == false)
                         //Here, the Location Service gets bound and the GPS Speedometer gets Active.
-                        bindService();
+                        if (bt != null && NotificationMonitor.getGarminHud() != null)
+                            bindService();
+                        showSpeed = true;
                 } else {
                     if (locationServiceStatus == true)
                         unbindService();
+                    GarminHUD hud = NotificationMonitor.getGarminHud();
+                    if(hud != null)
+                        hud.ClearSpeedandWarning();
+                    showSpeed = false;
                 }
 
 
