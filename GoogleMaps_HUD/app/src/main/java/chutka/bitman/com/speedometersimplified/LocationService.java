@@ -87,7 +87,7 @@ public class LocationService extends Service implements
 
 
     @Override
-    public void onConnectionSuspended(int i) {
+    public void onConnectionSuspended(int cause) {
         if(cause==CAUSE_NETWORK_LOST) { // not tested
             if (hud != null)
                 hud.SetSpeed((int) speed, false);
