@@ -58,6 +58,7 @@ public class MainActivity extends Activity {
 
     private static MainActivity selfActivity = null;
     private boolean showSpeed = false;
+    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     static void updateMessage(String msg) {
         if (null != selfActivity) {
@@ -227,7 +228,14 @@ public class MainActivity extends Activity {
 
             case R.id.tgBtnShowSpeed:
                 if (((ToggleButton) view).isChecked()) {
-                    checkGps();
+                    if(!checkLocationPermission()) {
+                        ((ToggleButton) view).setChecked(false);
+                        break;
+                    }
+                    if(! checkGps()) {
+                        ((ToggleButton) view).setChecked(false);
+                        break;
+                    }
                     locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
                     if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                         return;
@@ -459,7 +467,7 @@ public class MainActivity extends Activity {
     }
 
     //This method leads you to the alert dialog box.
-    void checkGps() {
+    boolean checkGps() {
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -490,6 +498,41 @@ public class MainActivity extends Activity {
                 });
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
+    }
+    
+    private boolean checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                new AlertDialog.Builder(this)
+                        .setTitle("Location Permission")
+                        .setMessage("For showing speed to Garmin HUD please enable Location Permission")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(MainActivity.this,
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        MY_PERMISSIONS_REQUEST_LOCATION);
+                            }
+                        })
+                        .create()
+                        .show();
+
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }
