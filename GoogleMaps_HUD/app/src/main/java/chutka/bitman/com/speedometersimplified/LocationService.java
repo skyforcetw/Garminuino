@@ -136,7 +136,7 @@ public class LocationService extends Service implements
             hud = NotificationMonitor.getGarminHud();
         if(hud==null)
             return;
-        if (speed > 0.0)
+        if (speed >= 0.0)
             hud.SetSpeed((int) speed, true);
         else
             hud.ClearSpeedandWarning();
