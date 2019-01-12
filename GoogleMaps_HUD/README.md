@@ -8,6 +8,8 @@ The app reads the notitification of Google Maps, and parse it. Further it establ
 * Showing turn-by-turn-symbol on HUD
 * Showing distance to turn on HUD (mile-Support not fully tested)
 * Showing time to arrive on HUD
+* Showing speed on HUD (km/h and mph)
+* Autoconnect to HUD (after first manual connection)
 
 ## Permissions
 The app will need Notification access to read the data of Google Maps Notification
