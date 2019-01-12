@@ -167,6 +167,8 @@ public class GarminHUD {
                     }
                 }
             }
+            if(bDecimal && ((int)nDist/10)==0) // Show leding zero for decimals
+                arr[3] = 0xa;
         }
         SendHud2(arr);
     }
