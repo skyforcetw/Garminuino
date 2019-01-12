@@ -1,6 +1,9 @@
 # Garminuino
 This  is a project use GarminHUD as speedometer HUD, or a GoogleMap navigation HUD.
 
+### 2019-01-07
+Thanks for Niklas04's help to improve parsing & add German language support.
+
 ### 2018-11-05
 Auto connect to last binded bluetooth device(not tested yet).
 
@@ -57,3 +60,6 @@ Besides parts of Speedometer HUD, a USB Host Shield with a Android mobile phone 
 
 ## Contributor
 * **Gabriel Valky** / **Frank Huebenthal** - *garmin hud protocol research* - [github](https://github.com/gabonator/Work-in-progress/tree/master/GarminHud) 
+
+* **Niklas04** - help improve parsing & add German language support
+[github](https://github.com/Niklas04) 
