@@ -114,10 +114,20 @@ public class MainActivity extends Activity {
             }
 
 //
-            /*String bt_bind_name = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
+            String bt_bind_name = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
+            
             if (null != bt_bind_name) {
-                bt.autoConnect(bt_bind_name);
-            }*/
+                if (!bt.isBluetoothEnabled()) {
+                    Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
+                } else {
+                    if (!bt.isServiceAvailable()) {
+                        bt.setupService();
+                        bt.startService(BluetoothState.DEVICE_OTHER);
+                        bt.autoConnect(bt_bind_name);
+                    }
+                }
+            }
 
             bt.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() {
                 public void onDeviceDisconnected() {
