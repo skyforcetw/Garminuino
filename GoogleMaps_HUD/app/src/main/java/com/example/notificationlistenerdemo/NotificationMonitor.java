@@ -701,6 +701,25 @@ public class NotificationMonitor extends NotificationListenerService {
         log("removed...");
         log("have " + mCurrentNotificationsCounts + " active notifications");
         mRemovedNotification = sbn;
+
+        String packageName = sbn.getPackageName();
+        if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
+            int hh = null != remainHour ? Integer.parseInt(remainHour) : 0;
+            int mm = Integer.parseInt(remainMinute);
+
+            // Check if arrival is possible (don't know if mm==0 work always)
+            if(hh==0 && mm<=5)
+            // Arrived: Delete Distance to turn
+            if( (lastFoundArrow!=Arrow.Arrivals)&&(lastFoundArrow!=Arrow.ArrivalsLeft)&&(lastFoundArrow!=Arrow.ArrivalsRight) ) {
+                if(garminHud!=null) {
+                    garminHud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
+                    garminHud.ClearDistance();
+                }
+            } else {
+                if(garminHud!=null)
+                    garminHud.ClearDistance();
+            }
+        }
     }
 
     private void updateCurrentNotifications() {
