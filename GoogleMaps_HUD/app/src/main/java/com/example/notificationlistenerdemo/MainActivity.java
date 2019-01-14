@@ -166,6 +166,7 @@ public class MainActivity extends Activity {
 
     public void onDestroy() {
         super.onDestroy();
+        bt.stopAutoConnect();
         if (!IGNORE_BT) {
             bt.stopService();
         }
