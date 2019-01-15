@@ -2,7 +2,7 @@
 This  is a project use GarminHUD as speedometer HUD, or a GoogleMap navigation HUD.
  [Further Information for Android App](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/README.md)
 
-### 2019-01-15 v1.0.6
+### 2019-01-15 v0.1.6
 Thanks for Niklas04's help, Fix speedmeter, autoconnect.
 
 ### 2019-01-07
