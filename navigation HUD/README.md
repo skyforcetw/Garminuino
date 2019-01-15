@@ -3,6 +3,9 @@
 When using Garmin HUD, you will not just want to use it as speedometer, so Navigation HUD is more important implement.
 But it's complexity is growing up, because we need communication between arduino and android.
 
+Using arduino to capture Google Map's navigation is no effciency, so I give up this mechanism.
+Please turn to Sub-Project "GoogleMaps_HUD", it's a workable concept and a usable app.
+
 ## Getting Started
 We talk about the concept of Navigation HUD later, let's get it on working first!
 
