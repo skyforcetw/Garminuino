@@ -1,4 +1,4 @@
-# GoogleMap Navigation HUD
+# GoogleMap Navigation HUD (DEPRECATED NOW!!)
 
 When using Garmin HUD, you will not just want to use it as speedometer, so Navigation HUD is more important implement.
 But it's complexity is growing up, because we need communication between arduino and android.
