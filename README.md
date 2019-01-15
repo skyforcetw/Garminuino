@@ -1,5 +1,6 @@
 # Garminuino
 This  is a project use GarminHUD as speedometer HUD, or a GoogleMap navigation HUD.
+ [Further Information for Android App](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/README.md)
 
 ### 2019-01-07
 Thanks for Niklas04's help to improve parsing & add German language support.

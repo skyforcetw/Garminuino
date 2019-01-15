@@ -1,5 +1,6 @@
 package com.example.notificationlistenerdemo;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -20,7 +21,9 @@ import android.os.IBinder;
 import android.os.Message;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -57,6 +60,8 @@ public class MainActivity extends Activity {
     private BluetoothSPP bt;
 
     private static MainActivity selfActivity = null;
+    private boolean showSpeed = false;
+    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     static void updateMessage(String msg) {
         if (null != selfActivity) {
@@ -109,10 +114,20 @@ public class MainActivity extends Activity {
             }
 
 //
-            /*String bt_bind_name = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
+            String bt_bind_name = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
+            
             if (null != bt_bind_name) {
-                bt.autoConnect(bt_bind_name);
-            }*/
+                if (!bt.isBluetoothEnabled()) {
+                    Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
+                } else {
+                    if (!bt.isServiceAvailable()) {
+                        bt.setupService();
+                        bt.startService(BluetoothState.DEVICE_OTHER);
+                        bt.autoConnect(bt_bind_name);
+                    }
+                }
+            }
 
             bt.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() {
                 public void onDeviceDisconnected() {
@@ -131,6 +146,9 @@ public class MainActivity extends Activity {
                     mTextView.setText("Status : Connected to " + name);
                     NotificationMonitor.bt = bt;
                     logNLS("onDeviceConnected");
+                    
+                    if(showSpeed && !locationServiceStatus)
+                        bindService();
 
                     String connected_device_name = bt.getConnectedDeviceName();
                     SharedPreferences.Editor editor = sharedPref.edit();
@@ -148,6 +166,7 @@ public class MainActivity extends Activity {
 
     public void onDestroy() {
         super.onDestroy();
+        bt.stopAutoConnect();
         if (!IGNORE_BT) {
             bt.stopService();
         }
@@ -223,17 +242,31 @@ public class MainActivity extends Activity {
 
             case R.id.tgBtnShowSpeed:
                 if (((ToggleButton) view).isChecked()) {
-                    checkGps();
+                    if(!checkLocationPermission()) {
+                        ((ToggleButton) view).setChecked(false);
+                        break;
+                    }
+                    if(! checkGps()) {
+                        ((ToggleButton) view).setChecked(false);
+                        break;
+                    }
                     locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
                     if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                         return;
                     }
-                    if (locationServiceStatus == false)
+                    if (locationServiceStatus == false) {
                         //Here, the Location Service gets bound and the GPS Speedometer gets Active.
-                        bindService();
+                        if (bt != null && NotificationMonitor.getGarminHud() != null)
+                            bindService();
+                        showSpeed = true;
+                    }
                 } else {
                     if (locationServiceStatus == true)
                         unbindService();
+                    GarminHUD hud = NotificationMonitor.getGarminHud();
+                    if(hud != null)
+                        hud.ClearSpeedandWarning();
+                    showSpeed = false;
                 }
 
 
@@ -247,7 +280,7 @@ public class MainActivity extends Activity {
         if (null != bt) {
             GarminHUD garminHud = new GarminHUD(bt);
             garminHud.SetDistance(100, eUnits.Metres);
-            garminHud.SetSpeedWarning(100, 100);
+            garminHud.SetSpeedAndWarning(100, 100);
             garminHud.SetDirection(eOutAngle.Right);
         }
     }
@@ -431,6 +464,7 @@ public class MainActivity extends Activity {
         }
     };
 
+    // bind/activate LocationService
     void bindService() {
         if (locationServiceStatus == true)
             return;
@@ -440,6 +474,7 @@ public class MainActivity extends Activity {
         startTime = System.currentTimeMillis();
     }
 
+    // unbind/deactivate LocationService
     void unbindService() {
         if (locationServiceStatus == false)
             return;
@@ -448,18 +483,18 @@ public class MainActivity extends Activity {
         locationServiceStatus = false;
     }
 
-    //This method leads you to the alert dialog box.
-    void checkGps() {
+    // This method check if GPS is activated (and ask user for activation)
+    boolean checkGps() {
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-
-
             showGPSDisabledAlertToUser();
+            return false;
         }
+        return true;
     }
 
-    //This method configures the Alert Dialog box.
+    //This method configures the Alert Dialog box for GPS-Activation
     private void showGPSDisabledAlertToUser() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage("Enable GPS to use application")
@@ -480,6 +515,42 @@ public class MainActivity extends Activity {
                 });
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
+    }
+    
+    // Check permission for location (and ask user for permission) 
+    private boolean checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                new AlertDialog.Builder(this)
+                        .setTitle("Location Permission")
+                        .setMessage("For showing speed to Garmin HUD please enable Location Permission")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(MainActivity.this,
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        MY_PERMISSIONS_REQUEST_LOCATION);
+                            }
+                        })
+                        .create()
+                        .show();
+
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }

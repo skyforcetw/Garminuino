@@ -51,6 +51,8 @@
         </service>
         <service android:name="com.example.notificationlistenerdemo.NotificationCollectorMonitorService" />
 
+        <service android:name="chutka.bitman.com.speedometersimplified.LocationService"></service>
+
         <!--Include the AdActivity configChanges and theme. -->
         <!--<activity-->
             <!--android:name="com.google.android.gms.ads.AdActivity"-->

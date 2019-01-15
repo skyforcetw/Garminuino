@@ -58,7 +58,7 @@ public class NotificationMonitor extends NotificationListenerService {
     private CancelNotificationReceiver mReceiver = new CancelNotificationReceiver();
 
     public static BluetoothSPP bt = null;
-    private GarminHUD garminHud = null;
+    private static GarminHUD garminHud = null;
 
     private Handler mMonitorHandler = new Handler() {
         @Override
@@ -79,7 +79,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private Arrow foundArrow = Arrow.None;
     private String distanceNum = null;
-    private String distanceUnit = null;
+    private static String distanceUnit = null;
     private String remainHour = null;
     private String remainMinute = null;
     private String remainDistance = null;
@@ -173,7 +173,7 @@ public class NotificationMonitor extends NotificationListenerService {
         }
     }
 
-    private eUnits get_eUnits(String unit) {
+    private static eUnits get_eUnits(String unit) {
         switch (unit) {
             case "km":
                 return eUnits.Kilometres;
@@ -209,6 +209,16 @@ public class NotificationMonitor extends NotificationListenerService {
             default:
                 return chinese;
         }
+    }
+
+    // Returns the current Unit (Kilometres or Miles) based on distanceToTurn
+    public static eUnits getCurrentUnit() {
+        if( (get_eUnits(distanceUnit)==eUnits.Kilometres) || (get_eUnits(distanceUnit)==eUnits.Metres) )
+            return eUnits.Kilometres;
+        else if( (get_eUnits(distanceUnit)==eUnits.Miles) || (get_eUnits(distanceUnit)==eUnits.Foot) )
+            return eUnits.Miles;
+        else
+            return eUnits.None;
     }
 
     private static Arrow getArrow(ArrowImage image) {
@@ -691,6 +701,25 @@ public class NotificationMonitor extends NotificationListenerService {
         log("removed...");
         log("have " + mCurrentNotificationsCounts + " active notifications");
         mRemovedNotification = sbn;
+
+        String packageName = sbn.getPackageName();
+        if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
+            int hh = null != remainHour ? Integer.parseInt(remainHour) : 0;
+            int mm = Integer.parseInt(remainMinute);
+
+            // Check if arrival is possible (don't know if mm==0 work always)
+            if(hh==0 && mm<=5)
+            // Arrived: Delete Distance to turn
+            if( (lastFoundArrow!=Arrow.Arrivals)&&(lastFoundArrow!=Arrow.ArrivalsLeft)&&(lastFoundArrow!=Arrow.ArrivalsRight) ) {
+                if(garminHud!=null) {
+                    garminHud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
+                    garminHud.ClearDistance();
+                }
+            } else {
+                if(garminHud!=null)
+                    garminHud.ClearDistance();
+            }
+        }
     }
 
     private void updateCurrentNotifications() {
@@ -733,6 +762,13 @@ public class NotificationMonitor extends NotificationListenerService {
             }
         }
 
+    }
+    
+    public static GarminHUD getGarminHud() {
+        if(garminHud!=null) {
+            return garminHud;
+        } else
+            return null;
     }
 
 }

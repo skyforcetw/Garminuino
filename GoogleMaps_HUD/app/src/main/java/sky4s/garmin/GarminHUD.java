@@ -167,6 +167,8 @@ public class GarminHUD {
                     }
                 }
             }
+            if(bDecimal && ((int)nDist/10)==0) // Show leding zero for decimals
+                arr[3] = 0xa;
         }
         SendHud2(arr);
     }
@@ -265,8 +267,32 @@ byte3:  When not LeftDown/RightDown, 箭頭方向: eOutAngle
         SendHud2(arr);
     }
 
-    public void SetSpeedWarning(int nSpeed, int nLimit) {
-        SetSpeedWarning(nSpeed, nLimit, false, false, true);
+    public void SetSpeed(int nSpeed, boolean bIcon) {
+        boolean bSlash = false;
+        boolean bSpeeding = false;
+
+        char hundreds_digit, tens_digit, ones_digit;
+        if(nSpeed<10) {
+            // Delete leading zeros
+            hundreds_digit = (char) 0x00;
+            tens_digit = (char) 0x00;
+        } else {
+            hundreds_digit = (char) ((nSpeed / 100) % 10);
+            tens_digit = Digit(nSpeed/10);
+        }
+        ones_digit = Digit(nSpeed);
+
+
+        char arr[] = {(char) 0x06,
+                (char) 0x00, (char) 0x00, (char) 0x00, bSlash ? (char) 0xff : (char) 0x00,
+                hundreds_digit, tens_digit, ones_digit, bSpeeding ? (char) 0xff : (char) 0x00,
+                bIcon ? (char) 0xff : (char) 0x00};
+
+        SendHud2(arr);
+    }
+
+    public void SetSpeedAndWarning(int nSpeed, int nLimit) {
+        SetSpeedWarning(nSpeed, nLimit, false, true, true);
     }
 
     public void SetSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash) {
@@ -278,6 +304,14 @@ byte3:  When not LeftDown/RightDown, 箭頭方向: eOutAngle
         SendHud2(arr);
     }
 
+    public void ClearSpeedandWarning() {
+        char arr[] = {(char) 0x06,
+                (char) 0x00, (char) 0x00, (char) 0x00, (char) 0x00,
+                (char) 0x00, (char) 0x00, (char) 0x00, (char) 0x00,
+                (char) 0x00};
+        SendHud2(arr);
+    }
+	
     public void ShowCameraIcon() {
         SetCameraIcon(true);
     }
@@ -322,6 +356,8 @@ byte3:  When not LeftDown/RightDown, 箭頭方向: eOutAngle
         sendBuf[len++] = (char) ((-(int) nCrc) & 0xff);
         sendBuf[len++] = 0x10;
         sendBuf[len++] = 0x03;
+
+        sendResult = SendPacket(sendBuf, sendBuf.length);
     }
 
     public void clear() {
