@@ -39,13 +39,9 @@ import sky4s.garmin.GarminHUD;
 import sky4s.garmin.eOutAngle;
 import sky4s.garmin.eUnits;
 
-//import com.google.android.gms.ads.MobileAds;
-//import com.google.android.gms.ads.AdRequest;
-//import com.google.android.gms.ads.AdView;
-
-
 public class MainActivity extends Activity {
-    public static final boolean IGNORE_BT = false;
+    //for test with virtual device which no BT device
+    public static final boolean IGNORE_BT_DEVICE = false;
 
     private static final String TAG = "NLS";
     private static final String TAG_PRE = "[" + MainActivity.class.getSimpleName() + "] ";
@@ -97,13 +93,13 @@ public class MainActivity extends Activity {
 
         int versionCode = BuildConfig.VERSION_CODE;
         String versionName = BuildConfig.VERSION_NAME;
-        this.setTitle(this.getTitle() + " (build " + versionCode + ")");
+        this.setTitle(this.getTitle() + " v"+versionName+ " (build " + versionCode + ")");
 
         startService(new Intent(this, NotificationCollectorMonitorService.class));
 
         sharedPref = this.getPreferences(Context.MODE_PRIVATE);
 
-        if (!IGNORE_BT) {
+        if (!IGNORE_BT_DEVICE) {
             bt = new BluetoothSPP(this);
             if (!bt.isBluetoothAvailable()) {
                 Toast.makeText(getApplicationContext()
@@ -113,7 +109,6 @@ public class MainActivity extends Activity {
                 //return;
             }
 
-//
             String bt_bind_name = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
             
             if (null != bt_bind_name) {
@@ -167,7 +162,7 @@ public class MainActivity extends Activity {
     public void onDestroy() {
         super.onDestroy();
         bt.stopAutoConnect();
-        if (!IGNORE_BT) {
+        if (!IGNORE_BT_DEVICE) {
             bt.stopService();
         }
         if (locationServiceStatus == true) {
@@ -179,7 +174,7 @@ public class MainActivity extends Activity {
     public void onStart() {
         super.onStart();
 
-        if (!IGNORE_BT) {
+        if (!IGNORE_BT_DEVICE) {
             if (!bt.isBluetoothEnabled()) {
                 Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
@@ -206,36 +201,19 @@ public class MainActivity extends Activity {
     public void buttonOnClicked(View view) {
         mTextView.setTextColor(Color.BLACK);
         switch (view.getId()) {
-//            case R.id.btnCreateNotify:
-//                logNLS("Create notifications...");
-//                createNotification(this);
-//                mHandler.sendMessageDelayed(mHandler.obtainMessage(EVENT_SHOW_CREATE_NOS), 50);
-//                break;
-//            case R.id.btnClearLastNotify:
-//                logNLS("Clear Last notification...");
-//                clearLastNotification();
-//                mHandler.sendMessageDelayed(mHandler.obtainMessage(EVENT_LIST_CURRENT_NOS), 50);
-//                break;
-//            case R.id.btnClearAllNotify:
-//                logNLS("Clear All notifications...");
-//                clearAllNotifications();
-//                mHandler.sendMessageDelayed(mHandler.obtainMessage(EVENT_LIST_CURRENT_NOS), 50);
-//                break;
+
             case R.id.btnListNotify:
                 logNLS("List notifications...");
                 listCurrentNotification();
                 break;
-//            case R.id.btnEnableUnEnableNotify:
-//                logNLS("Enable/UnEnable notification...");
-//                openNotificationAccess();
-//                break;
+
             case R.id.btnToggle:
                 logNLS("Toogle service...");
                 toggleNotificationListenerService(this);
                 break;
             case R.id.btnScanBT:
                 logNLS("Scan Bluetooth...");
-                if (!IGNORE_BT) {
+                if (!IGNORE_BT_DEVICE) {
                     scanBluetooth();
                 }
                 break;
@@ -426,7 +404,7 @@ public class MainActivity extends Activity {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!IGNORE_BT) {
+        if (!IGNORE_BT_DEVICE) {
             if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
                 if (resultCode == Activity.RESULT_OK)
                     bt.connect(data);

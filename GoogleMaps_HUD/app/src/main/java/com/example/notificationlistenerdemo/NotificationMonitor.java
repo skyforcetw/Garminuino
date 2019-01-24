@@ -323,7 +323,7 @@ public class NotificationMonitor extends NotificationListenerService {
     private Arrow lastFoundArrow = Arrow.None;
 
     private void updateGaminHudInformation() {
-        if (bt != null || MainActivity.IGNORE_BT) {
+        if (bt != null || MainActivity.IGNORE_BT_DEVICE) {
             if (null == garminHud) {
                 garminHud = new GarminHUD(bt);
             }
