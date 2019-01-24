@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
@@ -93,7 +94,7 @@ public class MainActivity extends Activity {
 
         int versionCode = BuildConfig.VERSION_CODE;
         String versionName = BuildConfig.VERSION_NAME;
-        this.setTitle(this.getTitle() + " v"+versionName+ " (build " + versionCode + ")");
+        this.setTitle(this.getTitle() + " v" + versionName + " (build " + versionCode + ")");
 
         startService(new Intent(this, NotificationCollectorMonitorService.class));
 
@@ -110,7 +111,7 @@ public class MainActivity extends Activity {
             }
 
             String bt_bind_name = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
-            
+
             if (null != bt_bind_name) {
                 if (!bt.isBluetoothEnabled()) {
                     Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -141,8 +142,8 @@ public class MainActivity extends Activity {
                     mTextView.setText("Status : Connected to " + name);
                     NotificationMonitor.bt = bt;
                     logNLS("onDeviceConnected");
-                    
-                    if(showSpeed && !locationServiceStatus)
+
+                    if (showSpeed && !locationServiceStatus)
                         bindService();
 
                     String connected_device_name = bt.getConnectedDeviceName();
@@ -161,8 +162,8 @@ public class MainActivity extends Activity {
 
     public void onDestroy() {
         super.onDestroy();
-        bt.stopAutoConnect();
         if (!IGNORE_BT_DEVICE) {
+            bt.stopAutoConnect();
             bt.stopService();
         }
         if (locationServiceStatus == true) {
@@ -220,11 +221,11 @@ public class MainActivity extends Activity {
 
             case R.id.tgBtnShowSpeed:
                 if (((ToggleButton) view).isChecked()) {
-                    if(!checkLocationPermission()) {
+                    if (!checkLocationPermission()) {
                         ((ToggleButton) view).setChecked(false);
                         break;
                     }
-                    if(! checkGps()) {
+                    if (!checkGps()) {
                         ((ToggleButton) view).setChecked(false);
                         break;
                     }
@@ -242,7 +243,7 @@ public class MainActivity extends Activity {
                     if (locationServiceStatus == true)
                         unbindService();
                     GarminHUD hud = NotificationMonitor.getGarminHud();
-                    if(hud != null)
+                    if (hud != null)
                         hud.ClearSpeedandWarning();
                     showSpeed = false;
                 }
@@ -314,18 +315,50 @@ public class MainActivity extends Activity {
     }
 
     private void createNotification(Context context) {
-        NotificationManager manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-        NotificationCompat.Builder ncBuilder = new NotificationCompat.Builder(context);
-        ncBuilder.setContentTitle("GoogleMaps HUD");
-        ncBuilder.setContentText("GoogleMaps HUD");
+        if (false) {
+            NotificationManager manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+            NotificationCompat.Builder ncBuilder = new NotificationCompat.Builder(context);
+            ncBuilder.setContentTitle("GoogleMaps HUD");
+            ncBuilder.setContentText("GoogleMaps HUD");
 //        ncBuilder.setTicker("GoogleMaps HUD");
-        ncBuilder.setSmallIcon(R.mipmap.ic_launcher);
-        ncBuilder.setAutoCancel(false);
+            ncBuilder.setSmallIcon(R.mipmap.ic_launcher);
+            ncBuilder.setAutoCancel(false);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, this.getIntent(), PendingIntent.FLAG_UPDATE_CURRENT);
-        ncBuilder.setContentIntent(pendingIntent);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, this.getIntent(), PendingIntent.FLAG_UPDATE_CURRENT);
+            ncBuilder.setContentIntent(pendingIntent);
 
-        manager.notify((int) System.currentTimeMillis(), ncBuilder.build());
+            manager.notify((int) System.currentTimeMillis(), ncBuilder.build());
+        } else {
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setContentTitle("GoogleMaps HUD")
+                            .setContentText("GoogleMaps HUD");
+// Creates an explicit intent for an Activity in your app
+            Intent resultIntent = new Intent(this, MainActivity.class);
+
+// The stack builder object will contain an artificial back stack for the
+// started Activity.
+// This ensures that navigating backward from the Activity leads out of
+// your application to the Home screen.
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+// Adds the back stack for the Intent (but not the Intent itself)
+            stackBuilder.addParentStack(MainActivity.class);
+// Adds the Intent that starts the Activity to the top of the stack
+            stackBuilder.addNextIntent(resultIntent);
+            PendingIntent resultPendingIntent =
+                    stackBuilder.getPendingIntent(
+                            0,
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                    );
+            mBuilder.setContentIntent(resultPendingIntent);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+            int mId = 0;
+// mId allows you to update the notification later on.
+            mNotificationManager.notify(mId, mBuilder.build());
+        }
     }
 
     private String getCurrentNotificationString() {
@@ -494,7 +527,7 @@ public class MainActivity extends Activity {
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
     }
-    
+
     // Check permission for location (and ask user for permission) 
     private boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
