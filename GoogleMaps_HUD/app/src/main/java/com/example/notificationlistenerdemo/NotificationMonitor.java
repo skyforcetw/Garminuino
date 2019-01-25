@@ -33,9 +33,6 @@ import sky4s.garmin.eOutAngle;
 import sky4s.garmin.eOutType;
 import sky4s.garmin.eUnits;
 
-//import android.location.Location;
-//import android.location.LocationListener;
-//import static android.support.v4.app.ActivityCompatJB.startActivityForResult;
 
 
 public class NotificationMonitor extends NotificationListenerService {

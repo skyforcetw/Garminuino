@@ -3,9 +3,10 @@ package com.example.notificationlistenerdemo;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -47,7 +49,7 @@ public class MainActivity extends Activity {
     private static final String TAG = "NLS";
     private static final String TAG_PRE = "[" + MainActivity.class.getSimpleName() + "] ";
 
-    private static final int EVENT_SHOW_CREATE_NOS = 0;
+//    private static final int EVENT_SHOW_CREATE_NOS = 0;
     private static final int EVENT_LIST_CURRENT_NOS = 1;
     private static final String ENABLED_NOTIFICATION_LISTENERS = "enabled_notification_listeners";
     private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
@@ -71,9 +73,9 @@ public class MainActivity extends Activity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case EVENT_SHOW_CREATE_NOS:
-                    showCreateNotification();
-                    break;
+//                case EVENT_SHOW_CREATE_NOS:
+//                    showCreateNotification();
+//                    break;
                 case EVENT_LIST_CURRENT_NOS:
                     listCurrentNotification();
                     break;
@@ -315,50 +317,46 @@ public class MainActivity extends Activity {
     }
 
     private void createNotification(Context context) {
-        if (false) {
-            NotificationManager manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-            NotificationCompat.Builder ncBuilder = new NotificationCompat.Builder(context);
-            ncBuilder.setContentTitle("GoogleMaps HUD");
-            ncBuilder.setContentText("GoogleMaps HUD");
-//        ncBuilder.setTicker("GoogleMaps HUD");
-            ncBuilder.setSmallIcon(R.mipmap.ic_launcher);
-            ncBuilder.setAutoCancel(false);
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, this.getIntent(), PendingIntent.FLAG_UPDATE_CURRENT);
-            ncBuilder.setContentIntent(pendingIntent);
+        NotificationManager manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+        String channelID = Integer.toString(0x1234);
 
-            manager.notify((int) System.currentTimeMillis(), ncBuilder.build());
-        } else {
-            NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(this)
-                            .setSmallIcon(R.mipmap.ic_launcher)
-                            .setContentTitle("GoogleMaps HUD")
-                            .setContentText("GoogleMaps HUD");
-// Creates an explicit intent for an Activity in your app
-            Intent resultIntent = new Intent(this, MainActivity.class);
-
-// The stack builder object will contain an artificial back stack for the
-// started Activity.
-// This ensures that navigating backward from the Activity leads out of
-// your application to the Home screen.
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-// Adds the back stack for the Intent (but not the Intent itself)
-            stackBuilder.addParentStack(MainActivity.class);
-// Adds the Intent that starts the Activity to the top of the stack
-            stackBuilder.addNextIntent(resultIntent);
-            PendingIntent resultPendingIntent =
-                    stackBuilder.getPendingIntent(
-                            0,
-                            PendingIntent.FLAG_UPDATE_CURRENT
-                    );
-            mBuilder.setContentIntent(resultPendingIntent);
-            NotificationManager mNotificationManager =
-                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-            int mId = 0;
-// mId allows you to update the notification later on.
-            mNotificationManager.notify(mId, mBuilder.build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channelHUD = new NotificationChannel(
+                    channelID,
+                    "GoogleMaps HUD",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            channelHUD.setDescription("GoogleMaps HUD");
+            channelHUD.enableLights(false);
+            channelHUD.enableVibration(false);
+            manager.createNotificationChannel(channelHUD);
         }
+
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this, channelID)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+//                            .setContentTitle("Garmin HUD")
+                        .setContentText("Working");
+
+        Intent notifyIntent =
+                new Intent(this, MainActivity.class);
+
+// Creates the PendingIntent
+        PendingIntent notifyPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        notifyIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        // Puts the PendingIntent into the notification builder
+//        builder.setContentIntent(notifyPendingIntent);
+        
+
+        Notification notification = builder.build();
+
+        manager.notify(1, notification);
+
     }
 
     private String getCurrentNotificationString() {
@@ -396,16 +394,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void showCreateNotification() {
-        if (NotificationMonitor.mPostedNotification != null) {
-            String result = NotificationMonitor.mPostedNotification.getPackageName() + "\n"
-                    + NotificationMonitor.mPostedNotification.getTag() + "\n"
-                    + NotificationMonitor.mPostedNotification.getId() + "\n" + "\n"
-                    + mTextView.getText();
-            result = "Create notification:" + "\n" + result;
-            mTextView.setText(result);
-        }
-    }
 
     private void openNotificationAccess() {
         startActivity(new Intent(ACTION_NOTIFICATION_LISTENER_SETTINGS));
