@@ -49,7 +49,7 @@ public class MainActivity extends Activity {
     private static final String TAG = "NLS";
     private static final String TAG_PRE = "[" + MainActivity.class.getSimpleName() + "] ";
 
-//    private static final int EVENT_SHOW_CREATE_NOS = 0;
+    //    private static final int EVENT_SHOW_CREATE_NOS = 0;
     private static final int EVENT_LIST_CURRENT_NOS = 1;
     private static final String ENABLED_NOTIFICATION_LISTENERS = "enabled_notification_listeners";
     private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
@@ -342,16 +342,31 @@ public class MainActivity extends Activity {
                 new Intent(this, MainActivity.class);
 
 // Creates the PendingIntent
-        PendingIntent notifyPendingIntent =
-                PendingIntent.getActivity(
-                        this,
-                        0,
-                        notifyIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
+//        PendingIntent notifyPendingIntent =
+//                PendingIntent.getActivity(
+//                        this,
+//                        0,
+//                        notifyIntent,
+//                        PendingIntent.FLAG_UPDATE_CURRENT
+//                );
+
+//        final TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext()); // 建立TaskStackBuilder
+//        stackBuilder.addParentStack(MainActivity.class); // 加入目前要啟動的Activity，這個方法會將這個Activity的所有上層的Activity(Parents)都加到堆疊中
+//        stackBuilder.addNextIntent(intent); // 加入啟動Activity的Intent
+
+        final int notifyID = 1; // 通知的識別號碼
+        final int requestCode = notifyID; // PendingIntent的Request Code
+//        final int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        // ONE_SHOT：PendingIntent只使用一次；CANCEL_CURRENT：PendingIntent執行前會先結束掉之前的；NO_CREATE：沿用先前的PendingIntent，不建立新的PendingIntent；UPDATE_CURRENT：更新先前PendingIntent所帶的額外資料，並繼續沿用
+
+//        final PendingIntent notifyPendingIntent = stackBuilder.getPendingIntent(requestCode, flags); // 取得PendingIntent
+        Intent intent = new Intent();
+//        intent.setClass(MainActivity.this, MainActivity.class);
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(this, requestCode, intent, 0);
+
         // Puts the PendingIntent into the notification builder
-//        builder.setContentIntent(notifyPendingIntent);
-        
+        builder.setContentIntent(notifyPendingIntent);
+
 
         Notification notification = builder.build();
 
