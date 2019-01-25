@@ -1,4 +1,7 @@
 # Garminuino
+
+![IMAGE ALT TEXT HERE](https://raw.githubusercontent.com/skyforcetw/Garminuino/f71f77eff7afc2c0c95a0076b2e75070de46e633/P_20190125_225356-02.jpeg "Two Garmin HUD application")
+
 This  is a project use GarminHUD as speedometer HUD, or a GoogleMap navigation HUD.
  [Further Information for Android App](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/README.md)
 
