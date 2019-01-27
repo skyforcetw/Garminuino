@@ -59,6 +59,7 @@ Besides parts of Speedometer HUD, a USB Host Shield with a Android mobile phone 
 1. Add auto-connection function.
 2. Auto lanunch google map when HUD connected.
 3. Comment source-code.
+4. Show some usage infomation when navigation is done, don't make it seems hang when navigating done.
 
 ## Authors
 
