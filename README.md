@@ -58,8 +58,7 @@ Besides parts of Speedometer HUD, a USB Host Shield with a Android mobile phone 
 ## ToDo List
 1. Add auto-connection function.
 2. Auto lanunch google map when HUD connected.
-3. Add GPS speed showing.
-4. Comment source-code.
+3. Comment source-code.
 
 ## Authors
 
