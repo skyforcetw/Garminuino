@@ -69,3 +69,6 @@ Besides parts of Speedometer HUD, a USB Host Shield with a Android mobile phone 
 
 * **Niklas04** - help improve parsing & add German language support
 [github](https://github.com/Niklas04) 
+
+* **Android-BluetoothSPPLibrary** - Bluetooth SPP Library, use to link Garmin HUD.
+[github](https://github.com/akexorcist/Android-BluetoothSPPLibrary) 
