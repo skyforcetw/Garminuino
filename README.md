@@ -35,6 +35,12 @@ If you are interesing for it, please mail me: skyforce@gmail.com , with tile "Ga
 ![Initial concept of Garminuino](https://trello-attachments.s3.amazonaws.com/5604cb6e078e570dfc9c7404/1794x1080/accfe9e4f1f1d10e8bb62d7630130425/sketch-1443154690685.jpg "Initial concept of Garminuino")
 This is the inital concept of Garminuino, but the implment is slight difference to the concept. For example, Garmin Hud is not linked by BLE, so BLE moduble is needless.
 
+## ToDo List
+1. Add auto-connection function.
+2. Auto lanunch google map when HUD connected.
+3. Comment source-code.
+4. Show some usage infomation when navigation is done, don't make it seems hang when navigating done.
+
 ## [Speedometer HUD](https://github.com/skyforcetw/Garminuino/tree/master/speedometer%20HUD)
 
 [![IMAGE ALT TEXT HERE](https://i.ytimg.com/vi/P0d8nm3kuxs/hqdefault.jpg?sqp=-oaymwEZCPYBEIoBSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLAh96qD5deX_DeYAHk9CHNptn97JQ)](https://www.youtube.com/watch?v=P0d8nm3kuxsE)
@@ -54,12 +60,6 @@ Works just like garmin streetpilot with Garmin HUD.
 (click image can link to Youtube film)
 
 Besides parts of Speedometer HUD, a USB Host Shield with a Android mobile phone can fetch Google Navigation info, and transmit info by bluetooth to GarminHUD, too.
-
-## ToDo List
-1. Add auto-connection function.
-2. Auto lanunch google map when HUD connected.
-3. Comment source-code.
-4. Show some usage infomation when navigation is done, don't make it seems hang when navigating done.
 
 ## Authors
 
