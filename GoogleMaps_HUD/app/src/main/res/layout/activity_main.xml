@@ -27,14 +27,80 @@
             android:onClick="buttonOnClicked"
             android:text="Scan Bluetooth" />
 
-        <Button
-            android:id="@+id/btnToggle"
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Status"
+            android:textSize="18sp" />
+
+        <Switch
+            android:id="@+id/switchHudConnected"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="false"
+            android:clickable="false"
+            android:text="HUD Connected" />
+
+        <Switch
+            android:id="@+id/switchNotificationCatched"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="false"
+            android:clickable="false"
+            android:text="Notification Capture" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="20dp"
+            android:text="When Navigating"
+            android:textSize="18sp" />
+
+        <Switch
+            android:id="@+id/switchShowSpeed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="buttonOnClicked"
-            android:text="Toggle Service"
-            android:visibility="gone" />
+            android:text="Show Speed" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="20dp"
+            android:text="When Navigation Done"
+            android:textSize="18sp" />
+
+        <Switch
+            android:id="@+id/switch4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Show Speed" />
+
+        <Switch
+            android:id="@+id/switch5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Show time" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="20dp"
+            android:text="Debug"
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/btnListNotify"
@@ -43,30 +109,6 @@
             android:layout_weight="1"
             android:onClick="buttonOnClicked"
             android:text="List of Notification" />
-
-        <Button
-            android:id="@+id/btnEnableUnEnableNotify"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/btnCreateNotify"
-            android:layout_alignRight="@+id/btnCreateNotify"
-            android:layout_below="@+id/btnCreateNotify"
-            android:layout_weight="1"
-            android:onClick="buttonOnClicked"
-            android:text="Enable/UnEnable Listener"
-            android:visibility="gone" />
-
-        <ToggleButton
-            android:id="@+id/tgBtnShowSpeed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:autoText="false"
-            android:checked="false"
-            android:onClick="buttonOnClicked"
-            android:textOff="No Show Speed"
-            android:textOn="Show Speed"
-            tools:text="1" />
 
 
     </LinearLayout>

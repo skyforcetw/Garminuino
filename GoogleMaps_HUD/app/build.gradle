@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 23
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.example.notificationlistenerdemo"
-        minSdkVersion 26
+        minSdkVersion 23
         targetSdkVersion 26
     }
 
@@ -45,10 +45,15 @@ android {
     }
 }
 
+repositories{
+    flatDir{
+        dirs 'libs'
+    }
+}
+
 dependencies {
     //    compile 'com.android.support:support-v4:19.1.0'
-    implementation 'com.android.support:support-v4:26.1.0'
-    implementation 'com.akexorcist:bluetoothspp:1.0.0'
+    //    implementation 'com.android.support:support-v4:26.1.0'
     //    implementation 'com.google.android.gms:play-services:8.4.0'
     implementation 'com.google.android.gms:play-services:7.0.0'
     //    implementation 'com.google.android.gms:play-services:6.+'
@@ -56,6 +61,10 @@ dependencies {
     //    implementation 'com.google.android.gms:play-services-ads:15.0.0'
     //    implementation 'com.google.firebase:firebase-core:16.0.3'
     //    implementation 'com.google.firebase:firebase-ads:15.0.1'
+    //    implementation 'com.akexorcist:bluetoothspp:1.0.0'
+    api files('libs/library-release.aar')
+    //same as com.akexorcist:bluetoothspp:1.0.0,  but from https://github.com/skyforcetw/Android-BluetoothSPPLibrary
+    implementation 'com.android.support:support-v4:23.0.0'
 }
 
 //apply plugin: 'com.google.gms.google-services'

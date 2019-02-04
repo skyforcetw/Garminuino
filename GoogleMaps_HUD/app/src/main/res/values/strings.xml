@@ -12,8 +12,8 @@
 
     <string name="active_notification_count_zero">No active notification</string>
     <plurals name="active_notification_count_nonzero">
-        <item quantity="one">%d active notification</item>
-        <item quantity="other">%d active notifications</item>
+        <item quantity="one">%d active notification:</item>
+        <item quantity="other">%d active notifications:</item>
     </plurals>
 
     <string name="exit_navigation">EXIT NAVIGATION</string>
@@ -27,4 +27,6 @@
     <string name="meter">m</string>
 
     <string name="bt_bind_name_key" translatable="false">bt_bind_name_key</string>
+    <string name="broadcast_receiver" translatable="false">com.example.notificationlistenerdemo.RECEIVER</string>
+    <string name="notify_catched" translatable="false">notify_catched</string>
 </resources>
