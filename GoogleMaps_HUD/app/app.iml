@@ -125,27 +125,29 @@
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-drive:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-location:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-wearable:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: __local_aars__:D.\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\libs\library-release.aar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-v4:23.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-wearable:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-maps:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-plus:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-annotations:23.0.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-games:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-fitness:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-ads:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-identity:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-base:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-safetynet:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-drive:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: __local_aars__:D.\workspace\GitHub\Garminuino\GoogleMaps_HUD\app\libs\library-release.aar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-appindexing:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-analytics:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-wallet:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-nearby:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-cast:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-panorama:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-ads:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-identity:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.android.support:design:23.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.android.support:appcompat-v7:23.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-appstate:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-base:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-safetynet:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-gcm:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: android-android-23" level="project" />
   </component>

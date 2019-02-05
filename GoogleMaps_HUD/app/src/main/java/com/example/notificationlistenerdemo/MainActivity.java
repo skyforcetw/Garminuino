@@ -30,15 +30,12 @@ import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.akexorcist.bluetotohspp.library.BluetoothState;
 import app.akexorcist.bluetotohspp.library.DeviceList;
 import chutka.bitman.com.speedometersimplified.LocationService;
 import sky4s.garmin.GarminHUD;
-import sky4s.garmin.eOutAngle;
-import sky4s.garmin.eUnits;
 
 //import android.app.NotificationChannel;
 
@@ -57,27 +54,23 @@ public class MainActivity extends Activity {
     private boolean isEnabledNLS = false;
     private boolean showSpeed = false;
 
-    private TextView textViewLog;
+    private TextView textViewDebug;
     private Switch switchHudConnected;
-    public static Switch switchNotificationCatched;
+    private   Switch switchNotificationCatched;
+    private   Switch switchGmapsNotificationCatched;
 
     private BluetoothSPP bt;
 //    private static MainActivity selfActivity = null;
 
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
-    static void updateMessage(String msg) {
-//        if (null != selfActivity) {
-//            selfActivity.textViewLog.setText(msg);
-//        }
-    }
-
     private MsgReceiver msgReceiver;
+
     public class MsgReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-         boolean catched=   intent.getBooleanExtra(getString(R.string.notify_catched),false);
+            boolean catched = intent.getBooleanExtra(getString(R.string.notify_catched), false);
             switchNotificationCatched.setChecked(catched);
 
         }
@@ -107,9 +100,10 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textViewLog = (TextView) findViewById(R.id.textView);
+        textViewDebug = (TextView) findViewById(R.id.textView);
         switchHudConnected = (Switch) findViewById(R.id.switchHudConnected);
-        switchNotificationCatched = (Switch) findViewById(R.id.switchNotificationCatched );
+        switchNotificationCatched = (Switch) findViewById(R.id.switchNotificationCatched);
+        switchGmapsNotificationCatched = (Switch) findViewById(R.id.switchGmapsNotificationCatched);
 
         startService(new Intent(this, NotificationCollectorMonitorService.class));
 
@@ -124,93 +118,6 @@ public class MainActivity extends Activity {
                 finish();
             }
 
-//            String bt_bind_name = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
-//
-//            if (null != bt_bind_name) {
-//                if (!bt.isBluetoothEnabled()) {
-//                    Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//                    startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
-//                } else {
-//                    if (!bt.isServiceAvailable()) {
-//                        bt.setupService();
-//                        bt.startService(BluetoothState.DEVICE_OTHER);
-//                        bt.autoConnect(bt_bind_name);
-//                    }
-//                }
-//            }
-//
-//            bt.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() {
-//                public void onDeviceDisconnected() {
-//                    switchHudConnected.setChecked(false);
-//                    NotificationMonitor.bt = null;
-//                    logNLS("onDeviceDisconnected");
-//                }
-//
-//                public void onDeviceConnectionFailed() {
-//                    switchHudConnected.setChecked(false);
-//                    NotificationMonitor.bt = null;
-//                    logNLS("onDeviceConnectionFailed");
-//                }
-//
-//                public void onDeviceConnected(String name, String address) {
-//                    switchHudConnected.setText("'" + name + "' connected");
-//                    switchHudConnected.setChecked(true);
-//                    NotificationMonitor.bt = bt;
-//                    logNLS("onDeviceConnected");
-//
-//                    if (showSpeed && !locationServiceStatus)
-//                        bindService();
-//
-//                    String connected_device_name = bt.getConnectedDeviceName();
-//                    SharedPreferences.Editor editor = sharedPref.edit();
-//                    editor.putString(getString(R.string.bt_bind_name_key), connected_device_name);
-//                    editor.commit();
-//                }
-//            });
-//
-//            bt.setAutoConnectionListener(new BluetoothSPP.AutoConnectionListener() {
-//                public void onAutoConnectionStarted() {
-//                    int a = 1;
-//                }
-//
-//                public void onNewConnection(String var1, String var2) {
-//                    int a = 1;
-//                }
-//            });
-
-        } else {
-            bt_status = "(BYPASS BT)";
-        }
-
-        int versionCode = BuildConfig.VERSION_CODE;
-        String versionName = BuildConfig.VERSION_NAME;
-        this.setTitle(this.getTitle() + " v" + versionName + " (build " + versionCode + ")" + bt_status);
-        createNotification(this);
-
-        msgReceiver = new MsgReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(getString(R.string.broadcast_receiver));
-        registerReceiver(msgReceiver, intentFilter);
-
-    }
-
-    public void onDestroy() {
-        super.onDestroy();
-        if (!IGNORE_BT_DEVICE) {
-            bt.stopAutoConnect();
-            bt.stopService();
-        }
-        if (locationServiceStatus == true) {
-            unbindService();
-        }
-        unregisterReceiver(msgReceiver);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        if (!IGNORE_BT_DEVICE) {
             String bt_bind_name = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
 
             if (null != bt_bind_name) {
@@ -264,6 +171,49 @@ public class MainActivity extends Activity {
                     int a = 1;
                 }
             });
+
+        } else {
+            bt_status = "(BYPASS BT)";
+        }
+
+        int versionCode = BuildConfig.VERSION_CODE;
+        String versionName = BuildConfig.VERSION_NAME;
+        this.setTitle(this.getTitle() + " v" + versionName + " (build " + versionCode + ")" + bt_status);
+        createNotification(this);
+
+        msgReceiver = new MsgReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(getString(R.string.broadcast_receiver));
+        registerReceiver(msgReceiver, intentFilter);
+
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        if (!IGNORE_BT_DEVICE) {
+            bt.stopAutoConnect();
+            bt.stopService();
+        }
+        if (locationServiceStatus == true) {
+            unbindService();
+        }
+        unregisterReceiver(msgReceiver);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (!IGNORE_BT_DEVICE) {
+            if (!bt.isBluetoothEnabled()) {
+                Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
+            } else {
+                if (!bt.isServiceAvailable()) {
+                    bt.setupService();
+                    bt.startService(BluetoothState.DEVICE_OTHER);
+                }
+            }
         }
     }
 
@@ -278,7 +228,7 @@ public class MainActivity extends Activity {
     }
 
     public void buttonOnClicked(View view) {
-        textViewLog.setTextColor(Color.BLACK);
+        textViewDebug.setTextColor(Color.BLACK);
         switch (view.getId()) {
 
             case R.id.btnListNotify:
@@ -362,14 +312,6 @@ public class MainActivity extends Activity {
         }/**/
     }
 
-    private void sendToGarminHUD() {
-        if (null != bt) {
-            GarminHUD garminHud = new GarminHUD(bt);
-            garminHud.SetDistance(100, eUnits.Metres);
-            garminHud.SetSpeedAndWarning(100, 100);
-            garminHud.SetDirection(eOutAngle.Right);
-        }
-    }
 
     private void scanBluetooth() {
 
@@ -467,7 +409,7 @@ public class MainActivity extends Activity {
             if (NotificationMonitor.getCurrentNotifications() == null) {
                 result = "No Notifications Capture!!!\nSometimes reboot device or re-install app can resolve this problem.";
                 logNLS(result);
-                textViewLog.setText(result);
+                textViewDebug.setText(result);
                 return;
             }
             int n = NotificationMonitor.mCurrentNotificationsCounts;
@@ -477,10 +419,10 @@ public class MainActivity extends Activity {
                 result = String.format(getResources().getQuantityString(R.plurals.active_notification_count_nonzero, n, n));
             }
             result = result + "\n" + getCurrentNotificationString();
-            textViewLog.setText(result);
+            textViewDebug.setText(result);
         } else {
-            textViewLog.setTextColor(Color.RED);
-            textViewLog.setText("Please Enable Notification Access");
+            textViewDebug.setTextColor(Color.RED);
+            textViewDebug.setText("Please Enable Notification Access");
         }
     }
 

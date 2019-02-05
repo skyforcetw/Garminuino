@@ -49,9 +49,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:text="Notification Capture" />
+
+        <Switch
+            android:id="@+id/switchGmapsNotificationCatched"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:checked="false"
             android:clickable="false"
-            android:text="Notification Capture" />
+            android:text="Gmap's Notification Capture" />
 
         <TextView
             android:id="@+id/textView5"
@@ -125,7 +132,7 @@
         android:visibility="visible">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/textViewDebug"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textAppearance="?android:attr/textAppearanceMedium"
