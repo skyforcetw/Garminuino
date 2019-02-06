@@ -100,7 +100,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textViewDebug = (TextView) findViewById(R.id.textView);
+        textViewDebug = (TextView) findViewById(R.id.textViewDebug);
         switchHudConnected = (Switch) findViewById(R.id.switchHudConnected);
         switchNotificationCatched = (Switch) findViewById(R.id.switchNotificationCatched);
         switchGmapsNotificationCatched = (Switch) findViewById(R.id.switchGmapsNotificationCatched);
