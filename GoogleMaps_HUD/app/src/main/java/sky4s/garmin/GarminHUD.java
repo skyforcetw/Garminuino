@@ -55,7 +55,7 @@ public class GarminHUD {
             return false;
         }
         updateCount++;
-        if (MainActivity.IGNORE_BT) {
+        if (MainActivity.IGNORE_BT_DEVICE) {
             return true;
         }
         byte packet[] = new byte[length_of_data];

@@ -28,14 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
+import sky4s.garmin.Arrow;
+import sky4s.garmin.ArrowImage;
 import sky4s.garmin.GarminHUD;
 import sky4s.garmin.eOutAngle;
 import sky4s.garmin.eOutType;
 import sky4s.garmin.eUnits;
-
-//import android.location.Location;
-//import android.location.LocationListener;
-//import static android.support.v4.app.ActivityCompatJB.startActivityForResult;
 
 
 public class NotificationMonitor extends NotificationListenerService {
@@ -86,13 +84,6 @@ public class NotificationMonitor extends NotificationListenerService {
     private String remainDistanceUnit = null;
     private String arrivalTime = null;
 
-//    private double speed;
-//    private LocationRequest mLocationRequest;
-//
-//    public void onLocationChanged(Location var1) {
-//
-//    }
-
     private static Bitmap removeAlpha(Bitmap originalBitmap) {
         // lets create a new empty bitmap
         Bitmap newBitmap = Bitmap.createBitmap(originalBitmap.getWidth(), originalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
@@ -142,17 +133,165 @@ public class NotificationMonitor extends NotificationListenerService {
         return super.onBind(intent);
     }
 
+    private Intent intent = new Intent("com.example.notificationlistenerdemo.RECEIVER");
+
     private void processGoogleMapsNotification(StatusBarNotification sbn) {
         String packageName = sbn.getPackageName();
         if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
-
+//            navigationNotifyPosted = true;
             Notification notification = sbn.getNotification();
             if (null == notification) {
                 return;
             }
+//            MainActivity.switchNotificationCatched.setChecked(true);
+            intent.putExtra(getString(R.string.notify_catched),true);
+            sendBroadcast(intent);
+
+
             processGoogleMapsNotification(notification);
         }
     }
+
+
+    private void processGoogleMapsNotification(Notification notification) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Bundle extras = notification.extras;
+            if (extras != null) {
+                // 获取通知标题
+                String title = extras.getString(Notification.EXTRA_TITLE, "");
+                // 获取通知内容
+                String content = extras.getString(Notification.EXTRA_TEXT, "");
+            }
+        } else {
+//            List<String> textList = getText(notification);
+        }
+
+        // We have to extract the information from the view
+        RemoteViews views = notification.bigContentView;
+        if (views == null) views = notification.contentView;
+        if (views == null) return;
+
+        long currentTime = System.currentTimeMillis();
+        notifyPeriodTime = currentTime - lastNotifyTimeMillis;
+        lastNotifyTimeMillis = currentTime;
+
+        // Use reflection to examine the m_actions member of the given RemoteViews object.
+        // It's not pretty, but it works.
+        try {
+            Field fieldActions = views.getClass().getDeclaredField("mActions");
+            fieldActions.setAccessible(true);
+
+            @SuppressWarnings("unchecked")
+            ArrayList<Parcelable> actions = (ArrayList<Parcelable>) fieldActions.get(views);
+
+            int indexOfActions = 0;
+            int updateCount = 0;
+            boolean inNavigation = false;
+
+            // Find the setText() and setTime() reflection actions
+            for (Parcelable p : actions) {
+                Parcel parcel = Parcel.obtain();
+                if (null == p) {
+                    continue;
+                }
+                p.writeToParcel(parcel, 0);
+                parcel.setDataPosition(0);
+
+                // The tag tells which type of action it is (2 is ReflectionAction, from the source)
+                int tag = parcel.readInt();
+                String simpleClassName = p.getClass().getSimpleName();
+                if ((tag != 2 && tag != 12) && (!simpleClassName.equals("ReflectionAction") && !simpleClassName.equals("BitmapReflectionAction")))
+                    continue;
+
+                if (Build.VERSION.SDK_INT < 28) {
+                    // View ID
+                    parcel.readInt();
+                }
+
+                String methodName = parcel.readString();
+
+                if (methodName == null) continue;
+
+                    // Save strings
+                else if (methodName.equals("setText")) {
+                    // Parameter type (10 = Character Sequence)
+                    parcel.readInt();
+
+                    // Store the actual string
+                    String t = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(parcel).toString().trim();
+                    switch (indexOfActions) {
+                        case 2:
+//                            String exitNavigation = getString(R.string.exit_navigation);
+                            inNavigation = t.equalsIgnoreCase(getString(R.string.exit_navigation));
+                            break;
+                        case 3://distance to turn
+                            parseDistanceToTurn(t);
+                            break;
+                        case 5://road
+                            break;
+                        case 8://time, distance, arrived time
+                            parseTimeAndDistanceToDest(t);
+                            updateCount++;
+                            break;
+                    }
+                }
+                // Save times. Comment this section out if the notification time isn't important
+                else if (methodName.equals("setTime")) {
+                    // Parameter type (5 = Long)
+//                    parcel.readInt();
+                } else if (methodName.equals("setImageBitmap")) {
+
+                    int bitmapId = parcel.readInt();
+                    Field fieldBitmapCache = views.getClass().getDeclaredField("mBitmapCache");
+                    fieldBitmapCache.setAccessible(true);
+
+                    Object bitmapCache = fieldBitmapCache.get(views);
+                    Field fieldBitmaps = bitmapCache.getClass().getDeclaredField("mBitmaps");
+                    fieldBitmaps.setAccessible(true);
+                    Object bitmapsObject = fieldBitmaps.get(bitmapCache);
+
+                    if (null != bitmapsObject) {
+                        ArrayList<Bitmap> bitmapList = (ArrayList<Bitmap>) bitmapsObject;
+                        Bitmap bitmapImage = bitmapList.get(bitmapId);
+                        if (STORE_IMG) {
+                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow0.png");
+                        }
+                        bitmapImage = removeAlpha(bitmapImage);
+                        if (STORE_IMG) {
+                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow.png");
+                        }
+                        ArrowImage arrowImage = new ArrowImage(bitmapImage);
+                        foundArrow = getArrow(arrowImage);
+                        updateCount++;
+                    }
+
+                }
+
+                parcel.recycle();
+                indexOfActions++;
+            }
+
+            //can update to garmin hud
+            //log("notifyPeriodTime: " + notifyPeriodTime);
+            String notifyMessage = foundArrow.toString() + " " + distanceNum + distanceUnit +
+                    " " + (null == remainHour ? 00 : remainHour) + ":" + remainMinute + " " + remainDistance + remainDistanceUnit + " " + arrivalTime
+                    + " (period: " + notifyPeriodTime + ")";
+            log(notifyMessage);
+//            MainActivity.updateMessage(notifyMessage);
+            if (0 != updateCount && inNavigation) {
+                updateGaminHudInformation();
+            }
+
+        }
+
+        // It's not usually good style to do this, but then again, neither is the use of reflection...
+        catch (Exception e) {
+            Log.e("NotificationClassifier", e.toString());
+        }
+
+    }
+
 
     private void storeBitmap(Bitmap bmp, String filename) {
         FileOutputStream out = null;
@@ -213,9 +352,9 @@ public class NotificationMonitor extends NotificationListenerService {
 
     // Returns the current Unit (Kilometres or Miles) based on distanceToTurn
     public static eUnits getCurrentUnit() {
-        if( (get_eUnits(distanceUnit)==eUnits.Kilometres) || (get_eUnits(distanceUnit)==eUnits.Metres) )
+        if ((get_eUnits(distanceUnit) == eUnits.Kilometres) || (get_eUnits(distanceUnit) == eUnits.Metres))
             return eUnits.Kilometres;
-        else if( (get_eUnits(distanceUnit)==eUnits.Miles) || (get_eUnits(distanceUnit)==eUnits.Foot) )
+        else if ((get_eUnits(distanceUnit) == eUnits.Miles) || (get_eUnits(distanceUnit) == eUnits.Foot))
             return eUnits.Miles;
         else
             return eUnits.None;
@@ -323,7 +462,7 @@ public class NotificationMonitor extends NotificationListenerService {
     private Arrow lastFoundArrow = Arrow.None;
 
     private void updateGaminHudInformation() {
-        if (bt != null || MainActivity.IGNORE_BT) {
+        if (bt != null || MainActivity.IGNORE_BT_DEVICE) {
             if (null == garminHud) {
                 garminHud = new GarminHUD(bt);
             }
@@ -333,7 +472,7 @@ public class NotificationMonitor extends NotificationListenerService {
                 eUnits units = get_eUnits(distanceUnit);
 
                 int int_distance = (int) float_distance;
-                boolean decimal = ((eUnits.Kilometres == units)||(eUnits.Miles == units)) && float_distance < 10;
+                boolean decimal = ((eUnits.Kilometres == units) || (eUnits.Miles == units)) && float_distance < 10;
 
                 if (decimal) { //有小數點
                     int_distance = (int) (float_distance * 10);
@@ -386,145 +525,6 @@ public class NotificationMonitor extends NotificationListenerService {
         }
     }
 
-    private void processGoogleMapsNotification(Notification notification) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Bundle extras = notification.extras;
-            if (extras != null) {
-                // 获取通知标题
-                String title = extras.getString(Notification.EXTRA_TITLE, "");
-                // 获取通知内容
-                String content = extras.getString(Notification.EXTRA_TEXT, "");
-            }
-        } else {
-//            List<String> textList = getText(notification);
-        }
-
-        // We have to extract the information from the view
-        RemoteViews views = notification.bigContentView;
-        if (views == null) views = notification.contentView;
-        if (views == null) return;
-
-        long currentTime = System.currentTimeMillis();
-        notifyPeriodTime = currentTime - lastNotifyTimeMillis;
-        lastNotifyTimeMillis = currentTime;
-
-        // Use reflection to examine the m_actions member of the given RemoteViews object.
-        // It's not pretty, but it works.
-        try {
-            Field fieldActions = views.getClass().getDeclaredField("mActions");
-            fieldActions.setAccessible(true);
-
-            @SuppressWarnings("unchecked")
-            ArrayList<Parcelable> actions = (ArrayList<Parcelable>) fieldActions.get(views);
-
-            int indexOfActions = 0;
-            int updateCount = 0;
-            boolean inNavigation = false;
-
-            // Find the setText() and setTime() reflection actions
-            for (Parcelable p : actions) {
-                Parcel parcel = Parcel.obtain();
-                if (null == p) {
-                    continue;
-                }
-                p.writeToParcel(parcel, 0);
-                parcel.setDataPosition(0);
-
-                // The tag tells which type of action it is (2 is ReflectionAction, from the source)
-                int tag = parcel.readInt();
-                String simpleClassName = p.getClass().getSimpleName();
-                if ( (tag != 2 && tag != 12) && (!simpleClassName.equals("ReflectionAction") && !simpleClassName.equals("BitmapReflectionAction")) )
-                    continue;
-
-                if(Build.VERSION.SDK_INT <28) {
-                    // View ID
-                    parcel.readInt();
-                }
-
-                String methodName = parcel.readString();
-
-                if (methodName == null) continue;
-
-                    // Save strings
-                else if (methodName.equals("setText")) {
-                    // Parameter type (10 = Character Sequence)
-                    parcel.readInt();
-
-                    // Store the actual string
-                    String t = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(parcel).toString().trim();
-                    switch (indexOfActions) {
-                        case 2:
-//                            String exitNavigation = getString(R.string.exit_navigation);
-                            inNavigation = t.equalsIgnoreCase(getString(R.string.exit_navigation));
-                            break;
-                        case 3://distance to turn
-                            parseDistanceToTurn(t);
-                            break;
-                        case 5://road
-                            break;
-                        case 8://time, distance, arrived time
-                            parseTimeAndDistanceToDest(t);
-                            updateCount++;
-                            break;
-                    }
-                }
-                // Save times. Comment this section out if the notification time isn't important
-                else if (methodName.equals("setTime")) {
-                    // Parameter type (5 = Long)
-//                    parcel.readInt();
-                } else if (methodName.equals("setImageBitmap")) {
-
-                    int bitmapId = parcel.readInt();
-                    Field fieldBitmapCache = views.getClass().getDeclaredField("mBitmapCache");
-                    fieldBitmapCache.setAccessible(true);
-
-                    Object bitmapCache = fieldBitmapCache.get(views);
-                    Field fieldBitmaps = bitmapCache.getClass().getDeclaredField("mBitmaps");
-                    fieldBitmaps.setAccessible(true);
-                    Object bitmapsObject = fieldBitmaps.get(bitmapCache);
-
-                    if (null != bitmapsObject) {
-                        ArrayList<Bitmap> bitmapList = (ArrayList<Bitmap>) bitmapsObject;
-                        Bitmap bitmapImage = bitmapList.get(bitmapId);
-                        if (STORE_IMG) {
-                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow0.png");
-                        }
-                        bitmapImage = removeAlpha(bitmapImage);
-                        if (STORE_IMG) {
-                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow.png");
-                        }
-                        ArrowImage arrowImage = new ArrowImage(bitmapImage);
-                        foundArrow = getArrow(arrowImage);
-                        updateCount++;
-                    }
-
-                }
-
-                parcel.recycle();
-                indexOfActions++;
-            }
-
-            //can update to garmin hud
-            //log("notifyPeriodTime: " + notifyPeriodTime);
-            String notifyMessage = foundArrow.toString() + " " + distanceNum + distanceUnit +
-                    " " + (null == remainHour ? 00 : remainHour) + ":" + remainMinute + " " + remainDistance + remainDistanceUnit + " " + arrivalTime
-                    + " (period: " + notifyPeriodTime + ")";
-            log(notifyMessage);
-            MainActivity.updateMessage(notifyMessage);
-            if (0 != updateCount && inNavigation) {
-                updateGaminHudInformation();
-            }
-
-        }
-
-        // It's not usually good style to do this, but then again, neither is the use of reflection...
-        catch (Exception e) {
-            Log.e("NotificationClassifier", e.toString());
-        }
-
-    }
-
     private void parseTimeAndDistanceToDest(String timeDistanceStirng) {
         String[] timeDistanceSplit = timeDistanceStirng.split("·");
 //        remainTime = remainTimeUnit =
@@ -574,7 +574,7 @@ public class NotificationMonitor extends NotificationListenerService {
             }
             if (2 == distSplit.length) {
                 remainDistance = distSplit[0].replaceAll("\u00A0", ""); // Remove spaces, .trim() doesn't work
-                remainDistance = remainDistance.replace(",",".");
+                remainDistance = remainDistance.replace(",", ".");
                 remainDistanceUnit = distSplit[1].replaceAll("\u00A0", ""); // Remove spaces
                 remainDistanceUnit = translate(remainDistanceUnit);
             }
@@ -655,7 +655,7 @@ public class NotificationMonitor extends NotificationListenerService {
         String num = null;
         String unit = null;
         if (splitArray.length == 2) {
-            num = splitArray[0].replace(",",".");
+            num = splitArray[0].replace(",", ".");
             unit = splitArray[1];
         }
 
@@ -695,29 +695,43 @@ public class NotificationMonitor extends NotificationListenerService {
          */
     }
 
+//    private static boolean navigationNotifyPosted = false;
+//    public static boolean isNavigationNotifyPosted() {
+//        return navigationNotifyPosted;
+//    }
+
+
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-        updateCurrentNotifications();
+//        updateCurrentNotifications();
         log("removed...");
         log("have " + mCurrentNotificationsCounts + " active notifications");
         mRemovedNotification = sbn;
 
         String packageName = sbn.getPackageName();
         if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
+//            navigationNotifyPosted = false;
+//            MainActivity.switchNotificationCatched.setChecked(false);
+            intent.putExtra(getString(R.string.notify_catched),false);
+
             int hh = null != remainHour ? Integer.parseInt(remainHour) : 0;
             int mm = Integer.parseInt(remainMinute);
 
             // Check if arrival is possible (don't know if mm==0 work always)
-            if(hh==0 && mm<=5)
-            // Arrived: Delete Distance to turn
-            if( (lastFoundArrow!=Arrow.Arrivals)&&(lastFoundArrow!=Arrow.ArrivalsLeft)&&(lastFoundArrow!=Arrow.ArrivalsRight) ) {
-                if(garminHud!=null) {
-                    garminHud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
-                    garminHud.ClearDistance();
+            if (hh == 0 && mm <= 5) {
+                // Arrived: Delete Distance to turn
+                if ((lastFoundArrow != Arrow.Arrivals) && (lastFoundArrow != Arrow.ArrivalsLeft) && (lastFoundArrow != Arrow.ArrivalsRight)) {
+                    if (garminHud != null) {
+                        garminHud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
+                        garminHud.ClearDistance();
+                    }
+                } else {
+                    if (garminHud != null)
+                        garminHud.ClearDistance();
                 }
-            } else {
-                if(garminHud!=null)
-                    garminHud.ClearDistance();
+            }else {
+//                garminHud.ClearDistance();
+//                garminHud.ClearSpeedandWarning();
             }
         }
     }
@@ -763,9 +777,9 @@ public class NotificationMonitor extends NotificationListenerService {
         }
 
     }
-    
+
     public static GarminHUD getGarminHud() {
-        if(garminHud!=null) {
+        if (garminHud != null) {
             return garminHud;
         } else
             return null;
@@ -773,36 +787,3 @@ public class NotificationMonitor extends NotificationListenerService {
 
 }
 
-class ArrowImage {
-
-    public static final int IMAGE_LEN = 4;
-    public static final int CONTENT_LEN = IMAGE_LEN * IMAGE_LEN;
-    public boolean[] content = new boolean[CONTENT_LEN];
-
-    public ArrowImage(Bitmap bitmap) {
-
-        final int interval = bitmap.getWidth() / IMAGE_LEN;
-        for (int h0 = 0; h0 < IMAGE_LEN; h0++) {
-            final int h = h0 * interval;
-            for (int w0 = 0; w0 < IMAGE_LEN; w0++) {
-                final int w = w0 * interval;
-                int p = bitmap.getPixel(w, h);
-                final int alpha = (p >> 24) & 0xff;
-                final int max = Math.max(Math.max(p & 0xff, (p >> 8) & 0xff), (p >> 16) & 0xff);
-                final int max_alpha = (max * alpha) >> 8;
-                content[h0 * IMAGE_LEN + w0] = max_alpha < 254;
-            }
-        }
-
-    }
-
-    public int getSAD(final int magicNumber) {
-        int sad = 0;
-        for (int x = 0; x < CONTENT_LEN; x++) {
-            final boolean bit = 1 == ((magicNumber >> x) & 1);
-            sad += content[x] != bit ? 1 : 0;
-        }
-        return sad;
-    }
-
-}

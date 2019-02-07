@@ -1,4 +1,4 @@
-package com.example.notificationlistenerdemo;
+package sky4s.garmin;
 
 public enum Arrow {
     SharpRight(54751),
