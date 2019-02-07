@@ -53,6 +53,7 @@ public class MainActivity extends Activity {
 
     private boolean isEnabledNLS = false;
     private boolean showSpeed = false;
+    public static boolean showETA = false;
 
     private TextView textViewDebug;
     private Switch switchHudConnected;
@@ -271,6 +272,12 @@ public class MainActivity extends Activity {
                         hud.ClearSpeedandWarning();
                     showSpeed = false;
                 }
+                break;
+            case R.id.switchShowETA:
+                if(((Switch) view).isChecked())
+                    showETA = true;
+                else
+                    showETA = false;
                 break;
 
 //            case R.id.buttonRestartService:
