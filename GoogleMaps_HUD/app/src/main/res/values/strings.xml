@@ -29,4 +29,5 @@
     <string name="bt_bind_name_key" translatable="false">bt_bind_name_key</string>
     <string name="broadcast_receiver" translatable="false">com.example.notificationlistenerdemo.RECEIVER</string>
     <string name="notify_catched" translatable="false">notify_catched</string>
+    <string name="gmaps_notify_catched" translatable="false">gmaps_notify_catched</string>
 </resources>

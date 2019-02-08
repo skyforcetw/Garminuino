@@ -13,22 +13,8 @@
         android:orientation="vertical"
         >
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="buttonOnClicked"
-            android:text="Button" />
 
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingTop="20dp"
-            android:text="Debug"
-            android:textSize="18sp" />
+
 
         <Button
             android:id="@+id/btnListNotify"

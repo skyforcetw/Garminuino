@@ -137,14 +137,14 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private void processGoogleMapsNotification(StatusBarNotification sbn) {
         String packageName = sbn.getPackageName();
+        intent.putExtra(getString(R.string.notify_catched),true);
+        sendBroadcast(intent);
         if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
-//            navigationNotifyPosted = true;
             Notification notification = sbn.getNotification();
             if (null == notification) {
                 return;
             }
-//            MainActivity.switchNotificationCatched.setChecked(true);
-            intent.putExtra(getString(R.string.notify_catched),true);
+            intent.putExtra(getString(R.string.gmaps_notify_catched),true);
             sendBroadcast(intent);
 
 
@@ -164,7 +164,6 @@ public class NotificationMonitor extends NotificationListenerService {
                 String content = extras.getString(Notification.EXTRA_TEXT, "");
             }
         } else {
-//            List<String> textList = getText(notification);
         }
 
         // We have to extract the information from the view
@@ -642,7 +641,6 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     private void parseDistanceToTurn(String distanceString) {
-//        auto afterString = getString(R.string.
         final int indexOfHo = distanceString.indexOf("後");
         if (-1 != indexOfHo) {
             distanceString = distanceString.substring(0, indexOfHo);
@@ -673,26 +671,7 @@ public class NotificationMonitor extends NotificationListenerService {
         log("onNotificationPosted...");
         log("have " + mCurrentNotificationsCounts + " active notifications");
         mPostedNotification = sbn;
-//        sbn.getPostTime();
         processGoogleMapsNotification(sbn);
-        /*
-         * Bundle extras = sbn.getNotification().extras; String
-         * notificationTitle = extras.getString(Notification.EXTRA_TITLE);
-         * Bitmap notificationLargeIcon = ((Bitmap)
-         * extras.getParcelable(Notification.EXTRA_LARGE_ICON)); Bitmap
-         * notificationSmallIcon = ((Bitmap)
-         * extras.getParcelable(Notification.EXTRA_SMALL_ICON)); CharSequence
-         * notificationText = extras.getCharSequence(Notification.EXTRA_TEXT);
-         * CharSequence notificationSubText =
-         * extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
-         * Log.i("SevenNLS", "notificationTitle:"+notificationTitle);
-         * Log.i("SevenNLS", "notificationText:"+notificationText);
-         * Log.i("SevenNLS", "notificationSubText:"+notificationSubText);
-         * Log.i("SevenNLS",
-         * "notificationLargeIcon is null:"+(notificationLargeIcon == null));
-         * Log.i("SevenNLS",
-         * "notificationSmallIcon is null:"+(notificationSmallIcon == null));
-         */
     }
 
 //    private static boolean navigationNotifyPosted = false;
@@ -703,16 +682,16 @@ public class NotificationMonitor extends NotificationListenerService {
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-//        updateCurrentNotifications();
+
         log("removed...");
         log("have " + mCurrentNotificationsCounts + " active notifications");
         mRemovedNotification = sbn;
 
         String packageName = sbn.getPackageName();
         if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
-//            navigationNotifyPosted = false;
-//            MainActivity.switchNotificationCatched.setChecked(false);
-            intent.putExtra(getString(R.string.notify_catched),false);
+
+            intent.putExtra(getString(R.string.gmaps_notify_catched),false);
+            sendBroadcast(intent);
 
             int hh = null != remainHour ? Integer.parseInt(remainHour) : 0;
             int mm = Integer.parseInt(remainMinute);

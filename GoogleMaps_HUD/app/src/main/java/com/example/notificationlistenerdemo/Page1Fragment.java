@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
+import android.widget.TextView;
 
 /* Fragment used as page 1 */
 public class Page1Fragment extends Fragment {
@@ -15,5 +17,12 @@ public class Page1Fragment extends Fragment {
         return rootView;
     }
 
-
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+        ((MainActivity)getActivity()).switchHudConnected = (Switch) getView().findViewById(R.id.switchHudConnected);
+        ((MainActivity)getActivity()).switchNotificationCatched = (Switch) getView().findViewById(R.id.switchNotificationCatched);
+        ((MainActivity)getActivity()).switchGmapsNotificationCatched = (Switch)getView(). findViewById(R.id.switchGmapsNotificationCatched);
+    }
 }

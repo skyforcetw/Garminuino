@@ -30,7 +30,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -60,10 +59,11 @@ public class MainActivity extends AppCompatActivity {
     private boolean isEnabledNLS = false;
     private boolean showSpeed = false;
 
-    private TextView textViewDebug;
-    private Switch switchHudConnected;
-    private Switch switchNotificationCatched;
-    private Switch switchGmapsNotificationCatched;
+    TextView textViewDebug;
+    Switch switchHudConnected;
+    Switch switchNotificationCatched;
+    Switch switchGmapsNotificationCatched;
+
     private BluetoothSPP bt;
 
     private MsgReceiver msgReceiver;
@@ -71,8 +71,11 @@ public class MainActivity extends AppCompatActivity {
     public class MsgReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            boolean catched = intent.getBooleanExtra(getString(R.string.notify_catched), false);
-            switchNotificationCatched.setChecked(catched);
+            boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched), false);
+            switchNotificationCatched.setChecked(notify_catched);
+
+            boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched), false);
+            switchGmapsNotificationCatched.setChecked(gmaps_notify_catched);
         }
     }
 
@@ -127,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-
         //=======================================================================================
         // tabs
         //========================================================================================
@@ -141,8 +143,6 @@ public class MainActivity extends AppCompatActivity {
         // and when the ViewPager switches to a new page, the corresponding tab is selected)
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(mViewPager);
-
-
 
 
         startService(new Intent(this, NotificationCollectorMonitorService.class));
@@ -201,10 +201,10 @@ public class MainActivity extends AppCompatActivity {
         //========================================================================================
         // UI widget linking
         //========================================================================================
-        textViewDebug = (TextView) findViewById(R.id.textViewDebug);
-        switchHudConnected = (Switch) findViewById(R.id.switchHudConnected);
-        switchNotificationCatched = (Switch) findViewById(R.id.switchNotificationCatched);
-        switchGmapsNotificationCatched = (Switch) findViewById(R.id.switchGmapsNotificationCatched);
+//        textViewDebug = (TextView) findViewById(R.id.textViewDebug);
+//        switchHudConnected = (Switch) findViewById(R.id.switchHudConnected);
+//        switchNotificationCatched = (Switch) findViewById(R.id.switchNotificationCatched);
+//        switchGmapsNotificationCatched = (Switch) findViewById(R.id.switchGmapsNotificationCatched);
         //========================================================================================
     }
 
