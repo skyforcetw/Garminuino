@@ -15,6 +15,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.SyncStateContract;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
@@ -160,16 +161,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private void processGoogleMapsNotification(Notification notification) {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Bundle extras = notification.extras;
-            if (extras != null) {
-                // 获取通知标题
-                String title = extras.getString(Notification.EXTRA_TITLE, "");
-                // 获取通知内容
-                String content = extras.getString(Notification.EXTRA_TEXT, "");
-            }
-        } else {
-        }
+
 
         // We have to extract the information from the view
         RemoteViews views = notification.bigContentView;
@@ -183,7 +175,22 @@ public class NotificationMonitor extends NotificationListenerService {
         // Use reflection to examine the m_actions member of the given RemoteViews object.
         // It's not pretty, but it works.
         try {
-            Field fieldActions = views.getClass().getDeclaredField("mActions");
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                Bundle extras = notification.extras;
+                if (extras != null) {
+                    // 获取通知标题
+                    String title = extras.getString(Notification.EXTRA_TITLE, "");
+                    // 获取通知内容
+                    String text = extras.getString(Notification.EXTRA_TEXT, "");
+                    String sub_text = extras.getString(Notification.EXTRA_SUB_TEXT, "");
+                    
+                    int a=1;
+                }
+            }
+
+            Class viewsClass = views.getClass();
+            Field fieldActions = viewsClass.getDeclaredField("mActions");
             fieldActions.setAccessible(true);
 
             @SuppressWarnings("unchecked")
@@ -208,15 +215,9 @@ public class NotificationMonitor extends NotificationListenerService {
                 if ((tag != 2 && tag != 12) && (!simpleClassName.equals("ReflectionAction") && !simpleClassName.equals("BitmapReflectionAction")))
                     continue;
 
-                if (Build.VERSION.SDK_INT < 28) {
-                    // View ID
-                    parcel.readInt();
-                }
-
                 String methodName = parcel.readString();
 
                 if (methodName == null) continue;
-
                     // Save strings
                 else if (methodName.equals("setText")) {
                     // Parameter type (10 = Character Sequence)
@@ -239,10 +240,7 @@ public class NotificationMonitor extends NotificationListenerService {
                             break;
                     }
                 }
-                // Save times. Comment this section out if the notification time isn't important
-                else if (methodName.equals("setTime")) {
-
-                } else if (methodName.equals("setImageBitmap")) {
+                 else if (methodName.equals("setImageBitmap")) {
 
                     int bitmapId = parcel.readInt();
                     Field fieldBitmapCache = views.getClass().getDeclaredField("mBitmapCache");
@@ -682,10 +680,10 @@ public class NotificationMonitor extends NotificationListenerService {
             sendBooleanExtra(getString(R.string.gmaps_notify_catched), false);
 
             int hh = null != remainHour ? Integer.parseInt(remainHour) : 0;
-            int mm = Integer.parseInt(remainMinute);
+            int mm = null != remainMinute ? Integer.parseInt(remainMinute) : -1;
 
             // Check if arrival is possible (don't know if mm==0 work always)
-            if (hh == 0 && mm <= 5) {
+            if (hh == 0 && mm <= 5 && mm != -1) {
                 // Arrived: Delete Distance to turn
                 if ((lastFoundArrow != Arrow.Arrivals) && (lastFoundArrow != Arrow.ArrivalsLeft) && (lastFoundArrow != Arrow.ArrivalsRight)) {
                     if (garminHud != null) {
