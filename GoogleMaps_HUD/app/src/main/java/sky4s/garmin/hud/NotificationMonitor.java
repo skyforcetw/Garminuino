@@ -1,4 +1,4 @@
-package com.example.notificationlistenerdemo;
+package sky4s.garmin.hud;
 
 import android.app.Notification;
 import android.content.BroadcastReceiver;
@@ -42,7 +42,7 @@ public class NotificationMonitor extends NotificationListenerService {
     private final static boolean DONT_SEND_SAME = false;
 
 
-    public static final String ACTION_NLS_CONTROL = "com.example.notificationlistenerdemo.NLSCONTROL";
+    public static final String ACTION_NLS_CONTROL = "sky4s.garmin.hud.NLSCONTROL";
     public final static String GOOGLE_MAPS_PACKAGE_NAME = "com.google.android.apps.maps";
     private static final String TAG = "NCM";
     private static final String TAG_PRE = "[" + NotificationMonitor.class.getSimpleName() + "] ";
@@ -133,20 +133,25 @@ public class NotificationMonitor extends NotificationListenerService {
         return super.onBind(intent);
     }
 
-    private Intent intent = new Intent("com.example.notificationlistenerdemo.RECEIVER");
+    //    private Intent intent = new Intent("com.example.notificationlistenerdemo.RECEIVER");
+    private void sendBooleanExtra(String string, boolean b) {
+        Intent intent = new Intent(getString(R.string.broadcast_receiver));
+        intent.putExtra(string, b);
+        sendBroadcast(intent);
+    }
+
 
     private void processGoogleMapsNotification(StatusBarNotification sbn) {
         String packageName = sbn.getPackageName();
-        intent.putExtra(getString(R.string.notify_catched),true);
-        sendBroadcast(intent);
+
+        sendBooleanExtra(getString(R.string.notify_catched), true);
+
         if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
             Notification notification = sbn.getNotification();
             if (null == notification) {
                 return;
             }
-            intent.putExtra(getString(R.string.gmaps_notify_catched),true);
-            sendBroadcast(intent);
-
+            sendBooleanExtra(getString(R.string.gmaps_notify_catched), true);
 
             processGoogleMapsNotification(notification);
         }
@@ -221,7 +226,6 @@ public class NotificationMonitor extends NotificationListenerService {
                     String t = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(parcel).toString().trim();
                     switch (indexOfActions) {
                         case 2:
-//                            String exitNavigation = getString(R.string.exit_navigation);
                             inNavigation = t.equalsIgnoreCase(getString(R.string.exit_navigation));
                             break;
                         case 3://distance to turn
@@ -237,8 +241,7 @@ public class NotificationMonitor extends NotificationListenerService {
                 }
                 // Save times. Comment this section out if the notification time isn't important
                 else if (methodName.equals("setTime")) {
-                    // Parameter type (5 = Long)
-//                    parcel.readInt();
+
                 } else if (methodName.equals("setImageBitmap")) {
 
                     int bitmapId = parcel.readInt();
@@ -277,7 +280,6 @@ public class NotificationMonitor extends NotificationListenerService {
                     " " + (null == remainHour ? 00 : remainHour) + ":" + remainMinute + " " + remainDistance + remainDistanceUnit + " " + arrivalTime
                     + " (period: " + notifyPeriodTime + ")";
             log(notifyMessage);
-//            MainActivity.updateMessage(notifyMessage);
             if (0 != updateCount && inNavigation) {
                 updateGaminHudInformation();
             }
@@ -342,7 +344,6 @@ public class NotificationMonitor extends NotificationListenerService {
             case "小時":
             case "時":
             case "시간":
-//            case getString(R.string.hour):
                 return "h";
             default:
                 return chinese;
@@ -377,7 +378,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private void processArrow(Arrow arrow) {
         if (preArrow == arrow) {
-//            return;
+
         } else {
             preArrow = arrow;
         }
@@ -401,11 +402,6 @@ public class NotificationMonitor extends NotificationListenerService {
 
             case GoTo:
                 garminHud.SetDirection(eOutAngle.Straight);
-//                garminHud.SetDirection(eOutAngle.Straight, eOutType.LeftRoundabout, eOutAngle.AsDirection);
-
-//                garminHud.SetDirection((char) eOutAngle.Straight.value,
-//                        (char) (eOutType.LeftRoundabout.value + eOutType.RightRoundabout.value),
-//                        (char) eOutAngle.AsDirection.value);
                 break;
             case EasyLeft:
             case KeepLeft:
@@ -478,7 +474,6 @@ public class NotificationMonitor extends NotificationListenerService {
                 }
 
                 if (0 != int_distance) {
-//                    garminHud.SetAlphabet('A', 'b', 'C', 'd');
                     garminHud.SetDistance(int_distance, units, decimal, false);
                 } else {
                     garminHud.ClearDistance();
@@ -526,7 +521,6 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private void parseTimeAndDistanceToDest(String timeDistanceStirng) {
         String[] timeDistanceSplit = timeDistanceStirng.split("·");
-//        remainTime = remainTimeUnit =
         remainHour = remainMinute = remainDistance = remainDistanceUnit = arrivalTime = null;
 
         if (3 == timeDistanceSplit.length) {
@@ -641,7 +635,8 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     private void parseDistanceToTurn(String distanceString) {
-        final int indexOfHo = distanceString.indexOf("後");
+
+        final int indexOfHo = distanceString.indexOf(getString(R.string.after));
         if (-1 != indexOfHo) {
             distanceString = distanceString.substring(0, indexOfHo);
 
@@ -662,7 +657,6 @@ public class NotificationMonitor extends NotificationListenerService {
         }
         distanceNum = num;
         distanceUnit = unit;
-//        return new String[]{num, unit};
     }
 
     @Override
@@ -673,11 +667,6 @@ public class NotificationMonitor extends NotificationListenerService {
         mPostedNotification = sbn;
         processGoogleMapsNotification(sbn);
     }
-
-//    private static boolean navigationNotifyPosted = false;
-//    public static boolean isNavigationNotifyPosted() {
-//        return navigationNotifyPosted;
-//    }
 
 
     @Override
@@ -690,8 +679,7 @@ public class NotificationMonitor extends NotificationListenerService {
         String packageName = sbn.getPackageName();
         if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
 
-            intent.putExtra(getString(R.string.gmaps_notify_catched),false);
-            sendBroadcast(intent);
+            sendBooleanExtra(getString(R.string.gmaps_notify_catched), false);
 
             int hh = null != remainHour ? Integer.parseInt(remainHour) : 0;
             int mm = Integer.parseInt(remainMinute);
@@ -708,9 +696,8 @@ public class NotificationMonitor extends NotificationListenerService {
                     if (garminHud != null)
                         garminHud.ClearDistance();
                 }
-            }else {
-//                garminHud.ClearDistance();
-//                garminHud.ClearSpeedandWarning();
+            } else {
+
             }
         }
     }

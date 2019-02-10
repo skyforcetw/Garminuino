@@ -1,4 +1,4 @@
-package com.example.notificationlistenerdemo;
+package sky4s.garmin.hud;
 
 import android.Manifest;
 import android.app.Activity;
@@ -72,10 +72,19 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched), false);
-            switchNotificationCatched.setChecked(notify_catched);
-
             boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched), false);
-            switchGmapsNotificationCatched.setChecked(gmaps_notify_catched);
+
+            if(notify_catched) {
+                if(gmaps_notify_catched) {
+                    switchNotificationCatched.setChecked(true);
+                    switchGmapsNotificationCatched.setChecked(true);
+                }else {
+                    switchNotificationCatched.setChecked(true);
+                    switchGmapsNotificationCatched.setChecked(false);
+                }
+            }
+
+
         }
     }
 

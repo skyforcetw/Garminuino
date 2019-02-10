@@ -4,7 +4,7 @@ android {
     compileSdkVersion 23
     buildToolsVersion '28.0.3'
     defaultConfig {
-        applicationId "com.example.notificationlistenerdemo"
+        applicationId "sky4s.garmin.hud"
         minSdkVersion 23
         targetSdkVersion 23
     }
@@ -34,7 +34,7 @@ android {
         versionProps.store(versionPropsFile.newWriter(), null)
 
         defaultConfig {
-            applicationId "com.example.notificationlistenerdemo"
+
             versionName name
             versionCode code
         }
