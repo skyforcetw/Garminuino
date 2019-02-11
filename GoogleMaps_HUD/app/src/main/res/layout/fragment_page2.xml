@@ -22,7 +22,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="buttonOnClicked"
-            android:text="List of Notification" />
+            android:text="List of Notification"
+            android:textSize="@dimen/option_text_size"
+            />
 
         <ScrollView
             android:layout_width="match_parent"
