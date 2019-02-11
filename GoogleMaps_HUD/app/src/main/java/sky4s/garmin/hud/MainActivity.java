@@ -45,13 +45,10 @@ import sky4s.garmin.GarminHUD;
 
 public class MainActivity extends AppCompatActivity {
     //for test with virtual device which no BT device
-    public static final boolean IGNORE_BT_DEVICE = true;
+    public static final boolean IGNORE_BT_DEVICE = false;
 
     private static final String TAG = MainActivity.class.getSimpleName();
-//    private static final String TAG_PRE = "[" + MainActivity.class.getSimpleName() + "] ";
 
-    //    private static final int EVENT_SHOW_CREATE_NOS = 0;
-    private static final int EVENT_LIST_CURRENT_NOS = 1;
     private static final String ENABLED_NOTIFICATION_LISTENERS = "enabled_notification_listeners";
     private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -71,20 +68,28 @@ public class MainActivity extends AppCompatActivity {
     public class MsgReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched), false);
-            boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched), false);
+            String notify_msg = intent.getStringExtra(getString(R.string.notify_msg));
+            if (null != notify_msg) {
+                textViewDebug.setText(notify_msg);
+            } else {
 
-            if(notify_catched) {
-                if(gmaps_notify_catched) {
-                    switchNotificationCatched.setChecked(true);
-                    switchGmapsNotificationCatched.setChecked(true);
-                }else {
-                    switchNotificationCatched.setChecked(true);
-                    switchGmapsNotificationCatched.setChecked(false);
+                boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched), false);
+                boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched), false);
+                boolean notify_parse_failed = intent.getBooleanExtra(getString(R.string.notify_parse_failed), false);
+
+                if (notify_parse_failed) {
+
+                } else {
+                    if (notify_catched){
+                        switchNotificationCatched.setChecked(true);
+                        switchGmapsNotificationCatched.setChecked(false);
+                    }else  if (gmaps_notify_catched) {
+                        switchNotificationCatched.setChecked(true);
+                        switchGmapsNotificationCatched.setChecked(true);
+                    }
+
                 }
             }
-
-
         }
     }
 
@@ -501,8 +506,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean locationServiceStatus;
-    LocationService locationService;
-    LocationManager locationManager;
+    private LocationService locationService;
+    private LocationManager locationManager;
 
     private ServiceConnection sc = new ServiceConnection() {
         @Override
@@ -531,7 +536,6 @@ public class MainActivity extends AppCompatActivity {
     void unbindService() {
         if (locationServiceStatus == false)
             return;
-//        Intent i = new Intent(getApplicationContext(), LocationService.class);
         unbindService(sc);
         locationServiceStatus = false;
     }

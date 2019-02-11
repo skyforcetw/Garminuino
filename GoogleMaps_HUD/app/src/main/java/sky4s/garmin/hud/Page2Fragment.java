@@ -24,17 +24,5 @@ public class Page2Fragment extends Fragment {
         TextView textView = (TextView) getView().findViewById(R.id.textViewDebug);
         ((MainActivity)getActivity()).textViewDebug = textView;
 
-//        button.setOnClickListener(btnChangeFragment_Listener);
-//        btnChangeFragment.setText("Change to ViewFragment1");
-//        btnChangeFragment.setOnClickListener(btnChangeFragment_Listener);
     }
-//    Button.OnClickListener btnChangeFragment_Listener = new View.OnClickListener()
-//    {
-//        @Override
-//        public void onClick(View v)
-//        {
-//            ((MainActivity)getActivity()).buttonOnClicked(v);
-//        }
-//    };
-
 }

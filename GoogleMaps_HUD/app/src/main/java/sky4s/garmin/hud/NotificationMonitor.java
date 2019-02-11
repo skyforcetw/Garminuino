@@ -8,6 +8,9 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,7 +18,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.provider.SyncStateContract;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import sky4s.garmin.Arrow;
@@ -45,8 +48,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
     public static final String ACTION_NLS_CONTROL = "sky4s.garmin.hud.NLSCONTROL";
     public final static String GOOGLE_MAPS_PACKAGE_NAME = "com.google.android.apps.maps";
-    private static final String TAG = "NCM";
-    private static final String TAG_PRE = "[" + NotificationMonitor.class.getSimpleName() + "] ";
+    private static final String TAG = NotificationMonitor.class.getSimpleName();
     private static final int EVENT_UPDATE_CURRENT_NOS = 0;
 
 
@@ -88,33 +90,37 @@ public class NotificationMonitor extends NotificationListenerService {
     private static Bitmap removeAlpha(Bitmap originalBitmap) {
         // lets create a new empty bitmap
         Bitmap newBitmap = Bitmap.createBitmap(originalBitmap.getWidth(), originalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-// create a canvas where we can draw on
+        // create a canvas where we can draw on
         Canvas canvas = new Canvas(newBitmap);
-// create a paint instance with alpha
+        // create a paint instance with alpha
         Paint alphaPaint = new Paint();
         alphaPaint.setAlpha(255);
-// now lets draw using alphaPaint instance
+        // now lets draw using alphaPaint instance
         canvas.drawBitmap(originalBitmap, 0, 0, alphaPaint);
         return newBitmap;
     }
 
+    private static void logi(String msg) {
+        Log.i(TAG, msg);
+    }
+
     public static StatusBarNotification[] getCurrentNotifications() {
         if (mCurrentNotifications.size() == 0) {
-            log("mCurrentNotifications size is ZERO!!");
+            logi("mCurrentNotifications size is ZERO!!");
             return null;
         }
         return mCurrentNotifications.get(0);
     }
 
-    private static void log(Object object) {
-        Log.i(TAG, TAG_PRE + object);
-    }
+//    private static void log(Object object) {
+//        Log.i(TAG, object.toString());
+//    }
 
 
     @Override
     public void onCreate() {
         super.onCreate();
-        log("onCreate...");
+        logi("onCreate...");
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_NLS_CONTROL);
         registerReceiver(mReceiver, filter);
@@ -130,64 +136,88 @@ public class NotificationMonitor extends NotificationListenerService {
 
     @Override
     public IBinder onBind(Intent intent) {
-        log("onBind...");
+        logi("onBind...");
         return super.onBind(intent);
     }
 
-    //    private Intent intent = new Intent("com.example.notificationlistenerdemo.RECEIVER");
-    private void sendBooleanExtra(String string, boolean b) {
+    private void sendBooleanExtra2MainActivity(String string, boolean b) {
         Intent intent = new Intent(getString(R.string.broadcast_receiver));
         intent.putExtra(string, b);
+        sendBroadcast(intent);
+    }
+
+    private void sendStringExtra2MainActivity(String string, String message) {
+        Intent intent = new Intent(getString(R.string.broadcast_receiver));
+        intent.putExtra(string, message);
         sendBroadcast(intent);
     }
 
 
     private void processGoogleMapsNotification(StatusBarNotification sbn) {
         String packageName = sbn.getPackageName();
-
-        sendBooleanExtra(getString(R.string.notify_catched), true);
+        sendBooleanExtra2MainActivity(getString(R.string.notify_catched), true);
 
         if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
             Notification notification = sbn.getNotification();
             if (null == notification) {
                 return;
             }
-            sendBooleanExtra(getString(R.string.gmaps_notify_catched), true);
 
             processGoogleMapsNotification(notification);
+
         }
     }
 
 
     private void processGoogleMapsNotification(Notification notification) {
-
-
-
-        // We have to extract the information from the view
-        RemoteViews views = notification.bigContentView;
-        if (views == null) views = notification.contentView;
-        if (views == null) return;
-
         long currentTime = System.currentTimeMillis();
         notifyPeriodTime = currentTime - lastNotifyTimeMillis;
         lastNotifyTimeMillis = currentTime;
+
+        boolean parseResult = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            parseResult = parseNotificationByExtras(notification);
+//            parseNotificationByReflection(notification);
+        } else {
+            parseResult = parseNotificationByReflection(notification);
+        }
+
+        if (!parseResult) {
+            sendBooleanExtra2MainActivity(getString(R.string.notify_parse_failed) , true);
+        }else {
+            sendBooleanExtra2MainActivity(getString(R.string.gmaps_notify_catched), true);
+        }
+    }
+
+    private boolean checkmActions(RemoteViews views) {
+        try {
+            Class viewsClass = views.getClass();
+            Field fieldActions = viewsClass.getDeclaredField("mActions");
+            return true;
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+            return false;
+        }
+    }
+
+    private boolean parseNotificationByReflection(Notification notification) {
+
+        // We have to extract the information from the view
+        RemoteViews views = notification.bigContentView;
+        if(!checkmActions(views)) {
+            views=null;
+        }
+        if (views == null) views = notification.contentView;
+        if(!checkmActions(views)) {
+            views=null;
+        }
+        if (views == null) return false;
+
 
         // Use reflection to examine the m_actions member of the given RemoteViews object.
         // It's not pretty, but it works.
         try {
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                Bundle extras = notification.extras;
-                if (extras != null) {
-                    // 获取通知标题
-                    String title = extras.getString(Notification.EXTRA_TITLE, "");
-                    // 获取通知内容
-                    String text = extras.getString(Notification.EXTRA_TEXT, "");
-                    String sub_text = extras.getString(Notification.EXTRA_SUB_TEXT, "");
-                    
-                    int a=1;
-                }
-            }
 
             Class viewsClass = views.getClass();
             Field fieldActions = viewsClass.getDeclaredField("mActions");
@@ -239,8 +269,7 @@ public class NotificationMonitor extends NotificationListenerService {
                             updateCount++;
                             break;
                     }
-                }
-                 else if (methodName.equals("setImageBitmap")) {
+                } else if (methodName.equals("setImageBitmap")) {
 
                     int bitmapId = parcel.readInt();
                     Field fieldBitmapCache = views.getClass().getDeclaredField("mBitmapCache");
@@ -272,25 +301,80 @@ public class NotificationMonitor extends NotificationListenerService {
                 indexOfActions++;
             }
 
+            logParseMessage();
             //can update to garmin hud
-            //log("notifyPeriodTime: " + notifyPeriodTime);
-            String notifyMessage = foundArrow.toString() + " " + distanceNum + distanceUnit +
-                    " " + (null == remainHour ? 00 : remainHour) + ":" + remainMinute + " " + remainDistance + remainDistanceUnit + " " + arrivalTime
-                    + " (period: " + notifyPeriodTime + ")";
-            log(notifyMessage);
             if (0 != updateCount && inNavigation) {
                 updateGaminHudInformation();
             }
-
+            return true;
         }
-
         // It's not usually good style to do this, but then again, neither is the use of reflection...
         catch (Exception e) {
-            Log.e("NotificationClassifier", e.toString());
+            Log.e(TAG, e.toString());
+            return false;
         }
-
     }
 
+    private void logParseMessage() {
+        String notifyMessage = foundArrow.toString() + " " + distanceNum + distanceUnit +
+                " " + (null == remainHour ? 00 : remainHour) + ":" + remainMinute + " " + remainDistance + remainDistanceUnit + " " + arrivalTime
+                + " (period: " + notifyPeriodTime + ")";
+        logi(notifyMessage);
+    }
+    private boolean parseNotificationByExtras(Notification notification) {
+        Bundle extras = notification.extras;
+        if (extras != null) {
+            //not in navigation(chinese) of title: 參考 Google 地圖行駛
+            Object titleObj = extras.get(Notification.EXTRA_TITLE);
+            Object subTextObj = extras.get(Notification.EXTRA_SUB_TEXT);
+            String title = null != titleObj ? titleObj.toString() : null;
+            String subText = null != subTextObj ? subTextObj.toString() : null;
+
+            if(null!=subText) {
+                parseTimeAndDistanceToDest(subText);
+                parseDistanceToTurn(title);
+                Icon largeIcon = notification.getLargeIcon();
+                if (null != largeIcon) {
+                    Drawable drawableIco = largeIcon.loadDrawable(this);
+                    Bitmap bitmapImage = drawableToBitmap(drawableIco);
+                    if (null != bitmapImage) {
+                        ArrowImage arrowImage = new ArrowImage(bitmapImage);
+                        foundArrow = getArrow(arrowImage);
+                    }
+                }
+                logParseMessage();
+                updateGaminHudInformation();
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private static Bitmap drawableToBitmap(Drawable drawable) {
+        if (null == drawable) {
+            return null;
+        }
+        Bitmap bitmap = null;
+
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if (bitmapDrawable.getBitmap() != null) {
+                return bitmapDrawable.getBitmap();
+            }
+        }
+
+        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
 
     private void storeBitmap(Bitmap bmp, String filename) {
         FileOutputStream out = null;
@@ -344,7 +428,7 @@ public class NotificationMonitor extends NotificationListenerService {
             case "시간":
                 return "h";
             default:
-                return chinese;
+                return null;
         }
     }
 
@@ -467,7 +551,7 @@ public class NotificationMonitor extends NotificationListenerService {
                 int int_distance = (int) float_distance;
                 boolean decimal = ((eUnits.Kilometres == units) || (eUnits.Miles == units)) && float_distance < 10;
 
-                if (decimal) { //有小數點
+                if (decimal) { //with floating point
                     int_distance = (int) (float_distance * 10);
                 }
 
@@ -510,7 +594,7 @@ public class NotificationMonitor extends NotificationListenerService {
             String sendResultInfo = "dist: " + (distanceSendResult ? '1' : '0')
                     + " time: " + (timeSendResult ? '1' : '0')
                     + " arrow: " + (arrowSendResult ? '1' : '0');
-            log(sendResultInfo);
+            logi(sendResultInfo);
 
         } else {
             garminHud = null;
@@ -577,10 +661,10 @@ public class NotificationMonitor extends NotificationListenerService {
             final int indexOfETA = timeToArrived.indexOf(ETA);
             String[] arrivedSplit = null;
             final boolean etaAtFirst = 0 == indexOfETA;
-            if (etaAtFirst) {//前面, 應該是中文
+            if (etaAtFirst) {//ETA position at first, it should be chinese
                 arrivedSplit = timeToArrived.split(ETA);
                 arrivalTime = 2 == arrivedSplit.length ? arrivedSplit[1] : null;
-            } else {//後面，可能是英文
+            } else {//ETA position at others, it should be English or others
                 arrivedSplit = timeToArrived.split(ETA);
                 arrivalTime = arrivedSplit[0];
             }
@@ -634,9 +718,9 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private void parseDistanceToTurn(String distanceString) {
 
-        final int indexOfHo = distanceString.indexOf(getString(R.string.after));
-        if (-1 != indexOfHo) {
-            distanceString = distanceString.substring(0, indexOfHo);
+        final int indexOfChineseAfter = distanceString.indexOf(getString(R.string.chinese_after));
+        if (-1 != indexOfChineseAfter) {
+            distanceString = distanceString.substring(0, indexOfChineseAfter);
 
         }
         String[] splitArray = distanceString.split(" ");
@@ -660,8 +744,8 @@ public class NotificationMonitor extends NotificationListenerService {
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         updateCurrentNotifications();
-        log("onNotificationPosted...");
-        log("have " + mCurrentNotificationsCounts + " active notifications");
+        logi("onNotificationPosted...");
+        logi("have " + mCurrentNotificationsCounts + " active notifications");
         mPostedNotification = sbn;
         processGoogleMapsNotification(sbn);
     }
@@ -670,14 +754,14 @@ public class NotificationMonitor extends NotificationListenerService {
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
 
-        log("removed...");
-        log("have " + mCurrentNotificationsCounts + " active notifications");
+        logi("removed...");
+        logi("have " + mCurrentNotificationsCounts + " active notifications");
         mRemovedNotification = sbn;
 
         String packageName = sbn.getPackageName();
         if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
 
-            sendBooleanExtra(getString(R.string.gmaps_notify_catched), false);
+            sendBooleanExtra2MainActivity(getString(R.string.gmaps_notify_catched), false);
 
             int hh = null != remainHour ? Integer.parseInt(remainHour) : 0;
             int mm = null != remainMinute ? Integer.parseInt(remainMinute) : -1;
@@ -712,7 +796,7 @@ public class NotificationMonitor extends NotificationListenerService {
             mCurrentNotifications.set(0, activeNos);
             mCurrentNotificationsCounts = activeNos.length;
         } catch (Exception e) {
-            log("Should not be here!!");
+            Log.e(TAG, "Should not be here!!");
             e.printStackTrace();
         }
     }

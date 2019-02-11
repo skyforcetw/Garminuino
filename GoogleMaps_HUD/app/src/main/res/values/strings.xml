@@ -6,7 +6,7 @@
 
     <string name="default_notification_channel_id" translatable="false">google_maps_hud_channel</string>
 
-    <string name="app_name"  >GoogleMaps HUD</string>
+    <string name="app_name"   translatable="false">GoogleMaps HUD</string>
     <string name="action_settings">Settings</string>
 
 
@@ -28,9 +28,13 @@
     <string name="km">km</string>
     <string name="meter">m</string>
 
+    <string name="chinese_after"   translatable="false">後</string>
 
     <string name="bt_bind_name_key" translatable="false">bt_bind_name_key</string>
+
     <string name="broadcast_receiver" translatable="false">sky4s.garmin.hud.RECEIVER</string>
     <string name="notify_catched" translatable="false">notify_catched</string>
     <string name="gmaps_notify_catched" translatable="false">gmaps_notify_catched</string>
+    <string name="notify_parse_failed" translatable="false">notify_parse_failed</string>
+    <string name="notify_msg" translatable="false">notify_msg</string>
 </resources>
