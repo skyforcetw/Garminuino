@@ -8,6 +8,6 @@
     <string name="pm">오후</string>
     <string name="hour">시간</string>
     <string name="minute">분</string>
-    <string name="km">km</string>
-    <string name="meter">m</string>
+    <string name="km">킬로미터</string>
+    <string name="meter">미터법</string>
 </resources>
