@@ -1,4 +1,4 @@
-package sky4s.garmin;
+package sky4s.garminhud;
 
 import android.graphics.Bitmap;
 

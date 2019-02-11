@@ -1,4 +1,4 @@
-package sky4s.garmin.hud;
+package sky4s.garminhud.app;
 
 import android.Manifest;
 import android.app.Activity;
@@ -41,7 +41,7 @@ import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.akexorcist.bluetotohspp.library.BluetoothState;
 import app.akexorcist.bluetotohspp.library.DeviceList;
 import chutka.bitman.com.speedometersimplified.LocationService;
-import sky4s.garmin.GarminHUD;
+import sky4s.garminhud.GarminHUD;
 
 public class MainActivity extends AppCompatActivity {
     //for test with virtual device which no BT device
@@ -60,12 +60,26 @@ public class MainActivity extends AppCompatActivity {
     Switch switchHudConnected;
     Switch switchNotificationCatched;
     Switch switchGmapsNotificationCatched;
+    Switch switchShowETA;
 
     private BluetoothSPP bt;
 
+
+    private void sendBooleanExtra2NotificationMonitor(String string, boolean b) {
+        Intent intent = new Intent(getString(R.string.broadcast_receiver_notification_monitor));
+        intent.putExtra(string, b);
+        sendBroadcast(intent);
+    }
+
+    private void sendIntegerExtra2NotificationMonitor(String string, int i) {
+        Intent intent = new Intent(getString(R.string.broadcast_receiver_notification_monitor));
+        intent.putExtra(string, i);
+        sendBroadcast(intent);
+    }
+
     private MsgReceiver msgReceiver;
 
-    public class MsgReceiver extends BroadcastReceiver {
+    private class MsgReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             String notify_msg = intent.getStringExtra(getString(R.string.notify_msg));
@@ -80,10 +94,10 @@ public class MainActivity extends AppCompatActivity {
                 if (notify_parse_failed) {
 
                 } else {
-                    if (notify_catched){
+                    if (notify_catched) {
                         switchNotificationCatched.setChecked(true);
                         switchGmapsNotificationCatched.setChecked(false);
-                    }else  if (gmaps_notify_catched) {
+                    } else if (gmaps_notify_catched) {
                         switchNotificationCatched.setChecked(true);
                         switchGmapsNotificationCatched.setChecked(true);
                     }
@@ -92,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 
     //========================================================================================
     // tabs
@@ -208,18 +223,10 @@ public class MainActivity extends AppCompatActivity {
         //========================================================================================
         msgReceiver = new MsgReceiver();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(getString(R.string.broadcast_receiver));
+        intentFilter.addAction(getString(R.string.broadcast_receiver_main_activity));
         registerReceiver(msgReceiver, intentFilter);
         //========================================================================================
 
-        //========================================================================================
-        // UI widget linking
-        //========================================================================================
-//        textViewDebug = (TextView) findViewById(R.id.textViewDebug);
-//        switchHudConnected = (Switch) findViewById(R.id.switchHudConnected);
-//        switchNotificationCatched = (Switch) findViewById(R.id.switchNotificationCatched);
-//        switchGmapsNotificationCatched = (Switch) findViewById(R.id.switchGmapsNotificationCatched);
-        //========================================================================================
     }
 
     private BluetoothSPP.BluetoothConnectionListener btConnectionListerner = new BluetoothSPP.BluetoothConnectionListener() {
@@ -319,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
 
-            case R.id.switchShowSpeed:
+            case R.id.switchNavShowSpeed:
                 if (((Switch) view).isChecked()) {
                     if (!checkLocationPermission()) {
                         ((Switch) view).setChecked(false);
@@ -349,6 +356,14 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
 
+            case R.id.switchIdleShowSpeed:
+                break;
+
+            case R.id.switchShowETA:
+//            case R.id.switchIdleShowTime:
+//                sendBooleanExtra2NotificationMonitor(Integer.toString(view.getId()), ((Switch) view).isChecked());
+                sendIntegerExtra2NotificationMonitor(Integer.toString(view.getId()), ((Switch) view).isChecked()?2:1);
+                break;
             default:
                 break;
         }/**/

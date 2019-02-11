@@ -1,6 +1,6 @@
-package sky4s.garmin;
+package sky4s.garminhud;
 
-import sky4s.garmin.hud.MainActivity;
+import sky4s.garminhud.app.MainActivity;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 

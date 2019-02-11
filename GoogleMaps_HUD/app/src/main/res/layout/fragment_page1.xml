@@ -65,7 +65,7 @@
             android:textSize="18sp" />
 
         <Switch
-            android:id="@+id/switchShowSpeed"
+            android:id="@+id/switchNavShowSpeed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -89,18 +89,18 @@
             android:textSize="18sp" />
 
         <Switch
-            android:id="@+id/switch4"
+            android:id="@+id/switchIdleShowSpeed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Show Speed" />
 
         <Switch
-            android:id="@+id/switch5"
+            android:id="@+id/switchIdleShowTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Show time" />
+            android:text="Show Current Time" />
 
 
     </LinearLayout>

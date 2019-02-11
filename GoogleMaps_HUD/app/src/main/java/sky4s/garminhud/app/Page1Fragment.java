@@ -1,4 +1,4 @@
-package sky4s.garmin.hud;
+package sky4s.garminhud.app;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -23,5 +23,6 @@ public class Page1Fragment extends Fragment {
         ((MainActivity)getActivity()).switchHudConnected = (Switch) getView().findViewById(R.id.switchHudConnected);
         ((MainActivity)getActivity()).switchNotificationCatched = (Switch) getView().findViewById(R.id.switchNotificationCatched);
         ((MainActivity)getActivity()).switchGmapsNotificationCatched = (Switch)getView(). findViewById(R.id.switchGmapsNotificationCatched);
+        ((MainActivity)getActivity()).switchShowETA  = (Switch)getView(). findViewById(R.id.switchShowETA);
     }
 }

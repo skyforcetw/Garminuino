@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="sky4s.garmin.hud">
+    package="sky4s.garminhud.app">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -25,7 +25,7 @@
             <!--android:value="@integer/google_play_services_version" />-->
 
         <activity
-            android:name="sky4s.garmin.hud.MainActivity"
+            android:name="sky4s.garminhud.app.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -37,14 +37,14 @@
         <activity android:name="app.akexorcist.bluetoothspp.DeviceList" />
 
         <service
-            android:name="sky4s.garmin.hud.NotificationMonitor"
+            android:name="sky4s.garminhud.app.NotificationMonitor"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
 
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-        <service android:name="sky4s.garmin.hud.NotificationCollectorMonitorService" />
+        <service android:name="sky4s.garminhud.app.NotificationCollectorMonitorService" />
 
         <service android:name="chutka.bitman.com.speedometersimplified.LocationService"></service>
 

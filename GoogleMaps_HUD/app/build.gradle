@@ -4,7 +4,7 @@ android {
     compileSdkVersion 23
     buildToolsVersion '28.0.3'
     defaultConfig {
-        applicationId "sky4s.garmin.hud"
+        applicationId "sky4s.garminhud.app"
         minSdkVersion 23
         targetSdkVersion 23
     }

@@ -1,4 +1,4 @@
-package sky4s.garmin.hud;
+package sky4s.garminhud.app;
 
 import android.app.Fragment;
 import android.os.Bundle;

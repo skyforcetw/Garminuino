@@ -1,4 +1,4 @@
-package sky4s.garmin.hud;
+package sky4s.garminhud.app;
 
 import android.app.Notification;
 import android.content.BroadcastReceiver;
@@ -29,15 +29,14 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
-import sky4s.garmin.Arrow;
-import sky4s.garmin.ArrowImage;
-import sky4s.garmin.GarminHUD;
-import sky4s.garmin.eOutAngle;
-import sky4s.garmin.eOutType;
-import sky4s.garmin.eUnits;
+import sky4s.garminhud.Arrow;
+import sky4s.garminhud.ArrowImage;
+import sky4s.garminhud.GarminHUD;
+import sky4s.garminhud.eOutAngle;
+import sky4s.garminhud.eOutType;
+import sky4s.garminhud.eUnits;
 
 
 public class NotificationMonitor extends NotificationListenerService {
@@ -86,6 +85,8 @@ public class NotificationMonitor extends NotificationListenerService {
     private String remainDistance = null;
     private String remainDistanceUnit = null;
     private String arrivalTime = null;
+    private int arrivalHour = -1;
+    private int arrivalMinute = -1;
 
     private static Bitmap removeAlpha(Bitmap originalBitmap) {
         // lets create a new empty bitmap
@@ -112,9 +113,18 @@ public class NotificationMonitor extends NotificationListenerService {
         return mCurrentNotifications.get(0);
     }
 
-//    private static void log(Object object) {
-//        Log.i(TAG, object.toString());
-//    }
+    private MsgReceiver msgReceiver;
+
+    private class MsgReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            int showETAValue = intent.getIntExtra(Integer.toString(R.id.switchShowETA), 0);
+            showETA = 0 == showETAValue ? showETA : 2 == showETAValue;
+        }
+    }
+
+    private boolean showETA = false;
 
 
     @Override
@@ -126,6 +136,14 @@ public class NotificationMonitor extends NotificationListenerService {
         registerReceiver(mReceiver, filter);
         mMonitorHandler.sendMessage(mMonitorHandler.obtainMessage(EVENT_UPDATE_CURRENT_NOS));
 
+        //========================================================================================
+        // messageer
+        //========================================================================================
+        msgReceiver = new MsgReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(getString(R.string.broadcast_receiver_notification_monitor));
+        registerReceiver(msgReceiver, intentFilter);
+        //========================================================================================
     }
 
     @Override
@@ -141,13 +159,13 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     private void sendBooleanExtra2MainActivity(String string, boolean b) {
-        Intent intent = new Intent(getString(R.string.broadcast_receiver));
+        Intent intent = new Intent(getString(R.string.broadcast_receiver_main_activity));
         intent.putExtra(string, b);
         sendBroadcast(intent);
     }
 
     private void sendStringExtra2MainActivity(String string, String message) {
-        Intent intent = new Intent(getString(R.string.broadcast_receiver));
+        Intent intent = new Intent(getString(R.string.broadcast_receiver_main_activity));
         intent.putExtra(string, message);
         sendBroadcast(intent);
     }
@@ -162,9 +180,7 @@ public class NotificationMonitor extends NotificationListenerService {
             if (null == notification) {
                 return;
             }
-
             processGoogleMapsNotification(notification);
-
         }
     }
 
@@ -177,14 +193,14 @@ public class NotificationMonitor extends NotificationListenerService {
         boolean parseResult = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             parseResult = parseNotificationByExtras(notification);
-//            parseNotificationByReflection(notification);
         } else {
             parseResult = parseNotificationByReflection(notification);
         }
 
         if (!parseResult) {
-            sendBooleanExtra2MainActivity(getString(R.string.notify_parse_failed) , true);
-        }else {
+            sendBooleanExtra2MainActivity(getString(R.string.notify_parse_failed), true);
+            sendBooleanExtra2MainActivity(getString(R.string.gmaps_notify_catched), false);
+        } else {
             sendBooleanExtra2MainActivity(getString(R.string.gmaps_notify_catched), true);
         }
     }
@@ -204,12 +220,12 @@ public class NotificationMonitor extends NotificationListenerService {
 
         // We have to extract the information from the view
         RemoteViews views = notification.bigContentView;
-        if(!checkmActions(views)) {
-            views=null;
+        if (!checkmActions(views)) {
+            views = null;
         }
         if (views == null) views = notification.contentView;
-        if(!checkmActions(views)) {
-            views=null;
+        if (!checkmActions(views)) {
+            views = null;
         }
         if (views == null) return false;
 
@@ -321,6 +337,7 @@ public class NotificationMonitor extends NotificationListenerService {
                 + " (period: " + notifyPeriodTime + ")";
         logi(notifyMessage);
     }
+
     private boolean parseNotificationByExtras(Notification notification) {
         Bundle extras = notification.extras;
         if (extras != null) {
@@ -330,14 +347,23 @@ public class NotificationMonitor extends NotificationListenerService {
             String title = null != titleObj ? titleObj.toString() : null;
             String subText = null != subTextObj ? subTextObj.toString() : null;
 
-            if(null!=subText) {
+            if (null != subText) {
                 parseTimeAndDistanceToDest(subText);
                 parseDistanceToTurn(title);
                 Icon largeIcon = notification.getLargeIcon();
                 if (null != largeIcon) {
                     Drawable drawableIco = largeIcon.loadDrawable(this);
                     Bitmap bitmapImage = drawableToBitmap(drawableIco);
+
                     if (null != bitmapImage) {
+                        if (STORE_IMG) {
+                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow0.png");
+                        }
+                        bitmapImage = removeAlpha(bitmapImage);
+                        if (STORE_IMG) {
+                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow.png");
+                        }
+
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
                         foundArrow = getArrow(arrowImage);
                     }
@@ -544,6 +570,9 @@ public class NotificationMonitor extends NotificationListenerService {
                 garminHud = new GarminHUD(bt);
             }
 
+            //===================================================================================
+            // distance
+            //===================================================================================
             if (null != distanceNum && null != distanceUnit) {
                 float float_distance = Float.parseFloat(distanceNum);
                 eUnits units = get_eUnits(distanceUnit);
@@ -565,31 +594,46 @@ public class NotificationMonitor extends NotificationListenerService {
                 garminHud.ClearDistance();
             }
             final boolean distanceSendResult = garminHud.getSendResult();
+            //===================================================================================
 
+            //===================================================================================
+            // time
+            //===================================================================================
             boolean timeSendResult = false;
+
             if (null != remainMinute) {
-                int hh = null != remainHour ? Integer.parseInt(remainHour) : 0;
-                int mm = Integer.parseInt(remainMinute);
+                if (showETA) {
 
-                boolean sameAsLast = null == remainHour ?
-                        remainMinute.equals(lastRemainMinute) : remainMinute.equals(lastRemainMinute) && remainHour.equals(lastRemainHour);
-                sameAsLast = false;
-                if (!sameAsLast) {
-                    garminHud.SetTime(hh, mm, true);
-                    timeSendResult = garminHud.getSendResult();
-                    lastRemainMinute = remainMinute;
-                    lastRemainHour = remainHour;
+                } else {
+                    int hh = null != remainHour ? Integer.parseInt(remainHour) : 0;
+                    int mm = Integer.parseInt(remainMinute);
+
+                    boolean sameAsLast = null == remainHour ?
+                            remainMinute.equals(lastRemainMinute) : remainMinute.equals(lastRemainMinute) && remainHour.equals(lastRemainHour);
+                    //need to verify the necessary of check same as last.
+                    sameAsLast = false;
+                    if (!sameAsLast) {
+                        garminHud.SetTime(hh, mm, true);
+                        timeSendResult = garminHud.getSendResult();
+                        lastRemainMinute = remainMinute;
+                        lastRemainHour = remainHour;
+                    }
                 }
-
             } else {
 
             }
+            //===================================================================================
+
+            //===================================================================================
+            // arrow
+            //===================================================================================
             final boolean sameAsLastArrow = false;//foundArrow == lastFoundArrow;
             lastFoundArrow = foundArrow;
             if (!sameAsLastArrow) {
                 processArrow(foundArrow);
             }
             final boolean arrowSendResult = sameAsLastArrow ? false : garminHud.getSendResult();
+            //===================================================================================
 
             String sendResultInfo = "dist: " + (distanceSendResult ? '1' : '0')
                     + " time: " + (timeSendResult ? '1' : '0')
@@ -679,10 +723,13 @@ public class NotificationMonitor extends NotificationListenerService {
                 arrivalTime = arrivalTime.trim();
 
                 String[] spilit = arrivalTime.split(":");
-                final int hh = Integer.parseInt(spilit[0]);
+                int hh = Integer.parseInt(spilit[0]);
                 if (-1 != pmIndex && 12 != hh) {
-                    arrivalTime = (hh + 12) + ":" + spilit[1];
+                    hh += 12;
+                    arrivalTime = hh + ":" + spilit[1];
                 }
+                arrivalHour = hh;
+                arrivalMinute = Integer.parseInt(spilit[1]);
             }
             //======================================================================================
 
@@ -832,6 +879,7 @@ public class NotificationMonitor extends NotificationListenerService {
         } else
             return null;
     }
+
 
 }
 

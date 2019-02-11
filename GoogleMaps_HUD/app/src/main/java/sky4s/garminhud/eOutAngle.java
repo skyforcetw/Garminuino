@@ -1,4 +1,4 @@
-package sky4s.garmin;
+package sky4s.garminhud;
 
 /**
  * Created by skyforce on 2018/8/13.

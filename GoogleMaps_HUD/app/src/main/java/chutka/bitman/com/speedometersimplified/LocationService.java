@@ -8,15 +8,15 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import sky4s.garmin.hud.NotificationMonitor;
+import sky4s.garminhud.app.NotificationMonitor;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import sky4s.garmin.GarminHUD;
-import sky4s.garmin.eUnits;
+import sky4s.garminhud.GarminHUD;
+import sky4s.garminhud.eUnits;
 
 /**
  * Created by vipul on 12/13/2015.
@@ -135,12 +135,7 @@ public class LocationService extends Service implements
         if (hud == null)
             return;
         if (speed >= 0.0) {
-//            if (NotificationMonitor.isNavigationNotifyPosted()) {
                 hud.SetSpeed((int) speed, true);
-//            } else {
-//                hud.SetDistance((int) speed, eUnits.None);
-//            }
-
         } else
             hud.ClearSpeedandWarning();
 
