@@ -5,6 +5,10 @@
 This  is a project use GarminHUD as speedometer HUD, or a GoogleMap navigation HUD.
  [Further Information for Android App](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/README.md)
 
+### 2019-02-11 v0.2.0
+New layout of app.
+Add some status indicator for qucik debug.
+
 ### 2019-02-06
 It's necessary to figure out auto coneection is working well or not, so I removed the naevtamarkus' BT Library first.
 I also re-arrange some layout of app, for convient to use.
