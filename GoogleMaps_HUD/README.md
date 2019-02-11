@@ -12,7 +12,8 @@ The app reads the notitification of Google Maps, and parse it. Further it establ
 * Autoconnect to HUD (after first manual connection)
 
 ## Permissions
-The app will need Notification access to read the data of Google Maps Notification
+The app will need Notification access to read the data of Google Maps Notification.
+
 To show the speed on the HUD the app will need access to your location.
 
 # Supported languages
