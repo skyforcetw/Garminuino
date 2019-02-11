@@ -8,15 +8,13 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import sky4s.garmin.hud.NotificationMonitor;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import com.example.notificationlistenerdemo.NotificationMonitor;
-import com.example.notificationlistenerdemo.MainActivity;
-import java.util.concurrent.TimeUnit;
 import sky4s.garmin.GarminHUD;
 import sky4s.garmin.eUnits;
 
@@ -88,7 +86,7 @@ public class LocationService extends Service implements
 
     @Override
     public void onConnectionSuspended(int cause) {
-        if(cause==CAUSE_NETWORK_LOST) { // not tested
+        if (cause == CAUSE_NETWORK_LOST) { // not tested
             if (hud != null)
                 hud.SetSpeed((int) speed, false);
         }
@@ -106,14 +104,14 @@ public class LocationService extends Service implements
             lEnd = mCurrentLocation;
 
         //calculating the speed with getSpeed method it returns speed in m/s so we are converting it into kmph
-        if( NotificationMonitor.getCurrentUnit()==eUnits.Kilometres)
+        if (NotificationMonitor.getCurrentUnit() == eUnits.Kilometres)
             speed = location.getSpeed() * 18 / 5;
-        else if( NotificationMonitor.getCurrentUnit()==eUnits.Miles)
-            speed = location.getSpeed() * 2236 /1000;
-        
+        else if (NotificationMonitor.getCurrentUnit() == eUnits.Miles)
+            speed = location.getSpeed() * 2236 / 1000;
+
         //Calling the method below updates the  live values of distance and speed to the TextViews.
-        updateUI();
-        
+        updateHUD();
+
     }
 
     @Override
@@ -131,14 +129,19 @@ public class LocationService extends Service implements
     }
 
     //The live feed of Distance and Speed are being set in the method below .
-    private void updateUI() {
-        if(hud==null)
+    private void updateHUD() {
+        if (hud == null)
             hud = NotificationMonitor.getGarminHud();
-        if(hud==null)
+        if (hud == null)
             return;
-        if (speed >= 0.0)
-            hud.SetSpeed((int) speed, true);
-        else
+        if (speed >= 0.0) {
+//            if (NotificationMonitor.isNavigationNotifyPosted()) {
+                hud.SetSpeed((int) speed, true);
+//            } else {
+//                hud.SetDistance((int) speed, eUnits.None);
+//            }
+
+        } else
             hud.ClearSpeedandWarning();
 
         lStart = lEnd;

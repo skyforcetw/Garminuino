@@ -1,90 +1,135 @@
-package com.example.notificationlistenerdemo;
+package sky4s.garmin.hud;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
+import android.support.design.widget.TabLayout;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.akexorcist.bluetotohspp.library.BluetoothState;
 import app.akexorcist.bluetotohspp.library.DeviceList;
 import chutka.bitman.com.speedometersimplified.LocationService;
 import sky4s.garmin.GarminHUD;
-import sky4s.garmin.eOutAngle;
-import sky4s.garmin.eUnits;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
     //for test with virtual device which no BT device
-    public static final boolean IGNORE_BT_DEVICE = false;
+    public static final boolean IGNORE_BT_DEVICE = true;
 
-    private static final String TAG = "NLS";
-    private static final String TAG_PRE = "[" + MainActivity.class.getSimpleName() + "] ";
+    private static final String TAG = MainActivity.class.getSimpleName();
+//    private static final String TAG_PRE = "[" + MainActivity.class.getSimpleName() + "] ";
 
     //    private static final int EVENT_SHOW_CREATE_NOS = 0;
     private static final int EVENT_LIST_CURRENT_NOS = 1;
     private static final String ENABLED_NOTIFICATION_LISTENERS = "enabled_notification_listeners";
     private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
-
-    private boolean isEnabledNLS = false;
-    private TextView mTextView;
-    private BluetoothSPP bt;
-
-    private static MainActivity selfActivity = null;
-    private boolean showSpeed = false;
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
-    static void updateMessage(String msg) {
-        if (null != selfActivity) {
-            selfActivity.mTextView.setText(msg);
-//            selfActivity.findViewById()
+    private boolean isEnabledNLS = false;
+    private boolean showSpeed = false;
+
+    TextView textViewDebug;
+    Switch switchHudConnected;
+    Switch switchNotificationCatched;
+    Switch switchGmapsNotificationCatched;
+
+    private BluetoothSPP bt;
+
+    private MsgReceiver msgReceiver;
+
+    public class MsgReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched), false);
+            boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched), false);
+
+            if(notify_catched) {
+                if(gmaps_notify_catched) {
+                    switchNotificationCatched.setChecked(true);
+                    switchGmapsNotificationCatched.setChecked(true);
+                }else {
+                    switchNotificationCatched.setChecked(true);
+                    switchGmapsNotificationCatched.setChecked(false);
+                }
+            }
+
+
         }
     }
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-//                case EVENT_SHOW_CREATE_NOS:
-//                    showCreateNotification();
-//                    break;
-                case EVENT_LIST_CURRENT_NOS:
-                    listCurrentNotification();
-                    break;
-
-                default:
-                    break;
-            }
-        }
+    //========================================================================================
+    // tabs
+    //========================================================================================
+    // Titles of the individual pages (displayed in tabs)
+    private final String[] PAGE_TITLES = new String[]{
+            "Setup",
+            "Debug"
     };
+
+    // The fragments that are used as the individual pages
+    private final Fragment[] PAGES = new Fragment[]{
+            new Page1Fragment(),
+            new Page2Fragment()
+    };
+    // The ViewPager is responsible for sliding pages (fragments) in and out upon user input
+    private ViewPager mViewPager;
+
+    /* PagerAdapter for supplying the ViewPager with the pages (fragments) to display. */
+    public class MyPagerAdapter extends FragmentPagerAdapter {
+
+        public MyPagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return PAGES[position];
+        }
+
+        @Override
+        public int getCount() {
+            return PAGES.length;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return PAGE_TITLES[position];
+        }
+
+    }
+
+    //========================================================================================
 
     private SharedPreferences sharedPref;
 
@@ -92,24 +137,38 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mTextView = (TextView) findViewById(R.id.textView);
 
-        int versionCode = BuildConfig.VERSION_CODE;
-        String versionName = BuildConfig.VERSION_NAME;
-        this.setTitle(this.getTitle() + " v" + versionName + " (build " + versionCode + ")");
+
+        //=======================================================================================
+        // tabs
+        //========================================================================================
+        // Connect the ViewPager to our custom PagerAdapter. The PagerAdapter supplies the pages
+        // (fragments) to the ViewPager, which the ViewPager needs to display.
+        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        mViewPager.setAdapter(new MyPagerAdapter(getFragmentManager()));
+
+        // Connect the tabs with the ViewPager (the setupWithViewPager method does this for us in
+        // both directions, i.e. when a new tab is selected, the ViewPager switches to this page,
+        // and when the ViewPager switches to a new page, the corresponding tab is selected)
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(mViewPager);
+
 
         startService(new Intent(this, NotificationCollectorMonitorService.class));
 
         sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-
+        //========================================================================================
+        // BT related
+        //========================================================================================
+        String bt_status = "";
         if (!IGNORE_BT_DEVICE) {
             bt = new BluetoothSPP(this);
             if (!bt.isBluetoothAvailable()) {
+
                 Toast.makeText(getApplicationContext()
                         , "Bluetooth is not available"
                         , Toast.LENGTH_SHORT).show();
                 finish();
-                //return;
             }
 
             String bt_bind_name = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
@@ -127,40 +186,77 @@ public class MainActivity extends Activity {
                 }
             }
 
-            bt.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() {
-                public void onDeviceDisconnected() {
-                    mTextView.setText("Status : Not connect");
-                    NotificationMonitor.bt = null;
-                    logNLS("onDeviceDisconnected");
-                }
+            bt.setBluetoothConnectionListener(btConnectionListerner);
+            bt.setAutoConnectionListener(btAutoConnectionListener);
 
-                public void onDeviceConnectionFailed() {
-                    mTextView.setText("Status : Connection failed");
-                    NotificationMonitor.bt = null;
-                    logNLS("onDeviceConnectionFailed");
-                }
+        } else {
+            bt_status = "(BYPASS BT)";
+        }
+        //========================================================================================
 
-                public void onDeviceConnected(String name, String address) {
-                    mTextView.setText("Status : Connected to " + name);
-                    NotificationMonitor.bt = bt;
-                    logNLS("onDeviceConnected");
+        int versionCode = BuildConfig.VERSION_CODE;
+        String versionName = BuildConfig.VERSION_NAME;
+//        this.setTitle(this.getTitle() + " v" + versionName + " (build " + versionCode + ")" + bt_status);
+        createNotification(this);
+        //========================================================================================
+        // messageer
+        //========================================================================================
+        msgReceiver = new MsgReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(getString(R.string.broadcast_receiver));
+        registerReceiver(msgReceiver, intentFilter);
+        //========================================================================================
 
-                    if (showSpeed && !locationServiceStatus)
-                        bindService();
+        //========================================================================================
+        // UI widget linking
+        //========================================================================================
+//        textViewDebug = (TextView) findViewById(R.id.textViewDebug);
+//        switchHudConnected = (Switch) findViewById(R.id.switchHudConnected);
+//        switchNotificationCatched = (Switch) findViewById(R.id.switchNotificationCatched);
+//        switchGmapsNotificationCatched = (Switch) findViewById(R.id.switchGmapsNotificationCatched);
+        //========================================================================================
+    }
 
-                    String connected_device_name = bt.getConnectedDeviceName();
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putString(getString(R.string.bt_bind_name_key), connected_device_name);
-                    editor.commit();
-                }
-            });
-
-
+    private BluetoothSPP.BluetoothConnectionListener btConnectionListerner = new BluetoothSPP.BluetoothConnectionListener() {
+        public void onDeviceDisconnected() {
+            switchHudConnected.setChecked(false);
+            NotificationMonitor.bt = null;
+            log("onDeviceDisconnected");
         }
 
-        createNotification(this);
-        selfActivity = this;
-    }
+        public void onDeviceConnectionFailed() {
+            switchHudConnected.setChecked(false);
+            NotificationMonitor.bt = null;
+            log("onDeviceConnectionFailed");
+        }
+
+        public void onDeviceConnected(String name, String address) {
+            switchHudConnected.setText("'" + name + "' connected");
+            switchHudConnected.setChecked(true);
+            NotificationMonitor.bt = bt;
+            log("onDeviceConnected");
+
+            if (showSpeed && !locationServiceStatus)
+                bindService();
+
+            String connected_device_name = bt.getConnectedDeviceName();
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(getString(R.string.bt_bind_name_key), connected_device_name);
+            editor.commit();
+        }
+    };
+
+    private BluetoothSPP.AutoConnectionListener btAutoConnectionListener = new BluetoothSPP.AutoConnectionListener() {
+        public void onAutoConnectionStarted() {
+            int a = 1;
+        }
+
+        public void onNewConnection(String var1, String var2) {
+            int a = 1;
+        }
+
+    };
+
 
     public void onDestroy() {
         super.onDestroy();
@@ -171,6 +267,7 @@ public class MainActivity extends Activity {
         if (locationServiceStatus == true) {
             unbindService();
         }
+        unregisterReceiver(msgReceiver);
     }
 
     @Override
@@ -180,12 +277,12 @@ public class MainActivity extends Activity {
         if (!IGNORE_BT_DEVICE) {
             if (!bt.isBluetoothEnabled()) {
                 Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                //there comes twice bt permission dialog
                 startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
             } else {
                 if (!bt.isServiceAvailable()) {
                     bt.setupService();
                     bt.startService(BluetoothState.DEVICE_OTHER);
-//                    bt.autoConnect("GARMIN HUD+");
                 }
             }
         }
@@ -195,40 +292,36 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         isEnabledNLS = isEnabled();
-        logNLS("isEnabledNLS = " + isEnabledNLS);
+        log("isEnabledNLS = " + isEnabledNLS);
         if (!isEnabledNLS) {
             showConfirmDialog();
         }
     }
 
     public void buttonOnClicked(View view) {
-        mTextView.setTextColor(Color.BLACK);
+//        textViewDebug.setTextColor(Color.BLACK);
         switch (view.getId()) {
 
             case R.id.btnListNotify:
-                logNLS("List notifications...");
+                log("List notifications...");
                 listCurrentNotification();
                 break;
 
-            case R.id.btnToggle:
-                logNLS("Toogle service...");
-                toggleNotificationListenerService(this);
-                break;
             case R.id.btnScanBT:
-                logNLS("Scan Bluetooth...");
+                log("Scan Bluetooth...");
                 if (!IGNORE_BT_DEVICE) {
                     scanBluetooth();
                 }
                 break;
 
-            case R.id.tgBtnShowSpeed:
-                if (((ToggleButton) view).isChecked()) {
+            case R.id.switchShowSpeed:
+                if (((Switch) view).isChecked()) {
                     if (!checkLocationPermission()) {
-                        ((ToggleButton) view).setChecked(false);
+                        ((Switch) view).setChecked(false);
                         break;
                     }
                     if (!checkGps()) {
-                        ((ToggleButton) view).setChecked(false);
+                        ((Switch) view).setChecked(false);
                         break;
                     }
                     locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -249,22 +342,13 @@ public class MainActivity extends Activity {
                         hud.ClearSpeedandWarning();
                     showSpeed = false;
                 }
-
-
                 break;
+
             default:
                 break;
         }/**/
     }
 
-    private void sendToGarminHUD() {
-        if (null != bt) {
-            GarminHUD garminHud = new GarminHUD(bt);
-            garminHud.SetDistance(100, eUnits.Metres);
-            garminHud.SetSpeedAndWarning(100, 100);
-            garminHud.SetDirection(eOutAngle.Right);
-        }
-    }
 
     private void scanBluetooth() {
 
@@ -273,7 +357,6 @@ public class MainActivity extends Activity {
                     , "Bluetooth is not available"
                     , Toast.LENGTH_SHORT).show();
         } else {
-//            bt.startService(BluetoothState.DEVICE_OTHER);
             bt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
 
             Intent intent = new Intent(getApplicationContext(), DeviceList.class);
@@ -282,11 +365,13 @@ public class MainActivity extends Activity {
         }
     }
 
-
-    private void toggleNotificationListenerService(Context context) {
-
+    /*
+    Does we need restartNotificationListenerService here?
+    It should be NotificaitonCollectorMonitorService's work.
+     */
+    private void restartNotificationListenerService(Context context) {
         //worked!
-        //NotificationMonitor or  NotificationCollectorMonitorService??
+        //NotificationMonitor
         stopService(new Intent(this, NotificationMonitor.class));
         startService(new Intent(this, NotificationMonitor.class));
 
@@ -317,59 +402,16 @@ public class MainActivity extends Activity {
     }
 
     private void createNotification(Context context) {
-
         NotificationManager manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-        String channelID = Integer.toString(0x1234);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channelHUD = new NotificationChannel(
-                    channelID,
-                    "GoogleMaps HUD",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            channelHUD.setDescription("GoogleMaps HUD");
-            channelHUD.enableLights(false);
-            channelHUD.enableVibration(false);
-            manager.createNotificationChannel(channelHUD);
-        }
+        //ignore OREO NotificationChannel, because GARMINuino no need this new feature.
 
         NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this, channelID)
+                new NotificationCompat.Builder(this)
                         .setSmallIcon(R.mipmap.ic_launcher)
-//                            .setContentTitle("Garmin HUD")
-                        .setContentText("Working");
-
-        Intent notifyIntent =
-                new Intent(this, MainActivity.class);
-
-// Creates the PendingIntent
-//        PendingIntent notifyPendingIntent =
-//                PendingIntent.getActivity(
-//                        this,
-//                        0,
-//                        notifyIntent,
-//                        PendingIntent.FLAG_UPDATE_CURRENT
-//                );
-
-//        final TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext()); // 建立TaskStackBuilder
-//        stackBuilder.addParentStack(MainActivity.class); // 加入目前要啟動的Activity，這個方法會將這個Activity的所有上層的Activity(Parents)都加到堆疊中
-//        stackBuilder.addNextIntent(intent); // 加入啟動Activity的Intent
-
-        final int notifyID = 1; // 通知的識別號碼
-        final int requestCode = notifyID; // PendingIntent的Request Code
-//        final int flags = PendingIntent.FLAG_UPDATE_CURRENT;
-        // ONE_SHOT：PendingIntent只使用一次；CANCEL_CURRENT：PendingIntent執行前會先結束掉之前的；NO_CREATE：沿用先前的PendingIntent，不建立新的PendingIntent；UPDATE_CURRENT：更新先前PendingIntent所帶的額外資料，並繼續沿用
-
-//        final PendingIntent notifyPendingIntent = stackBuilder.getPendingIntent(requestCode, flags); // 取得PendingIntent
-        Intent intent = new Intent();
-//        intent.setClass(MainActivity.this, MainActivity.class);
-        PendingIntent notifyPendingIntent = PendingIntent.getActivity(this, requestCode, intent, 0);
-
-        // Puts the PendingIntent into the notification builder
-        builder.setContentIntent(notifyPendingIntent);
-
+                        .setContentTitle("GARMINuino")
+                        .setContentText("is on working");
 
         Notification notification = builder.build();
-
         manager.notify(1, notification);
 
     }
@@ -379,7 +421,7 @@ public class MainActivity extends Activity {
         StatusBarNotification[] currentNos = NotificationMonitor.getCurrentNotifications();
         if (currentNos != null) {
             for (int i = 0; i < currentNos.length; i++) {
-                listNos = Integer.toString(i + 1) + " " + currentNos[i].getPackageName() + "\n" + listNos;
+                listNos += Integer.toString(i + 1) + " " + currentNos[i].getPackageName() + "\n";
             }
         }
         return listNos;
@@ -391,8 +433,8 @@ public class MainActivity extends Activity {
         if (isEnabledNLS) {
             if (NotificationMonitor.getCurrentNotifications() == null) {
                 result = "No Notifications Capture!!!\nSometimes reboot device or re-install app can resolve this problem.";
-                logNLS(result);
-                mTextView.setText(result);
+                log(result);
+                textViewDebug.setText(result);
                 return;
             }
             int n = NotificationMonitor.mCurrentNotificationsCounts;
@@ -402,10 +444,10 @@ public class MainActivity extends Activity {
                 result = String.format(getResources().getQuantityString(R.plurals.active_notification_count_nonzero, n, n));
             }
             result = result + "\n" + getCurrentNotificationString();
-            mTextView.setText(result);
+            textViewDebug.setText(result);
         } else {
-            mTextView.setTextColor(Color.RED);
-            mTextView.setText("Please Enable Notification Access");
+            textViewDebug.setTextColor(Color.RED);
+            textViewDebug.setText("Please Enable Notification Access");
         }
     }
 
@@ -435,8 +477,8 @@ public class MainActivity extends Activity {
                 .create().show();
     }
 
-    private void logNLS(Object object) {
-        Log.i(TAG, TAG_PRE + object);
+    private void log(Object object) {
+        Log.i(TAG, object.toString());
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -448,7 +490,6 @@ public class MainActivity extends Activity {
                 if (resultCode == Activity.RESULT_OK) {
                     bt.setupService();
                     bt.startService(BluetoothState.DEVICE_OTHER);
-//                setup();
                 } else {
                     Toast.makeText(getApplicationContext()
                             , "Bluetooth was not enabled."
@@ -459,10 +500,9 @@ public class MainActivity extends Activity {
         }
     }
 
-    static boolean locationServiceStatus;
+    private boolean locationServiceStatus;
     LocationService locationService;
     LocationManager locationManager;
-    static long startTime, endTime;
 
     private ServiceConnection sc = new ServiceConnection() {
         @Override
@@ -485,14 +525,13 @@ public class MainActivity extends Activity {
         Intent i = new Intent(getApplicationContext(), LocationService.class);
         bindService(i, sc, BIND_AUTO_CREATE);
         locationServiceStatus = true;
-        startTime = System.currentTimeMillis();
     }
 
     // unbind/deactivate LocationService
     void unbindService() {
         if (locationServiceStatus == false)
             return;
-        Intent i = new Intent(getApplicationContext(), LocationService.class);
+//        Intent i = new Intent(getApplicationContext(), LocationService.class);
         unbindService(sc);
         locationServiceStatus = false;
     }
@@ -567,4 +606,8 @@ public class MainActivity extends Activity {
         }
     }
 
+
 }
+
+
+
