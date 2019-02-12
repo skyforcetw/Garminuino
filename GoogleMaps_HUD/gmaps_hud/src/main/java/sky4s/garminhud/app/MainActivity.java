@@ -360,10 +360,13 @@ public class MainActivity extends AppCompatActivity {
                 break;
                 
             case R.id.switchShowETA:
+                sendBooleanExtra2NotificationMonitor(Integer.toString(R.id.switchShowETA), ((Switch) view).isChecked());
+                break;
+                
 //            case R.id.switchIdleShowTime:
 //                sendBooleanExtra2NotificationMonitor(Integer.toString(view.getId()), ((Switch) view).isChecked());
-                sendIntegerExtra2NotificationMonitor(Integer.toString(view.getId()), ((Switch) view).isChecked()?2:1);
-                break;
+//                sendIntegerExtra2NotificationMonitor(Integer.toString(view.getId()), ((Switch) view).isChecked()?2:1);
+//                break;
             default:
                 break;
         }/**/
