@@ -120,8 +120,7 @@ public class NotificationMonitor extends NotificationListenerService {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            int showETAValue = intent.getIntExtra(Integer.toString(R.id.switchShowETA), 0);
-            showETA = 0 == showETAValue ? showETA : 2 == showETAValue;
+            showETA = intent.getBooleanExtra(Integer.toString(R.id.switchShowETA), false);
         }
     }
 
@@ -606,7 +605,16 @@ public class NotificationMonitor extends NotificationListenerService {
 
             if (null != remainMinute) {
                 if (showETA) {
+                    if(arrivalHour!=-1 && arrivalMinute!=-1) {
+                        boolean sameAsLast = (arrivalHour == lastArrivalHour && arrivalMinute == lastArrivalMinute) ? true : false;
 
+                        if (!sameAsLast) {
+                            garminHud.SetTime(arrivalHour, arrivalMinute, false);
+                            timeSendResult = garminHud.getSendResult();
+                            lastArrivalMinute = arrivalMinute;
+                            lastArrivalHour = arrivalHour;
+                        }
+                    }
                 } else {
                     int hh = null != remainHour ? Integer.parseInt(remainHour) : 0;
                     int mm = Integer.parseInt(remainMinute);
