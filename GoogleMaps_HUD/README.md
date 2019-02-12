@@ -1,5 +1,5 @@
-# Garminuino Android App
-Garminuino Android App parses the navigation information from Google Maps App and displays it on the Garmin HUD
+# GoogleMaps HUD
+Garminuino Android App: GoogleMaps HUD, parses the navigation information from Google Maps App and displays it on the Garmin HUD
 
 ## How it works
 The app reads the notitification of Google Maps, and parse it. Further it establish a connection to the Garmin HUD and sends the processed data.
