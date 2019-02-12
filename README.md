@@ -1,9 +1,18 @@
 # Garminuino
-
-![IMAGE ALT TEXT HERE](https://raw.githubusercontent.com/skyforcetw/Garminuino/f71f77eff7afc2c0c95a0076b2e75070de46e633/P_20190125_225356-02.jpeg "Two Garmin HUD application")
-
 This  is a project use GarminHUD as speedometer HUD, or a GoogleMap navigation HUD.
+
+
  [Further Information for Android App](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/README.md)
+ 
+ [Downloading newest release here](https://github.com/skyforcetw/Garminuino/releases)
+
+![Two Garmin HUD application](https://raw.githubusercontent.com/skyforcetw/Garminuino/f71f77eff7afc2c0c95a0076b2e75070de46e633/P_20190125_225356-02.jpeg "Two Garmin HUD application")
+
+![App layout](https://raw.githubusercontent.com/skyforcetw/Garminuino/master/112893.jpg "App Layout")
+
+### 2019-02-11 v0.2.0
+New layout of app.
+Add some status indicator for qucik debug.
 
 ### 2019-02-06
 It's necessary to figure out auto coneection is working well or not, so I removed the naevtamarkus' BT Library first.

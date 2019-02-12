@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string name="exit_navigation">結束導航</string>
+    <string name="after">後</string>
+
+    <string name="ETA">預計到達時間：</string>
+    <string name="am">上午</string>
+    <string name="pm">下午</string>
+    <string name="hour">時</string>
+    <string name="hour2">小時</string>
+    <string name="minute">分</string>
+    <string name="minute2">分鐘</string>
+    <string name="km">公里</string>
+    <string name="meter">公尺</string>
+
+
+</resources>

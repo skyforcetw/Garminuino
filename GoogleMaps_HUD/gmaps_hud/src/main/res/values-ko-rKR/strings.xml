@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="exit_navigation">내비게이션 종료</string>
+    <string name="after">after</string>
+    <string name="ETA">예상도착시간:</string>
+    <string name="am">오전</string>
+    <string name="pm">오후</string>
+    <string name="hour">시간</string>
+    <string name="minute">분</string>
+    <string name="km">킬로미터</string>
+    <string name="meter">미터법</string>
+</resources>
