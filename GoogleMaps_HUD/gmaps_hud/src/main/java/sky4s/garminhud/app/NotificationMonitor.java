@@ -88,6 +88,8 @@ public class NotificationMonitor extends NotificationListenerService {
     private String arrivalTime = null;
     private int arrivalHour = -1;
     private int arrivalMinute = -1;
+    private int lastArrivalHour = -1;
+    private int lastArrivalMinute = -1;
 
     private static Bitmap removeAlpha(Bitmap originalBitmap) {
         // lets create a new empty bitmap
@@ -800,6 +802,18 @@ public class NotificationMonitor extends NotificationListenerService {
             }
         }
         return result;
+    }
+    
+    private boolean containsOnlyWhitespaces(String str) {
+        boolean string_empty = true;
+        for(int x=0; x<str.length(); x++) {
+            if (!Character.isWhitespace(str.charAt(x))) {
+                string_empty = false;
+                return string_empty;
+            }
+        }
+
+        return string_empty;
     }
 
     private void parseDistanceToTurn(String distanceString) {
