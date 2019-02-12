@@ -357,9 +357,12 @@ public class MainActivity extends AppCompatActivity {
                 break;
 <<<<<<< HEAD:GoogleMaps_HUD/gmaps_hud/src/main/java/sky4s/garminhud/app/MainActivity.java
 <<<<<<< HEAD:GoogleMaps_HUD/gmaps_hud/src/main/java/sky4s/garminhud/app/MainActivity.java
+<<<<<<< HEAD:GoogleMaps_HUD/gmaps_hud/src/main/java/sky4s/garminhud/app/MainActivity.java
 
             case R.id.switchIdleShowSpeed:
                 break;
+=======
+>>>>>>> parent of f0ef442... Add possibility for showing ETA:GoogleMaps_HUD/app/src/main/java/com/example/notificationlistenerdemo/MainActivity.java
 =======
 >>>>>>> parent of f0ef442... Add possibility for showing ETA:GoogleMaps_HUD/app/src/main/java/com/example/notificationlistenerdemo/MainActivity.java
 =======
