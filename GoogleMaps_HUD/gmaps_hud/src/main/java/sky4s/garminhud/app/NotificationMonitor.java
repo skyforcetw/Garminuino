@@ -47,6 +47,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
     public static final String ACTION_NLS_CONTROL = "sky4s.garmin.hud.NLSCONTROL";
     public final static String GOOGLE_MAPS_PACKAGE_NAME = "com.google.android.apps.maps";
+    public final static String GOOGLE_MAPS_NOTIFICATION_GROUP_NAVIGATION = "navigation_status_notification_group";
     private static final String TAG = NotificationMonitor.class.getSimpleName();
     private static final int EVENT_UPDATE_CURRENT_NOS = 0;
 
@@ -340,7 +341,8 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private boolean parseNotificationByExtras(Notification notification) {
         Bundle extras = notification.extras;
-        if (extras != null) {
+        String group_name = notification.getGroup();
+        if ( (extras != null) && group_name.equals(GOOGLE_MAPS_NOTIFICATION_GROUP_NAVIGATION) ) {
             //not in navigation(chinese) of title: 參考 Google 地圖行駛
             Object titleObj = extras.get(Notification.EXTRA_TITLE);
             Object subTextObj = extras.get(Notification.EXTRA_SUB_TEXT);
