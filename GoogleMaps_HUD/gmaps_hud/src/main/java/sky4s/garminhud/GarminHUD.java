@@ -122,8 +122,8 @@ public class GarminHUD {
         SetTime(nH, nM, true, false, true, false);
     }
 
-    public void SetTime(int nH, int nM, boolean hFlag) {
-        SetTime(nH, nM, true, false, true, hFlag);
+    public void SetTime(int nH, int nM, boolean bFlag) {
+        SetTime(nH, nM, bFlag, false, true, false);
     }
 
     public void SetTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
