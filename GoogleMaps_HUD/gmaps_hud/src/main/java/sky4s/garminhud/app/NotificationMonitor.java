@@ -437,25 +437,26 @@ public class NotificationMonitor extends NotificationListenerService {
         }
     }
 
-    private String translate(String chinese) {
-        switch (chinese) {
-            case "公里":
-            case "킬로미터":
-                return "km";
-            case "公尺":
-            case "미터법":
-                return "m";
-            case "分":
-            case "分鐘":
-            case "분":
-                return "m";
-            case "小時":
-            case "時":
-            case "시간":
-                return "h";
-            default:
-                return null;
-        }
+    // Translates the units (distance and time) from local language and charset in common values
+    private String translate(String local_language_string) {
+        if(local_language_string == getString(R.string.km))
+            return "km";
+        else if(local_language_string.equalsIgnoreCase(getString(R.string.meter)))
+            return "m";
+        else if(local_language_string.equalsIgnoreCase(getString(R.string.feet)))
+            return "ft";
+        else if(local_language_string.equalsIgnoreCase(getString(R.string.miles)))
+            return "mi";
+        else if(local_language_string.equalsIgnoreCase(getString(R.string.minute)))
+            return "m";
+        else if(local_language_string.equalsIgnoreCase(getString(R.string.minute2)))
+            return "m";
+        else if(local_language_string.equalsIgnoreCase(getString(R.string.hour)))
+            return "h";
+        else if(local_language_string.equalsIgnoreCase(getString(R.string.hour2)))
+            return "h";
+        else
+            return null;
     }
 
     // Returns the current Unit (Kilometres or Miles) based on distanceToTurn
