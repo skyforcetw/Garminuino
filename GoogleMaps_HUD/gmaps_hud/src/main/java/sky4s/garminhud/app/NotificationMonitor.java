@@ -121,6 +121,7 @@ public class NotificationMonitor extends NotificationListenerService {
         public void onReceive(Context context, Intent intent) {
 
             showETA = intent.getBooleanExtra(Integer.toString(R.id.switchShowETA), false);
+            lastArrivalMinute = -1; // Force to switch to ETA after several toggles
         }
     }
 
