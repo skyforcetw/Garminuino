@@ -373,6 +373,8 @@ public class NotificationMonitor extends NotificationListenerService {
                 String distance = title_str[0].trim();
                 if(Character.isDigit(distance.charAt(0)))
                     parseDistanceToTurn(distance);
+                else
+                    distanceNum = "-1";
                 
                 Icon largeIcon = notification.getLargeIcon();
                 if (null != largeIcon) {
@@ -609,7 +611,7 @@ public class NotificationMonitor extends NotificationListenerService {
                     int_distance = (int) (float_distance * 10);
                 }
 
-                if (0 != int_distance) {
+                if (-1 != int_distance) {
                     garminHud.SetDistance(int_distance, units, decimal, false);
                 } else {
                     garminHud.ClearDistance();
