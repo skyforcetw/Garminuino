@@ -708,31 +708,38 @@ public class NotificationMonitor extends NotificationListenerService {
             final int indexOfETA = timeToArrived.indexOf(ETA);
             String[] arrivedSplit = null;
             final boolean etaAtFirst = 0 == indexOfETA;
-            if (etaAtFirst) {//ETA position at first, it should be chinese
+            // Separate EAT-String from value
+            if (etaAtFirst) { // ETA-String first, then value (chinese)
                 arrivedSplit = timeToArrived.split(ETA);
                 arrivalTime = 2 == arrivedSplit.length ? arrivedSplit[1] : null;
-            } else {//ETA position at others, it should be English or others
+            } else { // ETA-value first, then string (english)
                 arrivedSplit = timeToArrived.split(ETA);
                 arrivalTime = arrivedSplit[0];
             }
-
             arrivalTime = null != arrivalTime ? arrivalTime.trim() : arrivalTime;
+
             final int amIndex = arrivalTime.indexOf(getString(R.string.am));
             final int pmIndex = arrivalTime.indexOf(getString(R.string.pm));
             final boolean ampmAtFirst = 0 == amIndex || 0 == pmIndex;
-            if (-1 != amIndex || -1 != pmIndex) {
-                final int index = Math.max(amIndex, pmIndex);
+            if (-1 != amIndex || -1 != pmIndex) { // 12-hour-format
+                final int index = Math.max(amIndex, pmIndex);  // index of "am" or "pm"
                 arrivalTime = ampmAtFirst ? arrivalTime.substring(index + 2) : arrivalTime.substring(0, index);
                 arrivalTime = arrivalTime.trim();
 
-                String[] spilit = arrivalTime.split(":");
-                int hh = Integer.parseInt(spilit[0]);
+                String[] split = arrivalTime.split(":");
+                int hh = Integer.parseInt(split[0]);
+                arrivalHour = hh;
+                arrivalMinute = Integer.parseInt(split[1]);
                 if (-1 != pmIndex && 12 != hh) {
                     hh += 12;
-                    arrivalTime = hh + ":" + spilit[1];
+                    arrivalTime = hh + ":" + split[1];
                 }
-                arrivalHour = hh;
-                arrivalMinute = Integer.parseInt(spilit[1]);
+            } else { // 24-hour-format
+                arrivalTime = arrivalTime.trim();
+
+                String[] split = arrivalTime.split(":");
+                arrivalHour = Integer.parseInt(split[0]);
+                arrivalMinute = Integer.parseInt(split[1]);
             }
             //======================================================================================
 
