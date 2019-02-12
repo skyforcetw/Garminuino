@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isEnabledNLS = false;
     private boolean showSpeed = false;
-    public static boolean showETA = false;
 
     TextView textViewDebug;
     Switch switchHudConnected;
@@ -355,12 +354,6 @@ public class MainActivity extends AppCompatActivity {
                         hud.ClearSpeedandWarning();
                     showSpeed = false;
                 }
-                break;
-            case R.id.switchShowETA:
-                if(((Switch) view).isChecked())
-                    showETA = true;
-                else
-                    showETA = false;
                 break;
 
             case R.id.switchIdleShowSpeed:
