@@ -349,9 +349,29 @@ public class NotificationMonitor extends NotificationListenerService {
             String title = null != titleObj ? titleObj.toString() : null;
             String subText = null != subTextObj ? subTextObj.toString() : null;
 
-            if (null != subText) {
+            // Check if subText is empty (" ·  · ") --> don't parse subText
+            // Occurs for example on NagivationChanged
+            boolean subTextEmpty = true;
+            if(null != subText) {
+                String [] split = subText.split("·");
+                for(int i=0; i<split.length; i++) {
+                    split[i].trim();
+                    boolean string_empty = containsOnlyWhitespaces(split[i]);
+                    if(string_empty == false) {
+                        subTextEmpty = false;
+                        break;
+                    }
+                }
+            }
+
+            if (null != subText && !subTextEmpty) {
                 parseTimeAndDistanceToDest(subText);
-                parseDistanceToTurn(title);
+                
+                String [] title_str = title.split("–");
+                String distance = title_str[0].trim();
+                if(Character.isDigit(distance.charAt(0)))
+                    parseDistanceToTurn(distance);
+                
                 Icon largeIcon = notification.getLargeIcon();
                 if (null != largeIcon) {
                     Drawable drawableIco = largeIcon.loadDrawable(this);
