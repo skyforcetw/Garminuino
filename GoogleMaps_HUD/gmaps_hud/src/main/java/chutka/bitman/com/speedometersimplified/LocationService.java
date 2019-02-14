@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import sky4s.garminhud.app.NotificationMonitor;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -16,6 +15,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import sky4s.garminhud.GarminHUD;
+import sky4s.garminhud.app.NotificationMonitor;
 import sky4s.garminhud.eUnits;
 
 /**
@@ -33,15 +33,18 @@ public class LocationService extends Service implements
     Location mCurrentLocation, lStart, lEnd;
     static double distance = 0;
     public static double speed;
-    private static GarminHUD hud = null;
+    private GarminHUD garminHud = null;
 
+    public void setGarminHUD(GarminHUD hud) {
+        this.garminHud = hud;
+    }
 
     private final IBinder mBinder = new LocalBinder();
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        hud = NotificationMonitor.getGarminHud();
+//        hud = NotificationMonitor.getGarminHud();
         createLocationRequest();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -87,8 +90,8 @@ public class LocationService extends Service implements
     @Override
     public void onConnectionSuspended(int cause) {
         if (cause == CAUSE_NETWORK_LOST) { // not tested
-            if (hud != null)
-                hud.SetSpeed((int) speed, false);
+            if (null != garminHud)
+                garminHud.SetSpeed((int) speed, false);
         }
     }
 
@@ -104,10 +107,11 @@ public class LocationService extends Service implements
             lEnd = mCurrentLocation;
 
         //calculating the speed with getSpeed method it returns speed in m/s so we are converting it into kmph
-        if (NotificationMonitor.getCurrentUnit() == eUnits.Kilometres)
+        if (eUnits.Kilometres == NotificationMonitor.getCurrentUnit() || eUnits.None == NotificationMonitor.getCurrentUnit()) {
             speed = location.getSpeed() * 18 / 5;
-        else if (NotificationMonitor.getCurrentUnit() == eUnits.Miles)
+        } else if (eUnits.Miles == NotificationMonitor.getCurrentUnit()) {
             speed = location.getSpeed() * 2236 / 1000;
+        }
 
         //Calling the method below updates the  live values of distance and speed to the TextViews.
         updateHUD();
@@ -130,14 +134,14 @@ public class LocationService extends Service implements
 
     //The live feed of Distance and Speed are being set in the method below .
     private void updateHUD() {
-        if (hud == null)
-            hud = NotificationMonitor.getGarminHud();
-        if (hud == null)
+//        if (null == garminHud)
+//            garminHud = NotificationMonitor.getGarminHud();
+        if (null == garminHud)
             return;
         if (speed >= 0.0) {
-                hud.SetSpeed((int) speed, true);
+            garminHud.SetSpeed((int) speed, true);
         } else
-            hud.ClearSpeedandWarning();
+            garminHud.ClearSpeedandWarning();
 
         lStart = lEnd;
     }

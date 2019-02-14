@@ -30,7 +30,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import sky4s.garminhud.Arrow;
 import sky4s.garminhud.ArrowImage;
 import sky4s.garminhud.GarminHUD;
@@ -47,6 +46,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
     public static final String ACTION_NLS_CONTROL = "sky4s.garmin.hud.NLSCONTROL";
     public final static String GOOGLE_MAPS_PACKAGE_NAME = "com.google.android.apps.maps";
+    public final static String GOOGLE_MAPS_NOTIFICATION_GROUP_NAVIGATION = "navigation_status_notification_group";
     private static final String TAG = NotificationMonitor.class.getSimpleName();
     private static final int EVENT_UPDATE_CURRENT_NOS = 0;
 
@@ -57,8 +57,8 @@ public class NotificationMonitor extends NotificationListenerService {
     public static StatusBarNotification mRemovedNotification;
     private CancelNotificationReceiver mReceiver = new CancelNotificationReceiver();
 
-    public static BluetoothSPP bt = null;
-    private static GarminHUD garminHud = null;
+    //    public static BluetoothSPP bt = null;
+    static GarminHUD garminHud = null;
 
     private Handler mMonitorHandler = new Handler() {
         @Override
@@ -87,6 +87,8 @@ public class NotificationMonitor extends NotificationListenerService {
     private String arrivalTime = null;
     private int arrivalHour = -1;
     private int arrivalMinute = -1;
+    private int lastArrivalHour = -1;
+    private int lastArrivalMinute = -1;
 
     private static Bitmap removeAlpha(Bitmap originalBitmap) {
         // lets create a new empty bitmap
@@ -119,8 +121,8 @@ public class NotificationMonitor extends NotificationListenerService {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            int showETAValue = intent.getIntExtra(Integer.toString(R.id.switchShowETA), 0);
-            showETA = 0 == showETAValue ? showETA : 2 == showETAValue;
+            showETA = intent.getBooleanExtra(Integer.toString(R.id.switchShowETA), showETA);
+            lastArrivalMinute = -1; // Force to switch to ETA after several toggles
         }
     }
 
@@ -143,6 +145,7 @@ public class NotificationMonitor extends NotificationListenerService {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(getString(R.string.broadcast_receiver_notification_monitor));
         registerReceiver(msgReceiver, intentFilter);
+
         //========================================================================================
     }
 
@@ -339,17 +342,43 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     private boolean parseNotificationByExtras(Notification notification) {
+        if (null == notification) {
+            return false;
+        }
         Bundle extras = notification.extras;
-        if (extras != null) {
+        String group_name = notification.getGroup();
+        if ((null != extras) && (null != group_name) && group_name.equals(GOOGLE_MAPS_NOTIFICATION_GROUP_NAVIGATION)) {
             //not in navigation(chinese) of title: 參考 Google 地圖行駛
             Object titleObj = extras.get(Notification.EXTRA_TITLE);
             Object subTextObj = extras.get(Notification.EXTRA_SUB_TEXT);
             String title = null != titleObj ? titleObj.toString() : null;
             String subText = null != subTextObj ? subTextObj.toString() : null;
 
+            // Check if subText is empty (" ·  · ") --> don't parse subText
+            // Occurs for example on NagivationChanged
+            boolean subTextEmpty = true;
             if (null != subText) {
+                String[] split = subText.split("·");
+                for (int i = 0; i < split.length; i++) {
+                    split[i].trim();
+                    boolean string_empty = containsOnlyWhitespaces(split[i]);
+                    if (string_empty == false) {
+                        subTextEmpty = false;
+                        break;
+                    }
+                }
+            }
+
+            if (null != subText && !subTextEmpty) {
                 parseTimeAndDistanceToDest(subText);
-                parseDistanceToTurn(title);
+
+                String[] title_str = title.split("–");
+                String distance = title_str[0].trim();
+                if (Character.isDigit(distance.charAt(0)))
+                    parseDistanceToTurn(distance);
+                else
+                    distanceNum = "-1";
+
                 Icon largeIcon = notification.getLargeIcon();
                 if (null != largeIcon) {
                     Drawable drawableIco = largeIcon.loadDrawable(this);
@@ -422,40 +451,45 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     private static eUnits get_eUnits(String unit) {
-        switch (unit) {
-            case "km":
-                return eUnits.Kilometres;
-            case "m":
-                return eUnits.Metres;
-            case "mi":
-                return eUnits.Miles;
-            case "ft":
-                return eUnits.Foot;
-            default:
-                return eUnits.None;
+        if(null==unit) {
+            return eUnits.None;
+        }else {
+            switch (unit) {
+                case "km":
+                    return eUnits.Kilometres;
+                case "m":
+                    return eUnits.Metres;
+                case "mi":
+                    return eUnits.Miles;
+                case "ft":
+                    return eUnits.Foot;
+                default:
+                    return eUnits.None;
 
+            }
         }
     }
 
-    private String translate(String chinese) {
-        switch (chinese) {
-            case "公里":
-            case "킬로미터":
-                return "km";
-            case "公尺":
-            case "미터법":
-                return "m";
-            case "分":
-            case "分鐘":
-            case "분":
-                return "m";
-            case "小時":
-            case "時":
-            case "시간":
-                return "h";
-            default:
-                return null;
-        }
+    // Translates the units (distance and time) from local language and charset in common values
+    private String translate(String local_language_string) {
+        if (local_language_string == getString(R.string.km))
+            return "km";
+        else if (local_language_string.equalsIgnoreCase(getString(R.string.meter)))
+            return "m";
+        else if (local_language_string.equalsIgnoreCase(getString(R.string.feet)))
+            return "ft";
+        else if (local_language_string.equalsIgnoreCase(getString(R.string.miles)))
+            return "mi";
+        else if (local_language_string.equalsIgnoreCase(getString(R.string.minute)))
+            return "m";
+        else if (local_language_string.equalsIgnoreCase(getString(R.string.minute2)))
+            return "m";
+        else if (local_language_string.equalsIgnoreCase(getString(R.string.hour)))
+            return "h";
+        else if (local_language_string.equalsIgnoreCase(getString(R.string.hour2)))
+            return "h";
+        else
+            return null;
     }
 
     // Returns the current Unit (Kilometres or Miles) based on distanceToTurn
@@ -565,11 +599,7 @@ public class NotificationMonitor extends NotificationListenerService {
     private Arrow lastFoundArrow = Arrow.None;
 
     private void updateGaminHudInformation() {
-        if (bt != null || MainActivity.IGNORE_BT_DEVICE) {
-            if (null == garminHud) {
-                garminHud = new GarminHUD(bt);
-            }
-
+        if (null != garminHud) {
             //===================================================================================
             // distance
             //===================================================================================
@@ -584,7 +614,7 @@ public class NotificationMonitor extends NotificationListenerService {
                     int_distance = (int) (float_distance * 10);
                 }
 
-                if (0 != int_distance) {
+                if (-1 != int_distance) {
                     garminHud.SetDistance(int_distance, units, decimal, false);
                 } else {
                     garminHud.ClearDistance();
@@ -603,7 +633,16 @@ public class NotificationMonitor extends NotificationListenerService {
 
             if (null != remainMinute) {
                 if (showETA) {
+                    if (arrivalHour != -1 && arrivalMinute != -1) {
+                        boolean sameAsLast = (arrivalHour == lastArrivalHour && arrivalMinute == lastArrivalMinute) ? true : false;
 
+                        if (!sameAsLast) {
+                            garminHud.SetTime(arrivalHour, arrivalMinute, false);
+                            timeSendResult = garminHud.getSendResult();
+                            lastArrivalMinute = arrivalMinute;
+                            lastArrivalHour = arrivalHour;
+                        }
+                    }
                 } else {
                     int hh = null != remainHour ? Integer.parseInt(remainHour) : 0;
                     int mm = Integer.parseInt(remainMinute);
@@ -640,8 +679,6 @@ public class NotificationMonitor extends NotificationListenerService {
                     + " arrow: " + (arrowSendResult ? '1' : '0');
             logi(sendResultInfo);
 
-        } else {
-            garminHud = null;
         }
     }
 
@@ -705,31 +742,38 @@ public class NotificationMonitor extends NotificationListenerService {
             final int indexOfETA = timeToArrived.indexOf(ETA);
             String[] arrivedSplit = null;
             final boolean etaAtFirst = 0 == indexOfETA;
-            if (etaAtFirst) {//ETA position at first, it should be chinese
+            // Separate EAT-String from value
+            if (etaAtFirst) { // ETA-String first, then value (chinese)
                 arrivedSplit = timeToArrived.split(ETA);
                 arrivalTime = 2 == arrivedSplit.length ? arrivedSplit[1] : null;
-            } else {//ETA position at others, it should be English or others
+            } else { // ETA-value first, then string (english)
                 arrivedSplit = timeToArrived.split(ETA);
                 arrivalTime = arrivedSplit[0];
             }
-
             arrivalTime = null != arrivalTime ? arrivalTime.trim() : arrivalTime;
+
             final int amIndex = arrivalTime.indexOf(getString(R.string.am));
             final int pmIndex = arrivalTime.indexOf(getString(R.string.pm));
             final boolean ampmAtFirst = 0 == amIndex || 0 == pmIndex;
-            if (-1 != amIndex || -1 != pmIndex) {
-                final int index = Math.max(amIndex, pmIndex);
+            if (-1 != amIndex || -1 != pmIndex) { // 12-hour-format
+                final int index = Math.max(amIndex, pmIndex);  // index of "am" or "pm"
                 arrivalTime = ampmAtFirst ? arrivalTime.substring(index + 2) : arrivalTime.substring(0, index);
                 arrivalTime = arrivalTime.trim();
 
-                String[] spilit = arrivalTime.split(":");
-                int hh = Integer.parseInt(spilit[0]);
+                String[] split = arrivalTime.split(":");
+                int hh = Integer.parseInt(split[0]);
+                arrivalHour = hh;
+                arrivalMinute = Integer.parseInt(split[1]);
                 if (-1 != pmIndex && 12 != hh) {
                     hh += 12;
-                    arrivalTime = hh + ":" + spilit[1];
+                    arrivalTime = hh + ":" + split[1];
                 }
-                arrivalHour = hh;
-                arrivalMinute = Integer.parseInt(spilit[1]);
+            } else { // 24-hour-format
+                arrivalTime = arrivalTime.trim();
+
+                String[] split = arrivalTime.split(":");
+                arrivalHour = Integer.parseInt(split[0]);
+                arrivalMinute = Integer.parseInt(split[1]);
             }
             //======================================================================================
 
@@ -761,6 +805,18 @@ public class NotificationMonitor extends NotificationListenerService {
             }
         }
         return result;
+    }
+
+    private boolean containsOnlyWhitespaces(String str) {
+        boolean string_empty = true;
+        for (int x = 0; x < str.length(); x++) {
+            if (!Character.isWhitespace(str.charAt(x))) {
+                string_empty = false;
+                return string_empty;
+            }
+        }
+
+        return string_empty;
     }
 
     private void parseDistanceToTurn(String distanceString) {
@@ -873,12 +929,12 @@ public class NotificationMonitor extends NotificationListenerService {
 
     }
 
-    public static GarminHUD getGarminHud() {
-        if (garminHud != null) {
-            return garminHud;
-        } else
-            return null;
-    }
+//    public static GarminHUD getGarminHud() {
+//        if (garminHud != null) {
+//            return garminHud;
+//        } else
+//            return null;
+//    }
 
 
 }

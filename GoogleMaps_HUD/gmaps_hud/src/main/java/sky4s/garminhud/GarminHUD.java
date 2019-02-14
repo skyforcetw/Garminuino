@@ -1,8 +1,7 @@
 package sky4s.garminhud;
 
-import sky4s.garminhud.app.MainActivity;
-
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
+import sky4s.garminhud.app.MainActivity;
 
 /**
  * Created by skyforce on 2018/8/13.
@@ -122,8 +121,8 @@ public class GarminHUD {
         SetTime(nH, nM, true, false, true, false);
     }
 
-    public void SetTime(int nH, int nM, boolean bFlag) {
-        SetTime(nH, nM, bFlag, false, true, false);
+    public void SetTime(int nH, int nM, boolean hFlag) {
+        SetTime(nH, nM, true, false, true, hFlag);
     }
 
     public void SetTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
@@ -136,17 +135,16 @@ public class GarminHUD {
     }
 
     void ClearTime() {
-         char arr[] = {( char) 0x05,
-                0x00 ,
-                0, 0 ,
-                0x00 ,
-                0, 0 ,
-                0x00 ,
-        // 0x00
-	};
-        SendHud2(arr );
+        char arr[] = {(char) 0x05,
+                0x00,
+                0, 0,
+                0x00,
+                0, 0,
+                0x00,
+                // 0x00
+        };
+        SendHud2(arr);
     }
-
 
 
     public void SetDistance(int nDist, eUnits unit) {
@@ -167,7 +165,7 @@ public class GarminHUD {
                     }
                 }
             }
-            if(bDecimal && ((int)nDist/10)==0) // Show leding zero for decimals
+            if (bDecimal && ((int) nDist / 10) == 0) // Show leding zero for decimals
                 arr[3] = 0xa;
         }
         SendHud2(arr);
@@ -225,25 +223,25 @@ public class GarminHUD {
     AsDirection(0x00);
      */
 
-/*
-byte0:  header 0x01
+    /*
+    byte0:  header 0x01
 
-byte1:  Line 箭頭長度, eOutAngle
-        0x00 Off
-        0x01 Lane
-        0x02 LongerLane
-        0x04 LeftRoundabout
-        0x08 RightRoundabout
-        0x10 LeftDown*
-        0x20 RightDown*
-        0x40 RightFlag
-        0x80 ArrowOnly
+    byte1:  Line 箭頭長度, eOutAngle
+            0x00 Off
+            0x01 Lane
+            0x02 LongerLane
+            0x04 LeftRoundabout
+            0x08 RightRoundabout
+            0x10 LeftDown*
+            0x20 RightDown*
+            0x40 RightFlag
+            0x80 ArrowOnly
 
-byte2:  When Roundabout, eOutAngle:nRoundaboutOut or eOutType:nType
+    byte2:  When Roundabout, eOutAngle:nRoundaboutOut or eOutType:nType
 
-byte3:  When not LeftDown/RightDown, 箭頭方向: eOutAngle
+    byte3:  When not LeftDown/RightDown, 箭頭方向: eOutAngle
 
- */
+     */
     public void SetDirection(char nDir, char nType, char nRoundaboutOut) {
         char arr[] = {(char) 0x01,
                 (nDir == eOutAngle.LeftDown.value) ? (char) 0x10 : ((nDir == eOutAngle.RightDown.value) ? (char) 0x20 : nType), //byte1
@@ -272,13 +270,13 @@ byte3:  When not LeftDown/RightDown, 箭頭方向: eOutAngle
         boolean bSpeeding = false;
 
         char hundreds_digit, tens_digit, ones_digit;
-        if(nSpeed<10) {
+        if (nSpeed < 10) {
             // Delete leading zeros
             hundreds_digit = (char) 0x00;
             tens_digit = (char) 0x00;
         } else {
             hundreds_digit = (char) ((nSpeed / 100) % 10);
-            tens_digit = Digit(nSpeed/10);
+            tens_digit = Digit(nSpeed / 10);
         }
         ones_digit = Digit(nSpeed);
 
@@ -311,7 +309,7 @@ byte3:  When not LeftDown/RightDown, 箭頭方向: eOutAngle
                 (char) 0x00};
         SendHud2(arr);
     }
-	
+
     public void ShowCameraIcon() {
         SetCameraIcon(true);
     }

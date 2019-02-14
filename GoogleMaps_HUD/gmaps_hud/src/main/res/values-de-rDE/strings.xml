@@ -10,4 +10,6 @@
     <string name="minute">min</string>
     <string name="km">km</string>
     <string name="meter">m</string>
+    <string name="feet">ft</string>
+    <string name="miles">mi</string>
 </resources>

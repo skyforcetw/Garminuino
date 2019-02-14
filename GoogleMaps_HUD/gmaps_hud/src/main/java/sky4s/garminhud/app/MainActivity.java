@@ -29,7 +29,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -63,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     Switch switchShowETA;
 
     private BluetoothSPP bt;
+    private GarminHUD garminHud;
+    private NotificationManager manager;
 
 
     private void sendBooleanExtra2NotificationMonitor(String string, boolean b) {
@@ -87,21 +91,15 @@ public class MainActivity extends AppCompatActivity {
                 textViewDebug.setText(notify_msg);
             } else {
 
-                boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched), false);
-                boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched), false);
+                boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched), switchNotificationCatched.isChecked() );
+                boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched), switchGmapsNotificationCatched.isChecked());
                 boolean notify_parse_failed = intent.getBooleanExtra(getString(R.string.notify_parse_failed), false);
 
                 if (notify_parse_failed) {
 
                 } else {
-                    if (notify_catched) {
-                        switchNotificationCatched.setChecked(true);
-                        switchGmapsNotificationCatched.setChecked(false);
-                    } else if (gmaps_notify_catched) {
-                        switchNotificationCatched.setChecked(true);
-                        switchGmapsNotificationCatched.setChecked(true);
-                    }
-
+                    switchNotificationCatched.setChecked(notify_catched);
+                    switchGmapsNotificationCatched.setChecked(gmaps_notify_catched);
                 }
             }
         }
@@ -183,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
         String bt_status = "";
         if (!IGNORE_BT_DEVICE) {
             bt = new BluetoothSPP(this);
+            garminHud = new GarminHUD(bt);
             if (!bt.isBluetoothAvailable()) {
 
                 Toast.makeText(getApplicationContext()
@@ -206,17 +205,27 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            bt.setBluetoothConnectionListener(btConnectionListerner);
-            bt.setAutoConnectionListener(btAutoConnectionListener);
+            bt.setBluetoothConnectionListener(btConnectionListener);
+            bt.setAutoConnectionListener(btConnectionListener);
 
         } else {
-            bt_status = "(BYPASS BT)";
+            bt_status = "(NO BT)";
         }
         //========================================================================================
 
+        //=======================================================================================
+        // toolbar
+        //========================================================================================
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar); //when pass toolbar as actionBar, toolbar has title
+        ActionBar actionBar = getSupportActionBar();
         int versionCode = BuildConfig.VERSION_CODE;
         String versionName = BuildConfig.VERSION_NAME;
-//        this.setTitle(this.getTitle() + " v" + versionName + " (build " + versionCode + ")" + bt_status);
+
+        String title = actionBar.getTitle() + " v" + versionName + " (b" + versionCode + ")" + bt_status;
+        actionBar.setTitle(title);
+        //========================================================================================
+
         createNotification(this);
         //========================================================================================
         // messageer
@@ -229,23 +238,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private BluetoothSPP.BluetoothConnectionListener btConnectionListerner = new BluetoothSPP.BluetoothConnectionListener() {
-        public void onDeviceDisconnected() {
-            switchHudConnected.setChecked(false);
-            NotificationMonitor.bt = null;
-            log("onDeviceDisconnected");
+
+    private class BluetoothConnectionListener implements BluetoothSPP.BluetoothConnectionListener, BluetoothSPP.AutoConnectionListener {
+        @Override
+        public void onAutoConnectionStarted() {
+
         }
 
-        public void onDeviceConnectionFailed() {
-            switchHudConnected.setChecked(false);
-            NotificationMonitor.bt = null;
-            log("onDeviceConnectionFailed");
+        @Override
+        public void onNewConnection(String name, String address) {
+
         }
 
+        @Override
         public void onDeviceConnected(String name, String address) {
             switchHudConnected.setText("'" + name + "' connected");
+            switchHudConnected.setTextColor(Color.WHITE);
             switchHudConnected.setChecked(true);
-            NotificationMonitor.bt = bt;
+            NotificationMonitor.garminHud = garminHud;
             log("onDeviceConnected");
 
             if (showSpeed && !locationServiceStatus)
@@ -256,18 +266,27 @@ public class MainActivity extends AppCompatActivity {
             editor.putString(getString(R.string.bt_bind_name_key), connected_device_name);
             editor.commit();
         }
-    };
 
-    private BluetoothSPP.AutoConnectionListener btAutoConnectionListener = new BluetoothSPP.AutoConnectionListener() {
-        public void onAutoConnectionStarted() {
-            int a = 1;
+        @Override
+        public void onDeviceDisconnected() {
+            switchHudConnected.setText("HUD disconnected");
+            switchHudConnected.setTextColor(Color.RED);
+            switchHudConnected.setChecked(false);
+            NotificationMonitor.garminHud = garminHud;
+            log("onDeviceDisconnected");
         }
 
-        public void onNewConnection(String var1, String var2) {
-            int a = 1;
+        @Override
+        public void onDeviceConnectionFailed() {
+            switchHudConnected.setText("HUD connect failed");
+            switchHudConnected.setTextColor(Color.RED);
+            switchHudConnected.setChecked(false);
+            NotificationMonitor.garminHud = null;
+            log("onDeviceConnectionFailed");
         }
+    }
 
-    };
+    private BluetoothConnectionListener btConnectionListener = new BluetoothConnectionListener();
 
 
     public void onDestroy() {
@@ -280,6 +299,9 @@ public class MainActivity extends AppCompatActivity {
             unbindService();
         }
         unregisterReceiver(msgReceiver);
+
+        if (manager != null)
+            manager.cancel(1);
     }
 
     @Override
@@ -311,7 +333,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void buttonOnClicked(View view) {
-//        textViewDebug.setTextColor(Color.BLACK);
         switch (view.getId()) {
 
             case R.id.btnListNotify:
@@ -342,28 +363,33 @@ public class MainActivity extends AppCompatActivity {
                     }
                     if (locationServiceStatus == false) {
                         //Here, the Location Service gets bound and the GPS Speedometer gets Active.
-                        if (bt != null && NotificationMonitor.getGarminHud() != null)
+                        if (null != garminHud)
                             bindService();
                         showSpeed = true;
                     }
                 } else {
                     if (locationServiceStatus == true)
                         unbindService();
-                    GarminHUD hud = NotificationMonitor.getGarminHud();
-                    if (hud != null)
-                        hud.ClearSpeedandWarning();
+                    if (null != garminHud)
+                        garminHud.ClearSpeedandWarning();
                     showSpeed = false;
                 }
+                break;
+
+            case R.id.switchShowETA:
+                sendBooleanExtra2NotificationMonitor(Integer.toString(R.id.switchShowETA), ((Switch) view).isChecked());
                 break;
 
             case R.id.switchIdleShowSpeed:
                 break;
 
-            case R.id.switchShowETA:
-//            case R.id.switchIdleShowTime:
+         case R.id.switchIdleShowTime:
 //                sendBooleanExtra2NotificationMonitor(Integer.toString(view.getId()), ((Switch) view).isChecked());
-                sendIntegerExtra2NotificationMonitor(Integer.toString(view.getId()), ((Switch) view).isChecked()?2:1);
+//                sendIntegerExtra2NotificationMonitor(Integer.toString(view.getId()), ((Switch) view).isChecked()?2:1);
                 break;
+
+
+
             default:
                 break;
         }/**/
@@ -422,7 +448,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createNotification(Context context) {
-        NotificationManager manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+        manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         //ignore OREO NotificationChannel, because GARMINuino no need this new feature.
 
         NotificationCompat.Builder builder =
@@ -529,6 +555,7 @@ public class MainActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
             locationService = binder.getService();
+            locationService.setGarminHUD(garminHud);
             locationServiceStatus = true;
         }
 
