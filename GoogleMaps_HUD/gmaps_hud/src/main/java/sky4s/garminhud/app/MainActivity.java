@@ -29,7 +29,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -212,13 +214,23 @@ public class MainActivity extends AppCompatActivity {
             bt.setAutoConnectionListener(btAutoConnectionListener);
 
         } else {
-            bt_status = "(BYPASS BT)";
+            bt_status = "(NO BT)";
         }
         //========================================================================================
 
+        //=======================================================================================
+        // toolbar
+        //========================================================================================
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar); //when pass toolbar as actionBar, toolbar has title
+        ActionBar actionBar = getSupportActionBar();
         int versionCode = BuildConfig.VERSION_CODE;
         String versionName = BuildConfig.VERSION_NAME;
-//        this.setTitle(this.getTitle() + " v" + versionName + " (build " + versionCode + ")" + bt_status);
+
+        String title = actionBar.getTitle() + " v" + versionName + " (b" + versionCode + ")" + bt_status;
+        actionBar.setTitle(title);
+        //========================================================================================
+
         createNotification(this);
         //========================================================================================
         // messageer
@@ -283,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
         }
         unregisterReceiver(msgReceiver);
 
-        if(manager != null)
+        if (manager != null)
             manager.cancel(1);
     }
 
@@ -363,11 +375,11 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.switchIdleShowSpeed:
                 break;
-                
+
             case R.id.switchShowETA:
                 sendBooleanExtra2NotificationMonitor(Integer.toString(R.id.switchShowETA), ((Switch) view).isChecked());
                 break;
-                
+
 //            case R.id.switchIdleShowTime:
 //                sendBooleanExtra2NotificationMonitor(Integer.toString(view.getId()), ((Switch) view).isChecked());
 //                sendIntegerExtra2NotificationMonitor(Integer.toString(view.getId()), ((Switch) view).isChecked()?2:1);
