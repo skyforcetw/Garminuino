@@ -30,7 +30,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import sky4s.garminhud.Arrow;
 import sky4s.garminhud.ArrowImage;
 import sky4s.garminhud.GarminHUD;
@@ -58,8 +57,8 @@ public class NotificationMonitor extends NotificationListenerService {
     public static StatusBarNotification mRemovedNotification;
     private CancelNotificationReceiver mReceiver = new CancelNotificationReceiver();
 
-    public static BluetoothSPP bt = null;
-    private static GarminHUD garminHud = null;
+    //    public static BluetoothSPP bt = null;
+    static GarminHUD garminHud = null;
 
     private Handler mMonitorHandler = new Handler() {
         @Override
@@ -146,6 +145,7 @@ public class NotificationMonitor extends NotificationListenerService {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(getString(R.string.broadcast_receiver_notification_monitor));
         registerReceiver(msgReceiver, intentFilter);
+
         //========================================================================================
     }
 
@@ -342,9 +342,12 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     private boolean parseNotificationByExtras(Notification notification) {
+        if (null == notification) {
+            return false;
+        }
         Bundle extras = notification.extras;
         String group_name = notification.getGroup();
-        if ( (extras != null) && group_name.equals(GOOGLE_MAPS_NOTIFICATION_GROUP_NAVIGATION) ) {
+        if ((null != extras) && (null != group_name) && group_name.equals(GOOGLE_MAPS_NOTIFICATION_GROUP_NAVIGATION)) {
             //not in navigation(chinese) of title: 參考 Google 地圖行駛
             Object titleObj = extras.get(Notification.EXTRA_TITLE);
             Object subTextObj = extras.get(Notification.EXTRA_SUB_TEXT);
@@ -354,12 +357,12 @@ public class NotificationMonitor extends NotificationListenerService {
             // Check if subText is empty (" ·  · ") --> don't parse subText
             // Occurs for example on NagivationChanged
             boolean subTextEmpty = true;
-            if(null != subText) {
-                String [] split = subText.split("·");
-                for(int i=0; i<split.length; i++) {
+            if (null != subText) {
+                String[] split = subText.split("·");
+                for (int i = 0; i < split.length; i++) {
                     split[i].trim();
                     boolean string_empty = containsOnlyWhitespaces(split[i]);
-                    if(string_empty == false) {
+                    if (string_empty == false) {
                         subTextEmpty = false;
                         break;
                     }
@@ -368,14 +371,14 @@ public class NotificationMonitor extends NotificationListenerService {
 
             if (null != subText && !subTextEmpty) {
                 parseTimeAndDistanceToDest(subText);
-                
-                String [] title_str = title.split("–");
+
+                String[] title_str = title.split("–");
                 String distance = title_str[0].trim();
-                if(Character.isDigit(distance.charAt(0)))
+                if (Character.isDigit(distance.charAt(0)))
                     parseDistanceToTurn(distance);
                 else
                     distanceNum = "-1";
-                
+
                 Icon largeIcon = notification.getLargeIcon();
                 if (null != largeIcon) {
                     Drawable drawableIco = largeIcon.loadDrawable(this);
@@ -448,38 +451,42 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     private static eUnits get_eUnits(String unit) {
-        switch (unit) {
-            case "km":
-                return eUnits.Kilometres;
-            case "m":
-                return eUnits.Metres;
-            case "mi":
-                return eUnits.Miles;
-            case "ft":
-                return eUnits.Foot;
-            default:
-                return eUnits.None;
+        if(null==unit) {
+            return eUnits.None;
+        }else {
+            switch (unit) {
+                case "km":
+                    return eUnits.Kilometres;
+                case "m":
+                    return eUnits.Metres;
+                case "mi":
+                    return eUnits.Miles;
+                case "ft":
+                    return eUnits.Foot;
+                default:
+                    return eUnits.None;
 
+            }
         }
     }
 
     // Translates the units (distance and time) from local language and charset in common values
     private String translate(String local_language_string) {
-        if(local_language_string == getString(R.string.km))
+        if (local_language_string == getString(R.string.km))
             return "km";
-        else if(local_language_string.equalsIgnoreCase(getString(R.string.meter)))
+        else if (local_language_string.equalsIgnoreCase(getString(R.string.meter)))
             return "m";
-        else if(local_language_string.equalsIgnoreCase(getString(R.string.feet)))
+        else if (local_language_string.equalsIgnoreCase(getString(R.string.feet)))
             return "ft";
-        else if(local_language_string.equalsIgnoreCase(getString(R.string.miles)))
+        else if (local_language_string.equalsIgnoreCase(getString(R.string.miles)))
             return "mi";
-        else if(local_language_string.equalsIgnoreCase(getString(R.string.minute)))
+        else if (local_language_string.equalsIgnoreCase(getString(R.string.minute)))
             return "m";
-        else if(local_language_string.equalsIgnoreCase(getString(R.string.minute2)))
+        else if (local_language_string.equalsIgnoreCase(getString(R.string.minute2)))
             return "m";
-        else if(local_language_string.equalsIgnoreCase(getString(R.string.hour)))
+        else if (local_language_string.equalsIgnoreCase(getString(R.string.hour)))
             return "h";
-        else if(local_language_string.equalsIgnoreCase(getString(R.string.hour2)))
+        else if (local_language_string.equalsIgnoreCase(getString(R.string.hour2)))
             return "h";
         else
             return null;
@@ -592,11 +599,7 @@ public class NotificationMonitor extends NotificationListenerService {
     private Arrow lastFoundArrow = Arrow.None;
 
     private void updateGaminHudInformation() {
-        if (bt != null || MainActivity.IGNORE_BT_DEVICE) {
-            if (null == garminHud) {
-                garminHud = new GarminHUD(bt);
-            }
-
+        if (null != garminHud) {
             //===================================================================================
             // distance
             //===================================================================================
@@ -630,7 +633,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
             if (null != remainMinute) {
                 if (showETA) {
-                    if(arrivalHour!=-1 && arrivalMinute!=-1) {
+                    if (arrivalHour != -1 && arrivalMinute != -1) {
                         boolean sameAsLast = (arrivalHour == lastArrivalHour && arrivalMinute == lastArrivalMinute) ? true : false;
 
                         if (!sameAsLast) {
@@ -676,8 +679,6 @@ public class NotificationMonitor extends NotificationListenerService {
                     + " arrow: " + (arrowSendResult ? '1' : '0');
             logi(sendResultInfo);
 
-        } else {
-            garminHud = null;
         }
     }
 
@@ -805,10 +806,10 @@ public class NotificationMonitor extends NotificationListenerService {
         }
         return result;
     }
-    
+
     private boolean containsOnlyWhitespaces(String str) {
         boolean string_empty = true;
-        for(int x=0; x<str.length(); x++) {
+        for (int x = 0; x < str.length(); x++) {
             if (!Character.isWhitespace(str.charAt(x))) {
                 string_empty = false;
                 return string_empty;
@@ -928,12 +929,12 @@ public class NotificationMonitor extends NotificationListenerService {
 
     }
 
-    public static GarminHUD getGarminHud() {
-        if (garminHud != null) {
-            return garminHud;
-        } else
-            return null;
-    }
+//    public static GarminHUD getGarminHud() {
+//        if (garminHud != null) {
+//            return garminHud;
+//        } else
+//            return null;
+//    }
 
 
 }
