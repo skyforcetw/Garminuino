@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
     private BluetoothSPP bt;
 
+    private NotificationManager manager;
+
 
     private void sendBooleanExtra2NotificationMonitor(String string, boolean b) {
         Intent intent = new Intent(getString(R.string.broadcast_receiver_notification_monitor));
@@ -280,6 +282,9 @@ public class MainActivity extends AppCompatActivity {
             unbindService();
         }
         unregisterReceiver(msgReceiver);
+
+        if(manager != null)
+            manager.cancel(1);
     }
 
     @Override
@@ -358,12 +363,15 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.switchIdleShowSpeed:
                 break;
-
+                
             case R.id.switchShowETA:
+                sendBooleanExtra2NotificationMonitor(Integer.toString(R.id.switchShowETA), ((Switch) view).isChecked());
+                break;
+                
 //            case R.id.switchIdleShowTime:
 //                sendBooleanExtra2NotificationMonitor(Integer.toString(view.getId()), ((Switch) view).isChecked());
-                sendIntegerExtra2NotificationMonitor(Integer.toString(view.getId()), ((Switch) view).isChecked()?2:1);
-                break;
+//                sendIntegerExtra2NotificationMonitor(Integer.toString(view.getId()), ((Switch) view).isChecked()?2:1);
+//                break;
             default:
                 break;
         }/**/
@@ -422,7 +430,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createNotification(Context context) {
-        NotificationManager manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+        manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         //ignore OREO NotificationChannel, because GARMINuino no need this new feature.
 
         NotificationCompat.Builder builder =

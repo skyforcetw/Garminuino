@@ -94,9 +94,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:onClick="buttonOnClicked"
                     android:paddingTop="@dimen/option_padding_top"
                     android:textSize="@dimen/option_text_size"
-                    android:text="Show ETA(under construction)" />
+                    android:text="Show ETA" />
 
                 <TextView
                     android:id="@+id/textView3"
