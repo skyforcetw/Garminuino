@@ -33,7 +33,7 @@ public class LocationService extends Service implements
     Location mCurrentLocation, lStart, lEnd;
     static double distance = 0;
     public static double speed;
-    private GarminHUD garminHud = null;
+    private GarminHUD garminHud;
 
     public void setGarminHUD(GarminHUD hud) {
         this.garminHud = hud;
@@ -134,8 +134,6 @@ public class LocationService extends Service implements
 
     //The live feed of Distance and Speed are being set in the method below .
     private void updateHUD() {
-//        if (null == garminHud)
-//            garminHud = NotificationMonitor.getGarminHud();
         if (null == garminHud)
             return;
         if (speed >= 0.0) {

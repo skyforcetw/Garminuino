@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceConnected(String name, String address) {
             switchHudConnected.setText("'" + name + "' connected");
-            switchHudConnected.setTextColor(Color.WHITE);
+            switchHudConnected.setTextColor(Color.BLACK);
             switchHudConnected.setChecked(true);
             NotificationMonitor.garminHud = garminHud;
             log("onDeviceConnected");

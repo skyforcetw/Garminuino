@@ -336,9 +336,10 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private void logParseMessage() {
         String notifyMessage = foundArrow.toString() + " " + distanceNum + distanceUnit +
-                " " + (null == remainHour ? 00 : remainHour) + ":" + remainMinute + " " + remainDistance + remainDistanceUnit + " " + arrivalTime
+                " " + (null == remainHour ? 00 : remainHour) + ":" + remainMinute + " " + remainDistance + remainDistanceUnit + " " + arrivalHour + ":" + arrivalMinute
                 + " (period: " + notifyPeriodTime + ")";
         logi(notifyMessage);
+        sendStringExtra2MainActivity(getString(R.string.notify_msg), notifyMessage);
     }
 
     private boolean parseNotificationByExtras(Notification notification) {
@@ -451,9 +452,9 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     private static eUnits get_eUnits(String unit) {
-        if(null==unit) {
+        if (null == unit) {
             return eUnits.None;
-        }else {
+        } else {
             switch (unit) {
                 case "km":
                     return eUnits.Kilometres;
@@ -472,7 +473,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
     // Translates the units (distance and time) from local language and charset in common values
     private String translate(String local_language_string) {
-        if (local_language_string == getString(R.string.km))
+        if (local_language_string.equalsIgnoreCase(getString(R.string.km)))
             return "km";
         else if (local_language_string.equalsIgnoreCase(getString(R.string.meter)))
             return "m";
@@ -928,13 +929,6 @@ public class NotificationMonitor extends NotificationListenerService {
         }
 
     }
-
-//    public static GarminHUD getGarminHud() {
-//        if (garminHud != null) {
-//            return garminHud;
-//        } else
-//            return null;
-//    }
 
 
 }
