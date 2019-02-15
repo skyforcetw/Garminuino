@@ -129,8 +129,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-
-                    android:clickable="false"
+                    android:onClick="buttonOnClicked"
                     android:text="Show Speed"
                     android:textSize="@dimen/option_text_size" />
 
@@ -141,7 +140,7 @@
                     android:layout_weight="1"
                     android:paddingTop="@dimen/option_padding_top"
                     android:textSize="@dimen/option_text_size"
-                    android:clickable="false"
+                    android:onClick="buttonOnClicked"
                     android:text="Show Current Time" />
 
                 <View

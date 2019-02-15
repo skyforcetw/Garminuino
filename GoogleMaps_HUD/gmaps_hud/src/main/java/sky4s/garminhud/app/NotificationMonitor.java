@@ -223,20 +223,18 @@ public class NotificationMonitor extends NotificationListenerService {
 
         // We have to extract the information from the view
         RemoteViews views = notification.bigContentView;
-        if (!checkmActions(views)) {
+        if (!checkmActions(views)) { //check mActions is exist, we use it to parse notification
             views = null;
         }
         if (views == null) views = notification.contentView;
-        if (!checkmActions(views)) {
+        if (!checkmActions(views)) {//check mActions again
             views = null;
         }
         if (views == null) return false;
 
-
         // Use reflection to examine the m_actions member of the given RemoteViews object.
         // It's not pretty, but it works.
         try {
-
 
             Class viewsClass = views.getClass();
             Field fieldActions = viewsClass.getDeclaredField("mActions");
@@ -432,7 +430,7 @@ public class NotificationMonitor extends NotificationListenerService {
         return bitmap;
     }
 
-    private void storeBitmap(Bitmap bmp, String filename) {
+    private static void storeBitmap(Bitmap bmp, String filename) {
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(filename);
@@ -472,7 +470,7 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     // Translates the units (distance and time) from local language and charset in common values
-    private String translate(String local_language_string) {
+    private  String translate(String local_language_string) {
         if (local_language_string.equalsIgnoreCase(getString(R.string.km)))
             return "km";
         else if (local_language_string.equalsIgnoreCase(getString(R.string.meter)))
@@ -782,7 +780,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
     }
 
-    private String[] splitDigitAndAlphabetic(String str) {
+    private static String[] splitDigitAndAlphabetic(String str) {
         String[] result = new String[2];
         for (int x = 0; x < str.length(); x++) {
             char c = str.charAt(x);
@@ -795,7 +793,7 @@ public class NotificationMonitor extends NotificationListenerService {
         return result;
     }
 
-    private String[] splitDigitAndNonDigit(String str) {
+    private static String[] splitDigitAndNonDigit(String str) {
         String[] result = new String[2];
         for (int x = 0; x < str.length(); x++) {
             char c = str.charAt(x);
@@ -808,7 +806,7 @@ public class NotificationMonitor extends NotificationListenerService {
         return result;
     }
 
-    private boolean containsOnlyWhitespaces(String str) {
+    private static boolean containsOnlyWhitespaces(String str) {
         boolean string_empty = true;
         for (int x = 0; x < str.length(); x++) {
             if (!Character.isWhitespace(str.charAt(x))) {

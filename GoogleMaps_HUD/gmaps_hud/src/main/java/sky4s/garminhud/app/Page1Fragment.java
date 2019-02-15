@@ -24,5 +24,8 @@ public class Page1Fragment extends Fragment {
         ((MainActivity)getActivity()).switchNotificationCatched = (Switch) getView().findViewById(R.id.switchNotificationCatched);
         ((MainActivity)getActivity()).switchGmapsNotificationCatched = (Switch)getView(). findViewById(R.id.switchGmapsNotificationCatched);
         ((MainActivity)getActivity()).switchShowETA  = (Switch)getView(). findViewById(R.id.switchShowETA);
+
+        ((MainActivity)getActivity()).switchNavShowSpeed  = (Switch)getView(). findViewById(R.id.switchNavShowSpeed);
+        ((MainActivity)getActivity()).switchIdleShowSpeed  = (Switch)getView(). findViewById(R.id.switchIdleShowSpeed);
     }
 }

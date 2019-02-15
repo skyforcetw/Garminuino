@@ -1,7 +1,10 @@
 package chutka.bitman.com.speedometersimplified;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Binder;
 import android.os.Bundle;
@@ -16,6 +19,7 @@ import com.google.android.gms.location.LocationServices;
 
 import sky4s.garminhud.GarminHUD;
 import sky4s.garminhud.app.NotificationMonitor;
+import sky4s.garminhud.app.R;
 import sky4s.garminhud.eUnits;
 
 /**
@@ -52,6 +56,16 @@ public class LocationService extends Service implements
                 .addOnConnectionFailedListener(this)
                 .build();
         mGoogleApiClient.connect();
+
+        //========================================================================================
+        // messageer
+        //========================================================================================
+        msgReceiver = new MsgReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(getString(R.string.broadcast_receiver_localtion_service));
+        registerReceiver(msgReceiver, intentFilter);
+        //========================================================================================
+
         return mBinder;
     }
 
@@ -91,7 +105,7 @@ public class LocationService extends Service implements
     public void onConnectionSuspended(int cause) {
         if (cause == CAUSE_NETWORK_LOST) { // not tested
             if (null != garminHud)
-                garminHud.SetSpeed((int) speed, false);
+                setSpeed((int) speed, false);
         }
     }
 
@@ -137,13 +151,29 @@ public class LocationService extends Service implements
         if (null == garminHud)
             return;
         if (speed >= 0.0) {
-            garminHud.SetSpeed((int) speed, true);
+            setSpeed((int) speed, true);
         } else
-            garminHud.ClearSpeedandWarning();
+            clearSpeed();
 
         lStart = lEnd;
     }
 
+
+    private void setSpeed(int nSpeed, boolean bIcon) {
+        if (isOnNavigating) {
+            garminHud.SetSpeed(nSpeed, bIcon);
+        } else {
+            garminHud.SetDistance(nSpeed, eUnits.None);
+        }
+    }
+
+    private void clearSpeed() {
+        if (isOnNavigating) {
+            garminHud.ClearSpeedandWarning();
+        } else {
+            garminHud.ClearDistance();
+        }
+    }
 
     @Override
     public boolean onUnbind(Intent intent) {
@@ -154,6 +184,35 @@ public class LocationService extends Service implements
         lEnd = null;
         distance = 0;
         return super.onUnbind(intent);
+    }
+
+    private MsgReceiver msgReceiver;
+    private boolean isOnNavigating = false;
+
+    private class MsgReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            isOnNavigating = intent.getBooleanExtra(getString(R.string.is_on_navigating), isOnNavigating);
+            int a = 1;
+//            String notify_msg = intent.getStringExtra(getString(R.string.notify_msg));
+//            if (null != notify_msg) {
+//                textViewDebug.setText(notify_msg);
+//            } else {
+//
+//                boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched), switchNotificationCatched.isChecked());
+//                boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched), switchGmapsNotificationCatched.isChecked());
+//                boolean notify_parse_failed = intent.getBooleanExtra(getString(R.string.notify_parse_failed), false);
+//
+//                if (notify_parse_failed) {
+//
+//                } else {
+//                    switchNotificationCatched.setChecked(notify_catched);
+//                    switchGmapsNotificationCatched.setChecked(gmaps_notify_catched);
+//                    sendBooleanExtra2NotificationMonitor(getString(R.string.broadcast_receiver_localtion_service), getString(R.string.is_on_navigating), isOnNavigating());
+//
+//                }
+//            }
+        }
     }
 }
 

@@ -39,6 +39,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.akexorcist.bluetotohspp.library.BluetoothState;
 import app.akexorcist.bluetotohspp.library.DeviceList;
@@ -57,27 +61,34 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isEnabledNLS = false;
     private boolean showSpeed = false;
+    private boolean showTime = false;
 
     TextView textViewDebug;
     Switch switchHudConnected;
     Switch switchNotificationCatched;
     Switch switchGmapsNotificationCatched;
     Switch switchShowETA;
+    Switch switchNavShowSpeed;
+    Switch switchIdleShowSpeed;
+
+    private boolean isOnNavigating() {
+        return switchGmapsNotificationCatched.isChecked();
+    }
 
     private BluetoothSPP bt;
     private GarminHUD garminHud;
     private NotificationManager manager;
 
 
-    private void sendBooleanExtra2NotificationMonitor(String string, boolean b) {
-        Intent intent = new Intent(getString(R.string.broadcast_receiver_notification_monitor));
-        intent.putExtra(string, b);
+    private void sendBooleanExtra2NotificationMonitor(String receiver, String key, boolean b) {
+        Intent intent = new Intent(receiver);
+        intent.putExtra(key, b);
         sendBroadcast(intent);
     }
 
-    private void sendIntegerExtra2NotificationMonitor(String string, int i) {
-        Intent intent = new Intent(getString(R.string.broadcast_receiver_notification_monitor));
-        intent.putExtra(string, i);
+    private void sendIntegerExtra2NotificationMonitor(String receiver, String key, int i) {
+        Intent intent = new Intent(receiver);
+        intent.putExtra(key, i);
         sendBroadcast(intent);
     }
 
@@ -91,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 textViewDebug.setText(notify_msg);
             } else {
 
-                boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched), switchNotificationCatched.isChecked() );
+                boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched), switchNotificationCatched.isChecked());
                 boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched), switchGmapsNotificationCatched.isChecked());
                 boolean notify_parse_failed = intent.getBooleanExtra(getString(R.string.notify_parse_failed), false);
 
@@ -100,11 +111,25 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     switchNotificationCatched.setChecked(notify_catched);
                     switchGmapsNotificationCatched.setChecked(gmaps_notify_catched);
+                    sendBooleanExtra2NotificationMonitor(getString(R.string.broadcast_receiver_localtion_service), getString(R.string.is_on_navigating), isOnNavigating());
                 }
             }
         }
     }
 
+    private Timer timer = new Timer(true);
+    private UpdateTimeTask updateTimeTask;
+
+    private class UpdateTimeTask extends TimerTask {
+        public void run() {
+            if (showTime && null != garminHud) {
+                Calendar c = Calendar.getInstance();
+                int hour = c.get(Calendar.HOUR_OF_DAY);
+                int minute = c.get(Calendar.MINUTE);
+                garminHud.SetTime(hour, minute);
+            }
+        }
+    }
 
     //========================================================================================
     // tabs
@@ -259,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
             log("onDeviceConnected");
 
             if (showSpeed && !locationServiceStatus)
-                bindService();
+                bindLocationService();
 
             String connected_device_name = bt.getConnectedDeviceName();
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -296,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
             bt.stopService();
         }
         if (locationServiceStatus == true) {
-            unbindService();
+            unbindLocationService();
         }
         unregisterReceiver(msgReceiver);
 
@@ -348,53 +373,66 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.switchNavShowSpeed:
-                if (((Switch) view).isChecked()) {
-                    if (!checkLocationPermission()) {
-                        ((Switch) view).setChecked(false);
-                        break;
-                    }
-                    if (!checkGps()) {
-                        ((Switch) view).setChecked(false);
-                        break;
-                    }
-                    locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-                    if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                        return;
-                    }
-                    if (locationServiceStatus == false) {
-                        //Here, the Location Service gets bound and the GPS Speedometer gets Active.
-                        if (null != garminHud)
-                            bindService();
-                        showSpeed = true;
-                    }
-                } else {
-                    if (locationServiceStatus == true)
-                        unbindService();
-                    if (null != garminHud)
-                        garminHud.ClearSpeedandWarning();
-                    showSpeed = false;
+            case R.id.switchIdleShowSpeed:
+                final boolean canShowSpeed = showSpeed(switchNavShowSpeed.isChecked(), switchIdleShowSpeed.isChecked());
+                if (!canShowSpeed) {
+                    ((Switch) view).setChecked(false);
                 }
                 break;
 
             case R.id.switchShowETA:
-                sendBooleanExtra2NotificationMonitor(Integer.toString(R.id.switchShowETA), ((Switch) view).isChecked());
-                break;
-
-            case R.id.switchIdleShowSpeed:
-                break;
-
-         case R.id.switchIdleShowTime:
-//                sendBooleanExtra2NotificationMonitor(Integer.toString(view.getId()), ((Switch) view).isChecked());
-//                sendIntegerExtra2NotificationMonitor(Integer.toString(view.getId()), ((Switch) view).isChecked()?2:1);
+                sendBooleanExtra2NotificationMonitor(
+                        getString(R.string.broadcast_receiver_notification_monitor),
+                        Integer.toString(R.id.switchShowETA), ((Switch) view).isChecked());
                 break;
 
 
+            case R.id.switchIdleShowTime:
+                showTime = ((Switch) view).isChecked();
+                if (showTime && null == updateTimeTask) {
+                    updateTimeTask = new UpdateTimeTask();
+                    timer.schedule(updateTimeTask, 1000, 1000);
+                }
+                break;
 
             default:
                 break;
         }/**/
     }
 
+    private boolean showSpeed(boolean onNavigating, boolean onIdle) {
+        final boolean doShowSpeed = onNavigating || onIdle;
+
+        if (doShowSpeed) {
+            if (!checkLocationPermission()) {
+                return false;
+            }
+            if (!checkGps()) {
+                return false;
+            }
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                return false;
+            }
+            if (false == locationServiceStatus) {
+                //Here, the Location Service gets bound and the GPS Speedometer gets Active.
+                if (null != garminHud) {
+                    bindLocationService();
+                }
+                showSpeed = true;
+            }
+        } else {
+            if (true == locationServiceStatus) {
+                unbindLocationService();
+            }
+            if (null != garminHud) {
+                garminHud.ClearSpeedandWarning();
+                garminHud.ClearDistance();
+            }
+            showSpeed = false;
+        }
+        return true;
+    }
 
     private void scanBluetooth() {
 
@@ -504,7 +542,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void showConfirmDialog() {
         new AlertDialog.Builder(this)
-                .setMessage("Please enable NotificationMonitor access")
+                .setMessage("Please enable Notification Access for " + getString(R.string.app_name)
+                        + ". This app use Notification to parse Navigation Information.")
                 .setTitle("Notification Access")
                 .setIconAttribute(android.R.attr.alertDialogIcon)
                 .setCancelable(true)
@@ -550,7 +589,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationService locationService;
     private LocationManager locationManager;
 
-    private ServiceConnection sc = new ServiceConnection() {
+    private ServiceConnection locationServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
@@ -566,19 +605,19 @@ public class MainActivity extends AppCompatActivity {
     };
 
     // bind/activate LocationService
-    void bindService() {
+    void bindLocationService() {
         if (locationServiceStatus == true)
             return;
         Intent i = new Intent(getApplicationContext(), LocationService.class);
-        bindService(i, sc, BIND_AUTO_CREATE);
+        bindService(i, locationServiceConnection, BIND_AUTO_CREATE);
         locationServiceStatus = true;
     }
 
     // unbind/deactivate LocationService
-    void unbindService() {
+    void unbindLocationService() {
         if (locationServiceStatus == false)
             return;
-        unbindService(sc);
+        unbindService(locationServiceConnection);
         locationServiceStatus = false;
     }
 
@@ -596,7 +635,7 @@ public class MainActivity extends AppCompatActivity {
     //This method configures the Alert Dialog box for GPS-Activation
     private void showGPSDisabledAlertToUser() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Enable GPS to use application")
+        alertDialogBuilder.setMessage("Enable GPS to Show Speed")
                 .setCancelable(false)
                 .setPositiveButton("Enable GPS",
                         new DialogInterface.OnClickListener() {
