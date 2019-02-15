@@ -15,6 +15,7 @@
         <item quantity="other">%d active notifications:</item>
     </plurals>
 
+    <!--gmaps' navigation string-->
     <string name="exit_navigation">EXIT NAVIGATION</string>
     <string name="after">after</string>
     <string name="ETA">ETA</string>
@@ -31,12 +32,21 @@
 
     <string name="chinese_after"   translatable="false">後</string>
 
+    <!--options-->
     <string name="bt_bind_name_key" translatable="false">bt_bind_name_key</string>
+    <string name="option_show_eta" translatable="false">option_show_eta</string>
+    <string name="option_navigating_show_speed" translatable="false">option_navigating_show_speed</string>
+    <string name="option_idle_show_speed" translatable="false">option_idle_show_speed</string>
+    <string name="option_idle_show_time" translatable="false">option_idle_show_time</string>
 
+    <!--broadcast receiver-->
     <string name="broadcast_receiver_main_activity" translatable="false">sky4s.garminhud.app.MainActivity.RECEIVER</string>
     <string name="broadcast_receiver_notification_monitor" translatable="false">sky4s.garminhud.app.NotificationMonitor.RECEIVER</string>
+    <string name="broadcast_receiver_localtion_service" translatable="false">chutka.bitman.com.speedometersimplified.LocationService.RECEIVER</string>
+    <!--broadcast keys-->
     <string name="notify_catched" translatable="false">notify_catched</string>
     <string name="gmaps_notify_catched" translatable="false">gmaps_notify_catched</string>
     <string name="notify_parse_failed" translatable="false">notify_parse_failed</string>
     <string name="notify_msg" translatable="false">notify_msg</string>
+    <string name="is_on_navigating" translatable="false">is_on_navigating</string>
 </resources>

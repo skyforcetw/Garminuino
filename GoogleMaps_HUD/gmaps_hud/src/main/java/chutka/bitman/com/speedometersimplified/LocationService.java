@@ -1,14 +1,16 @@
 package chutka.bitman.com.speedometersimplified;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import sky4s.garminhud.app.NotificationMonitor;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -16,6 +18,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import sky4s.garminhud.GarminHUD;
+import sky4s.garminhud.app.NotificationMonitor;
+import sky4s.garminhud.app.R;
 import sky4s.garminhud.eUnits;
 
 /**
@@ -33,15 +37,18 @@ public class LocationService extends Service implements
     Location mCurrentLocation, lStart, lEnd;
     static double distance = 0;
     public static double speed;
-    private static GarminHUD hud = null;
+    private GarminHUD garminHud;
 
+    public void setGarminHUD(GarminHUD hud) {
+        this.garminHud = hud;
+    }
 
     private final IBinder mBinder = new LocalBinder();
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        hud = NotificationMonitor.getGarminHud();
+//        hud = NotificationMonitor.getGarminHud();
         createLocationRequest();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -49,7 +56,28 @@ public class LocationService extends Service implements
                 .addOnConnectionFailedListener(this)
                 .build();
         mGoogleApiClient.connect();
+
+
         return mBinder;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        //========================================================================================
+        // messageer
+        //========================================================================================
+        msgReceiver = new MsgReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(getString(R.string.broadcast_receiver_localtion_service));
+        registerReceiver(msgReceiver, intentFilter);
+        //========================================================================================
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(msgReceiver);
     }
 
     protected void createLocationRequest() {
@@ -87,8 +115,8 @@ public class LocationService extends Service implements
     @Override
     public void onConnectionSuspended(int cause) {
         if (cause == CAUSE_NETWORK_LOST) { // not tested
-            if (hud != null)
-                hud.SetSpeed((int) speed, false);
+            if (null != garminHud)
+                setSpeed((int) speed, false);
         }
     }
 
@@ -104,10 +132,11 @@ public class LocationService extends Service implements
             lEnd = mCurrentLocation;
 
         //calculating the speed with getSpeed method it returns speed in m/s so we are converting it into kmph
-        if (NotificationMonitor.getCurrentUnit() == eUnits.Kilometres)
+        if (eUnits.Kilometres == NotificationMonitor.getCurrentUnit() || eUnits.None == NotificationMonitor.getCurrentUnit()) {
             speed = location.getSpeed() * 18 / 5;
-        else if (NotificationMonitor.getCurrentUnit() == eUnits.Miles)
+        } else if (eUnits.Miles == NotificationMonitor.getCurrentUnit()) {
             speed = location.getSpeed() * 2236 / 1000;
+        }
 
         //Calling the method below updates the  live values of distance and speed to the TextViews.
         updateHUD();
@@ -130,18 +159,32 @@ public class LocationService extends Service implements
 
     //The live feed of Distance and Speed are being set in the method below .
     private void updateHUD() {
-        if (hud == null)
-            hud = NotificationMonitor.getGarminHud();
-        if (hud == null)
+        if (null == garminHud)
             return;
         if (speed >= 0.0) {
-                hud.SetSpeed((int) speed, true);
+            setSpeed((int) speed, true);
         } else
-            hud.ClearSpeedandWarning();
+            clearSpeed();
 
         lStart = lEnd;
     }
 
+
+    private void setSpeed(int nSpeed, boolean bIcon) {
+        if (isOnNavigating) {
+            garminHud.SetSpeed(nSpeed, bIcon);
+        } else {
+            garminHud.SetDistance(nSpeed, eUnits.None);
+        }
+    }
+
+    private void clearSpeed() {
+        if (isOnNavigating) {
+            garminHud.ClearSpeedandWarning();
+        } else {
+            garminHud.ClearDistance();
+        }
+    }
 
     @Override
     public boolean onUnbind(Intent intent) {
@@ -152,6 +195,17 @@ public class LocationService extends Service implements
         lEnd = null;
         distance = 0;
         return super.onUnbind(intent);
+    }
+
+    private MsgReceiver msgReceiver;
+    private boolean isOnNavigating = false;
+
+    private class MsgReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            isOnNavigating = intent.getBooleanExtra(getString(R.string.is_on_navigating), isOnNavigating);
+
+        }
     }
 }
 

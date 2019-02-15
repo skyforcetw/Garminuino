@@ -29,6 +29,11 @@
                     android:textSize="@dimen/option_text_size"
                     />
 
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dip"
+                    android:background="@color/horizontal_line" />
+
                 <TextView
                     android:id="@+id/textView6"
                     android:layout_width="match_parent"
@@ -69,6 +74,11 @@
                     android:textSize="@dimen/option_text_size"
                     android:text="Gmap's Notification Capture" />
 
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dip"
+                    android:background="@color/horizontal_line" />
+
                 <TextView
                     android:id="@+id/textView5"
                     android:layout_width="match_parent"
@@ -99,6 +109,11 @@
                     android:textSize="@dimen/option_text_size"
                     android:text="Show ETA" />
 
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dip"
+                    android:background="@color/horizontal_line" />
+
                 <TextView
                     android:id="@+id/textView3"
                     android:layout_width="match_parent"
@@ -114,9 +129,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-
-                    android:textSize="@dimen/option_text_size"
-                    android:text="Show Speed(under construction)" />
+                    android:onClick="buttonOnClicked"
+                    android:text="Show Speed"
+                    android:textSize="@dimen/option_text_size" />
 
                 <Switch
                     android:id="@+id/switchIdleShowTime"
@@ -125,8 +140,13 @@
                     android:layout_weight="1"
                     android:paddingTop="@dimen/option_padding_top"
                     android:textSize="@dimen/option_text_size"
-                    android:text="Show Current Time(under construction)" />
+                    android:onClick="buttonOnClicked"
+                    android:text="Show Current Time" />
 
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dip"
+                    android:background="@color/horizontal_line" />
 
             </LinearLayout>
 
