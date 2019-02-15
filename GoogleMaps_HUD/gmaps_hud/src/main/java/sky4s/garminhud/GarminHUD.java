@@ -117,12 +117,17 @@ public class GarminHUD {
         sendResult = SendPacket(sendBuf, len);
     }
 
+
     public void SetTime(int nH, int nM) {
-        SetTime(nH, nM, true, false, true, false);
+        SetTime(nH, nM, false, false, true, false);
     }
 
-    public void SetTime(int nH, int nM, boolean hFlag) {
-        SetTime(nH, nM, true, false, true, hFlag);
+    public void SetTime(int nH, int nM, boolean bH, boolean bFlag) {
+        SetTime(nH, nM, bFlag, false, true, bH);
+    }
+
+    public void SetTime(int nH, int nM, boolean bH) {
+        SetTime(nH, nM, true, false, true, bH);
     }
 
     public void SetTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
@@ -134,7 +139,7 @@ public class GarminHUD {
         SendHud2(arr);
     }
 
-    void ClearTime() {
+    public void ClearTime() {
         char arr[] = {(char) 0x05,
                 0x00,
                 0, 0,

@@ -67,11 +67,13 @@ public class MainActivity extends AppCompatActivity {
     Switch switchHudConnected;
     Switch switchNotificationCatched;
     Switch switchGmapsNotificationCatched;
+
     Switch switchShowETA;
     Switch switchNavShowSpeed;
     Switch switchIdleShowSpeed;
+    Switch switchIdleShowTime;
 
-    private boolean isOnNavigating() {
+    private boolean isInNavigating() {
         return switchGmapsNotificationCatched.isChecked();
     }
 
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     switchNotificationCatched.setChecked(notify_catched);
                     switchGmapsNotificationCatched.setChecked(gmaps_notify_catched);
-                    sendBooleanExtra2NotificationMonitor(getString(R.string.broadcast_receiver_localtion_service), getString(R.string.is_on_navigating), isOnNavigating());
+                    sendBooleanExtra2NotificationMonitor(getString(R.string.broadcast_receiver_localtion_service), getString(R.string.is_on_navigating), isInNavigating());
                 }
             }
         }
@@ -122,12 +124,19 @@ public class MainActivity extends AppCompatActivity {
 
     private class UpdateTimeTask extends TimerTask {
         public void run() {
-            if (showTime && null != garminHud) {
-                Calendar c = Calendar.getInstance();
-                int hour = c.get(Calendar.HOUR_OF_DAY);
-                int minute = c.get(Calendar.MINUTE);
-                garminHud.SetTime(hour, minute);
+            if (null != garminHud) {
+                if (!isInNavigating()) {
+                    if (showTime) {
+                        Calendar c = Calendar.getInstance();
+                        int hour = c.get(Calendar.HOUR_OF_DAY);
+                        int minute = c.get(Calendar.MINUTE);
+                        garminHud.SetTime(hour, minute, false, false);
+                    } else {
+                        garminHud.ClearTime();
+                    }
+                }
             }
+
         }
     }
 
@@ -175,6 +184,18 @@ public class MainActivity extends AppCompatActivity {
     //========================================================================================
 
     private SharedPreferences sharedPref;
+
+    void loadOptions() {
+
+        boolean optionNavigatingShowSpeed = sharedPref.getBoolean(getString(R.string.option_navigating_show_speed), false);
+        boolean optionIdleShowSpeed = sharedPref.getBoolean(getString(R.string.option_idle_show_speed), false);
+        switchNavShowSpeed.setChecked(optionNavigatingShowSpeed);
+        switchIdleShowSpeed.setChecked(optionIdleShowSpeed);
+        showSpeed(optionNavigatingShowSpeed, optionIdleShowSpeed);
+
+        boolean optionShowEta = sharedPref.getBoolean(getString(R.string.option_show_eta), false);
+        boolean optionIdleShowTime = sharedPref.getBoolean(getString(R.string.option_idle_show_time), false);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -267,12 +288,14 @@ public class MainActivity extends AppCompatActivity {
     private class BluetoothConnectionListener implements BluetoothSPP.BluetoothConnectionListener, BluetoothSPP.AutoConnectionListener {
         @Override
         public void onAutoConnectionStarted() {
-
+            int a = 1;
         }
 
         @Override
         public void onNewConnection(String name, String address) {
-
+//            switchHudConnected.setText("'" + name + "' connected");
+//            switchHudConnected.setTextColor(Color.BLACK);
+//            switchHudConnected.setChecked(true);
         }
 
         @Override
@@ -280,6 +303,7 @@ public class MainActivity extends AppCompatActivity {
             switchHudConnected.setText("'" + name + "' connected");
             switchHudConnected.setTextColor(Color.BLACK);
             switchHudConnected.setChecked(true);
+
             NotificationMonitor.garminHud = garminHud;
             log("onDeviceConnected");
 
@@ -543,7 +567,7 @@ public class MainActivity extends AppCompatActivity {
     private void showConfirmDialog() {
         new AlertDialog.Builder(this)
                 .setMessage("Please enable Notification Access for " + getString(R.string.app_name)
-                        + ". This app use Notification to parse Navigation Information.")
+                        + ".\n\nThis app use Notification to parse Navigation Information.")
                 .setTitle("Notification Access")
                 .setIconAttribute(android.R.attr.alertDialogIcon)
                 .setCancelable(true)

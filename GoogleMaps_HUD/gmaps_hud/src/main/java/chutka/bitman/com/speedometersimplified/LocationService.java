@@ -57,6 +57,13 @@ public class LocationService extends Service implements
                 .build();
         mGoogleApiClient.connect();
 
+
+        return mBinder;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
         //========================================================================================
         // messageer
         //========================================================================================
@@ -65,8 +72,12 @@ public class LocationService extends Service implements
         intentFilter.addAction(getString(R.string.broadcast_receiver_localtion_service));
         registerReceiver(msgReceiver, intentFilter);
         //========================================================================================
+    }
 
-        return mBinder;
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(msgReceiver);
     }
 
     protected void createLocationRequest() {
@@ -193,25 +204,7 @@ public class LocationService extends Service implements
         @Override
         public void onReceive(Context context, Intent intent) {
             isOnNavigating = intent.getBooleanExtra(getString(R.string.is_on_navigating), isOnNavigating);
-            int a = 1;
-//            String notify_msg = intent.getStringExtra(getString(R.string.notify_msg));
-//            if (null != notify_msg) {
-//                textViewDebug.setText(notify_msg);
-//            } else {
-//
-//                boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched), switchNotificationCatched.isChecked());
-//                boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched), switchGmapsNotificationCatched.isChecked());
-//                boolean notify_parse_failed = intent.getBooleanExtra(getString(R.string.notify_parse_failed), false);
-//
-//                if (notify_parse_failed) {
-//
-//                } else {
-//                    switchNotificationCatched.setChecked(notify_catched);
-//                    switchGmapsNotificationCatched.setChecked(gmaps_notify_catched);
-//                    sendBooleanExtra2NotificationMonitor(getString(R.string.broadcast_receiver_localtion_service), getString(R.string.is_on_navigating), isOnNavigating());
-//
-//                }
-//            }
+
         }
     }
 }
