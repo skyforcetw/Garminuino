@@ -39,7 +39,7 @@ import sky4s.garminhud.eUnits;
 
 
 public class NotificationMonitor extends NotificationListenerService {
-    private final static boolean STORE_IMG = true;
+    private final static boolean STORE_IMG = false;
     private final static String IMAGE_DIR = "/storage/emulated/0/Pictures/";
     private final static boolean DONT_SEND_SAME = false;
 
