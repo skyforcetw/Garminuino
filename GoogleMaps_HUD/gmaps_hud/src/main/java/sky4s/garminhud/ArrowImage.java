@@ -3,7 +3,7 @@ package sky4s.garminhud;
 import android.graphics.Bitmap;
 
 public class ArrowImage {
-    public static final int IMAGE_LEN = 4;
+    public static final int IMAGE_LEN = 5; //4x4 cannot has valid recognize
     public static final int CONTENT_LEN = IMAGE_LEN * IMAGE_LEN;
     public boolean[] content = new boolean[CONTENT_LEN];
 

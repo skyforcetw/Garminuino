@@ -39,7 +39,7 @@ import sky4s.garminhud.eUnits;
 
 
 public class NotificationMonitor extends NotificationListenerService {
-    private final static boolean STORE_IMG = false;
+    private final static boolean STORE_IMG = true;
     private final static String IMAGE_DIR = "/storage/emulated/0/Pictures/";
     private final static boolean DONT_SEND_SAME = false;
 
@@ -584,6 +584,16 @@ public class NotificationMonitor extends NotificationListenerService {
                 break;
             case LeaveRoundaboutRight:
                 garminHud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
+                break;
+
+            case LeaveRoundaboutUpCC:
+                garminHud.SetDirection(eOutAngle.Straight, eOutType.LeftRoundabout, eOutAngle.Straight);
+                break;
+            case LeaveRoundaboutLeftCC:
+                garminHud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
+                break;
+            case LeaveRoundaboutRightCC:
+                garminHud.SetDirection(eOutAngle.Right, eOutType.LeftRoundabout, eOutAngle.Right);
                 break;
 
             case Convergence:

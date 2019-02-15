@@ -51,7 +51,7 @@ import sky4s.garminhud.GarminHUD;
 
 public class MainActivity extends AppCompatActivity {
     //for test with virtual device which no BT device
-    public static final boolean IGNORE_BT_DEVICE = false;
+    public static final boolean IGNORE_BT_DEVICE = true;
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
