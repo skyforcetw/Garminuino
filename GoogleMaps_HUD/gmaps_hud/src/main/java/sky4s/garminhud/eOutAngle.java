@@ -4,7 +4,9 @@ package sky4s.garminhud;
  * Created by skyforce on 2018/8/13.
  */
 
+// Defines the Output-Angle
 public enum eOutAngle {
+    Down(0x01),
     SharpRight(0x02),
     Right(0x04),
     EasyRight(0x08),
