@@ -506,8 +506,8 @@ public class NotificationMonitor extends NotificationListenerService {
         for (Arrow a : Arrow.values()) {
             int sad = image.getSAD(a.value);
             if (0 == sad) {
-                String shortString = Short.toString(a.value);
-                Log.d(TAG, "Recognize " + a.name() + " " + shortString);
+                String integerString = Integer.toString(a.value);
+                Log.d(TAG, "Recognize " + a.name() + " " + integerString);
                 foundArrow = a;
                 break;
             }

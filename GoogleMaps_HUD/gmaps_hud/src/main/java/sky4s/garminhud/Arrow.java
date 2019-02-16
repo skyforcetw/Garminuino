@@ -34,9 +34,9 @@ public enum Arrow {
 
     None(0);
 
-    public final short value;
+    public final int value;
 
     private Arrow(int value) {
-        this.value = (short) value;
+        this.value = value;
     }
 }
