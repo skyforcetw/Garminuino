@@ -308,6 +308,7 @@ public class NotificationMonitor extends NotificationListenerService {
                             storeBitmap(bitmapImage, IMAGE_DIR + "arrow.png");
                         }
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
+                        // Log.i(TAG, "Arrow-Value: "+arrowImage.getArrowValue());
                         foundArrow = getArrow(arrowImage);
                         updateCount++;
                     }
@@ -393,6 +394,7 @@ public class NotificationMonitor extends NotificationListenerService {
                         }
 
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
+                        // Log.i(TAG, "Arrow-Value: "+arrowImage.getArrowValue());
                         foundArrow = getArrow(arrowImage);
                     }
                 }
