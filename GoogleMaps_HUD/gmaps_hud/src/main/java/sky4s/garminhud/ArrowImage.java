@@ -24,6 +24,7 @@ public class ArrowImage {
 
     }
 
+    // Returns the "Sum of absolute differences" (SAD) between the bitcode (magicNumber) and the ArrwowImage
     public int getSAD(final int magicNumber) {
         int sad = 0;
         for (int x = 0; x < CONTENT_LEN; x++) {
@@ -31,5 +32,14 @@ public class ArrowImage {
             sad += content[x] != bit ? 1 : 0;
         }
         return sad;
+    }
+
+    // Returns the bitcode of the ArrowImage. The image will be divided into IMAGE_LEN x IMAGE_LEN Pixels (5x5)
+    // Return-Value can be used for Arrow.java
+    public int getArrowValue() {
+        int value = 0;
+        for (int i=0; i < CONTENT_LEN; i++)
+            value += ((content[i] ? 1:0)<<i);
+        return value;
     }
 }
