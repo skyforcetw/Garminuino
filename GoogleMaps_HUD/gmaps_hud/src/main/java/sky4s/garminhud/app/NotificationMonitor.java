@@ -521,13 +521,13 @@ public class NotificationMonitor extends NotificationListenerService {
         long minSad = Integer.MAX_VALUE;
         Arrow minSadArrow = Arrow.None;
         for (Arrow a : Arrow.values()) {
-            long sad = image.getSAD(a.value);
+            long sad = image.getSAD(a.value1);
             if (sad < minSad) {
                 minSad = sad;
                 minSadArrow = a;
             }
             if (0 == sad) {
-                String integerString = Long.toString(a.value);
+                String integerString = Long.toString(a.value1);
                 Log.d(TAG, "Recognize " + a.name() + " " + integerString);
                 return a;
 
@@ -816,11 +816,11 @@ public class NotificationMonitor extends NotificationListenerService {
             final int indexOfETA = timeToArrived.indexOf(ETA);
             String[] arrivedSplit = null;
             final boolean etaAtFirst = 0 == indexOfETA;
-            // Separate EAT-String from value
-            if (etaAtFirst) { // ETA-String first, then value (chinese)
+            // Separate EAT-String from value1
+            if (etaAtFirst) { // ETA-String first, then value1 (chinese)
                 arrivedSplit = timeToArrived.split(ETA);
                 arrivalTime = 2 == arrivedSplit.length ? arrivedSplit[1] : null;
-            } else { // ETA-value first, then string (english)
+            } else { // ETA-value1 first, then string (english)
                 arrivedSplit = timeToArrived.split(ETA);
                 arrivalTime = arrivedSplit[0];
             }

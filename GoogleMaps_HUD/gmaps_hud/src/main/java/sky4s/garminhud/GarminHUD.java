@@ -249,10 +249,10 @@ public class GarminHUD {
      */
 //    public void SetDirection(char nDir, char nType, char nRoundaboutOut) {
 //        char arr[] = {(char) 0x01,
-//                (nDir == eOutAngle.LeftDown.value) ? (char) 0x10 : ((nDir == eOutAngle.RightDown.value) ? (char) 0x20 : nType), //byte1
-//                ((nType & eOutType.RightRoundabout.value) != 0 || (nType & eOutType.LeftRoundabout.value) != 0) ? //byte2
-//                        ((nRoundaboutOut == eOutAngle.AsDirection.value) ? nDir : nRoundaboutOut) : (char) 0x00,
-//                (nDir == eOutAngle.LeftDown.value || nDir == eOutAngle.RightDown.value) ? (char) 0x00 : nDir}; //byte3
+//                (nDir == eOutAngle.LeftDown.value1) ? (char) 0x10 : ((nDir == eOutAngle.RightDown.value1) ? (char) 0x20 : nType), //byte1
+//                ((nType & eOutType.RightRoundabout.value1) != 0 || (nType & eOutType.LeftRoundabout.value1) != 0) ? //byte2
+//                        ((nRoundaboutOut == eOutAngle.AsDirection.value1) ? nDir : nRoundaboutOut) : (char) 0x00,
+//                (nDir == eOutAngle.LeftDown.value1 || nDir == eOutAngle.RightDown.value1) ? (char) 0x00 : nDir}; //byte3
 //        SendHud2(arr);
 //    }
 
