@@ -5,7 +5,7 @@ Garminuino Android App: GoogleMaps HUD, parses the navigation information from G
 Simple instruction for the app. [Please read here.](./INSTRUCTION.md)
 
 ## Supported Arrows
-The app just can recongnized the arrow we collected. [Please read here.](./SUPPORTED_ARROWS.md)  
+The app just can recongnized the arrow we supported. [Please read here.](./SUPPORTED_ARROWS.md)  
 If find some arrow recognize failed, please search the arrows we supported first.  
 If the trouble arrow is supported, maybe something wrong, please call new issue.  
 If the trouble arrow is not in supported, please call new issue, and provide the arrow image in any form, let us add to supported list.
