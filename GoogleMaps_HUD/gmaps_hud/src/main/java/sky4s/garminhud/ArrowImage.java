@@ -49,13 +49,23 @@ public class ArrowImage {
 
     }
 
+
     public long getSAD(final long magicNumber) {
         long sad = 0;
-        int length = 8 == IMAGE_LEN ? CONTENT_LEN - 1 : CONTENT_LEN;
+        int length = 8 == IMAGE_LEN ? CONTENT_LEN - 1 : CONTENT_LEN; //when 8x8, just check 63bit, skip sign bit
         for (int x = 0; x < length; x++) {
             final boolean bit = 1 == ((magicNumber >> x) & 1);
             sad += content[x] != bit ? 1 : 0;
         }
         return sad;
+    }
+
+    // Returns the bitcode of the ArrowImage. The image will be divided into IMAGE_LEN x IMAGE_LEN Pixels (5x5)
+    // Return-Value can be used for Arrow.java
+    public int getArrowValue() {
+        int value = 0;
+        for (int i=0; i < CONTENT_LEN; i++)
+            value += ((content[i] ? 1:0)<<i);
+        return value;
     }
 }

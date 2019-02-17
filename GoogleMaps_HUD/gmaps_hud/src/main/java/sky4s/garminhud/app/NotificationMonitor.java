@@ -309,6 +309,7 @@ public class NotificationMonitor extends NotificationListenerService {
                             storeBitmap(bitmapImage, IMAGE_DIR + "arrow.png");
                         }
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
+                        // Log.i(TAG, "Arrow-Value: "+arrowImage.getArrowValue());
                         foundArrow = getArrow(arrowImage);
                         updateCount++;
                     }
@@ -397,9 +398,11 @@ public class NotificationMonitor extends NotificationListenerService {
 //                        }
 
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
+
                         if (STORE_IMG) {
                             storeBitmap(arrowImage.binaryImage, IMAGE_DIR + "binary.png");
                         }
+
                         foundArrow = getArrow(arrowImage);
                     }
                 }
@@ -595,8 +598,23 @@ public class NotificationMonitor extends NotificationListenerService {
             case LeaveRoundaboutLeft:
                 garminHud.SetDirection(eOutAngle.Left, eOutType.RightRoundabout, eOutAngle.Left);
                 break;
+            case LeaveRoundaboutSharpLeft:
+                garminHud.SetDirection(eOutAngle.SharpLeft, eOutType.RightRoundabout, eOutAngle.SharpLeft);
+                break;
+            case LeaveRoundaboutEasyLeft:
+                garminHud.SetDirection(eOutAngle.EasyLeft, eOutType.RightRoundabout, eOutAngle.EasyLeft);
+                break;
             case LeaveRoundaboutRight:
                 garminHud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
+                break;
+            case LeaveRoundaboutSharpRight:
+                garminHud.SetDirection(eOutAngle.SharpRight, eOutType.RightRoundabout, eOutAngle.SharpRight);
+                break;
+            case LeaveRoundaboutEasyRight:
+                garminHud.SetDirection(eOutAngle.EasyRight, eOutType.RightRoundabout, eOutAngle.EasyRight);
+                break;
+            case LeaveRoundaboutAsDirection:
+                garminHud.SetDirection(eOutAngle.Down, eOutType.RightRoundabout, eOutAngle.Down);
                 break;
 
             case LeaveRoundaboutLeftCC:
