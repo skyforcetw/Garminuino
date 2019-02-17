@@ -135,7 +135,7 @@ int recognize()
 	using namespace cv;
 	using namespace std;
 	vector<Mat> image_vec;
-	string dir = "./Google_Nav2/";
+	string dir = "./Google_Arrow2/";
 
 	vector<Image> image_vector;
 	int bit_of_image = IMAGE_LENGTH * IMAGE_LENGTH;

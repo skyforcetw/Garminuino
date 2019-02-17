@@ -127,7 +127,11 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     private boolean showETA = false;
+    private static NotificationMonitor staticInstance;
 
+    public static NotificationMonitor getStaticInstance() {
+        return staticInstance;
+    }
 
     @Override
     public void onCreate() {
@@ -144,9 +148,11 @@ public class NotificationMonitor extends NotificationListenerService {
         msgReceiver = new MsgReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(getString(R.string.broadcast_receiver_notification_monitor));
+
         registerReceiver(msgReceiver, intentFilter);
 
         //========================================================================================
+        staticInstance = this;
     }
 
     @Override
@@ -533,95 +539,126 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private Arrow preArrow = Arrow.None;
 
-    private void processArrow(Arrow arrow) {
+    void processArrow(Arrow arrow) {
+        if (null == garminHud) {
+            return;
+        }
         if (preArrow == arrow) {
 
         } else {
             preArrow = arrow;
         }
         switch (arrow) {
-            case SharpRight:
-                garminHud.SetDirection(eOutAngle.SharpRight);
-                break;
-            case Right:
-                garminHud.SetDirection(eOutAngle.Right);
-                break;
-            case EasyRight:
-            case KeepRight:
-                garminHud.SetDirection(eOutAngle.EasyRight);
-                break;
-            case RightToLeave:
-                garminHud.SetDirection(eOutAngle.EasyRight, eOutType.LongerLane, eOutAngle.AsDirection);
-                break;
-            case Straight:
-                garminHud.SetDirection(eOutAngle.Straight);
-                break;
-
-            case GoTo:
-                garminHud.SetDirection(eOutAngle.Straight);
-                break;
-            case EasyLeft:
-            case KeepLeft:
-                garminHud.SetDirection(eOutAngle.EasyLeft);
-                break;
-            case LeftToLeave:
-                garminHud.SetDirection(eOutAngle.EasyLeft, eOutType.LongerLane, eOutAngle.AsDirection);
-                break;
-            case Left:
-                garminHud.SetDirection(eOutAngle.Left);
-                break;
-            case SharpLeft:
-                garminHud.SetDirection(eOutAngle.SharpLeft);
-                break;
-            case LeftDown:
-                garminHud.SetDirection(eOutAngle.LeftDown);
-                break;
-            case RightDown:
-                garminHud.SetDirection(eOutAngle.RightDown);
-                break;
-            case ArrivalsRight:
-                garminHud.SetDirection(eOutAngle.Right, eOutType.RightFlag, eOutAngle.AsDirection);
+            case Arrivals:
+                garminHud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
                 break;
             case ArrivalsLeft:
                 garminHud.SetDirection(eOutAngle.Left, eOutType.RightFlag, eOutAngle.AsDirection);
                 break;
-            case Arrivals:
-                garminHud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
+            case ArrivalsRight:
+                garminHud.SetDirection(eOutAngle.Right, eOutType.RightFlag, eOutAngle.AsDirection);
                 break;
 
-            case LeaveRoundabout:
-                garminHud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
-                break;
-            case LeaveRoundaboutUp:
-                garminHud.SetDirection(eOutAngle.Straight, eOutType.RightRoundabout, eOutAngle.Straight);
-                break;
-            case LeaveRoundaboutLeft:
-                garminHud.SetDirection(eOutAngle.Left, eOutType.RightRoundabout, eOutAngle.Left);
-                break;
-            case LeaveRoundaboutSharpLeft:
-                garminHud.SetDirection(eOutAngle.SharpLeft, eOutType.RightRoundabout, eOutAngle.SharpLeft);
-                break;
-            case LeaveRoundaboutEasyLeft:
-                garminHud.SetDirection(eOutAngle.EasyLeft, eOutType.RightRoundabout, eOutAngle.EasyLeft);
-                break;
-            case LeaveRoundaboutRight:
-                garminHud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
-                break;
-            case LeaveRoundaboutSharpRight:
-                garminHud.SetDirection(eOutAngle.SharpRight, eOutType.RightRoundabout, eOutAngle.SharpRight);
-                break;
-            case LeaveRoundaboutEasyRight:
-                garminHud.SetDirection(eOutAngle.EasyRight, eOutType.RightRoundabout, eOutAngle.EasyRight);
-                break;
-            case LeaveRoundaboutAsDirection:
-                garminHud.SetDirection(eOutAngle.Down, eOutType.RightRoundabout, eOutAngle.Down);
+            case EasyLeft:
+            case KeepLeft:
+                garminHud.SetDirection(eOutAngle.EasyLeft);
                 break;
 
-            case LeaveRoundaboutLeftCC:
+            case EasyRight:
+            case KeepRight:
+                garminHud.SetDirection(eOutAngle.EasyRight);
+                break;
+            case GoTo:
+                garminHud.SetDirection(eOutAngle.Straight);
+                break;
+
+            case LeaveRoundabout://1 checked
                 garminHud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
                 break;
-            case LeaveRoundaboutRightCC:
+
+            case LeaveRoundaboutAsDirection://2 checked
+                garminHud.SetDirection(eOutAngle.Straight, eOutType.LeftRoundabout, eOutAngle.Straight);
+                break;
+
+            case LeaveRoundaboutAsDirectionCC://3 checked
+                garminHud.SetDirection(eOutAngle.Straight, eOutType.RightRoundabout, eOutAngle.Straight);
+                break;
+
+            case LeaveRoundaboutEasyLeft://4 checked
+                garminHud.SetDirection(eOutAngle.EasyLeft, eOutType.LeftRoundabout, eOutAngle.EasyLeft);
+                break;
+
+            case LeaveRoundaboutEasyLeftCC://5 checked
+                garminHud.SetDirection(eOutAngle.EasyLeft, eOutType.RightRoundabout, eOutAngle.EasyLeft);
+                break;
+
+            case LeaveRoundaboutEasyRight://6 checked
+                garminHud.SetDirection(eOutAngle.EasyRight, eOutType.LeftRoundabout, eOutAngle.EasyRight);
+                break;
+            case LeaveRoundaboutEasyRightCC://7 checked
+                garminHud.SetDirection(eOutAngle.EasyRight, eOutType.RightRoundabout, eOutAngle.EasyRight);
+                break;
+
+            case LeaveRoundaboutCC://8 checked
+                garminHud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
+                break;
+
+            case LeaveRoundaboutLeft://9 checked
+                garminHud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
+                break;
+            case LeaveRoundaboutLeftCC://10 checked
+                garminHud.SetDirection(eOutAngle.Left, eOutType.RightRoundabout, eOutAngle.Left);
+                break;
+            case LeaveRoundaboutRight://11 checked
                 garminHud.SetDirection(eOutAngle.Right, eOutType.LeftRoundabout, eOutAngle.Right);
+                break;
+            case LeaveRoundaboutRightCC://12 checked
+                garminHud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
+                break;
+
+            case LeaveRoundaboutSharpLeft://13 checked
+                garminHud.SetDirection(eOutAngle.SharpLeft, eOutType.LeftRoundabout, eOutAngle.SharpLeft);
+                break;
+            case LeaveRoundaboutSharpLeftCC://14 checked
+                garminHud.SetDirection(eOutAngle.SharpLeft, eOutType.RightRoundabout, eOutAngle.SharpLeft);
+                break;
+
+            case LeaveRoundaboutSharpRight://15 checked
+                garminHud.SetDirection(eOutAngle.SharpRight, eOutType.LeftRoundabout, eOutAngle.SharpRight);
+                break;
+            case LeaveRoundaboutSharpRightCC://16
+                garminHud.SetDirection(eOutAngle.SharpRight, eOutType.RightRoundabout, eOutAngle.SharpRight);
+                break;
+
+
+            case Left:
+                garminHud.SetDirection(eOutAngle.Left);
+                break;
+
+            case LeftDown:
+                garminHud.SetDirection(eOutAngle.LeftDown);
+                break;
+            case LeftToLeave:
+                garminHud.SetDirection(eOutAngle.EasyLeft, eOutType.LongerLane, eOutAngle.AsDirection);
+                break;
+
+            case Right:
+                garminHud.SetDirection(eOutAngle.Right);
+                break;
+            case RightDown:
+                garminHud.SetDirection(eOutAngle.RightDown);
+                break;
+            case RightToLeave:
+                garminHud.SetDirection(eOutAngle.EasyRight, eOutType.LongerLane, eOutAngle.AsDirection);
+                break;
+            case SharpLeft:
+                garminHud.SetDirection(eOutAngle.SharpLeft);
+                break;
+            case SharpRight:
+                garminHud.SetDirection(eOutAngle.SharpRight);
+                break;
+            case Straight:
+                garminHud.SetDirection(eOutAngle.Straight);
                 break;
 
             case Convergence:

@@ -32,7 +32,7 @@ public class ArrowImage {
         binaryImage = resized;
 
         final int interval = resized.getWidth() / IMAGE_LEN;
-        final int offset = interval / 2;
+        final int offset = 0;//interval / 2;
         int index = 0;
 
         for (int h0 = 0; h0 < IMAGE_LEN; h0++) {
@@ -63,12 +63,9 @@ public class ArrowImage {
         return sad;
     }
 
-    // Returns the bitcode of the ArrowImage. The image will be divided into IMAGE_LEN x IMAGE_LEN Pixels (5x5)
+    // Returns the bitcode of the ArrowImage. The image will be divided into IMAGE_LEN x IMAGE_LEN Pixels (8x8)
     // Return-Value can be used for Arrow.java
-    public int getArrowValue() {
-        int value = 0;
-        for (int i = 0; i < CONTENT_LEN; i++)
-            value += ((content[i] ? 1 : 0) << i);
+    public long getArrowValue() {
         return value;
     }
 }

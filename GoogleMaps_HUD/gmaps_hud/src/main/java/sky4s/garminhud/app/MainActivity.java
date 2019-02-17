@@ -47,13 +47,14 @@ import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.akexorcist.bluetotohspp.library.BluetoothState;
 import app.akexorcist.bluetotohspp.library.DeviceList;
 import chutka.bitman.com.speedometersimplified.LocationService;
+import sky4s.garminhud.Arrow;
 import sky4s.garminhud.GarminHUD;
 import sky4s.garminhud.eOutAngle;
 import sky4s.garminhud.eOutType;
 
 public class MainActivity extends AppCompatActivity {
     //for test with virtual device which no BT device
-    public static final boolean IGNORE_BT_DEVICE = true;
+    public static final boolean IGNORE_BT_DEVICE = false;
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -388,10 +389,28 @@ public class MainActivity extends AppCompatActivity {
     public void buttonOnClicked(View view) {
         switch (view.getId()) {
 
+            case R.id.button1:
+                if(null!=NotificationMonitor.getStaticInstance()) {
+                    NotificationMonitor.getStaticInstance().processArrow(Arrow.LeaveRoundaboutSharpRight);
+                }
+                break;
+            case R.id.button2:
+                if(null!=NotificationMonitor.getStaticInstance()) {
+                    NotificationMonitor.getStaticInstance().processArrow(Arrow.LeaveRoundaboutSharpRightCC);
+                }
+                break;
+            case R.id.button3:
+                if(null!=NotificationMonitor.getStaticInstance()) {
+                    NotificationMonitor.getStaticInstance().processArrow(Arrow.LeaveRoundaboutSharpRight);
+                }
+                break;
+
             case R.id.btnListNotify:
                 log("List notifications...");
                 listCurrentNotification();
-                garminHud.SetDirection(eOutAngle.Down, eOutType.RightRoundabout, eOutAngle.Down);
+                garminHud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
+
+
                 break;
 
             case R.id.btnScanBT:

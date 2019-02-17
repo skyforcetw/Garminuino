@@ -247,15 +247,21 @@ public class GarminHUD {
     byte3:  When not LeftDown/RightDown, 箭頭方向: eOutAngle
 
      */
-    public void SetDirection(char nDir, char nType, char nRoundaboutOut) {
-        char arr[] = {(char) 0x01,
-                (nDir == eOutAngle.LeftDown.value) ? (char) 0x10 : ((nDir == eOutAngle.RightDown.value) ? (char) 0x20 : nType), //byte1
-                ((nType & eOutType.RightRoundabout.value) != 0 || (nType & eOutType.LeftRoundabout.value) != 0) ? //byte2
-                        ((nRoundaboutOut == eOutAngle.AsDirection.value) ? nDir : nRoundaboutOut) : (char) 0x00,
-                (nDir == eOutAngle.LeftDown.value || nDir == eOutAngle.RightDown.value) ? (char) 0x00 : nDir}; //byte3
-        SendHud2(arr);
-    }
+//    public void SetDirection(char nDir, char nType, char nRoundaboutOut) {
+//        char arr[] = {(char) 0x01,
+//                (nDir == eOutAngle.LeftDown.value) ? (char) 0x10 : ((nDir == eOutAngle.RightDown.value) ? (char) 0x20 : nType), //byte1
+//                ((nType & eOutType.RightRoundabout.value) != 0 || (nType & eOutType.LeftRoundabout.value) != 0) ? //byte2
+//                        ((nRoundaboutOut == eOutAngle.AsDirection.value) ? nDir : nRoundaboutOut) : (char) 0x00,
+//                (nDir == eOutAngle.LeftDown.value || nDir == eOutAngle.RightDown.value) ? (char) 0x00 : nDir}; //byte3
+//        SendHud2(arr);
+//    }
 
+    /**
+     *
+     * @param nDir 箭頭
+     * @param nType  圓環方向
+     * @param nRoundaboutOut 圓環out
+     */
     public void SetDirection(eOutAngle nDir, eOutType nType, eOutAngle nRoundaboutOut) {
         char arr[] = {(char) 0x01,
                 (nDir == eOutAngle.LeftDown) ? (char) 0x10 : ((nDir == eOutAngle.RightDown) ? (char) 0x20 : (char) nType.value),
