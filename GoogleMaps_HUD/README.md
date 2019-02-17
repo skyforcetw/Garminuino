@@ -6,9 +6,7 @@ Simple instruction for the app. [Please read here.](./INSTRUCTION.md)
 
 ## Supported Arrows
 The app just can recongnized the arrow we supported. [Please read here.](./SUPPORTED_ARROWS.md)  
-If find some arrow recognize failed, please search the arrows we supported first.  
-If the trouble arrow is supported, maybe something wrong, please call new issue.  
-If the trouble arrow is not in supported, please call new issue, and provide the arrow image in any form, let us add to supported list.
+If find some arrow recognize failed, please call a new issue, and provide the arrow image in any form, let us add to supported list.
 
 ## How it works
 The app reads the notitification of Google Maps, and parse it. Further it establish a connection to the Garmin HUD and sends the processed data.
