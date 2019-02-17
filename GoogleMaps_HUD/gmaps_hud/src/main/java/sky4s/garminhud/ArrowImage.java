@@ -18,12 +18,14 @@ public class ArrowImage {
     }
 
     public ArrowImage(Bitmap bitmap) {
+        final int TREAT_AS_WHITE = 200;
+        final int ALPHA_AS_WHITE = 254;
 
         for (int h = 0; h < bitmap.getHeight(); h++) {
             for (int w = 0; w < bitmap.getWidth(); w++) {
                 int p = bitmap.getPixel(w, h);
                 final int green_alpha = getGreenAlpha(p);
-                bitmap.setPixel(w, h,green_alpha>200 ? 0xffffffff : 0);
+                bitmap.setPixel(w, h, green_alpha > TREAT_AS_WHITE ? 0xffffffff : 0);
             }
         }
         Bitmap resized = Bitmap.createScaledBitmap(bitmap, 132, 132, false);
@@ -32,13 +34,14 @@ public class ArrowImage {
         final int interval = resized.getWidth() / IMAGE_LEN;
         final int offset = interval / 2;
         int index = 0;
+
         for (int h0 = 0; h0 < IMAGE_LEN; h0++) {
             final int h = h0 * interval + offset;
             for (int w0 = 0; w0 < IMAGE_LEN; w0++) {
                 final int w = w0 * interval + offset;
                 int p = resized.getPixel(w, h);
                 final int green_alpha = getGreenAlpha(p);
-                boolean bit = green_alpha>=254;
+                boolean bit = green_alpha >= ALPHA_AS_WHITE;
 
                 content[h0 * IMAGE_LEN + w0] = bit;
                 long shift_value = ((bit ? 1L : 0L) << index);
@@ -64,8 +67,8 @@ public class ArrowImage {
     // Return-Value can be used for Arrow.java
     public int getArrowValue() {
         int value = 0;
-        for (int i=0; i < CONTENT_LEN; i++)
-            value += ((content[i] ? 1:0)<<i);
+        for (int i = 0; i < CONTENT_LEN; i++)
+            value += ((content[i] ? 1 : 0) << i);
         return value;
     }
 }

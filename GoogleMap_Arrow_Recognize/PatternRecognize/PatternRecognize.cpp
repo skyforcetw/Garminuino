@@ -2,10 +2,8 @@
 //
 #include "stdafx.h"
 #include <bitset>
-//#include <experimental/filesystem>
 #include <windows.h>
 #include <iostream>
-
 #include <limits>
 
 std::vector<std::string>  getAllFilesNamesWithinFolder(std::string folder)
@@ -77,14 +75,6 @@ void to_binary_image(cv::Mat image) {
 	int height = image.rows;
 	int width = image.cols;
 
-	//int min_value = 255;
-	//for (int h = 0; h < height; h++) {
-	//	for (int w = 0; w < width; w++) {
-	//		auto& pixel = image.at<cv::Vec3b>(w, h);
-	//		min_value = min(pixel[1], min_value);
-	//	}
-	//}
-
 	for (int h = 0; h < height; h++) {
 		for (int w = 0; w < width; w++) {
 			auto& pixel = image.at<cv::Vec3b>(w, h);
@@ -140,13 +130,6 @@ Image to_Image(cv::Mat cv_image) {
 }
 
 
-
-class Lane {
-
-};
-
-
-
 int recognize()
 {
 	using namespace cv;
@@ -195,44 +178,8 @@ int recognize()
 }
 
 
-
-#include <Vector.h>
-#define String std::string
-
-Vector<bool> getWhiteLane(int lanes, String str) {
-
-	Vector<bool> result(lanes);
-	for (int x = 0; x < lanes; x++) {
-		result.push_back(false);
-	}
-
-	const char* buffer = str.c_str();
-	char s[2] = ":";
-	char *token = strtok((char*)buffer, s);
-
-	for (int x = 0; token != NULL; x++, token = strtok(NULL, s)) {
-		int num = atoi(token);
-		if (num > lanes) {
-			break;
-		}
-		else {
-			result[num - 1] = true;
-		}
-	}
-	return result;
-}
-
 int main() {
-	if (false) {
-		using namespace std;
-		Vector<bool> vec = getWhiteLane(3, "3:");
-		for (int x = 0; x < vec.size(); x++) {
-			cout << vec[x] ? "1" : "0";
 
-		}
-		cout << endl;
-		int a = 1;
-	}
 	if (false) {
 		using namespace cv;
 		using namespace std;
