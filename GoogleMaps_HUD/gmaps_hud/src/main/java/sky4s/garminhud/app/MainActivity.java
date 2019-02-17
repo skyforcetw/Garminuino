@@ -51,7 +51,7 @@ import sky4s.garminhud.GarminHUD;
 
 public class MainActivity extends AppCompatActivity {
     //for test with virtual device which no BT device
-    public static final boolean IGNORE_BT_DEVICE = false;
+    public static final boolean IGNORE_BT_DEVICE = true;
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -104,8 +104,10 @@ public class MainActivity extends AppCompatActivity {
                 textViewDebug.setText(notify_msg);
             } else {
 
-                boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched), switchNotificationCatched.isChecked());
-                boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched), switchGmapsNotificationCatched.isChecked());
+                boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched),
+                        null != switchNotificationCatched ? switchNotificationCatched.isChecked() : false);
+                boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched),
+                        null != switchGmapsNotificationCatched ? switchGmapsNotificationCatched.isChecked() : false);
                 boolean notify_parse_failed = intent.getBooleanExtra(getString(R.string.notify_parse_failed), false);
 
                 if (notify_parse_failed) {

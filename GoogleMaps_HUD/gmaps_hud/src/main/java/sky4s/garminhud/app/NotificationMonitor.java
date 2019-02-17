@@ -39,7 +39,7 @@ import sky4s.garminhud.eUnits;
 
 
 public class NotificationMonitor extends NotificationListenerService {
-    private final static boolean STORE_IMG = false;
+    private final static boolean STORE_IMG = true;
     private final static String IMAGE_DIR = "/storage/emulated/0/Pictures/";
     private final static boolean DONT_SEND_SAME = false;
 
@@ -196,6 +196,7 @@ public class NotificationMonitor extends NotificationListenerService {
         boolean parseResult = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             parseResult = parseNotificationByExtras(notification);
+            //parseResult = parseNotificationByReflection(notification);
         } else {
             parseResult = parseNotificationByReflection(notification);
         }
@@ -360,8 +361,8 @@ public class NotificationMonitor extends NotificationListenerService {
             if (null != subText) {
                 String[] split = subText.split("·");
                 for (int i = 0; i < split.length; i++) {
-                    split[i].trim();
-                    boolean string_empty = containsOnlyWhitespaces(split[i]);
+                    String trimString = split[i].trim();
+                    boolean string_empty = containsOnlyWhitespaces(trimString);
                     if (string_empty == false) {
                         subTextEmpty = false;
                         break;
@@ -373,6 +374,7 @@ public class NotificationMonitor extends NotificationListenerService {
                 parseTimeAndDistanceToDest(subText);
 
                 String[] title_str = title.split("–");
+                title_str = 1 == title_str.length ? title.split("-") : title_str;
                 String distance = title_str[0].trim();
                 if (Character.isDigit(distance.charAt(0)))
                     parseDistanceToTurn(distance);
@@ -388,13 +390,19 @@ public class NotificationMonitor extends NotificationListenerService {
                         if (STORE_IMG) {
                             storeBitmap(bitmapImage, IMAGE_DIR + "arrow0.png");
                         }
-                        bitmapImage = removeAlpha(bitmapImage);
-                        if (STORE_IMG) {
-                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow.png");
-                        }
+//                        Arrow arrow = getArrow(new ArrowImage(bitmapImage));
+
+//                       bitmapImage = removeAlpha(bitmapImage);
+//                        if (STORE_IMG) {
+//                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow.png");
+//                        }
 
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
-                        // Log.i(TAG, "Arrow-Value: "+arrowImage.getArrowValue());
+
+                        if (STORE_IMG) {
+                            storeBitmap(arrowImage.binaryImage, IMAGE_DIR + "binary.png");
+                        }
+
                         foundArrow = getArrow(arrowImage);
                     }
                 }
@@ -472,7 +480,7 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     // Translates the units (distance and time) from local language and charset in common values
-    private  String translate(String local_language_string) {
+    private String translate(String local_language_string) {
         if (local_language_string.equalsIgnoreCase(getString(R.string.km)))
             return "km";
         else if (local_language_string.equalsIgnoreCase(getString(R.string.meter)))
@@ -504,17 +512,23 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     private static Arrow getArrow(ArrowImage image) {
-        Arrow foundArrow = Arrow.None;
+        long minSad = Integer.MAX_VALUE;
+        Arrow minSadArrow = Arrow.None;
         for (Arrow a : Arrow.values()) {
-            int sad = image.getSAD(a.value);
+            long sad = image.getSAD(a.value);
+            if (sad < minSad) {
+                minSad = sad;
+                minSadArrow = a;
+            }
             if (0 == sad) {
-                String integerString = Integer.toString(a.value);
+                String integerString = Long.toString(a.value);
                 Log.d(TAG, "Recognize " + a.name() + " " + integerString);
-                foundArrow = a;
-                break;
+                return a;
+
             }
         }
-        return foundArrow;
+        Log.d(TAG, "No Recognize, minSad: " + minSad + " arrow:" + minSadArrow);
+        return minSadArrow;
     }
 
     private Arrow preArrow = Arrow.None;
@@ -603,9 +617,6 @@ public class NotificationMonitor extends NotificationListenerService {
                 garminHud.SetDirection(eOutAngle.Down, eOutType.RightRoundabout, eOutAngle.Down);
                 break;
 
-            case LeaveRoundaboutUpCC:
-                garminHud.SetDirection(eOutAngle.Straight, eOutType.LeftRoundabout, eOutAngle.Straight);
-                break;
             case LeaveRoundaboutLeftCC:
                 garminHud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
                 break;
@@ -788,12 +799,12 @@ public class NotificationMonitor extends NotificationListenerService {
 
                 String[] split = arrivalTime.split(":");
                 int hh = Integer.parseInt(split[0]);
-                arrivalHour = hh;
-                arrivalMinute = Integer.parseInt(split[1]);
                 if (-1 != pmIndex && 12 != hh) {
                     hh += 12;
                     arrivalTime = hh + ":" + split[1];
                 }
+                arrivalHour = hh;
+                arrivalMinute = Integer.parseInt(split[1]);
             } else { // 24-hour-format
                 arrivalTime = arrivalTime.trim();
 
@@ -824,7 +835,7 @@ public class NotificationMonitor extends NotificationListenerService {
         String[] result = new String[2];
         for (int x = 0; x < str.length(); x++) {
             char c = str.charAt(x);
-            if (!Character.isDigit(c)) {
+            if (!Character.isDigit(c) && '.' != c) {
                 result[0] = str.substring(0, x);
                 result[1] = str.substring(x);
                 break;

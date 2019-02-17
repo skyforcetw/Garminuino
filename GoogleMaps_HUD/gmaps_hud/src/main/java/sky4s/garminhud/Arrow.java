@@ -1,6 +1,7 @@
 package sky4s.garminhud;
 
 public enum Arrow {
+
     SharpRight(30594879),
     Right(31381247),
     EasyRight(31387391),
@@ -36,12 +37,11 @@ public enum Arrow {
     Arrivals(33279615),
     Convergence(28966527),
 
-
     None(0);
 
-    public final int value;
+    public final long value;
 
-    private Arrow(int value) {
+    Arrow(long value) {
         this.value = value;
     }
 }
