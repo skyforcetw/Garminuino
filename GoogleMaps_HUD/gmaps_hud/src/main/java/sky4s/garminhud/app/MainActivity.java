@@ -48,6 +48,8 @@ import app.akexorcist.bluetotohspp.library.BluetoothState;
 import app.akexorcist.bluetotohspp.library.DeviceList;
 import chutka.bitman.com.speedometersimplified.LocationService;
 import sky4s.garminhud.GarminHUD;
+import sky4s.garminhud.eOutAngle;
+import sky4s.garminhud.eOutType;
 
 public class MainActivity extends AppCompatActivity {
     //for test with virtual device which no BT device
@@ -389,6 +391,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.btnListNotify:
                 log("List notifications...");
                 listCurrentNotification();
+                garminHud.SetDirection(eOutAngle.Down, eOutType.RightRoundabout, eOutAngle.Down);
                 break;
 
             case R.id.btnScanBT:
