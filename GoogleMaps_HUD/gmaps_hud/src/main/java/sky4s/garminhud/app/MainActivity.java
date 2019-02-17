@@ -118,6 +118,9 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     switchNotificationCatched.setChecked(notify_catched);
                     switchGmapsNotificationCatched.setChecked(gmaps_notify_catched);
+                    if(!gmaps_notify_catched && null!=garminHud) {
+//                        garminHud.SetDirection()
+                    }
                     sendBooleanExtra2NotificationMonitor(getString(R.string.broadcast_receiver_localtion_service), getString(R.string.is_on_navigating), isInNavigating());
                 }
             }
@@ -312,8 +315,9 @@ public class MainActivity extends AppCompatActivity {
             NotificationMonitor.garminHud = garminHud;
             log("onDeviceConnected");
 
-            if (showSpeed && !locationServiceStatus)
+            if (showSpeed && !locationServiceStatus) {
                 bindLocationService();
+            }
 
             String connected_device_name = bt.getConnectedDeviceName();
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -408,9 +412,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.btnListNotify:
                 log("List notifications...");
                 listCurrentNotification();
-                garminHud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
-
-
                 break;
 
             case R.id.btnScanBT:
@@ -445,7 +446,7 @@ public class MainActivity extends AppCompatActivity {
 
             default:
                 break;
-        }/**/
+        }
     }
 
     private boolean showSpeed(boolean onNavigating, boolean onIdle) {
