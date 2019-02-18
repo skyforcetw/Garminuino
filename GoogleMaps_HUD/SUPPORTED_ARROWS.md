@@ -5,23 +5,14 @@ All arrows we can recognize is compare with a simplified method. [Please referen
 <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/Arrivals.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/ArrivalsLeft.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/ArrivalsRight.png">
 
 ## Simple Direction
-![](/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/EasyLeft.png)
-![](/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/EasyRight.png)
-![](/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/GoTo.png)
-![](/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/KeepLeft.png)
+<img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/EasyLeft.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/EasyRight.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/GoTo.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/KeepLeft.png">
 
-![](/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/KeepRight.png)
-![](/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/Left.png)
-![](/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/LeftDown.png)
-<img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/LeftToLeave.png">
+<img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/KeepRight.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/Left.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/LeftDown.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/LeftToLeave.png">
 
-![](/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/Right.png)
-![](/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/RightDown.png)
-<img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/RightToLeave.png">
-![](/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/SharpLeft.png)
+<img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/Right.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/RightDown.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/RightToLeave.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/SharpLeft.png">
 
-![](/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/SharpRight.png)
-![](/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/Straight.png)
+<img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/SharpRight.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/Straight.png">
+
 
 ## Round-about
 <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/LeaveRoundabout.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/LeaveRoundaboutAsUturn.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/LeaveRoundaboutAsUturnCC.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/LeaveRoundaboutCC.png"> 
