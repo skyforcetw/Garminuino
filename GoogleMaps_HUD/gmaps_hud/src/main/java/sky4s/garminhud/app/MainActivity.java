@@ -49,12 +49,10 @@ import app.akexorcist.bluetotohspp.library.DeviceList;
 import chutka.bitman.com.speedometersimplified.LocationService;
 import sky4s.garminhud.Arrow;
 import sky4s.garminhud.GarminHUD;
-import sky4s.garminhud.eOutAngle;
-import sky4s.garminhud.eOutType;
 
 public class MainActivity extends AppCompatActivity {
     //for test with virtual device which no BT device
-    public static final boolean IGNORE_BT_DEVICE = false;
+    public static boolean IGNORE_BT_DEVICE = false;
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -118,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     switchNotificationCatched.setChecked(notify_catched);
                     switchGmapsNotificationCatched.setChecked(gmaps_notify_catched);
-                    if(!gmaps_notify_catched && null!=garminHud) {
+                    if (!gmaps_notify_catched && null != garminHud) {
 //                        garminHud.SetDirection()
                     }
                     sendBooleanExtra2NotificationMonitor(getString(R.string.broadcast_receiver_localtion_service), getString(R.string.is_on_navigating), isInNavigating());
@@ -210,7 +208,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+//        boolean  isDebug = BuildConfig.DEBUG;
+//        boolean isDebug2 =  ( 0 != ( getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE ) );
+        final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        IGNORE_BT_DEVICE = null == mBluetoothAdapter;
         //=======================================================================================
         // tabs
         //========================================================================================
@@ -394,17 +395,17 @@ public class MainActivity extends AppCompatActivity {
         switch (view.getId()) {
 
             case R.id.button1:
-                if(null!=NotificationMonitor.getStaticInstance()) {
+                if (null != NotificationMonitor.getStaticInstance()) {
                     NotificationMonitor.getStaticInstance().processArrow(Arrow.LeaveRoundaboutSharpRight);
                 }
                 break;
             case R.id.button2:
-                if(null!=NotificationMonitor.getStaticInstance()) {
+                if (null != NotificationMonitor.getStaticInstance()) {
                     NotificationMonitor.getStaticInstance().processArrow(Arrow.LeaveRoundaboutSharpRightCC);
                 }
                 break;
             case R.id.button3:
-                if(null!=NotificationMonitor.getStaticInstance()) {
+                if (null != NotificationMonitor.getStaticInstance()) {
                     NotificationMonitor.getStaticInstance().processArrow(Arrow.LeaveRoundaboutSharpRight);
                 }
                 break;

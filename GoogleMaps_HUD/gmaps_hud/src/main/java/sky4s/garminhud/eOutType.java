@@ -12,7 +12,7 @@ public enum eOutType {
     RightRoundabout(0x08),
 
 
-    RightFlag(0x40), //要搭配Straight,Right,Left
+    RightFlag(0x40), //with  eOutAngle: Straight,Right,Left
     ArrowOnly(0x80);
 
     final public int value;
