@@ -60,6 +60,7 @@ public:
 	unsigned long long  left_up_mask = 0;
 	unsigned long long  right_dw_mask = 0;
 	cv::Mat binary_image;
+	cv::Mat resized_image;
 	Image() {
 
 	}
@@ -93,6 +94,28 @@ void to_binary_image(cv::Mat image) {
 
 }
 
+cv::Mat resizeWithNN(cv::Mat source, cv::Size new_size) {
+	if (new_size.height == source.rows && new_size.width == source.cols) {
+		return source;
+	}
+	cv::Mat resized(new_size, CV_8UC3);
+	float ratio = source.rows / (new_size.height*1.0f);
+
+	for (int h = 0; h < resized.rows; h++) {
+		int h0 = (int)round(h * ratio);
+		h0 = (h0 >= source.rows) ? source.rows - 1 : h0;
+		for (int w = 0; w < resized.cols; w++) {
+			int w0 = (int)round(w * ratio);
+			w0 = (w0 >= source.cols) ? source.cols - 1 : w0;
+			auto &resized_pixel = resized.at<cv::Vec3b>(h, w);
+			auto &source_pixel = source.at<cv::Vec3b>(h0, w0);
+			for (int ch = 0; ch < 3; ch++) {
+				resized_pixel[ch] = source_pixel[ch];
+			}
+		}
+	}
+	return resized;
+}
 
 Image to_Image(cv::Mat cv_image) {
 
@@ -100,17 +123,16 @@ Image to_Image(cv::Mat cv_image) {
 	if (cv_image.rows != cv_image.cols) {
 		return image;
 	}
-	const int img_size = cv_image.rows;
+	
 	//1. to binary image
 	to_binary_image(cv_image);
 
-	cv::Mat resized_image;
-	cv::Size new_size(132, 132);
 	//2. resize to 132x132
-	cv::resize(cv_image, resized_image, new_size, 0, 0, cv::INTER_NEAREST);
-	cv_image = cv_image;
+	cv::Size new_size(132, 132);
+	cv::Mat resized_image = resizeWithNN(cv_image, new_size);
 
-	int interval = cv_image.rows / IMAGE_LENGTH;
+	const int img_size = resized_image.rows;
+	int interval = resized_image.rows / IMAGE_LENGTH;
 
 	//3. resize to 8x8
 	unsigned long long  mask_lu = 0;
@@ -125,7 +147,7 @@ Image to_Image(cv::Mat cv_image) {
 			const int w_lu = w0 * interval;
 			const int w_rd = img_size - 1 - w_lu;
 
-			auto&  pixel_lu = cv_image.at<cv::Vec3b>(h_lu, w_lu);
+			auto&  pixel_lu = resized_image.at<cv::Vec3b>(h_lu, w_lu);
 			const bool bool_lu = 255 == pixel_lu[1];
 			image.left_up_content[h0*IMAGE_LENGTH + w0] = bool_lu;
 			unsigned long long shift_lu = ((unsigned long long)(bool_lu ? 1L : 0L)) << index;
@@ -134,7 +156,7 @@ Image to_Image(cv::Mat cv_image) {
 			}
 			mask_lu += shift_lu;
 
-			auto&  pixel_rd = cv_image.at<cv::Vec3b>(h_rd, w_rd);
+			auto&  pixel_rd = resized_image.at<cv::Vec3b>(h_rd, w_rd);
 			const bool bool_rd = 255 == pixel_rd[1];
 			image.right_dw_content[h0*IMAGE_LENGTH + w0] = bool_rd;
 			unsigned long long shift_rd = ((unsigned long long)(bool_rd ? 1L : 0L)) << index;
@@ -150,8 +172,13 @@ Image to_Image(cv::Mat cv_image) {
 	image.left_up_mask = mask_lu;
 	image.right_dw_mask = mask_rd;
 	image.binary_image = cv_image;
+	image.resized_image = resized_image;
 	return image;
 
+}
+
+cv::Mat to_cv_image(Image image) {
+	return cv::Mat();
 }
 
 
@@ -169,7 +196,7 @@ int recognize()
 	for (auto& filename : getAllImageFileNamesWithinFolder(dir)) {
 		auto cv_img = cv::imread(dir + filename);
 		Image img = to_Image(cv_img);
-		cv::imwrite(filename, img.binary_image);
+		cv::imwrite(filename, img.resized_image);
 
 		unsigned long long mask = img.left_up_mask;
 		//std::bitset<64> binary_lu(img.left_up_mask);
@@ -201,15 +228,15 @@ int recognize()
 
 int main() {
 
-	if (false) {
+	if (true) {
 		using namespace cv;
 		using namespace std;
 		vector<Mat> image_vec;
-		string dir = "./Google_Nav/";
+		string dir = "./Google_Arrow2/";
 
 
 		Size size(IMAGE_LENGTH, IMAGE_LENGTH);
-		Image img1 = to_Image(cv::imread("arrow0.png"));
+		Image img1 = to_Image(cv::imread(dir + "LeaveRoundaboutAsUturnCC.png"));
 
 		for (auto& filename : getAllImageFileNamesWithinFolder(dir)) {
 			//cout << filename << endl;
