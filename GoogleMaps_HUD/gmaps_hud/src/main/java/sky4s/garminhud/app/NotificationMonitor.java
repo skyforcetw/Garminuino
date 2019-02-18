@@ -592,12 +592,12 @@ public class NotificationMonitor extends NotificationListenerService {
                 garminHud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
                 break;
 
-            case LeaveRoundaboutAsUturn:
+            case LeaveRoundaboutAsUTurn:
                 garminHud.SetDirection(eOutAngle.Down, eOutType.LeftRoundabout, eOutAngle.Down);
                 break;
 
 
-            case LeaveRoundaboutAsUturnCC:
+            case LeaveRoundaboutAsUTurnCC:
                 garminHud.SetDirection(eOutAngle.Down, eOutType.RightRoundabout, eOutAngle.Down);
                 break;
 

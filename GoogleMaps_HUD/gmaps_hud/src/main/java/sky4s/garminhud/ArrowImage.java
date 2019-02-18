@@ -17,10 +17,11 @@ public class ArrowImage {
         return green_alpha;
     }
 
-    public ArrowImage(Bitmap bitmap) {
-        final int TREAT_AS_WHITE = 200;
-        final int ALPHA_AS_WHITE = 254;
+    private static final int TREAT_AS_WHITE = 200;
+    private static final int ALPHA_AS_WHITE = 254;
+    private static final int STANDARD_IMG_SIZE = 132;
 
+    private void toBinaryImage(Bitmap bitmap) {
         for (int h = 0; h < bitmap.getHeight(); h++) {
             for (int w = 0; w < bitmap.getWidth(); w++) {
                 int p = bitmap.getPixel(w, h);
@@ -28,17 +29,31 @@ public class ArrowImage {
                 bitmap.setPixel(w, h, green_alpha > TREAT_AS_WHITE ? 0xffffffff : 0);
             }
         }
-        Bitmap resized = Bitmap.createScaledBitmap(bitmap, 132, 132, false);
+
+    }
+
+    private Bitmap resizeImage(Bitmap bitmap, int newLength) {
+        if (bitmap.getWidth() == newLength && bitmap.getHeight() == newLength) {
+            return bitmap;
+        }
+        return Bitmap.createScaledBitmap(bitmap, newLength, newLength, false);
+
+    }
+
+
+    public ArrowImage(Bitmap bitmap) {
+        toBinaryImage(bitmap);
+        Bitmap resized = resizeImage(bitmap, STANDARD_IMG_SIZE);
+
         binaryImage = resized;
 
         final int interval = resized.getWidth() / IMAGE_LEN;
-        final int offset = 0;//interval / 2;
         int index = 0;
 
         for (int h0 = 0; h0 < IMAGE_LEN; h0++) {
-            final int h = h0 * interval + offset;
+            final int h = h0 * interval;
             for (int w0 = 0; w0 < IMAGE_LEN; w0++) {
-                final int w = w0 * interval + offset;
+                final int w = w0 * interval;
                 int p = resized.getPixel(w, h);
                 final int green_alpha = getGreenAlpha(p);
                 boolean bit = green_alpha >= ALPHA_AS_WHITE;

@@ -178,7 +178,18 @@ Image to_Image(cv::Mat cv_image) {
 }
 
 cv::Mat to_cv_image(Image image) {
-	return cv::Mat();
+	cv::Mat cv_image(IMAGE_LENGTH, IMAGE_LENGTH, CV_8UC3);
+
+	auto content = image.left_up_content;
+	for (int h = 0; h < IMAGE_LENGTH; h++) {
+		for (int w = 0; w < IMAGE_LENGTH; w++) {
+			int index = h * IMAGE_LENGTH + w;
+			auto b = content[index];
+			auto& pixel = cv_image.at<cv::Vec3b>(h, w);
+			pixel[2] = pixel[1] = pixel[0] = (b ? 255 : 0);
+		}
+	}
+		return cv_image;
 }
 
 
@@ -196,7 +207,8 @@ int recognize()
 	for (auto& filename : getAllImageFileNamesWithinFolder(dir)) {
 		auto cv_img = cv::imread(dir + filename);
 		Image img = to_Image(cv_img);
-		cv::imwrite(filename, img.resized_image);
+		auto small_img = to_cv_image(img);
+		cv::imwrite(filename, small_img);
 
 		unsigned long long mask = img.left_up_mask;
 		//std::bitset<64> binary_lu(img.left_up_mask);
@@ -228,7 +240,7 @@ int recognize()
 
 int main() {
 
-	if (true) {
+	if (false) {
 		using namespace cv;
 		using namespace std;
 		vector<Mat> image_vec;
