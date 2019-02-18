@@ -1,10 +1,12 @@
 package sky4s.garminhud.app;
 
+import android.Manifest;
 import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -20,6 +22,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -446,7 +449,14 @@ public class NotificationMonitor extends NotificationListenerService {
         return bitmap;
     }
 
-    private static void storeBitmap(Bitmap bmp, String filename) {
+    private void storeBitmap(Bitmap bmp, String filename) {
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            return;
+        }
+
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(filename);
@@ -520,8 +530,14 @@ public class NotificationMonitor extends NotificationListenerService {
     private static Arrow getArrow(ArrowImage image) {
         long minSad = Integer.MAX_VALUE;
         Arrow minSadArrow = Arrow.None;
+
+        int totalArrowCount = Arrow.values().length;
+        long sadArray[] = new long[totalArrowCount];
+        int index = 0;
+
         for (Arrow a : Arrow.values()) {
             long sad = image.getSAD(a.value1);
+            sadArray[index++] = sad;
             if (sad < minSad) {
                 minSad = sad;
                 minSadArrow = a;
@@ -576,13 +592,15 @@ public class NotificationMonitor extends NotificationListenerService {
                 garminHud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
                 break;
 
-            case LeaveRoundaboutAsDirection://2 checked
-                garminHud.SetDirection(eOutAngle.Straight, eOutType.LeftRoundabout, eOutAngle.Straight);
+            case LeaveRoundaboutAsUturn:
+                garminHud.SetDirection(eOutAngle.Down, eOutType.LeftRoundabout, eOutAngle.Down);
                 break;
 
-            case LeaveRoundaboutAsDirectionCC://3 checked
-                garminHud.SetDirection(eOutAngle.Straight, eOutType.RightRoundabout, eOutAngle.Straight);
+
+            case LeaveRoundaboutAsUturnCC:
+                garminHud.SetDirection(eOutAngle.Down, eOutType.RightRoundabout, eOutAngle.Down);
                 break;
+
 
             case LeaveRoundaboutEasyLeft://4 checked
                 garminHud.SetDirection(eOutAngle.EasyLeft, eOutType.LeftRoundabout, eOutAngle.EasyLeft);
@@ -630,6 +648,13 @@ public class NotificationMonitor extends NotificationListenerService {
                 garminHud.SetDirection(eOutAngle.SharpRight, eOutType.RightRoundabout, eOutAngle.SharpRight);
                 break;
 
+            case LeaveRoundaboutStraight://
+                garminHud.SetDirection(eOutAngle.Straight, eOutType.LeftRoundabout, eOutAngle.Straight);
+                break;
+
+            case LeaveRoundaboutStraightCC://
+                garminHud.SetDirection(eOutAngle.Straight, eOutType.RightRoundabout, eOutAngle.Straight);
+                break;
 
             case Left:
                 garminHud.SetDirection(eOutAngle.Left);
