@@ -7,7 +7,8 @@ public class ArrowImage {
     public static final int CONTENT_LEN = IMAGE_LEN * IMAGE_LEN;
 
     public boolean[] content = new boolean[CONTENT_LEN];
-    public long value;
+    public long value1;
+    public long value2;
     public Bitmap binaryImage;
 
     private int getGreenAlpha(int pixel) {
@@ -36,8 +37,29 @@ public class ArrowImage {
         if (bitmap.getWidth() == newLength && bitmap.getHeight() == newLength) {
             return bitmap;
         }
-        return Bitmap.createScaledBitmap(bitmap, newLength, newLength, false);
+        if (bitmap.getWidth() != bitmap.getHeight()) {
+            return null;
+        }
+//        return Bitmap.createScaledBitmap(bitmap, newLength, newLength, false);
 
+        int orgLength = bitmap.getHeight();
+        Bitmap resized = Bitmap.createBitmap(newLength, newLength, bitmap.getConfig());
+        float ratio = bitmap.getHeight() / (newLength * 1.0f);
+
+        //resized by NN
+        for (int h = 0; h < newLength; h++) {
+            int h0 = (int) Math.round(h * ratio);
+            h0 = (h0 >= orgLength) ? orgLength - 1 : h0;
+
+            for (int w = 0; w < newLength; w++) {
+                int w0 = (int) Math.round(w * ratio);
+                w0 = (w0 >= orgLength) ? orgLength : w0;
+                int pixel = bitmap.getPixel(w0, h0);
+                resized.setPixel(w, h, pixel);
+            }
+        }
+
+        return resized;
     }
 
 
@@ -49,6 +71,7 @@ public class ArrowImage {
 
         final int interval = resized.getWidth() / IMAGE_LEN;
         int index = 0;
+        value1 = 0;
 
         for (int h0 = 0; h0 < IMAGE_LEN; h0++) {
             final int h = h0 * interval;
@@ -60,7 +83,7 @@ public class ArrowImage {
 
                 content[h0 * IMAGE_LEN + w0] = bit;
                 long shift_value = ((bit ? 1L : 0L) << index);
-                value = value | shift_value;
+                value1 = value1 | shift_value;
                 index++;
             }
         }
@@ -81,6 +104,6 @@ public class ArrowImage {
     // Returns the bitcode of the ArrowImage. The image will be divided into IMAGE_LEN x IMAGE_LEN Pixels (8x8)
     // Return-Value can be used for Arrow.java
     public long getArrowValue() {
-        return value;
+        return value1;
     }
 }
