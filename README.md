@@ -10,7 +10,7 @@ This  is a project use GarminHUD as
 
 ### 2019-02-19 v0.3.1
 Add arrow recognize for roundabout.  
-According to country, arrows of roundabout  can classification to colockwise or counter-clockwise.  
+According to country, arrows of roundabout  can classification to clockwise or counter-clockwise.  
 Left-sided drive / Right-hand traffic  country, like USA, roundabout arrows are counter-clockwise.  
 Right-sided drive/ Left-hand traffic  country, like United Kingdom, roundabout arrows are clockwise.  
 
