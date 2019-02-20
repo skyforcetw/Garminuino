@@ -296,6 +296,31 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(msgReceiver, intentFilter);
         //========================================================================================
 
+//        View view=  findViewById(android.R.id.content);
+//        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override public void onGlobalLayout() {
+//                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//                SimpleTarget simpleTarget = new SimpleTarget.Builder(this)
+//                        .setPoint(100f, 340f)
+//                        .setShape(new Circle(200f)) // or RoundedRectangle()
+//                        .setTitle("the title")
+//                        .setDescription("the description")
+//                        .setOverlayPoint(100f, 100f)
+//                        .setOnSpotlightStartedListener(new OnTargetStateChangedListener<SimpleTarget>() {
+//                            @Override
+//                            public void onStarted(SimpleTarget target) {
+//                                // do something
+//                            }
+//                            @Override
+//                            public void onEnded(SimpleTarget target) {
+//                                // do something
+//                            }
+//                        })
+//                        .build();
+//
+//            }
+//        });
+
     }
 
 
