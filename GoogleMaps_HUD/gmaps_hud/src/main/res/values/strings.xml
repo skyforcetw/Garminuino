@@ -35,6 +35,7 @@
     <!--options-->
     <string name="bt_bind_name_key" translatable="false">bt_bind_name_key</string>
     <string name="option_show_eta" translatable="false">option_show_eta</string>
+    <string name="option_show_speed" translatable="false">option_show_speed</string>
     <string name="option_navigating_show_speed" translatable="false">option_navigating_show_speed</string>
     <string name="option_idle_show_speed" translatable="false">option_idle_show_speed</string>
     <string name="option_idle_show_time" translatable="false">option_idle_show_time</string>

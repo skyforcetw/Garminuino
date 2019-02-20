@@ -80,6 +80,25 @@
                     android:background="@color/horizontal_line" />
 
                 <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingTop="@dimen/option_padding_top"
+                    android:text="Setting"
+                    android:textSize="@dimen/option_title_size" />
+
+                <Switch
+                    android:id="@+id/switchShowSpeed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="buttonOnClicked"
+
+                    android:text="Show Speed"
+                    android:textSize="@dimen/option_text_size" />
+
+                <TextView
                     android:id="@+id/textView5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -96,8 +115,9 @@
                     android:layout_weight="1"
                     android:onClick="buttonOnClicked"
 
+                    android:text="Show Speed"
                     android:textSize="@dimen/option_text_size"
-                    android:text="Show Speed" />
+                    android:visibility="gone" />
 
                 <Switch
                     android:id="@+id/switchShowETA"
@@ -131,7 +151,8 @@
                     android:layout_weight="1"
                     android:onClick="buttonOnClicked"
                     android:text="Show Speed"
-                    android:textSize="@dimen/option_text_size" />
+                    android:textSize="@dimen/option_text_size"
+                    android:visibility="gone" />
 
                 <Switch
                     android:id="@+id/switchIdleShowTime"

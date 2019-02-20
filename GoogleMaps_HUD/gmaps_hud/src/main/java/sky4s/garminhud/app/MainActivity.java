@@ -70,8 +70,9 @@ public class MainActivity extends AppCompatActivity {
     Switch switchGmapsNotificationCatched;
 
     Switch switchShowETA;
-    Switch switchNavShowSpeed;
-    Switch switchIdleShowSpeed;
+    //    Switch switchNavShowSpeed;
+//    Switch switchIdleShowSpeed;
+    Switch switchShowSpeed;
     Switch switchIdleShowTime;
 
     private boolean isInNavigating() {
@@ -193,14 +194,18 @@ public class MainActivity extends AppCompatActivity {
 
     void loadOptions() {
 
-        boolean optionNavigatingShowSpeed = sharedPref.getBoolean(getString(R.string.option_navigating_show_speed), false);
-        boolean optionIdleShowSpeed = sharedPref.getBoolean(getString(R.string.option_idle_show_speed), false);
-        switchNavShowSpeed.setChecked(optionNavigatingShowSpeed);
-        switchIdleShowSpeed.setChecked(optionIdleShowSpeed);
-        showSpeed(optionNavigatingShowSpeed, optionIdleShowSpeed);
+        boolean optionShowSpeed = sharedPref.getBoolean(getString(R.string.option_show_speed), false);
+//        boolean optionNavigatingShowSpeed = sharedPref.getBoolean(getString(R.string.option_navigating_show_speed), false);
+//        boolean optionIdleShowSpeed = sharedPref.getBoolean(getString(R.string.option_idle_show_speed), false);
+//        switchNavShowSpeed.setChecked(optionNavigatingShowSpeed);
+//        switchIdleShowSpeed.setChecked(optionIdleShowSpeed);
+        boolean canShowSpeed = showSpeed(optionShowSpeed);
+        switchShowSpeed.setChecked(canShowSpeed);
 
-        boolean optionShowEta = sharedPref.getBoolean(getString(R.string.option_show_eta), false);
+        boolean optionShowETA = sharedPref.getBoolean(getString(R.string.option_show_eta), false);
         boolean optionIdleShowTime = sharedPref.getBoolean(getString(R.string.option_idle_show_time), false);
+        switchShowETA.setChecked(optionShowETA);
+        switchIdleShowTime.setChecked(optionIdleShowTime);
     }
 
     @Override
@@ -422,13 +427,20 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
 
-            case R.id.switchNavShowSpeed:
-            case R.id.switchIdleShowSpeed:
-                final boolean canShowSpeed = showSpeed(switchNavShowSpeed.isChecked(), switchIdleShowSpeed.isChecked());
+            case R.id.switchShowSpeed:
+                final boolean canShowSpeed = showSpeed(((Switch) view).isChecked());
                 if (!canShowSpeed) {
                     ((Switch) view).setChecked(false);
                 }
                 break;
+
+//            case R.id.switchNavShowSpeed:
+//            case R.id.switchIdleShowSpeed:
+//                final boolean canShowSpeed = showSpeed(switchNavShowSpeed.isChecked(), switchIdleShowSpeed.isChecked());
+//                if (!canShowSpeed) {
+//                    ((Switch) view).setChecked(false);
+//                }
+//                break;
 
             case R.id.switchShowETA:
                 sendBooleanExtra2NotificationMonitor(
@@ -450,8 +462,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean showSpeed(boolean onNavigating, boolean onIdle) {
-        final boolean doShowSpeed = onNavigating || onIdle;
+    private boolean showSpeed(boolean doShowSpeed) {
+//        final boolean doShowSpeed = onNavigating || onIdle;
 
         if (doShowSpeed) {
             if (!checkLocationPermission()) {

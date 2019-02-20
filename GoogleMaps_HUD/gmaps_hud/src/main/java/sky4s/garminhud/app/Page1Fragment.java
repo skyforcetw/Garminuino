@@ -25,8 +25,9 @@ public class Page1Fragment extends Fragment {
         ((MainActivity)getActivity()).switchGmapsNotificationCatched = (Switch)getView(). findViewById(R.id.switchGmapsNotificationCatched);
 
         ((MainActivity)getActivity()).switchShowETA  = (Switch)getView(). findViewById(R.id.switchShowETA);
-        ((MainActivity)getActivity()).switchNavShowSpeed  = (Switch)getView(). findViewById(R.id.switchNavShowSpeed);
-        ((MainActivity)getActivity()).switchIdleShowSpeed  = (Switch)getView(). findViewById(R.id.switchIdleShowSpeed);
+        ((MainActivity)getActivity()).switchShowSpeed  = (Switch)getView(). findViewById(R.id.switchShowSpeed);
+//        ((MainActivity)getActivity()).switchNavShowSpeed  = (Switch)getView(). findViewById(R.id.switchNavShowSpeed);
+//        ((MainActivity)getActivity()).switchIdleShowSpeed  = (Switch)getView(). findViewById(R.id.switchIdleShowSpeed);
         ((MainActivity)getActivity()).switchIdleShowTime  = (Switch)getView(). findViewById(R.id.switchIdleShowTime);
 //        ((MainActivity)getActivity()).loadOptions();
     }
