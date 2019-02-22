@@ -203,8 +203,13 @@ public class LocationService extends Service implements
     private class MsgReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            boolean prevIsOnNavigating = isOnNavigating;
             isOnNavigating = intent.getBooleanExtra(getString(R.string.is_on_navigating), isOnNavigating);
 
+            if (prevIsOnNavigating != isOnNavigating) {
+                // Delete Speed in last line, when showing speed in distance line (when navigation finished)
+                garminHud.ClearSpeedandWarning();
+            }
         }
     }
 }
