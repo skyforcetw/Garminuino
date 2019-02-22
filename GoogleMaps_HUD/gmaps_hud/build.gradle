@@ -52,13 +52,11 @@ dependencies {
 //    api files('libs/library-release.aar')
 
     implementation 'com.android.support:support-v13:23.4.0'
-//    implementation 'com.android.support:support-v4:23.0.0'
+//    implementation 'com.android.support:support-v4:23.4.0'
     implementation 'com.android.support:design:23.4.0'
     implementation 'com.android.support:appcompat-v7:23.4.0'
-
-
-//    implementation 'com.github.takusemba:spotlight:1.5.0'
-
+//    implementation 'com.github.takusemba:spotlight:1.8.0'
+    implementation 'uk.co.samuelwall:material-tap-target-prompt:2.14.0'
 }
 
 //apply plugin: 'com.google.gms.google-services'

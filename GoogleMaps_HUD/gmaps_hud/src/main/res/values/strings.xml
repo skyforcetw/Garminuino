@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--<string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>-->
-    <!--<string name="banner_ad_app_id">"ca-app-pub-3940256099942544~3347511713"</string>-->
-
-    <!--<string name="default_notification_channel_id" translatable="false">google_maps_hud_channel</string>-->
-
     <string name="app_name"   translatable="false">GoogleMaps HUD</string>
     <string name="action_settings">Settings</string>
 
@@ -28,7 +23,7 @@
     <string name="km">km</string>
     <string name="meter">m</string>
     <string name="feet">ft</string>
-    <string name="miles">mi</string>
+    <string name="miles" >mi</string>
 
     <string name="chinese_after"   translatable="false">後</string>
 
@@ -50,4 +45,11 @@
     <string name="notify_parse_failed" translatable="false">notify_parse_failed</string>
     <string name="notify_msg" translatable="false">notify_msg</string>
     <string name="is_on_navigating" translatable="false">is_on_navigating</string>
+
+    <!--Prompt-->
+    <string name="prompt_switch_hud_connected" >This indicates the connection status of GARMIN HUD.</string>
+    <string name="prompt_btn_scan_bt" >If GARMIN HUD is disconnected, you should connect to GARMIN HUD with this button.</string>
+    <string name="prompt_switch_notification_catched" >This indicates the app can capture Notification.</string>
+    <string name="prompt_switch_gmaps_notification_catched" >This indicates the GoogleMaps on Navigating/Driving Mode.</string>
+    <string name="prompt_layout_status" >All of this indicates should be ON, then GARMIN Hud will receive Navigation information.</string>
 </resources>
