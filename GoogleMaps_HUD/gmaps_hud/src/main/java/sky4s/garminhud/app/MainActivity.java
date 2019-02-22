@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.ActivityCompat;
@@ -31,11 +32,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -51,6 +52,9 @@ import app.akexorcist.bluetotohspp.library.DeviceList;
 import chutka.bitman.com.speedometersimplified.LocationService;
 import sky4s.garminhud.Arrow;
 import sky4s.garminhud.GarminHUD;
+
+//import android.support.v4.widget.DrawerLayout;
+//import android.support.v7.app.ActionBarDrawerToggle;
 
 public class MainActivity extends AppCompatActivity {
     //for test with virtual device which no BT device
@@ -206,7 +210,8 @@ public class MainActivity extends AppCompatActivity {
         boolean optionIdleShowTime = sharedPref.getBoolean(getString(R.string.option_idle_show_time), false);
     }
 
-    private DrawerLayout mDrawerLayout;
+    //    private DrawerLayout mDrawerLayout;
+    private DrawerLayout drawerLayout;
 //    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
@@ -282,15 +287,26 @@ public class MainActivity extends AppCompatActivity {
         String title = actionBar.getTitle() + " v" + versionName;// + " (b" + versionCode + ")" + bt_status;
         actionBar.setTitle(title);
         actionBar.setLogo(R.mipmap.ic_launcher);
-
-        // 打開 up button
 //        actionBar.setDisplayHomeAsUpEnabled(true);
-//        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-        // 實作 drawer toggle 並放入 toolbar
-//        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, actionBar, "open","close");
-//        mDrawerToggle.syncState();
 
-//        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(
+//                new NavigationView.OnNavigationItemSelectedListener() {
+//                    @Override
+//                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+//                        // set item as selected to persist highlight
+////                        menuItem.setChecked(true);
+//                        // close drawer when item is tapped
+//                        drawerLayout.closeDrawers();
+//
+//                        // Add code here to update the UI based on the item selected
+//                        // For example, swap UI fragments here
+//
+//                        return true;
+//                    }
+//                });
+
         //========================================================================================
 
         createNotification(this);
