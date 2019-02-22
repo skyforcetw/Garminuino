@@ -23,7 +23,7 @@ The app will need Notification access to read the data of Google Maps Notificati
 
 To show the speed on the HUD the app will need access to your location.
 
-# Supported languages
+## Supported languages
 For parsing the navigation informations the app will need a few keywords. The following languages are supported:
 * English
 * Chinese (Traditional Han)
