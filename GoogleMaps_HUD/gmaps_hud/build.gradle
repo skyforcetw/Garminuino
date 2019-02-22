@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 23
@@ -45,16 +46,22 @@ android {
 
 
 dependencies {
+    //location service needed
     implementation 'com.google.android.gms:play-services:7.0.0'
 
+    //android UI needed
+    implementation 'com.android.support:support-v13:23.4.0'
+//    implementation 'com.android.support:support-v4:23.4.0'
+    implementation 'com.android.support:design:23.4.0'
+    implementation 'com.android.support:appcompat-v7:23.4.0'
+
+    //bluetooth needed
     implementation 'com.akexorcist:bluetoothspp:1.0.0'
     //same as com.akexorcist:bluetoothspp:1.0.0,  but from https://github.com/skyforcetw/Android-BluetoothSPPLibrary
 //    api files('libs/library-release.aar')
 
-    implementation 'com.android.support:support-v13:23.4.0'
-//    implementation 'com.android.support:support-v4:23.0.0'
-    implementation 'com.android.support:design:23.4.0'
-    implementation 'com.android.support:appcompat-v7:23.4.0'
+    //prompt needed
+    implementation 'uk.co.samuelwall:material-tap-target-prompt:2.14.0'
 }
 
 //apply plugin: 'com.google.gms.google-services'

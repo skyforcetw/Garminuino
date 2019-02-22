@@ -29,7 +29,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -52,7 +54,7 @@ import sky4s.garminhud.GarminHUD;
 
 public class MainActivity extends AppCompatActivity {
     //for test with virtual device which no BT device
-    public static boolean IGNORE_BT_DEVICE = false;
+    public final static boolean IGNORE_BT_DEVICE = (null == BluetoothAdapter.getDefaultAdapter());
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -70,8 +72,9 @@ public class MainActivity extends AppCompatActivity {
     Switch switchGmapsNotificationCatched;
 
     Switch switchShowETA;
-    Switch switchNavShowSpeed;
-    Switch switchIdleShowSpeed;
+    Switch switchShowSpeed;
+    //    Switch switchNavShowSpeed;
+//    Switch switchIdleShowSpeed;
     Switch switchIdleShowTime;
 
     private boolean isInNavigating() {
@@ -193,25 +196,24 @@ public class MainActivity extends AppCompatActivity {
 
     void loadOptions() {
 
-        boolean optionNavigatingShowSpeed = sharedPref.getBoolean(getString(R.string.option_navigating_show_speed), false);
-        boolean optionIdleShowSpeed = sharedPref.getBoolean(getString(R.string.option_idle_show_speed), false);
-        switchNavShowSpeed.setChecked(optionNavigatingShowSpeed);
-        switchIdleShowSpeed.setChecked(optionIdleShowSpeed);
-        showSpeed(optionNavigatingShowSpeed, optionIdleShowSpeed);
+//        boolean optionNavigatingShowSpeed = sharedPref.getBoolean(getString(R.string.option_navigating_show_speed), false);
+//        boolean optionIdleShowSpeed = sharedPref.getBoolean(getString(R.string.option_idle_show_speed), false);
+//        switchNavShowSpeed.setChecked(optionNavigatingShowSpeed);
+//        switchIdleShowSpeed.setChecked(optionIdleShowSpeed);
+//        showSpeed(optionNavigatingShowSpeed, optionIdleShowSpeed);
 
         boolean optionShowEta = sharedPref.getBoolean(getString(R.string.option_show_eta), false);
         boolean optionIdleShowTime = sharedPref.getBoolean(getString(R.string.option_idle_show_time), false);
     }
+
+    private DrawerLayout mDrawerLayout;
+//    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        boolean  isDebug = BuildConfig.DEBUG;
-//        boolean isDebug2 =  ( 0 != ( getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE ) );
-        final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        IGNORE_BT_DEVICE = null == mBluetoothAdapter;
         //=======================================================================================
         // tabs
         //========================================================================================
@@ -277,8 +279,18 @@ public class MainActivity extends AppCompatActivity {
         int versionCode = BuildConfig.VERSION_CODE;
         String versionName = BuildConfig.VERSION_NAME;
 
-        String title = actionBar.getTitle() + " v" + versionName + " (b" + versionCode + ")" + bt_status;
+        String title = actionBar.getTitle() + " v" + versionName;// + " (b" + versionCode + ")" + bt_status;
         actionBar.setTitle(title);
+        actionBar.setLogo(R.mipmap.ic_launcher);
+
+        // 打開 up button
+//        actionBar.setDisplayHomeAsUpEnabled(true);
+//        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        // 實作 drawer toggle 並放入 toolbar
+//        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, actionBar, "open","close");
+//        mDrawerToggle.syncState();
+
+//        mDrawerLayout.setDrawerListener(mDrawerToggle);
         //========================================================================================
 
         createNotification(this);
@@ -290,6 +302,7 @@ public class MainActivity extends AppCompatActivity {
         intentFilter.addAction(getString(R.string.broadcast_receiver_main_activity));
         registerReceiver(msgReceiver, intentFilter);
         //========================================================================================
+
 
     }
 
@@ -422,9 +435,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
 
-            case R.id.switchNavShowSpeed:
-            case R.id.switchIdleShowSpeed:
-                final boolean canShowSpeed = showSpeed(switchNavShowSpeed.isChecked(), switchIdleShowSpeed.isChecked());
+            case R.id.switchShowSpeed:
+//            case R.id.switchNavShowSpeed:
+//            case R.id.switchIdleShowSpeed:
+                final boolean canShowSpeed = showSpeed(((Switch) view).isChecked());
                 if (!canShowSpeed) {
                     ((Switch) view).setChecked(false);
                 }
@@ -450,8 +464,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean showSpeed(boolean onNavigating, boolean onIdle) {
-        final boolean doShowSpeed = onNavigating || onIdle;
+    private boolean showSpeed(final boolean doShowSpeed) {
+//        final boolean doShowSpeed = onNavigating || onIdle;
 
         if (doShowSpeed) {
             if (!checkLocationPermission()) {
