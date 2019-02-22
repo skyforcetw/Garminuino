@@ -21,6 +21,31 @@
         <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/src/main/assets" />
       </configuration>
     </facet>
+    <facet type="kotlin-language" name="Kotlin">
+      <configuration version="3" platform="JVM 1.6" useProjectSettings="false">
+        <compilerSettings />
+        <compilerArguments>
+          <option name="destination" value="$MODULE_DIR$/build/tmp/kotlin-classes/debug" />
+          <option name="classpath" value="$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-7.0.0.aar/bcad45d2bb5479d357dc08060d0ba69d/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/bluetoothspp-1.0.0.aar/88e92ff5042b92edf1d0b022ef79f125/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/support-v13-23.4.0.aar/8f8901f28467e28b1c36e1eb07859d8c/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/support-v13-23.4.0.aar/8f8901f28467e28b1c36e1eb07859d8c/jars/libs/internal_impl-23.4.0.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/design-23.4.0.aar/38e1d754f2e5cf5a78829c0583a0f09e/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/appcompat-v7-23.4.0.aar/fc0058c0eb584479febd4c82676512fb/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/constraintlayout-2.0.0-alpha2.aar/02022caec976e84b93acf440678579e5/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/spotlight-1.8.0.aar/1944fe475a4585bf2732122ad686d369/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/appcompat-1.0.2.aar/209c59f9b8783c1a2564fcfc4e76de4b/jars/classes.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.3.0/683e04a4e7f17437d7e1390480f312e122e42e9e/kotlin-stdlib-jdk7-1.3.0.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-ads-7.0.0.aar/6bf3a940173706021b7f2c82498ae023/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-analytics-7.0.0.aar/a5279553f81abb9f88d20f8c530db612/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-appindexing-7.0.0.aar/96ace0032dec9cc0d5353c9df4ddd9c2/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-appstate-7.0.0.aar/a507ceaa91d373bf95df3bf2e32e08a5/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-cast-7.0.0.aar/7e7894778e6e4922b680cbfc6c13701e/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-games-7.0.0.aar/ba0d9b7bd46bafef3c3a9c8e26f15067/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-drive-7.0.0.aar/df52d9e4c16ec5da114f7d8db165f2ad/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-fitness-7.0.0.aar/2932aa212ddefb628c3d3f5b6b75e734/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-gcm-7.0.0.aar/edc820e8fd15ac4d9f1292c6578b3eb6/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-wallet-7.0.0.aar/c2511c6db201408ba0d6b35daad20b7d/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-identity-7.0.0.aar/b8a729dd954805bdb4d54af4a8f80c4d/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-location-7.0.0.aar/2496da1f177abaadd8762b1bc259958e/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-maps-7.0.0.aar/ade4224177da760b34953af4978c25d5/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-nearby-7.0.0.aar/80a9960a3401b618139f2d13a1c926b5/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-panorama-7.0.0.aar/bb1d5722fbe447329dc2d82c4bf807a8/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-plus-7.0.0.aar/9a0bd44d5e45677965030857a523d110/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-safetynet-7.0.0.aar/b6d43b22668c56eb127f4a56b7f1f159/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-wearable-7.0.0.aar/4bf6e0cf7190a78eec06f57f3016a28b/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/play-services-base-7.0.0.aar/56bc2b1b3ffdac3bbb44636550a85f92/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-23.4.0.aar/b75025e47dbb477a28949f7d27a4fa5b/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-23.4.0.aar/0c0dd5665f8c43049d9fafa844dd4737/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-23.4.0.aar/8b6539bc37fcb475d591503dda19a361/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/support-v4-23.4.0.aar/7f7e01926cfef2b1e7fad31b7296a72a/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/support-v4-23.4.0.aar/7f7e01926cfef2b1e7fad31b7296a72a/jars/libs/internal_impl-23.4.0.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/fragment-1.0.0.aar/807f8a1a3db98fd1ac9260d7b9854cbb/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/vectordrawable-animated-1.0.0.aar/d55ffbab805e2e94e731a08a7d40e1c2/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/recyclerview-1.0.0-rc01.aar/8dee374a03b2b1ff81d6fc4b145caab4/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/legacy-support-core-ui-1.0.0.aar/663337ff77bf671c1e96f56b4ee8b65e/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/legacy-support-core-utils-1.0.0.aar/0786ff579cfa02b84fa179aa0d95564f/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/vectordrawable-1.0.1.aar/dca7bd6b0c28a3d42f73e2c3eb2676ba/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/loader-1.0.0.aar/d6d704770ae229de7be493a31bd58359/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/viewpager-1.0.0.aar/09d33b410afdb1cad31831126675b38c/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/coordinatorlayout-1.0.0.aar/5ca53c6af53ad8011fcbf346865251e1/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/drawerlayout-1.0.0.aar/b6233e25fae62021285f90b3c04bbfce/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/slidingpanelayout-1.0.0.aar/7b2161bd99a6cf72009ab74d23a10787/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/customview-1.0.0.aar/abd0e4269db0ac2404c61bb61b1114d6/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/swiperefreshlayout-1.0.0.aar/20c523b931259228de8b67d91d451393/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/asynclayoutinflater-1.0.0.aar/5e580cb994e6b58c9092917458d936eb/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/core-1.0.1.aar/0540fecdbaa8ca05ce804f90168ed49e/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/versionedparcelable-1.0.0.aar/1bf7c886214d7ec977ed408cc5207dbe/jars/classes.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/androidx.collection/collection/1.0.0/42858b26cafdaa69b6149f45dfc2894007bc2c7a/collection-1.0.0.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/cursoradapter-1.0.0.aar/2809954a9dff7d1d889734cfdc3221c8/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/lifecycle-runtime-2.0.0.aar/47543521be01bbf04aa69d57fe903775/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/documentfile-1.0.0.aar/bb904ead933ebf1d38e4ff8e7a6b29ae/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/localbroadcastmanager-1.0.0.aar/675ffce52f54b32865ec0f06d8a5f049/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/print-1.0.0.aar/a326960d418314b0dcabda0eab1700b0/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/lifecycle-viewmodel-2.0.0.aar/9b0336d6b3c011cc6f1068306b0043ef/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/lifecycle-livedata-2.0.0.aar/78f6d4e284af1f161c99a3061bc8219a/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/lifecycle-livedata-core-2.0.0.aar/2c15aed2b106440c8f0fbec70e8f711c/jars/classes.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/androidx.lifecycle/lifecycle-common/2.0.0/e070ffae07452331bc5684734fce6831d531785c/lifecycle-common-2.0.0.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/core-runtime-2.0.0.aar/58fd5466a29b177dc29636531a57fb04/jars/classes.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/androidx.arch.core/core-common/2.0.0/bb21b9a11761451b51624ac428d1f1bb5deeac38/core-common-2.0.0.jar;C:/Users/skyfo/.gradle/caches/transforms-1/files-1.1/interpolator-1.0.0.aar/d0d66e040c0a5715a7ed6cd0351da5cd/jars/classes.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/androidx.annotation/annotation/1.0.0/45599f2cd5965ac05a1488fa2a5c0cdd7c499ead/annotation-1.0.0.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.3.0/a134b0cfe9bb44f98b0b3e889cda07923eea9428/kotlin-stdlib-1.3.0.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/androidx.constraintlayout/constraintlayout-solver/2.0.0-alpha2/3531f0f78e59180b9b9017c98e73262d2eac1a68/constraintlayout-solver-2.0.0-alpha2.jar;C:/Users/skyfo/AppData/Local/Android/Sdk/extras/android/m2repository/com/android/support/support-annotations/23.4.0/support-annotations-23.4.0.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.3.0/84a2e0288dc17cd64d692eb1e5e0de8cd5ff0846/kotlin-stdlib-common-1.3.0.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar;C:/Users/skyfo/AppData/Local/Android/Sdk/platforms/android-23/android.jar" />
+          <option name="noStdlib" value="true" />
+          <option name="noReflect" value="true" />
+          <option name="moduleName" value="gmaps_hud_debug" />
+          <option name="addCompilerBuiltIns" value="true" />
+          <option name="loadBuiltInsFromDependencies" value="true" />
+          <option name="languageVersion" value="1.3" />
+          <option name="apiVersion" value="1.3" />
+          <option name="pluginOptions">
+            <array />
+          </option>
+          <option name="pluginClasspaths">
+            <array />
+          </option>
+          <option name="errors">
+            <ArgumentParseErrors />
+          </option>
+        </compilerArguments>
+      </configuration>
+    </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes" />
@@ -95,6 +120,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant_run_merged_manifests" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/javac" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/lint_jar" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/merged_assets" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/merged_manifests" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/metadata_feature_manifest" />
@@ -114,33 +140,71 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-location:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.drawerlayout:drawerlayout:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.documentfile:documentfile:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.localbroadcastmanager:localbroadcastmanager:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-games:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-fitness:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-runtime:2.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-livedata-core:2.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.cursoradapter:cursoradapter:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.0@jar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-ads:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.customview:customview:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.android.support:appcompat-v7:23.4.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.asynclayoutinflater:asynclayoutinflater:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-base:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-safetynet:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.vectordrawable:vectordrawable:1.0.1@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.interpolator:interpolator:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.fragment:fragment:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0@jar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.recyclerview:recyclerview:1.0.0-rc01@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.akexorcist:bluetoothspp:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-drive:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.slidingpanelayout:slidingpanelayout:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-analytics:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-nearby:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.coordinatorlayout:coordinatorlayout:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-cast:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.android.support:support-v13:23.4.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.arch.core:core-runtime:2.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-gcm:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.swiperefreshlayout:swiperefreshlayout:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.viewpager:viewpager:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.legacy:legacy-support-core-ui:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.loader:loader:1.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:design:23.4.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-wearable:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:animated-vector-drawable:23.4.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-maps:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-plus:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-games:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-fitness:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-ads:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:appcompat-v7:23.4.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.appcompat:appcompat:1.0.2@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.takusemba:spotlight:1.8.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.constraintlayout:constraintlayout-solver:2.0.0-alpha2@jar" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.3.0@jar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.constraintlayout:constraintlayout:2.0.0-alpha2@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-livedata:2.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-identity:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-base:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-safetynet:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-drive:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.akexorcist:bluetoothspp:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.vectordrawable:vectordrawable-animated:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-common:2.0.0@jar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.legacy:legacy-support-core-utils:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.print:print:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.versionedparcelable:versionedparcelable:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-viewmodel:2.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.arch.core:core-common:2.0.0@jar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.annotation:annotation:1.0.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:recyclerview-v7:23.4.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-vector-drawable:23.4.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-appindexing:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-analytics:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-wallet:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-nearby:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-cast:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-panorama:7.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:support-v13:23.4.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-annotations:23.4.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-appstate:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-v4:23.4.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-gcm:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.core:core:1.0.1@aar" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.3.0@jar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.collection:collection:1.0.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: android-android-23" level="project" />
   </component>
 </module>
