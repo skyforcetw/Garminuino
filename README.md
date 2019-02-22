@@ -8,6 +8,12 @@ This  is a project use GarminHUD as
 <img src="./P_20190125_225356-02.jpeg" alt="Two Garmin HUD application" width="500"/>
 <img src="./119031.jpg" alt="App layout" width="200"/>
 
+### 2019-02-19 v0.3.1
+Add arrow recognize for roundabout.  
+According to country, arrows of roundabout  can classification to clockwise or counter-clockwise.  
+Left-sided drive / Right-hand traffic  country, like USA, roundabout arrows are counter-clockwise.  
+Right-sided drive/ Left-hand traffic  country, like United Kingdom, roundabout arrows are clockwise.  
+
 ### 2019-02-11 v0.2.0
 New layout of app.
 Add some status indicator for qucik debug.
@@ -46,8 +52,9 @@ Works just like garmin streetpilot with Garmin HUD.
 1. ~~Add auto-connection function.~~
 2. Auto lanunch google map when HUD connected.
 3. Comment source-code.
-4. Show some usage infomation when navigation is done, don't make it seems hang when navigating done.
+4. ~~Show some usage infomation when navigation is done, don't make it seems hang when navigating done.~~
 5. Figure out auto connection is working well or not.
+6. Lets "Show Speed" function working well.
 
 ***
 

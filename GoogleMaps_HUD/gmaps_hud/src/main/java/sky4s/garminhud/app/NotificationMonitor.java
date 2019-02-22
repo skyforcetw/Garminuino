@@ -1,10 +1,12 @@
 package sky4s.garminhud.app;
 
+import android.Manifest;
 import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -20,6 +22,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -127,7 +130,11 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     private boolean showETA = false;
+    private static NotificationMonitor staticInstance;
 
+    public static NotificationMonitor getStaticInstance() {
+        return staticInstance;
+    }
 
     @Override
     public void onCreate() {
@@ -144,9 +151,11 @@ public class NotificationMonitor extends NotificationListenerService {
         msgReceiver = new MsgReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(getString(R.string.broadcast_receiver_notification_monitor));
+
         registerReceiver(msgReceiver, intentFilter);
 
         //========================================================================================
+        staticInstance = this;
     }
 
     @Override
@@ -440,7 +449,14 @@ public class NotificationMonitor extends NotificationListenerService {
         return bitmap;
     }
 
-    private static void storeBitmap(Bitmap bmp, String filename) {
+    private void storeBitmap(Bitmap bmp, String filename) {
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            return;
+        }
+
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(filename);
@@ -514,14 +530,20 @@ public class NotificationMonitor extends NotificationListenerService {
     private static Arrow getArrow(ArrowImage image) {
         long minSad = Integer.MAX_VALUE;
         Arrow minSadArrow = Arrow.None;
+
+        int totalArrowCount = Arrow.values().length;
+        long sadArray[] = new long[totalArrowCount];
+        int index = 0;
+
         for (Arrow a : Arrow.values()) {
-            long sad = image.getSAD(a.value);
+            long sad = image.getSAD(a.value1);
+            sadArray[index++] = sad;
             if (sad < minSad) {
                 minSad = sad;
                 minSadArrow = a;
             }
             if (0 == sad) {
-                String integerString = Long.toString(a.value);
+                String integerString = Long.toString(a.value1);
                 Log.d(TAG, "Recognize " + a.name() + " " + integerString);
                 return a;
 
@@ -533,95 +555,135 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private Arrow preArrow = Arrow.None;
 
-    private void processArrow(Arrow arrow) {
+    void processArrow(Arrow arrow) {
+        if (null == garminHud) {
+            return;
+        }
         if (preArrow == arrow) {
 
         } else {
             preArrow = arrow;
         }
         switch (arrow) {
-            case SharpRight:
-                garminHud.SetDirection(eOutAngle.SharpRight);
-                break;
-            case Right:
-                garminHud.SetDirection(eOutAngle.Right);
-                break;
-            case EasyRight:
-            case KeepRight:
-                garminHud.SetDirection(eOutAngle.EasyRight);
-                break;
-            case RightToLeave:
-                garminHud.SetDirection(eOutAngle.EasyRight, eOutType.LongerLane, eOutAngle.AsDirection);
-                break;
-            case Straight:
-                garminHud.SetDirection(eOutAngle.Straight);
-                break;
-
-            case GoTo:
-                garminHud.SetDirection(eOutAngle.Straight);
-                break;
-            case EasyLeft:
-            case KeepLeft:
-                garminHud.SetDirection(eOutAngle.EasyLeft);
-                break;
-            case LeftToLeave:
-                garminHud.SetDirection(eOutAngle.EasyLeft, eOutType.LongerLane, eOutAngle.AsDirection);
-                break;
-            case Left:
-                garminHud.SetDirection(eOutAngle.Left);
-                break;
-            case SharpLeft:
-                garminHud.SetDirection(eOutAngle.SharpLeft);
-                break;
-            case LeftDown:
-                garminHud.SetDirection(eOutAngle.LeftDown);
-                break;
-            case RightDown:
-                garminHud.SetDirection(eOutAngle.RightDown);
-                break;
-            case ArrivalsRight:
-                garminHud.SetDirection(eOutAngle.Right, eOutType.RightFlag, eOutAngle.AsDirection);
+            case Arrivals:
+                garminHud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
                 break;
             case ArrivalsLeft:
                 garminHud.SetDirection(eOutAngle.Left, eOutType.RightFlag, eOutAngle.AsDirection);
                 break;
-            case Arrivals:
-                garminHud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
+            case ArrivalsRight:
+                garminHud.SetDirection(eOutAngle.Right, eOutType.RightFlag, eOutAngle.AsDirection);
                 break;
 
-            case LeaveRoundabout:
-                garminHud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
+            case EasyLeft:
+            case KeepLeft:
+                garminHud.SetDirection(eOutAngle.EasyLeft);
                 break;
-            case LeaveRoundaboutUp:
-                garminHud.SetDirection(eOutAngle.Straight, eOutType.RightRoundabout, eOutAngle.Straight);
+
+            case EasyRight:
+            case KeepRight:
+                garminHud.SetDirection(eOutAngle.EasyRight);
                 break;
-            case LeaveRoundaboutLeft:
-                garminHud.SetDirection(eOutAngle.Left, eOutType.RightRoundabout, eOutAngle.Left);
+            case GoTo:
+                garminHud.SetDirection(eOutAngle.Straight);
                 break;
-            case LeaveRoundaboutSharpLeft:
-                garminHud.SetDirection(eOutAngle.SharpLeft, eOutType.RightRoundabout, eOutAngle.SharpLeft);
+
+            case LeaveRoundabout://1 checked
+                garminHud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
                 break;
-            case LeaveRoundaboutEasyLeft:
-                garminHud.SetDirection(eOutAngle.EasyLeft, eOutType.RightRoundabout, eOutAngle.EasyLeft);
+
+            case LeaveRoundaboutAsUTurn:
+                garminHud.SetDirection(eOutAngle.Down, eOutType.LeftRoundabout, eOutAngle.Down);
                 break;
-            case LeaveRoundaboutRight:
-                garminHud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
-                break;
-            case LeaveRoundaboutSharpRight:
-                garminHud.SetDirection(eOutAngle.SharpRight, eOutType.RightRoundabout, eOutAngle.SharpRight);
-                break;
-            case LeaveRoundaboutEasyRight:
-                garminHud.SetDirection(eOutAngle.EasyRight, eOutType.RightRoundabout, eOutAngle.EasyRight);
-                break;
-            case LeaveRoundaboutAsDirection:
+
+
+            case LeaveRoundaboutAsUTurnCC:
                 garminHud.SetDirection(eOutAngle.Down, eOutType.RightRoundabout, eOutAngle.Down);
                 break;
 
-            case LeaveRoundaboutLeftCC:
+
+            case LeaveRoundaboutEasyLeft://4 checked
+                garminHud.SetDirection(eOutAngle.EasyLeft, eOutType.LeftRoundabout, eOutAngle.EasyLeft);
+                break;
+
+            case LeaveRoundaboutEasyLeftCC://5 checked
+                garminHud.SetDirection(eOutAngle.EasyLeft, eOutType.RightRoundabout, eOutAngle.EasyLeft);
+                break;
+
+            case LeaveRoundaboutEasyRight://6 checked
+                garminHud.SetDirection(eOutAngle.EasyRight, eOutType.LeftRoundabout, eOutAngle.EasyRight);
+                break;
+            case LeaveRoundaboutEasyRightCC://7 checked
+                garminHud.SetDirection(eOutAngle.EasyRight, eOutType.RightRoundabout, eOutAngle.EasyRight);
+                break;
+
+            case LeaveRoundaboutCC://8 checked
+                garminHud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
+                break;
+
+            case LeaveRoundaboutLeft://9 checked
                 garminHud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
                 break;
-            case LeaveRoundaboutRightCC:
+            case LeaveRoundaboutLeftCC://10 checked
+                garminHud.SetDirection(eOutAngle.Left, eOutType.RightRoundabout, eOutAngle.Left);
+                break;
+            case LeaveRoundaboutRight://11 checked
                 garminHud.SetDirection(eOutAngle.Right, eOutType.LeftRoundabout, eOutAngle.Right);
+                break;
+            case LeaveRoundaboutRightCC://12 checked
+                garminHud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
+                break;
+
+            case LeaveRoundaboutSharpLeft://13 checked
+                garminHud.SetDirection(eOutAngle.SharpLeft, eOutType.LeftRoundabout, eOutAngle.SharpLeft);
+                break;
+            case LeaveRoundaboutSharpLeftCC://14 checked
+                garminHud.SetDirection(eOutAngle.SharpLeft, eOutType.RightRoundabout, eOutAngle.SharpLeft);
+                break;
+
+            case LeaveRoundaboutSharpRight://15 checked
+                garminHud.SetDirection(eOutAngle.SharpRight, eOutType.LeftRoundabout, eOutAngle.SharpRight);
+                break;
+            case LeaveRoundaboutSharpRightCC://16
+                garminHud.SetDirection(eOutAngle.SharpRight, eOutType.RightRoundabout, eOutAngle.SharpRight);
+                break;
+
+            case LeaveRoundaboutStraight://
+                garminHud.SetDirection(eOutAngle.Straight, eOutType.LeftRoundabout, eOutAngle.Straight);
+                break;
+
+            case LeaveRoundaboutStraightCC://
+                garminHud.SetDirection(eOutAngle.Straight, eOutType.RightRoundabout, eOutAngle.Straight);
+                break;
+
+            case Left:
+                garminHud.SetDirection(eOutAngle.Left);
+                break;
+
+            case LeftDown:
+                garminHud.SetDirection(eOutAngle.LeftDown);
+                break;
+            case LeftToLeave:
+                garminHud.SetDirection(eOutAngle.EasyLeft, eOutType.LongerLane, eOutAngle.AsDirection);
+                break;
+
+            case Right:
+                garminHud.SetDirection(eOutAngle.Right);
+                break;
+            case RightDown:
+                garminHud.SetDirection(eOutAngle.RightDown);
+                break;
+            case RightToLeave:
+                garminHud.SetDirection(eOutAngle.EasyRight, eOutType.LongerLane, eOutAngle.AsDirection);
+                break;
+            case SharpLeft:
+                garminHud.SetDirection(eOutAngle.SharpLeft);
+                break;
+            case SharpRight:
+                garminHud.SetDirection(eOutAngle.SharpRight);
+                break;
+            case Straight:
+                garminHud.SetDirection(eOutAngle.Straight);
                 break;
 
             case Convergence:
@@ -779,11 +841,11 @@ public class NotificationMonitor extends NotificationListenerService {
             final int indexOfETA = timeToArrived.indexOf(ETA);
             String[] arrivedSplit = null;
             final boolean etaAtFirst = 0 == indexOfETA;
-            // Separate EAT-String from value
-            if (etaAtFirst) { // ETA-String first, then value (chinese)
+            // Separate EAT-String from value1
+            if (etaAtFirst) { // ETA-String first, then value1 (chinese)
                 arrivedSplit = timeToArrived.split(ETA);
                 arrivalTime = 2 == arrivedSplit.length ? arrivedSplit[1] : null;
-            } else { // ETA-value first, then string (english)
+            } else { // ETA-value1 first, then string (english)
                 arrivedSplit = timeToArrived.split(ETA);
                 arrivalTime = arrivedSplit[0];
             }

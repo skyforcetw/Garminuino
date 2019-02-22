@@ -7,7 +7,8 @@ public class ArrowImage {
     public static final int CONTENT_LEN = IMAGE_LEN * IMAGE_LEN;
 
     public boolean[] content = new boolean[CONTENT_LEN];
-    public long value;
+    public long value1;
+    public long value2;
     public Bitmap binaryImage;
 
     private int getGreenAlpha(int pixel) {
@@ -17,32 +18,72 @@ public class ArrowImage {
         return green_alpha;
     }
 
-    public ArrowImage(Bitmap bitmap) {
+    private static final int TREAT_AS_WHITE = 200;
+    private static final int ALPHA_AS_WHITE = 254;
+    private static final int STANDARD_IMG_SIZE = 132;
 
+    private void toBinaryImage(Bitmap bitmap) {
         for (int h = 0; h < bitmap.getHeight(); h++) {
             for (int w = 0; w < bitmap.getWidth(); w++) {
                 int p = bitmap.getPixel(w, h);
                 final int green_alpha = getGreenAlpha(p);
-                bitmap.setPixel(w, h,green_alpha>200 ? 0xffffffff : 0);
+                bitmap.setPixel(w, h, green_alpha > TREAT_AS_WHITE ? 0xffffffff : 0);
             }
         }
-        Bitmap resized = Bitmap.createScaledBitmap(bitmap, 132, 132, false);
+
+    }
+
+    private Bitmap resizeImage(Bitmap bitmap, int newLength) {
+        if (bitmap.getWidth() == newLength && bitmap.getHeight() == newLength) {
+            return bitmap;
+        }
+        if (bitmap.getWidth() != bitmap.getHeight()) {
+            return null;
+        }
+//        return Bitmap.createScaledBitmap(bitmap, newLength, newLength, false);
+
+        int orgLength = bitmap.getHeight();
+        Bitmap resized = Bitmap.createBitmap(newLength, newLength, bitmap.getConfig());
+        float ratio = bitmap.getHeight() / (newLength * 1.0f);
+
+        //resized by NN
+        for (int h = 0; h < newLength; h++) {
+            int h0 = (int) Math.round(h * ratio);
+            h0 = (h0 >= orgLength) ? orgLength - 1 : h0;
+
+            for (int w = 0; w < newLength; w++) {
+                int w0 = (int) Math.round(w * ratio);
+                w0 = (w0 >= orgLength) ? orgLength : w0;
+                int pixel = bitmap.getPixel(w0, h0);
+                resized.setPixel(w, h, pixel);
+            }
+        }
+
+        return resized;
+    }
+
+
+    public ArrowImage(Bitmap bitmap) {
+        toBinaryImage(bitmap);
+        Bitmap resized = resizeImage(bitmap, STANDARD_IMG_SIZE);
+
         binaryImage = resized;
 
         final int interval = resized.getWidth() / IMAGE_LEN;
-        final int offset = interval / 2;
         int index = 0;
+        value1 = 0;
+
         for (int h0 = 0; h0 < IMAGE_LEN; h0++) {
-            final int h = h0 * interval + offset;
+            final int h = h0 * interval;
             for (int w0 = 0; w0 < IMAGE_LEN; w0++) {
-                final int w = w0 * interval + offset;
+                final int w = w0 * interval;
                 int p = resized.getPixel(w, h);
                 final int green_alpha = getGreenAlpha(p);
-                boolean bit = green_alpha>=254;
+                boolean bit = green_alpha >= ALPHA_AS_WHITE;
 
                 content[h0 * IMAGE_LEN + w0] = bit;
                 long shift_value = ((bit ? 1L : 0L) << index);
-                value = value | shift_value;
+                value1 = value1 | shift_value;
                 index++;
             }
         }
@@ -60,12 +101,9 @@ public class ArrowImage {
         return sad;
     }
 
-    // Returns the bitcode of the ArrowImage. The image will be divided into IMAGE_LEN x IMAGE_LEN Pixels (5x5)
+    // Returns the bitcode of the ArrowImage. The image will be divided into IMAGE_LEN x IMAGE_LEN Pixels (8x8)
     // Return-Value can be used for Arrow.java
-    public int getArrowValue() {
-        int value = 0;
-        for (int i=0; i < CONTENT_LEN; i++)
-            value += ((content[i] ? 1:0)<<i);
-        return value;
+    public long getArrowValue() {
+        return value1;
     }
 }
