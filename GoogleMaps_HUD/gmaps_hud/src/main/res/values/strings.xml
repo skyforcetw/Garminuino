@@ -34,11 +34,13 @@
     <string name="option_navigating_show_speed" translatable="false">option_navigating_show_speed</string>
     <string name="option_idle_show_speed" translatable="false">option_idle_show_speed</string>
     <string name="option_idle_show_time" translatable="false">option_idle_show_time</string>
+    <string name="option_show_prompt" translatable="false">option_show_prompt</string>
 
     <!--broadcast receiver-->
     <string name="broadcast_receiver_main_activity" translatable="false">sky4s.garminhud.app.MainActivity.RECEIVER</string>
     <string name="broadcast_receiver_notification_monitor" translatable="false">sky4s.garminhud.app.NotificationMonitor.RECEIVER</string>
     <string name="broadcast_receiver_localtion_service" translatable="false">chutka.bitman.com.speedometersimplified.LocationService.RECEIVER</string>
+
     <!--broadcast keys-->
     <string name="notify_catched" translatable="false">notify_catched</string>
     <string name="gmaps_notify_catched" translatable="false">gmaps_notify_catched</string>
@@ -51,5 +53,5 @@
     <string name="prompt_btn_scan_bt" >If GARMIN HUD is disconnected, you should connect to GARMIN HUD with this button.</string>
     <string name="prompt_switch_notification_catched" >This indicates the app can capture Notification.</string>
     <string name="prompt_switch_gmaps_notification_catched" >This indicates the GoogleMaps on Navigating/Driving Mode.</string>
-    <string name="prompt_layout_status" >All of this indicates should be ON, then GARMIN Hud will receive Navigation information.</string>
+    <string name="prompt_layout_status" >All of this indicates should be ON, then GARMIN HUD will receive Navigation information.</string>
 </resources>

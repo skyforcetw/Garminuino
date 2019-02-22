@@ -1,6 +1,8 @@
 package sky4s.garminhud.app;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,13 +36,21 @@ public class Page1Fragment extends Fragment {
         ((MainActivity) getActivity()).switchIdleShowTime = (Switch) getView().findViewById(R.id.switchIdleShowTime);
 //        ((MainActivity)getActivity()).loadOptions();
 
-        MaterialTapTargetSequence sequence = new MaterialTapTargetSequence();
-        prompt(sequence, R.id.switchHudConnected, getString(R.string.prompt_switch_hud_connected));
-        prompt(sequence, R.id.btnScanBT, getString(R.string.prompt_btn_scan_bt));
-        prompt(sequence, R.id.switchNotificationCatched, getString(R.string.prompt_switch_notification_catched));
-        prompt(sequence, R.id.switchGmapsNotificationCatched, getString(R.string.prompt_switch_gmaps_notification_catched));
-        prompt(sequence, R.id.layoutStatus, getString(R.string.prompt_layout_status));
-        sequence.show();
+        SharedPreferences sharedPref = ((MainActivity) getActivity()).getPreferences(Context.MODE_PRIVATE);
+        boolean showPrompt = sharedPref.getBoolean(getString(R.string.option_show_prompt), true);
+        if (showPrompt) {
+            MaterialTapTargetSequence sequence = new MaterialTapTargetSequence();
+            prompt(sequence, R.id.switchHudConnected, getString(R.string.prompt_switch_hud_connected));
+            prompt(sequence, R.id.btnScanBT, getString(R.string.prompt_btn_scan_bt));
+            prompt(sequence, R.id.switchNotificationCatched, getString(R.string.prompt_switch_notification_catched));
+            prompt(sequence, R.id.switchGmapsNotificationCatched, getString(R.string.prompt_switch_gmaps_notification_catched));
+            prompt(sequence, R.id.layoutStatus, getString(R.string.prompt_layout_status));
+            sequence.show();
+        }
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(getString(R.string.option_show_prompt), false);
+        editor.commit();
     }
 
     private MaterialTapTargetSequence prompt(MaterialTapTargetSequence sequence, final int target, String text) {

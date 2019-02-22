@@ -29,7 +29,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -204,6 +206,9 @@ public class MainActivity extends AppCompatActivity {
         boolean optionIdleShowTime = sharedPref.getBoolean(getString(R.string.option_idle_show_time), false);
     }
 
+    private DrawerLayout mDrawerLayout;
+//    private ActionBarDrawerToggle mDrawerToggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -274,8 +279,18 @@ public class MainActivity extends AppCompatActivity {
         int versionCode = BuildConfig.VERSION_CODE;
         String versionName = BuildConfig.VERSION_NAME;
 
-        String title = actionBar.getTitle() + " v" + versionName + " (b" + versionCode + ")" + bt_status;
+        String title = actionBar.getTitle() + " v" + versionName;// + " (b" + versionCode + ")" + bt_status;
         actionBar.setTitle(title);
+        actionBar.setLogo(R.mipmap.ic_launcher);
+
+        // 打開 up button
+//        actionBar.setDisplayHomeAsUpEnabled(true);
+//        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        // 實作 drawer toggle 並放入 toolbar
+//        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, actionBar, "open","close");
+//        mDrawerToggle.syncState();
+
+//        mDrawerLayout.setDrawerListener(mDrawerToggle);
         //========================================================================================
 
         createNotification(this);
