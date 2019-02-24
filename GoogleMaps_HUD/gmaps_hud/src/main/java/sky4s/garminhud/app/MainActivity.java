@@ -31,7 +31,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -86,23 +85,24 @@ public class MainActivity extends AppCompatActivity {
     private NotificationManager manager;
 
 
-    private void sendBooleanExtra2NotificationMonitor(String receiver, String key, boolean b) {
+    private void sendBooleanExtraByBroadcast(String receiver, String key, boolean b) {
         Intent intent = new Intent(receiver);
         intent.putExtra(key, b);
         sendBroadcast(intent);
     }
 
-    private void sendIntegerExtra2NotificationMonitor(String receiver, String key, int i) {
-        Intent intent = new Intent(receiver);
-        intent.putExtra(key, i);
-        sendBroadcast(intent);
-    }
+//    private void sendIntegerExtra2NotificationMonitor(String receiver, String key, int i) {
+//        Intent intent = new Intent(receiver);
+//        intent.putExtra(key, i);
+//        sendBroadcast(intent);
+//    }
 
     private MsgReceiver msgReceiver;
 
     private class MsgReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+
             String notify_msg = intent.getStringExtra(getString(R.string.notify_msg));
             if (null != notify_msg) {
                 textViewDebug.setText(notify_msg);
@@ -117,12 +117,14 @@ public class MainActivity extends AppCompatActivity {
                 if (notify_parse_failed) {
 
                 } else {
-                    switchNotificationCatched.setChecked(notify_catched);
-                    switchGmapsNotificationCatched.setChecked(gmaps_notify_catched);
+                    if (null != switchNotificationCatched && null != switchGmapsNotificationCatched) {
+                        switchNotificationCatched.setChecked(notify_catched);
+                        switchGmapsNotificationCatched.setChecked(gmaps_notify_catched);
+                    }
                     if (!gmaps_notify_catched && null != garminHud) {
 //                        garminHud.SetDirection()
                     }
-                    sendBooleanExtra2NotificationMonitor(getString(R.string.broadcast_receiver_localtion_service), getString(R.string.is_on_navigating), isInNavigating());
+                    sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_location_service), getString(R.string.is_on_navigating), isInNavigating());
                 }
             }
         }
@@ -283,25 +285,10 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setTitle(title);
         actionBar.setLogo(R.mipmap.ic_launcher);
 
-        // 打開 up button
-//        actionBar.setDisplayHomeAsUpEnabled(true);
-//        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-        // 實作 drawer toggle 並放入 toolbar
-//        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, actionBar, "open","close");
-//        mDrawerToggle.syncState();
-
-//        mDrawerLayout.setDrawerListener(mDrawerToggle);
         //========================================================================================
 
         createNotification(this);
-        //========================================================================================
-        // messageer
-        //========================================================================================
-        msgReceiver = new MsgReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(getString(R.string.broadcast_receiver_main_activity));
-        registerReceiver(msgReceiver, intentFilter);
-        //========================================================================================
+
 
 
     }
@@ -370,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
         if (locationServiceStatus == true) {
             unbindLocationService();
         }
-        unregisterReceiver(msgReceiver);
+
 
         if (manager != null)
             manager.cancel(1);
@@ -402,6 +389,21 @@ public class MainActivity extends AppCompatActivity {
         if (!isEnabledNLS) {
             showConfirmDialog();
         }
+
+        //========================================================================================
+        // messageer
+        //========================================================================================
+        msgReceiver = new MsgReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(getString(R.string.broadcast_receiver_main_activity));
+        registerReceiver(msgReceiver, intentFilter);
+        //========================================================================================
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(msgReceiver);
     }
 
     public void buttonOnClicked(View view) {
@@ -445,7 +447,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.switchShowETA:
-                sendBooleanExtra2NotificationMonitor(
+                sendBooleanExtraByBroadcast(
                         getString(R.string.broadcast_receiver_notification_monitor),
                         Integer.toString(R.id.switchShowETA), ((Switch) view).isChecked());
                 break;

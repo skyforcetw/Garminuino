@@ -69,7 +69,7 @@ public class LocationService extends Service implements
         //========================================================================================
         msgReceiver = new MsgReceiver();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(getString(R.string.broadcast_receiver_localtion_service));
+        intentFilter.addAction(getString(R.string.broadcast_receiver_location_service));
         registerReceiver(msgReceiver, intentFilter);
         //========================================================================================
     }
@@ -120,6 +120,11 @@ public class LocationService extends Service implements
         }
     }
 
+    private void sendLocationExtraByBroadcast(String receiver, String key, Location location) {
+        Intent intent = new Intent(receiver);
+        intent.putExtra(key, location);
+        sendBroadcast(intent);
+    }
 
     @Override
     public void onLocationChanged(Location location) {
@@ -141,6 +146,11 @@ public class LocationService extends Service implements
         //Calling the method below updates the  live values of distance and speed to the TextViews.
         updateHUD();
 
+        sendLocationExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor), getString(R.string.location), location);
+
+//        final double latitude = location.getLatitude();
+//        final double longitude = location.getLongitude();
+//        this.sendBroadcast();
     }
 
     @Override
