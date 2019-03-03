@@ -438,8 +438,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.switchShowSpeed:
-//            case R.id.switchNavShowSpeed:
-//            case R.id.switchIdleShowSpeed:
                 final boolean canShowSpeed = showSpeed(((Switch) view).isChecked());
                 if (!canShowSpeed) {
                     ((Switch) view).setChecked(false);
@@ -492,6 +490,7 @@ public class MainActivity extends AppCompatActivity {
                 unbindLocationService();
             }
             if (null != garminHud) {
+                //clear according to navigate status
                 garminHud.ClearSpeedandWarning();
                 garminHud.ClearDistance();
             }

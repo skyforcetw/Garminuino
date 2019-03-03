@@ -118,9 +118,9 @@ public class GarminHUD {
     }
 
 
-    public void SetTime(int nH, int nM) {
-        SetTime(nH, nM, false, false, true, false);
-    }
+//    public void SetTime(int nH, int nM) {
+//        SetTime(nH, nM, false, false, true, false);
+//    }
 
     public void SetTime(int nH, int nM, boolean bH, boolean bFlag) {
         SetTime(nH, nM, bFlag, false, true, bH);
@@ -133,8 +133,10 @@ public class GarminHUD {
     public void SetTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
         char arr[] = {(char) 0x05,
                 bTraffic ? (char) 0xff : (char) 0x00,
-                Digit(nH / 10), Digit(nH), bColon ? (char) 0xff : (char) 0x00,
-                Digit(nM / 10), Digit(nM), bH ? (char) 0xff : (char) 0x00,
+                Digit(nH / 10), Digit(nH), // hour
+                bColon ? (char) 0xff : (char) 0x00, // :
+                Digit(nM / 10), Digit(nM), //minute
+                bH ? (char) 0xff : (char) 0x00, // post-fix 'h'
                 bFlag ? (char) 0xff : (char) 0x00};
         SendHud2(arr);
     }
