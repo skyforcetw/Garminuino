@@ -13,6 +13,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,6 +46,7 @@ public class NotificationMonitor extends NotificationListenerService {
     private final static boolean STORE_IMG = true;
     private final static String IMAGE_DIR = "/storage/emulated/0/Pictures/";
     private final static boolean DONT_SEND_SAME = false;
+    private final static boolean USE_DB = false;
 
 
     public static final String ACTION_NLS_CONTROL = "sky4s.garmin.hud.NLSCONTROL";
@@ -62,6 +64,20 @@ public class NotificationMonitor extends NotificationListenerService {
 
     //    public static BluetoothSPP bt = null;
     static GarminHUD garminHud = null;
+
+    private RecognizeDBHelper dbHelper = null;
+
+    private void openDB() {
+        if (USE_DB) {
+            dbHelper = new RecognizeDBHelper(this);
+        }
+    }
+
+    private void closeDB() {
+        if (USE_DB) {
+            dbHelper.close();
+        }
+    }
 
     private Handler mMonitorHandler = new Handler() {
         @Override
@@ -81,6 +97,8 @@ public class NotificationMonitor extends NotificationListenerService {
 
 
     private Arrow foundArrow = Arrow.None;
+    private Arrow lastFoundArrow = Arrow.None;
+
     private String distanceNum = null;
     private static String distanceUnit = null;
     private String remainHour = null;
@@ -119,11 +137,15 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     private MsgReceiver msgReceiver;
+    private Location location;
 
     private class MsgReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-
+            Parcelable parcelablelocation = intent.getParcelableExtra(getString(R.string.location));
+            if (null != parcelablelocation && parcelablelocation instanceof Location) {
+                location = (Location) parcelablelocation;
+            }
             showETA = intent.getBooleanExtra(Integer.toString(R.id.switchShowETA), showETA);
             lastArrivalMinute = -1; // Force to switch to ETA after several toggles
         }
@@ -156,12 +178,15 @@ public class NotificationMonitor extends NotificationListenerService {
 
         //========================================================================================
         staticInstance = this;
+        openDB();
     }
+
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
+        closeDB();
     }
 
     @Override
@@ -360,9 +385,13 @@ public class NotificationMonitor extends NotificationListenerService {
         if ((null != extras) && (null != group_name) && group_name.equals(GOOGLE_MAPS_NOTIFICATION_GROUP_NAVIGATION)) {
             //not in navigation(chinese) of title: 參考 Google 地圖行駛
             Object titleObj = extras.get(Notification.EXTRA_TITLE);
+            Object textObj = extras.get(Notification.EXTRA_TEXT);
             Object subTextObj = extras.get(Notification.EXTRA_SUB_TEXT);
+
             String title = null != titleObj ? titleObj.toString() : null;
+            String text = null != textObj ? textObj.toString() : null;
             String subText = null != subTextObj ? subTextObj.toString() : null;
+            subText = null == subText ? text : subText;
 
             // Check if subText is empty (" ·  · ") --> don't parse subText
             // Occurs for example on NagivationChanged
@@ -391,6 +420,7 @@ public class NotificationMonitor extends NotificationListenerService {
                     distanceNum = "-1";
 
                 Icon largeIcon = notification.getLargeIcon();
+                Icon smallIcon = notification.getSmallIcon();
                 if (null != largeIcon) {
                     Drawable drawableIco = largeIcon.loadDrawable(this);
                     Bitmap bitmapImage = drawableToBitmap(drawableIco);
@@ -399,12 +429,6 @@ public class NotificationMonitor extends NotificationListenerService {
                         if (STORE_IMG) {
                             storeBitmap(bitmapImage, IMAGE_DIR + "arrow0.png");
                         }
-//                        Arrow arrow = getArrow(new ArrowImage(bitmapImage));
-
-//                       bitmapImage = removeAlpha(bitmapImage);
-//                        if (STORE_IMG) {
-//                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow.png");
-//                        }
 
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
 
@@ -413,6 +437,11 @@ public class NotificationMonitor extends NotificationListenerService {
                         }
 
                         foundArrow = getArrow(arrowImage);
+                        if (lastFoundArrow != foundArrow && USE_DB && null != dbHelper) {
+                            dbHelper.insert(null, bitmapImage, arrowImage, foundArrow);
+                        }
+                        lastFoundArrow = foundArrow;
+
                     }
                 }
                 logParseMessage();
@@ -695,7 +724,6 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     private String lastRemainHour = null, lastRemainMinute = null;
-    private Arrow lastFoundArrow = Arrow.None;
 
     private void updateGaminHudInformation() {
         if (null != garminHud) {
@@ -764,13 +792,10 @@ public class NotificationMonitor extends NotificationListenerService {
 
             //===================================================================================
             // arrow
+            // if same as last arrow, should be process, because GARMIN Hud will erase the arrow without data receive during sometime..
             //===================================================================================
-            final boolean sameAsLastArrow = false;//foundArrow == lastFoundArrow;
-            lastFoundArrow = foundArrow;
-            if (!sameAsLastArrow) {
-                processArrow(foundArrow);
-            }
-            final boolean arrowSendResult = sameAsLastArrow ? false : garminHud.getSendResult();
+            processArrow(foundArrow);
+            final boolean arrowSendResult = garminHud.getSendResult();
             //===================================================================================
 
             String sendResultInfo = "dist: " + (distanceSendResult ? '1' : '0')
