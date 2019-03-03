@@ -46,6 +46,7 @@ public class NotificationMonitor extends NotificationListenerService {
     private final static boolean STORE_IMG = true;
     private final static String IMAGE_DIR = "/storage/emulated/0/Pictures/";
     private final static boolean DONT_SEND_SAME = false;
+    private final static boolean USE_DB = false;
 
 
     public static final String ACTION_NLS_CONTROL = "sky4s.garmin.hud.NLSCONTROL";
@@ -67,12 +68,15 @@ public class NotificationMonitor extends NotificationListenerService {
     private RecognizeDBHelper dbHelper = null;
 
     private void openDB() {
-        dbHelper = new RecognizeDBHelper(this);
-
+        if (USE_DB) {
+            dbHelper = new RecognizeDBHelper(this);
+        }
     }
 
     private void closeDB() {
-        dbHelper.close();
+        if (USE_DB) {
+            dbHelper.close();
+        }
     }
 
     private Handler mMonitorHandler = new Handler() {
@@ -433,8 +437,8 @@ public class NotificationMonitor extends NotificationListenerService {
                         }
 
                         foundArrow = getArrow(arrowImage);
-                        if (lastFoundArrow != foundArrow) {
-                            dbHelper.insert(bitmapImage, arrowImage, foundArrow);
+                        if (lastFoundArrow != foundArrow && USE_DB && null != dbHelper) {
+                            dbHelper.insert(null, bitmapImage, arrowImage, foundArrow);
                         }
                         lastFoundArrow = foundArrow;
 
