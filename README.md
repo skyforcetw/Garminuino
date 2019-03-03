@@ -55,6 +55,7 @@ Works just like garmin streetpilot with Garmin HUD.
 4. ~~Show some usage infomation when navigation is done, don't make it seems hang when navigating done.~~
 5. Figure out auto connection is working well or not.
 6. Lets "Show Speed" function working well.
+7. Turn-off 
 
 ***
 
