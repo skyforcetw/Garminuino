@@ -64,7 +64,6 @@ public class NotificationMonitor extends NotificationListenerService {
 
     //    public static BluetoothSPP bt = null;
     static GarminHUD garminHud = null;
-
     private RecognizeDBHelper dbHelper = null;
 
     private void openDB() {
@@ -759,9 +758,9 @@ public class NotificationMonitor extends NotificationListenerService {
             boolean timeSendResult = false;
 
             if (null != remainMinute) {
-                if (showETA) {
+                if (showETA) { //show ETA
                     if (arrivalHour != -1 && arrivalMinute != -1) {
-                        boolean sameAsLast = (arrivalHour == lastArrivalHour && arrivalMinute == lastArrivalMinute) ? true : false;
+                        boolean sameAsLast = arrivalHour == lastArrivalHour && arrivalMinute == lastArrivalMinute;
 
                         if (!sameAsLast) {
                             garminHud.SetTime(arrivalHour, arrivalMinute, false);
@@ -770,7 +769,7 @@ public class NotificationMonitor extends NotificationListenerService {
                             lastArrivalHour = arrivalHour;
                         }
                     }
-                } else {
+                } else { //show remain time
                     int hh = null != remainHour ? Integer.parseInt(remainHour) : 0;
                     int mm = Integer.parseInt(remainMinute);
 
@@ -779,7 +778,7 @@ public class NotificationMonitor extends NotificationListenerService {
                     //need to verify the necessary of check same as last.
                     sameAsLast = false;
                     if (!sameAsLast) {
-                        garminHud.SetTime(hh, mm, true);
+                        garminHud.SetRemainTime(hh, mm);
                         timeSendResult = garminHud.getSendResult();
                         lastRemainMinute = remainMinute;
                         lastRemainHour = remainHour;

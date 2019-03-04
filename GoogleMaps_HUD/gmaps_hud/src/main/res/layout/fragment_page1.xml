@@ -61,7 +61,7 @@
                         android:textSize="@dimen/option_text_size" />
 
                     <Switch
-                        android:id="@+id/switchNotificationCatched"
+                        android:id="@+id/switchNotificationCaught"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -71,7 +71,7 @@
                         android:textSize="@dimen/option_text_size" />
 
                     <Switch
-                        android:id="@+id/switchGmapsNotificationCatched"
+                        android:id="@+id/switchGmapsNotificationCaught"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

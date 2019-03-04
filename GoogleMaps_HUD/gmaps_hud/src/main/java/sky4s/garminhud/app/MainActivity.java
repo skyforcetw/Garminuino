@@ -62,40 +62,34 @@ public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     private boolean isEnabledNLS = false;
-    private boolean showSpeed = false;
     private boolean showTime = false;
 
+    //========================================
+    // UI for Page1Fragment
+    //========================================
     TextView textViewDebug;
     Switch switchHudConnected;
-    Switch switchNotificationCatched;
-    Switch switchGmapsNotificationCatched;
+    Switch switchNotificationCaught;
+    Switch switchGmapsNotificationCaught;
 
     Switch switchShowETA;
     Switch switchShowSpeed;
-    //    Switch switchNavShowSpeed;
-//    Switch switchIdleShowSpeed;
     Switch switchIdleShowTime;
+    //========================================
 
     private boolean isInNavigating() {
-        return switchGmapsNotificationCatched.isChecked();
+        return switchGmapsNotificationCaught.isChecked();
     }
 
     private BluetoothSPP bt;
     private GarminHUD garminHud;
     private NotificationManager manager;
 
-
     private void sendBooleanExtraByBroadcast(String receiver, String key, boolean b) {
         Intent intent = new Intent(receiver);
         intent.putExtra(key, b);
         sendBroadcast(intent);
     }
-
-//    private void sendIntegerExtra2NotificationMonitor(String receiver, String key, int i) {
-//        Intent intent = new Intent(receiver);
-//        intent.putExtra(key, i);
-//        sendBroadcast(intent);
-//    }
 
     private MsgReceiver msgReceiver;
 
@@ -109,17 +103,17 @@ public class MainActivity extends AppCompatActivity {
             } else {
 
                 boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched),
-                        null != switchNotificationCatched ? switchNotificationCatched.isChecked() : false);
+                        null != switchNotificationCaught ? switchNotificationCaught.isChecked() : false);
                 boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched),
-                        null != switchGmapsNotificationCatched ? switchGmapsNotificationCatched.isChecked() : false);
+                        null != switchGmapsNotificationCaught ? switchGmapsNotificationCaught.isChecked() : false);
                 boolean notify_parse_failed = intent.getBooleanExtra(getString(R.string.notify_parse_failed), false);
 
                 if (notify_parse_failed) {
 
                 } else {
-                    if (null != switchNotificationCatched && null != switchGmapsNotificationCatched) {
-                        switchNotificationCatched.setChecked(notify_catched);
-                        switchGmapsNotificationCatched.setChecked(gmaps_notify_catched);
+                    if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
+                        switchNotificationCaught.setChecked(notify_catched);
+                        switchGmapsNotificationCaught.setChecked(gmaps_notify_catched);
                     }
                     if (!gmaps_notify_catched && null != garminHud) {
 //                        garminHud.SetDirection()
@@ -130,24 +124,37 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private ScreenReceiver screenReceiver;
+
+    private class ScreenReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                if (useLocationService) {
+
+                }
+                // DO WHATEVER YOU NEED TO DO HERE
+//                wasScreenOn = false;
+            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                // AND DO WHATEVER YOU NEED TO DO HERE
+//                wasScreenOn = true;
+            }
+        }
+
+    }
+
     private Timer timer = new Timer(true);
     private UpdateTimeTask updateTimeTask;
 
     private class UpdateTimeTask extends TimerTask {
         public void run() {
-            if (null != garminHud) {
-                if (!isInNavigating()) {
-                    if (showTime) {
-                        Calendar c = Calendar.getInstance();
-                        int hour = c.get(Calendar.HOUR_OF_DAY);
-                        int minute = c.get(Calendar.MINUTE);
-                        garminHud.SetTime(hour, minute, false, false);
-                    } else {
-                        garminHud.ClearTime();
-                    }
-                }
+            if (null != garminHud && !isInNavigating() && showTime) {
+                Calendar c = Calendar.getInstance();
+                int hour = c.get(Calendar.HOUR_OF_DAY);
+                int minute = c.get(Calendar.MINUTE);
+                garminHud.SetTime(hour, minute, false, false);
             }
-
         }
     }
 
@@ -242,7 +249,6 @@ public class MainActivity extends AppCompatActivity {
             bt = new BluetoothSPP(this);
             garminHud = new GarminHUD(bt);
             if (!bt.isBluetoothAvailable()) {
-
                 Toast.makeText(getApplicationContext()
                         , "Bluetooth is not available"
                         , Toast.LENGTH_SHORT).show();
@@ -289,10 +295,23 @@ public class MainActivity extends AppCompatActivity {
 
         createNotification(this);
 
+        //========================================================================================
+        // messageer
+        //========================================================================================
+        msgReceiver = new MsgReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(getString(R.string.broadcast_receiver_main_activity));
+        registerReceiver(msgReceiver, intentFilter);
 
-
+        // INITIALIZE RECEIVER
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        screenReceiver = new ScreenReceiver();
+        registerReceiver(screenReceiver, filter);
+        //========================================================================================
     }
 
+    private boolean garminHudConnected;
 
     private class BluetoothConnectionListener implements BluetoothSPP.BluetoothConnectionListener, BluetoothSPP.AutoConnectionListener {
         @Override
@@ -307,8 +326,16 @@ public class MainActivity extends AppCompatActivity {
 //            switchHudConnected.setChecked(true);
         }
 
+        /*
+        talk about location service:
+        only work when device connected.
+        not work when device disconnected or panel off => can android send location to garmin hud when panel off?
+
+         */
+
         @Override
         public void onDeviceConnected(String name, String address) {
+            garminHudConnected = true;
             switchHudConnected.setText("'" + name + "' connected");
             switchHudConnected.setTextColor(Color.BLACK);
             switchHudConnected.setChecked(true);
@@ -316,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
             NotificationMonitor.garminHud = garminHud;
             log("onDeviceConnected");
 
-            if (showSpeed && !locationServiceStatus) {
+            if (useLocationService && !locationServiceConnected) {
                 bindLocationService();
             }
 
@@ -328,10 +355,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceDisconnected() {
+            garminHudConnected = false;
             switchHudConnected.setText("HUD disconnected");
             switchHudConnected.setTextColor(Color.RED);
             switchHudConnected.setChecked(false);
-            NotificationMonitor.garminHud = garminHud;
+            NotificationMonitor.garminHud = null;
             log("onDeviceDisconnected");
         }
 
@@ -347,6 +375,9 @@ public class MainActivity extends AppCompatActivity {
 
     private BluetoothConnectionListener btConnectionListener = new BluetoothConnectionListener();
 
+    public void onStop() {
+        super.onStop();
+    }
 
     public void onDestroy() {
         super.onDestroy();
@@ -354,13 +385,13 @@ public class MainActivity extends AppCompatActivity {
             bt.stopAutoConnect();
             bt.stopService();
         }
-        if (locationServiceStatus == true) {
-            unbindLocationService();
+        unbindLocationService();
+        if (manager != null) {
+            manager.cancel(1);
         }
 
-
-        if (manager != null)
-            manager.cancel(1);
+        unregisterReceiver(msgReceiver);
+        unregisterReceiver(screenReceiver);
     }
 
     @Override
@@ -390,20 +421,14 @@ public class MainActivity extends AppCompatActivity {
             showConfirmDialog();
         }
 
-        //========================================================================================
-        // messageer
-        //========================================================================================
-        msgReceiver = new MsgReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(getString(R.string.broadcast_receiver_main_activity));
-        registerReceiver(msgReceiver, intentFilter);
-        //========================================================================================
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(msgReceiver);
+        //move register/unregister from   onPause/onResume to onCreate/onDestroy,insure got broadcast when in background
+//        unregisterReceiver(msgReceiver);
     }
 
     public void buttonOnClicked(View view) {
@@ -465,8 +490,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean showSpeed(final boolean doShowSpeed) {
-//        final boolean doShowSpeed = onNavigating || onIdle;
-
         if (doShowSpeed) {
             if (!checkLocationPermission()) {
                 return false;
@@ -478,23 +501,24 @@ public class MainActivity extends AppCompatActivity {
             if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 return false;
             }
-            if (false == locationServiceStatus) {
+            if (false == locationServiceConnected && null != garminHud) {
                 //Here, the Location Service gets bound and the GPS Speedometer gets Active.
-                if (null != garminHud) {
-                    bindLocationService();
-                }
-                showSpeed = true;
+                bindLocationService();
+                useLocationService = true;
             }
         } else {
-            if (true == locationServiceStatus) {
+            if (true == locationServiceConnected) {
                 unbindLocationService();
             }
             if (null != garminHud) {
                 //clear according to navigate status
-                garminHud.ClearSpeedandWarning();
-                garminHud.ClearDistance();
+                if (isInNavigating()) {
+                    garminHud.ClearSpeedandWarning();
+                } else {
+                    garminHud.ClearDistance();
+                }
             }
-            showSpeed = false;
+            useLocationService = false;
         }
         return true;
     }
@@ -558,7 +582,8 @@ public class MainActivity extends AppCompatActivity {
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle("GARMINuino")
-                        .setContentText("is on working");
+                        .setContentText("is on working")
+                        .setAutoCancel(false);
 
         Notification notification = builder.build();
         manager.notify(1, notification);
@@ -650,7 +675,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean locationServiceStatus;
+    private boolean locationServiceConnected;
+    private boolean useLocationService;
     private LocationService locationService;
     private LocationManager locationManager;
 
@@ -660,30 +686,30 @@ public class MainActivity extends AppCompatActivity {
             LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
             locationService = binder.getService();
             locationService.setGarminHUD(garminHud);
-            locationServiceStatus = true;
+            locationServiceConnected = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            locationServiceStatus = false;
+            locationServiceConnected = false;
         }
     };
 
     // bind/activate LocationService
     void bindLocationService() {
-        if (locationServiceStatus == true)
+        if (true == locationServiceConnected)
             return;
         Intent i = new Intent(getApplicationContext(), LocationService.class);
         bindService(i, locationServiceConnection, BIND_AUTO_CREATE);
-        locationServiceStatus = true;
+        locationServiceConnected = true;
     }
 
     // unbind/deactivate LocationService
     void unbindLocationService() {
-        if (locationServiceStatus == false)
+        if (false == locationServiceConnected)
             return;
         unbindService(locationServiceConnection);
-        locationServiceStatus = false;
+        locationServiceConnected = false;
     }
 
     // This method check if GPS is activated (and ask user for activation)
@@ -720,7 +746,7 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
-    // Check permission for location (and ask user for permission) 
+    // Check permission for location (and ask user for permission)
     private boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
