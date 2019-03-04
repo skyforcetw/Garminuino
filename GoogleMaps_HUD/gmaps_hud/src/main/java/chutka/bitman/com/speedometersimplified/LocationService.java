@@ -34,8 +34,8 @@ public class LocationService extends Service implements
     private static final long FASTEST_INTERVAL = 200 * 1;
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
-    Location mCurrentLocation, lStart, lEnd;
-    static double distance = 0;
+//    Location mCurrentLocation, lStart, lEnd; //seems no function
+//    private static double distance = 0;
     public static double speed;
     private GarminHUD garminHud;
 
@@ -108,7 +108,7 @@ public class LocationService extends Service implements
     protected void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient, this);
-        distance = 0;
+//        distance = 0;
     }
 
 
@@ -128,13 +128,12 @@ public class LocationService extends Service implements
 
     @Override
     public void onLocationChanged(Location location) {
-//        MainActivity.locate.dismiss();
-        mCurrentLocation = location;
-        if (lStart == null) {
-            lStart = mCurrentLocation;
-            lEnd = mCurrentLocation;
-        } else
-            lEnd = mCurrentLocation;
+//        mCurrentLocation = location;
+//        if (lStart == null) {
+//            lStart = mCurrentLocation;
+//            lEnd = mCurrentLocation;
+//        } else
+//            lEnd = mCurrentLocation;
 
         //calculating the speed with getSpeed method it returns speed in m/s so we are converting it into kmph
         if (eUnits.Kilometres == NotificationMonitor.getCurrentUnit() || eUnits.None == NotificationMonitor.getCurrentUnit()) {
@@ -146,8 +145,8 @@ public class LocationService extends Service implements
         //Calling the method below updates the  live values of distance and speed to the TextViews.
         updateHUD();
 
+        //send lat/lon for recognize history
         sendLocationExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor), getString(R.string.location), location);
-
 //        final double latitude = location.getLatitude();
 //        final double longitude = location.getLongitude();
 //        this.sendBroadcast();
@@ -176,7 +175,7 @@ public class LocationService extends Service implements
         } else
             clearSpeed();
 
-        lStart = lEnd;
+//        lStart = lEnd;
     }
 
 
@@ -201,9 +200,9 @@ public class LocationService extends Service implements
         stopLocationUpdates();
         if (mGoogleApiClient.isConnected())
             mGoogleApiClient.disconnect();
-        lStart = null;
-        lEnd = null;
-        distance = 0;
+//        lStart = null;
+//        lEnd = null;
+//        distance = 0;
         return super.onUnbind(intent);
     }
 

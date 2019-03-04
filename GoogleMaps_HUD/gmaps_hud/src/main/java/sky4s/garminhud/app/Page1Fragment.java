@@ -27,8 +27,8 @@ public class Page1Fragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ((MainActivity) getActivity()).switchHudConnected = (Switch) getView().findViewById(R.id.switchHudConnected);
-        ((MainActivity) getActivity()).switchNotificationCatched = (Switch) getView().findViewById(R.id.switchNotificationCatched);
-        ((MainActivity) getActivity()).switchGmapsNotificationCatched = (Switch) getView().findViewById(R.id.switchGmapsNotificationCatched);
+        ((MainActivity) getActivity()).switchNotificationCaught = (Switch) getView().findViewById(R.id.switchNotificationCaught);
+        ((MainActivity) getActivity()).switchGmapsNotificationCaught = (Switch) getView().findViewById(R.id.switchGmapsNotificationCaught);
 
         ((MainActivity) getActivity()).switchShowSpeed = (Switch) getView().findViewById(R.id.switchShowSpeed);
 
@@ -42,8 +42,8 @@ public class Page1Fragment extends Fragment {
             MaterialTapTargetSequence sequence = new MaterialTapTargetSequence();
             prompt(sequence, R.id.switchHudConnected, getString(R.string.prompt_switch_hud_connected));
             prompt(sequence, R.id.btnScanBT, getString(R.string.prompt_btn_scan_bt));
-            prompt(sequence, R.id.switchNotificationCatched, getString(R.string.prompt_switch_notification_catched));
-            prompt(sequence, R.id.switchGmapsNotificationCatched, getString(R.string.prompt_switch_gmaps_notification_catched));
+            prompt(sequence, R.id.switchNotificationCaught, getString(R.string.prompt_switch_notification_catched));
+            prompt(sequence, R.id.switchGmapsNotificationCaught, getString(R.string.prompt_switch_gmaps_notification_catched));
             prompt(sequence, R.id.layoutStatus, getString(R.string.prompt_layout_status));
             sequence.show();
         }

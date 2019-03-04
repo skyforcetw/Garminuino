@@ -141,6 +141,25 @@ public class GarminHUD {
         SendHud2(arr);
     }
 
+    public void SetRemainTime(int nH, int nM  ) {
+        final boolean bTraffic=false;
+        final boolean bH=true;
+        final boolean bFlag = true;
+
+        boolean noHour = 0 == nH;
+        boolean minLessThen10 = noHour && nM < 10;
+        char arr[] = {(char) 0x05,
+                bTraffic ? (char) 0xff : (char) 0x00,
+                noHour ? (char) 0 : Digit(nH / 10),// hour n_
+                noHour ? (char) 0 : Digit(nH), // hour _n
+                noHour ? (char) 0 : (char) 0xff, // :
+                minLessThen10 ? (char) 0 : Digit(nM / 10), //minute n_
+                Digit(nM), //minute _n
+                bH ? (char) 0xff : (char) 0x00, // post-fix 'h'
+                bFlag ? (char) 0xff : (char) 0x00};
+        SendHud2(arr);
+    }
+
     public void ClearTime() {
         char arr[] = {(char) 0x05,
                 0x00,
@@ -259,9 +278,8 @@ public class GarminHUD {
 //    }
 
     /**
-     *
-     * @param nDir 箭頭
-     * @param nType  圓環方向
+     * @param nDir           箭頭
+     * @param nType          圓環方向
      * @param nRoundaboutOut 圓環out
      */
     public void SetDirection(eOutAngle nDir, eOutType nType, eOutAngle nRoundaboutOut) {
