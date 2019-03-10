@@ -73,7 +73,7 @@ public class RecognizeDBHelper extends SQLiteOpenHelper {
         }
         values.put(ARROW_IMG_COLUMN, bitmap2ByteArray(arrowImage));
         values.put(ARROW_SMALL_IMG_COLUMN, bitmap2ByteArray(arrowImage));
-        values.put(ARROW_COLUMN, arrow.value1);
+        values.put(ARROW_COLUMN, arrow.valueLeft);
         // 3.db 儲存
         database.insert(TABLE_NAME, null, values);
 //        read();

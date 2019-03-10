@@ -41,15 +41,15 @@ public enum Arrow {
 
     None(0);
 
-    public final long value1;
-    public final long value2;
+    public final long valueLeft;
+    public final long valueRight;
 
     Arrow(long value) {
-        this.value1 = value;
-        this.value2 = 0;
+        this.valueLeft = value;
+        this.valueRight = 0;
     }
-    Arrow(long value1, long value2) {
-        this.value1 = value1;
-        this.value2 = value2;
+    Arrow(long valueLeft, long valueRight) {
+        this.valueLeft = valueLeft;
+        this.valueRight = valueRight;
     }
 }

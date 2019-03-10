@@ -321,9 +321,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onNewConnection(String name, String address) {
-//            switchHudConnected.setText("'" + name + "' connected");
-//            switchHudConnected.setTextColor(Color.BLACK);
-//            switchHudConnected.setChecked(true);
+
         }
 
         /*
