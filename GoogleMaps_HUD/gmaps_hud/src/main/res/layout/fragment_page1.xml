@@ -106,6 +106,30 @@
                     android:text="Show Speed"
                     android:textSize="@dimen/option_text_size" />
 
+                <Switch
+                    android:id="@+id/switchAutoBrightness"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:onClick="buttonOnClicked"
+                    android:paddingTop="@dimen/option_padding_top"
+                    android:text="Auto Brightness"
+                    android:textSize="@dimen/option_text_size" />
+
+                <SeekBar
+                    android:id="@+id/seekBarBrightness"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+
+                    android:max="10"
+                    android:onClick="buttonOnClicked"
+                    android:paddingRight="80dp"
+                    android:progress="10"
+                    android:textSize="@dimen/option_text_size" />
+
                 <TextView
                     android:id="@+id/textView5"
                     android:layout_width="match_parent"
@@ -133,7 +157,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="buttonOnClicked"
-                    android:paddingTop="@dimen/option_padding_top"
+
                     android:textSize="@dimen/option_text_size"
                     android:text="Show ETA" />
 
@@ -147,22 +171,13 @@
                     android:paddingTop="@dimen/option_padding_top"
                     />
 
-                <Switch
-                    android:id="@+id/switchIdleShowSpeed"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="buttonOnClicked"
-                    android:text="Show Speed"
-                    android:textSize="@dimen/option_text_size"
-                    android:visibility="gone" />
 
                 <Switch
                     android:id="@+id/switchIdleShowTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:paddingTop="@dimen/option_padding_top"
+
                     android:textSize="@dimen/option_text_size"
                     android:onClick="buttonOnClicked"
                     android:text="Show Current Time" />
