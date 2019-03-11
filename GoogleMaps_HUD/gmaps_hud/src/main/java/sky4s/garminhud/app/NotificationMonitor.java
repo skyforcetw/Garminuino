@@ -564,14 +564,14 @@ public class NotificationMonitor extends NotificationListenerService {
         int index = 0;
 
         for (Arrow a : Arrow.values()) {
-            long sad = image.getSAD(a.value1);
+            long sad = image.getSAD(a.valueLeft);
             sadArray[index++] = sad;
             if (sad < minSad) {
                 minSad = sad;
                 minSadArrow = a;
             }
             if (0 == sad) {
-                String integerString = Long.toString(a.value1);
+                String integerString = Long.toString(a.valueLeft);
                 Log.d(TAG, "Recognize " + a.name() + " " + integerString);
                 return a;
 
@@ -778,7 +778,8 @@ public class NotificationMonitor extends NotificationListenerService {
                     //need to verify the necessary of check same as last.
                     sameAsLast = false;
                     if (!sameAsLast) {
-                        garminHud.SetRemainTime(hh, mm);
+//                        garminHud.SetRemainTime(hh, mm);
+                        garminHud.SetTime(hh, mm, true);
                         timeSendResult = garminHud.getSendResult();
                         lastRemainMinute = remainMinute;
                         lastRemainHour = remainHour;
