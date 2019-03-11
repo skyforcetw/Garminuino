@@ -435,11 +435,12 @@ public class MainActivity extends AppCompatActivity {
 //        unregisterReceiver(msgReceiver);
     }
 
-    private SeekBar.OnSeekBarChangeListener seekbarChangeListener =new SeekBar.OnSeekBarChangeListener() {
+    private SeekBar.OnSeekBarChangeListener seekbarChangeListener = new SeekBar.OnSeekBarChangeListener() {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            int a=1;
+ 
+            switchAutoBrightness.setText("Brightness " + progress * 10 + "%");
         }
 
         @Override
@@ -452,7 +453,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
-
 
 
     public void buttonOnClicked(View view) {
@@ -494,16 +494,16 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.switchAutoBrightness:
-                Switch theAutoBrightness=  (Switch) view;
-                final boolean autoBrightness =theAutoBrightness.isChecked();
-                theAutoBrightness.setText(autoBrightness?"Auto Brightness":"Brightness %");
+                Switch theAutoBrightness = (Switch) view;
+                final boolean autoBrightness = theAutoBrightness.isChecked();
+                theAutoBrightness.setText(autoBrightness ? "Auto Brightness" : "Brightness %");
 
                 seekBarBrightness.setEnabled(!autoBrightness);
                 seekBarBrightness.setOnSeekBarChangeListener(seekbarChangeListener);
                 break;
 
             case R.id.seekBarBrightness:
-                int a=1;
+                int a = 1;
                 break;
 
             case R.id.switchShowETA:
