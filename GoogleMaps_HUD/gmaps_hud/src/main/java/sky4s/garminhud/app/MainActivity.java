@@ -439,7 +439,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
- 
+
             switchAutoBrightness.setText("Brightness " + progress * 10 + "%");
         }
 
