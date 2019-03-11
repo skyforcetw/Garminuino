@@ -217,7 +217,11 @@ public class LocationService extends Service implements
 
             if (prevIsOnNavigating != isOnNavigating) {
                 // Delete Speed in last line, when showing speed in distance line (when navigation finished)
-                garminHud.ClearSpeedandWarning();
+                if(!isOnNavigating) {
+                    garminHud.ClearSpeedandWarning();
+                }else {
+                    garminHud.ClearDistance();
+                }
             }
         }
     }
