@@ -48,6 +48,7 @@ public class LocationService extends Service implements
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+//        hud = NotificationMonitor.getGarminHud();
         createLocationRequest();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -55,6 +56,8 @@ public class LocationService extends Service implements
                 .addOnConnectionFailedListener(this)
                 .build();
         mGoogleApiClient.connect();
+
+
         return mBinder;
     }
 
@@ -87,6 +90,7 @@ public class LocationService extends Service implements
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -209,15 +213,14 @@ public class LocationService extends Service implements
         @Override
         public void onReceive(Context context, Intent intent) {
             boolean prevIsOnNavigating = isOnNavigating;
-            //會送來is_on_navigating訊息的,  1: 抓不到gmap notify 2: 到達目的地
             isOnNavigating = intent.getBooleanExtra(getString(R.string.is_on_navigating), isOnNavigating);
 
             if (prevIsOnNavigating != isOnNavigating) {
                 // Delete Speed in last line, when showing speed in distance line (when navigation finished)
-                if(prevIsOnNavigating) {
+                if(!isOnNavigating) {
                     garminHud.ClearSpeedandWarning();
                 }else {
-
+                    garminHud.ClearDistance();
                 }
             }
         }

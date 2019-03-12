@@ -36,6 +36,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,8 +73,13 @@ public class MainActivity extends AppCompatActivity {
     Switch switchNotificationCaught;
     Switch switchGmapsNotificationCaught;
 
-    Switch switchShowETA;
+
     Switch switchShowSpeed;
+    Switch switchAutoBrightness;
+    SeekBar seekBarBrightness;
+
+    Switch switchShowETA;
+
     Switch switchIdleShowTime;
     //========================================
 
@@ -327,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onNewConnection(String name, String address) {
-
+            int a = 1;
         }
 
         /*
@@ -435,6 +441,26 @@ public class MainActivity extends AppCompatActivity {
 //        unregisterReceiver(msgReceiver);
     }
 
+    private SeekBar.OnSeekBarChangeListener seekbarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            switchAutoBrightness.setText("Brightness " + progress * 10 + "%");
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    };
+
+
     public void buttonOnClicked(View view) {
         switch (view.getId()) {
 
@@ -471,6 +497,19 @@ public class MainActivity extends AppCompatActivity {
                 if (!canShowSpeed) {
                     ((Switch) view).setChecked(false);
                 }
+                break;
+
+            case R.id.switchAutoBrightness:
+                Switch theAutoBrightness = (Switch) view;
+                final boolean autoBrightness = theAutoBrightness.isChecked();
+                theAutoBrightness.setText(autoBrightness ? "Auto Brightness" : "Brightness %");
+
+                seekBarBrightness.setEnabled(!autoBrightness);
+                seekBarBrightness.setOnSeekBarChangeListener(seekbarChangeListener);
+                break;
+
+            case R.id.seekBarBrightness:
+                int a = 1;
                 break;
 
             case R.id.switchShowETA:
