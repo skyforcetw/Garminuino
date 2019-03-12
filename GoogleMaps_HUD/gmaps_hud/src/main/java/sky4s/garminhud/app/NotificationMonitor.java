@@ -373,6 +373,9 @@ public class NotificationMonitor extends NotificationListenerService {
                 + " (period: " + notifyPeriodTime + ")";
         logi(notifyMessage);
         sendStringExtra2MainActivity(getString(R.string.notify_msg), notifyMessage);
+        if (Arrow.Arrivals == foundArrow || Arrow.ArrivalsLeft == foundArrow || Arrow.ArrivalsRight == foundArrow) {
+            sendBooleanExtra2MainActivity(getString(R.string.arrivals_msg), true);
+        }
     }
 
     private boolean parseNotificationByExtras(Notification notification) {
@@ -1034,6 +1037,7 @@ public class NotificationMonitor extends NotificationListenerService {
         public void onReceive(Context context, Intent intent) {
             String action;
             if (intent != null && intent.getAction() != null) {
+
                 action = intent.getAction();
                 if (action.equals(ACTION_NLS_CONTROL)) {
                     String command = intent.getStringExtra("command");
@@ -1048,6 +1052,7 @@ public class NotificationMonitor extends NotificationListenerService {
                         int a = 1;
                     }
                 }
+
             }
         }
 

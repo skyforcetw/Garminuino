@@ -98,8 +98,12 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
 
             String notify_msg = intent.getStringExtra(getString(R.string.notify_msg));
+//            boolean arrivals = intent.getBooleanExtra(getString(R.string.arrivals_msg), false);
             if (null != notify_msg) {
                 textViewDebug.setText(notify_msg);
+//            } else if (true == arrivals) {
+//                switchGmapsNotificationCaught.setChecked(false);
+//                sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_location_service), getString(R.string.is_on_navigating), isInNavigating());
             } else {
 
                 boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched),
@@ -109,8 +113,10 @@ public class MainActivity extends AppCompatActivity {
                 boolean notify_parse_failed = intent.getBooleanExtra(getString(R.string.notify_parse_failed), false);
 
                 if (notify_parse_failed) {
+                    //when pass fail
 
                 } else {
+                    //pass success
                     if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
                         switchNotificationCaught.setChecked(notify_catched);
                         switchGmapsNotificationCaught.setChecked(gmaps_notify_catched);

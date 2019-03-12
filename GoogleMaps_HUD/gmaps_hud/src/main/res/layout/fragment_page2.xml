@@ -34,58 +34,40 @@
                     android:text="List of Notification"
                     android:textSize="@dimen/option_text_size" />
 
-                <ScrollView
+                <TextView
+                    android:id="@+id/textViewDebug"
                     android:layout_width="match_parent"
-                    android:layout_height="500dp"
-                    android:layout_below="@+id/finalLayout"
+                    android:layout_height="1000dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:visibility="visible" />
 
-                    android:clipToPadding="false"
-                    android:fillViewport="true"
-                    android:visibility="visible">
-
-                    <TextView
-                        android:id="@+id/textViewDebug"
-                        android:layout_width="match_parent"
-                        android:layout_height="800dp"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:visibility="visible" />
-
-
-                </ScrollView>
-
-                <ScrollView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                    <LinearLayout
+                    <Button
+                        android:id="@+id/button1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:onClick="buttonOnClicked"
+                        android:text="BUTTON 1" />
 
-                        <Button
-                            android:id="@+id/button1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:onClick="buttonOnClicked"
-                            android:text="BUTTON 1" />
+                    <Button
+                        android:id="@+id/button2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="buttonOnClicked"
+                        android:text="BUTTON 2" />
 
-                        <Button
-                            android:id="@+id/button2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:onClick="buttonOnClicked"
-                            android:text="BUTTON 2" />
+                    <Button
+                        android:id="@+id/button3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="buttonOnClicked"
+                        android:text="BUTTON 3" />
 
-                        <Button
-                            android:id="@+id/button3"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:onClick="buttonOnClicked"
-                            android:text="BUTTON 3" />
-
-                    </LinearLayout>
-                </ScrollView>
+                </LinearLayout>
 
             </LinearLayout>
         </ScrollView>

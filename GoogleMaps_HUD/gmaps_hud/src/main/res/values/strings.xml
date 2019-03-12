@@ -48,6 +48,7 @@
     <string name="notify_msg" translatable="false">notify_msg</string>
     <string name="is_on_navigating" translatable="false">is_on_navigating</string>
     <string name="location" translatable="false">location</string>
+    <string name="arrivals_msg" translatable="false">arrivals_msg</string>
 
     <!--Prompt-->
     <string name="prompt_switch_hud_connected" >This indicates the connection status of GARMIN HUD.</string>
