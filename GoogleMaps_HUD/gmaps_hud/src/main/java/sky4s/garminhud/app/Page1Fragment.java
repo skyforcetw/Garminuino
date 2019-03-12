@@ -37,7 +37,9 @@ public class Page1Fragment extends Fragment {
         ((MainActivity) getActivity()).switchAutoBrightness = switchAutoBrightness;
 
         SeekBar seekBarBrightness= (SeekBar) getView().findViewById(R.id.seekBarBrightness);
+//        seekBarBrightness.incrementProgressBy(10);
         seekBarBrightness.setEnabled(false);
+
         ((MainActivity) getActivity()).seekBarBrightness = seekBarBrightness;
 
         ((MainActivity) getActivity()).switchShowETA = (Switch) getView().findViewById(R.id.switchShowETA);

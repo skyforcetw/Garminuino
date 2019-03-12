@@ -127,7 +127,7 @@
                     android:max="10"
                     android:onClick="buttonOnClicked"
                     android:paddingRight="80dp"
-                    android:progress="10"
+                    android:progress="0"
                     android:textSize="@dimen/option_text_size" />
 
                 <TextView

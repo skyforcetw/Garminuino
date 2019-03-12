@@ -449,8 +449,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-            switchAutoBrightness.setText("Brightness " + progress * 10 + "%");
+            switchAutoBrightness.setText("Brightness " + (progress * 10) + "%");
+            if (null != garminHud) {
+                int brightness = getGammaBrightness();
+                garminHud.SetBrightness(brightness);
+            }
         }
 
         @Override
@@ -463,6 +466,15 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+    private int getGammaBrightness() {
+        final int progress = seekBarBrightness.getProgress();
+        float progress_normal = progress * 1.0f / seekBarBrightness.getMax();
+        final float gamma = 0.45f;
+        float progress_gamma = (float) Math.pow(progress_normal, gamma);
+        int gamma_brightness = Math.round(progress_gamma * seekBarBrightness.getMax());
+        return gamma_brightness;
+    }
 
 
     public void buttonOnClicked(View view) {
@@ -506,15 +518,23 @@ public class MainActivity extends AppCompatActivity {
             case R.id.switchAutoBrightness:
                 Switch theAutoBrightness = (Switch) view;
                 final boolean autoBrightness = theAutoBrightness.isChecked();
-                theAutoBrightness.setText(autoBrightness ? "Auto Brightness" : "Brightness %");
+
+                final int progress = seekBarBrightness.getProgress();
+                theAutoBrightness.setText(autoBrightness ? "Auto Brightness" : "Brightness " + (progress * 10) + "%");
 
                 seekBarBrightness.setEnabled(!autoBrightness);
                 seekBarBrightness.setOnSeekBarChangeListener(seekbarChangeListener);
+
+                if (null != garminHud) {
+                    if (autoBrightness) {
+                        garminHud.SetAutoBrightness();
+                    } else {
+                        final int brightness = getGammaBrightness();
+                        garminHud.SetBrightness(brightness);
+                    }
+                }
                 break;
 
-            case R.id.seekBarBrightness:
-                int a = 1;
-                break;
 
             case R.id.switchShowETA:
                 sendBooleanExtraByBroadcast(
