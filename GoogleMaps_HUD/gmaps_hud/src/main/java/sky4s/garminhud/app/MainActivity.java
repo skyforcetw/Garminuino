@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     private boolean isEnabledNLS = false;
-    private boolean showTime = false;
+    private boolean showCurrentTime = false;
 
     //========================================
     // UI for Page1Fragment
@@ -80,10 +80,10 @@ public class MainActivity extends AppCompatActivity {
 
     Switch switchShowETA;
 
-    Switch switchIdleShowTime;
+    Switch switchIdleShowCurrrentTime;
     //========================================
 
-    private boolean isInNavigating() {
+    private boolean isInNavigation() {
         return switchGmapsNotificationCaught.isChecked();
     }
 
@@ -102,37 +102,41 @@ public class MainActivity extends AppCompatActivity {
     private class MsgReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-
-            String notify_msg = intent.getStringExtra(getString(R.string.notify_msg));
-//            boolean arrivals = intent.getBooleanExtra(getString(R.string.arrivals_msg), false);
-            if (null != notify_msg) {
+            if (intent.hasExtra(getString(R.string.notify_msg))) {
+                String notify_msg = intent.getStringExtra(getString(R.string.notify_msg));
                 textViewDebug.setText(notify_msg);
-//            } else if (true == arrivals) {
-//                switchGmapsNotificationCaught.setChecked(false);
-//                sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_location_service), getString(R.string.is_on_navigating), isInNavigating());
-            } else {
+                return;
+            }
 
+
+            boolean notify_parse_failed = intent.getBooleanExtra(getString(R.string.notify_parse_failed), false);
+
+            if (notify_parse_failed) {
+                //when pass fail
+                if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
+                    switchNotificationCaught.setChecked(false);
+                    switchGmapsNotificationCaught.setChecked(false);
+                }
+            } else {
+                //pass success
                 boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched),
                         null != switchNotificationCaught ? switchNotificationCaught.isChecked() : false);
                 boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched),
                         null != switchGmapsNotificationCaught ? switchGmapsNotificationCaught.isChecked() : false);
-                boolean notify_parse_failed = intent.getBooleanExtra(getString(R.string.notify_parse_failed), false);
 
-                if (notify_parse_failed) {
-                    //when pass fail
-
-                } else {
-                    //pass success
-                    if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
+                if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
+                    if (!notify_catched) {
+                        switchNotificationCaught.setChecked(false);
+                        switchGmapsNotificationCaught.setChecked(false);
+                    } else {
                         switchNotificationCaught.setChecked(notify_catched);
                         switchGmapsNotificationCaught.setChecked(gmaps_notify_catched);
                     }
-                    if (!gmaps_notify_catched && null != garminHud) {
-//                        garminHud.SetDirection()
-                    }
-                    sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_location_service), getString(R.string.is_on_navigating), isInNavigating());
                 }
+
+                sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_location_service), getString(R.string.is_in_navigation), isInNavigation());
             }
+
         }
     }
 
@@ -161,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
 
     private class UpdateTimeTask extends TimerTask {
         public void run() {
-            if (null != garminHud && !isInNavigating() && showTime) {
+            if (null != garminHud && !isInNavigation() && showCurrentTime) {
                 Calendar c = Calendar.getInstance();
                 int hour = c.get(Calendar.HOUR_OF_DAY);
                 int minute = c.get(Calendar.MINUTE);
@@ -224,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
 //        showSpeed(optionNavigatingShowSpeed, optionIdleShowSpeed);
 
         boolean optionShowEta = sharedPref.getBoolean(getString(R.string.option_show_eta), false);
-        boolean optionIdleShowTime = sharedPref.getBoolean(getString(R.string.option_idle_show_time), false);
+        boolean optionIdleShowTime = sharedPref.getBoolean(getString(R.string.option_idle_show_current_time), false);
     }
 
     private DrawerLayout mDrawerLayout;
@@ -519,9 +523,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
 
-            case R.id.switchIdleShowTime:
-                showTime = ((Switch) view).isChecked();
-                if (showTime && null == updateTimeTask) {
+            case R.id.switchIdleShowCurrentTime:
+                showCurrentTime = ((Switch) view).isChecked();
+                if (showCurrentTime && null == updateTimeTask) {
                     updateTimeTask = new UpdateTimeTask();
                     timer.schedule(updateTimeTask, 1000, 1000);
                 }
@@ -555,7 +559,7 @@ public class MainActivity extends AppCompatActivity {
             }
             if (null != garminHud) {
                 //clear according to navigate status
-                if (isInNavigating()) {
+                if (isInNavigation()) {
                     garminHud.ClearSpeedandWarning();
                 } else {
                     garminHud.ClearDistance();

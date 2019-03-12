@@ -32,14 +32,16 @@ public class Page1Fragment extends Fragment {
         ((MainActivity) getActivity()).switchGmapsNotificationCaught = (Switch) getView().findViewById(R.id.switchGmapsNotificationCaught);
 
         ((MainActivity) getActivity()).switchShowSpeed = (Switch) getView().findViewById(R.id.switchShowSpeed);
-        ((MainActivity) getActivity()).switchAutoBrightness = (Switch) getView().findViewById(R.id.switchAutoBrightness);
+        Switch switchAutoBrightness = (Switch) getView().findViewById(R.id.switchAutoBrightness);;
+
+        ((MainActivity) getActivity()).switchAutoBrightness = switchAutoBrightness;
 
         SeekBar seekBarBrightness= (SeekBar) getView().findViewById(R.id.seekBarBrightness);
         seekBarBrightness.setEnabled(false);
         ((MainActivity) getActivity()).seekBarBrightness = seekBarBrightness;
 
         ((MainActivity) getActivity()).switchShowETA = (Switch) getView().findViewById(R.id.switchShowETA);
-        ((MainActivity) getActivity()).switchIdleShowTime = (Switch) getView().findViewById(R.id.switchIdleShowTime);
+        ((MainActivity) getActivity()).switchIdleShowCurrrentTime = (Switch) getView().findViewById(R.id.switchIdleShowCurrentTime);
 
         SharedPreferences sharedPref = ((MainActivity) getActivity()).getPreferences(Context.MODE_PRIVATE);
         boolean showPrompt = sharedPref.getBoolean(getString(R.string.option_show_prompt), true);

@@ -173,7 +173,7 @@
 
 
                 <Switch
-                    android:id="@+id/switchIdleShowTime"
+                    android:id="@+id/switchIdleShowCurrentTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

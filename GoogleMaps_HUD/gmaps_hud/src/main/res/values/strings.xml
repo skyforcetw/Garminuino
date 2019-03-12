@@ -31,9 +31,9 @@
     <string name="bt_bind_name_key" translatable="false">bt_bind_name_key</string>
     <string name="option_show_eta" translatable="false">option_show_eta</string>
     <string name="option_show_speed" translatable="false">option_show_speed</string>
-    <string name="option_navigating_show_speed" translatable="false">option_navigating_show_speed</string>
-    <string name="option_idle_show_speed" translatable="false">option_idle_show_speed</string>
-    <string name="option_idle_show_time" translatable="false">option_idle_show_time</string>
+    <string name="option_auto_brightness" translatable="false">option_auto_brightness</string>
+    <string name="option_manual_brightness" translatable="false">option_manual_brightness</string>
+    <string name="option_idle_show_current_time" translatable="false">option_idle_show_current_time</string>
     <string name="option_show_prompt" translatable="false">option_show_prompt</string>
 
     <!--broadcast receiver-->
@@ -46,7 +46,7 @@
     <string name="gmaps_notify_catched" translatable="false">gmaps_notify_catched</string>
     <string name="notify_parse_failed" translatable="false">notify_parse_failed</string>
     <string name="notify_msg" translatable="false">notify_msg</string>
-    <string name="is_on_navigating" translatable="false">is_on_navigating</string>
+    <string name="is_in_navigation" translatable="false">is_in_navigation</string>
     <string name="location" translatable="false">location</string>
     <string name="arrivals_msg" translatable="false">arrivals_msg</string>
 

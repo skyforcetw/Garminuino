@@ -194,22 +194,42 @@ public class NotificationMonitor extends NotificationListenerService {
         return super.onBind(intent);
     }
 
-    private void sendBooleanExtra2MainActivity(String string, boolean b) {
-        Intent intent = new Intent(getString(R.string.broadcast_receiver_main_activity));
-        intent.putExtra(string, b);
-        sendBroadcast(intent);
+    private   Intent intent2Main=null;
+    private void checkIntentForExtra() {
+        if(null==intent2Main) {
+            intent2Main = new Intent(getString(R.string.broadcast_receiver_main_activity));
+        }
+    }
+    private void addBooleanExtra(String key,boolean b) {
+        intent2Main.putExtra(key, b);
     }
 
-    private void sendStringExtra2MainActivity(String string, String message) {
-        Intent intent = new Intent(getString(R.string.broadcast_receiver_main_activity));
-        intent.putExtra(string, message);
-        sendBroadcast(intent);
+    private void addStringExtra(String key,String string) {
+        intent2Main.putExtra(string, string);
     }
+
+    private void sendIntent2MainActivity() {
+        sendBroadcast(intent2Main);
+    }
+
+//    private void sendBooleanExtra2MainActivity(String string, boolean b) {
+//        Intent intent = new Intent(getString(R.string.broadcast_receiver_main_activity));
+//        intent.putExtra(string, b);
+//        sendBroadcast(intent);
+//    }
+//
+//    private void sendStringExtra2MainActivity(String string, String message) {
+//        Intent intent = new Intent(getString(R.string.broadcast_receiver_main_activity));
+//        intent.putExtra(string, message);
+//        sendBroadcast(intent);
+//    }
 
 
     private void processGoogleMapsNotification(StatusBarNotification sbn) {
         String packageName = sbn.getPackageName();
-        sendBooleanExtra2MainActivity(getString(R.string.notify_catched), true);
+//        sendBooleanExtra2MainActivity(getString(R.string.notify_catched), true);
+        addBooleanExtra(getString(R.string.notify_catched), true);
+        sendIntent2MainActivity();
 
         if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
             Notification notification = sbn.getNotification();
@@ -229,16 +249,18 @@ public class NotificationMonitor extends NotificationListenerService {
         boolean parseResult = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             parseResult = parseNotificationByExtras(notification);
-            //parseResult = parseNotificationByReflection(notification);
         } else {
             parseResult = parseNotificationByReflection(notification);
         }
 
         if (!parseResult) {
-            sendBooleanExtra2MainActivity(getString(R.string.notify_parse_failed), true);
-            sendBooleanExtra2MainActivity(getString(R.string.gmaps_notify_catched), false);
+            addBooleanExtra(getString(R.string.notify_parse_failed), true);
+            addBooleanExtra(getString(R.string.gmaps_notify_catched), false);
+            sendIntent2MainActivity();
         } else {
-            sendBooleanExtra2MainActivity(getString(R.string.gmaps_notify_catched), true);
+            addBooleanExtra(getString(R.string.notify_parse_failed), false);
+            addBooleanExtra(getString(R.string.gmaps_notify_catched), true);
+            sendIntent2MainActivity();
         }
     }
 
@@ -372,10 +394,13 @@ public class NotificationMonitor extends NotificationListenerService {
                 " " + (null == remainHour ? 00 : remainHour) + ":" + remainMinute + " " + remainDistance + remainDistanceUnit + " " + arrivalHour + ":" + arrivalMinute
                 + " (period: " + notifyPeriodTime + ")";
         logi(notifyMessage);
-        sendStringExtra2MainActivity(getString(R.string.notify_msg), notifyMessage);
+//        sendStringExtra2MainActivity(getString(R.string.notify_msg), notifyMessage);
+        addStringExtra(getString(R.string.notify_msg), notifyMessage);
         if (Arrow.Arrivals == foundArrow || Arrow.ArrivalsLeft == foundArrow || Arrow.ArrivalsRight == foundArrow) {
-            sendBooleanExtra2MainActivity(getString(R.string.arrivals_msg), true);
+//            sendBooleanExtra2MainActivity(getString(R.string.arrivals_msg), true);
+            addBooleanExtra(getString(R.string.arrivals_msg), true);
         }
+        sendIntent2MainActivity();
     }
 
     private boolean parseNotificationByExtras(Notification notification) {
@@ -991,7 +1016,10 @@ public class NotificationMonitor extends NotificationListenerService {
         String packageName = sbn.getPackageName();
         if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
 
-            sendBooleanExtra2MainActivity(getString(R.string.gmaps_notify_catched), false);
+//            sendBooleanExtra2MainActivity(getString(R.string.gmaps_notify_catched), false);
+            addBooleanExtra(getString(R.string.gmaps_notify_catched), false);
+            sendIntent2MainActivity();
+
 
             int hh = null != remainHour ? Integer.parseInt(remainHour) : 0;
             int mm = null != remainMinute ? Integer.parseInt(remainMinute) : -1;

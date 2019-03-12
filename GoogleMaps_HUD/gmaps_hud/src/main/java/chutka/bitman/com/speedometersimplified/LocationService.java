@@ -213,7 +213,7 @@ public class LocationService extends Service implements
         @Override
         public void onReceive(Context context, Intent intent) {
             boolean prevIsOnNavigating = isOnNavigating;
-            isOnNavigating = intent.getBooleanExtra(getString(R.string.is_on_navigating), isOnNavigating);
+            isOnNavigating = intent.getBooleanExtra(getString(R.string.is_in_navigation), isOnNavigating);
 
             if (prevIsOnNavigating != isOnNavigating) {
                 // Delete Speed in last line, when showing speed in distance line (when navigation finished)
