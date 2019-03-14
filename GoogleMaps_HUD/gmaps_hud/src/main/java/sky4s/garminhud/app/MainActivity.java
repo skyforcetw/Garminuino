@@ -51,6 +51,7 @@ import app.akexorcist.bluetotohspp.library.DeviceList;
 import chutka.bitman.com.speedometersimplified.LocationService;
 import sky4s.garminhud.Arrow;
 import sky4s.garminhud.GarminHUD;
+import sky4s.garminhud.eOutAngle;
 
 public class MainActivity extends AppCompatActivity {
     //for test with virtual device which no BT device
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private MsgReceiver msgReceiver;
+    private boolean lastReallyInNavigation = false;
 
     private class MsgReceiver extends BroadcastReceiver {
         @Override
@@ -119,18 +121,25 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 //pass success
-                boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched),
+                final boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched),
                         null != switchNotificationCaught ? switchNotificationCaught.isChecked() : false);
-                boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched),
+                final boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched),
                         null != switchGmapsNotificationCaught ? switchGmapsNotificationCaught.isChecked() : false);
 
+                final boolean is_in_navigation = intent.getBooleanExtra(getString(R.string.is_in_navigation), false);
+
                 if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
-                    if (!notify_catched) {
+                    if (!notify_catched) { //no notify catched
                         switchNotificationCaught.setChecked(false);
                         switchGmapsNotificationCaught.setChecked(false);
                     } else {
                         switchNotificationCaught.setChecked(notify_catched);
-                        switchGmapsNotificationCaught.setChecked(gmaps_notify_catched);
+                        final boolean is_really_in_navigation = gmaps_notify_catched && is_in_navigation;
+                        switchGmapsNotificationCaught.setChecked(is_really_in_navigation);
+                        if (lastReallyInNavigation != is_really_in_navigation && null != garminHud) {
+                            garminHud.SetDirection(eOutAngle.AsDirection);
+                        }
+                        lastReallyInNavigation =is_really_in_navigation;
                     }
                 }
 
@@ -482,7 +491,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.button1:
                 if (null != NotificationMonitor.getStaticInstance()) {
-                    NotificationMonitor.getStaticInstance().processArrow(Arrow.LeaveRoundaboutSharpRight);
+                    NotificationMonitor.getStaticInstance().processArrow(Arrow.Convergence);
                 }
                 break;
             case R.id.button2:

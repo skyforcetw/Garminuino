@@ -146,7 +146,7 @@ public class LocationService extends Service implements
         updateHUD();
 
         //send lat/lon for recognize history
-        sendLocationExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor), getString(R.string.location), location);
+//        sendLocationExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor), getString(R.string.location), location);
 //        final double latitude = location.getLatitude();
 //        final double longitude = location.getLongitude();
 //        this.sendBroadcast();

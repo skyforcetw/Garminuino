@@ -141,9 +141,9 @@ public class GarminHUD {
         SendHud2(arr);
     }
 
-    public void SetRemainTime(int nH, int nM  ) {
-        final boolean bTraffic=false;
-        final boolean bH=true;
+    public void SetRemainTime(int nH, int nM) {
+        final boolean bTraffic = false;
+        final boolean bH = true;
         final boolean bFlag = true;
 
         boolean noHour = 0 == nH;
@@ -282,7 +282,7 @@ public class GarminHUD {
      * @param nType          圓環方向
      * @param nRoundaboutOut 圓環out
      */
-    public void SetDirection(eOutAngle nDir, eOutType nType, eOutAngle nRoundaboutOut) {
+    public void SetDirection(final eOutAngle nDir, final eOutType nType, final eOutAngle nRoundaboutOut) {
         char arr[] = {(char) 0x01,
                 (nDir == eOutAngle.LeftDown) ? (char) 0x10 : ((nDir == eOutAngle.RightDown) ? (char) 0x20 : (char) nType.value),
                 (nType == eOutType.RightRoundabout || nType == eOutType.LeftRoundabout) ?

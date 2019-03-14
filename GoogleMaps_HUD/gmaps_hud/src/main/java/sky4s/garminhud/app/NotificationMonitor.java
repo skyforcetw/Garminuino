@@ -194,22 +194,28 @@ public class NotificationMonitor extends NotificationListenerService {
         return super.onBind(intent);
     }
 
-    private   Intent intent2Main=null;
+    private Intent intent2Main = null;
+
     private void checkIntentForExtra() {
-        if(null==intent2Main) {
+        if (null == intent2Main) {
             intent2Main = new Intent(getString(R.string.broadcast_receiver_main_activity));
         }
     }
-    private void addBooleanExtra(String key,boolean b) {
+
+    private void addBooleanExtra(String key, boolean b) {
+        checkIntentForExtra();
         intent2Main.putExtra(key, b);
     }
 
-    private void addStringExtra(String key,String string) {
+    private void addStringExtra(String key, String string) {
+        checkIntentForExtra();
         intent2Main.putExtra(string, string);
     }
 
     private void sendIntent2MainActivity() {
-        sendBroadcast(intent2Main);
+        if (null != intent2Main) {
+            sendBroadcast(intent2Main);
+        }
     }
 
 //    private void sendBooleanExtra2MainActivity(String string, boolean b) {
@@ -260,6 +266,7 @@ public class NotificationMonitor extends NotificationListenerService {
         } else {
             addBooleanExtra(getString(R.string.notify_parse_failed), false);
             addBooleanExtra(getString(R.string.gmaps_notify_catched), true);
+            addBooleanExtra(getString(R.string.is_in_navigation), isInNavigation);
             sendIntent2MainActivity();
         }
     }
@@ -403,6 +410,8 @@ public class NotificationMonitor extends NotificationListenerService {
         sendIntent2MainActivity();
     }
 
+    private boolean isInNavigation = false;
+
     private boolean parseNotificationByExtras(Notification notification) {
         if (null == notification) {
             return false;
@@ -435,7 +444,8 @@ public class NotificationMonitor extends NotificationListenerService {
                 }
             }
 
-            if (null != subText && !subTextEmpty) {
+            final boolean somethingCanParse = null != subText && !subTextEmpty;
+            if (somethingCanParse) {
                 parseTimeAndDistanceToDest(subText);
 
                 String[] title_str = title.split("–");
@@ -473,6 +483,9 @@ public class NotificationMonitor extends NotificationListenerService {
                 }
                 logParseMessage();
                 updateGaminHudInformation();
+                isInNavigation = true;
+            } else {
+                isInNavigation = false;
             }
             return true;
         } else {
