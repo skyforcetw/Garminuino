@@ -1,12 +1,18 @@
 # Garminuino
-This  is a project use GarminHUD as 
-* a speedometer HUD  (Arduino+GarminHUD)
+There has two sub-project use GarminHUD as:
 * a GoogleMap navigation HUD  (Android App+GarminHUD).  
  [Further Information for Android App.](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/README.md)  
  [Downloading newest release App here.](https://github.com/skyforcetw/Garminuino/releases)
+ * a speedometer HUD  (Arduino+GarminHUD, STOP MAINTAIN)
  
 <img src="./P_20190125_225356-02.jpeg" alt="Two Garmin HUD application" width="500"/>
 <img src="./119031.jpg" alt="App layout" width="200"/>
+
+## GoogleMap navigation HUD App Release History ##
+
+### 2019-03-15 v0.4.0
+Auto/Manual Brightness Setting for Garmin HUD
+A release version with signed apk, don't bother with safety issue.
 
 ### 2019-02-19 v0.3.1
 Add arrow recognize for roundabout.  
@@ -54,8 +60,7 @@ Works just like garmin streetpilot with Garmin HUD.
 3. Comment source-code.
 4. ~~Show some usage infomation when navigation is done, don't make it seems hang when navigating done.~~
 5. Figure out auto connection is working well or not.
-6. Lets "Show Speed" function working well.
-7. Turn-off 
+6. ~~Lets "Show Speed" function working well.~~
 
 ***
 
