@@ -10,9 +10,8 @@ There has two sub-project use GarminHUD as:
 
 ## GoogleMap navigation HUD App Release History ##
 
-### [2019-03-15 v0.4.0](https://github.com/skyforcetw/Garminuino/releases/download/0.4.0s/gmaps_hud-release.apk)
+### [2019-03-15 v0.4.0](https://github.com/skyforcetw/Garminuino/releases/download/0.4.0/gmaps_hud-debug.apk)
 Auto/Manual Brightness Setting for Garmin HUD.
-A release version with signed apk, don't bother with safety issue.
 
 ### 2019-02-19 v0.3.1
 Add arrow recognize for roundabout.  
