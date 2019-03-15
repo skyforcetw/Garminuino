@@ -1,7 +1,36 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
+def keystoreFilepath = ''
+def keystorePSW = ''
+def keystoreAlias = ''
+def keystoreAliasPSW = ''
+// default keystore file, PLZ config file path in local.properties
+def keyfile = file('s.keystore.temp')
+
+Properties properties = new Properties()
+// local.properties file in the root director
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+keystoreFilepath = properties.getProperty("keystore.path")
+
+if (keystoreFilepath) {
+    keystorePSW = properties.getProperty("keystore.password")
+    keystoreAlias = properties.getProperty("keystore.alias")
+    keystoreAliasPSW = properties.getProperty("keystore.alias_password")
+    keyfile = file(keystoreFilepath)
+}
+
 android {
+
+    signingConfigs {
+        release {
+            storeFile keyfile
+            storePassword keystorePSW
+            keyAlias keystoreAlias
+            keyPassword keystoreAliasPSW
+        }
+    }
+
     compileSdkVersion 23
     buildToolsVersion '28.0.3'
     defaultConfig {
@@ -9,11 +38,11 @@ android {
         minSdkVersion 23
         targetSdkVersion 23
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.release
         }
     }
     productFlavors {
@@ -22,9 +51,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
     def versionPropsFile = file('version.properties')
-
     if (versionPropsFile.canRead()) {
         def Properties versionProps = new Properties()
 
@@ -48,18 +75,15 @@ android {
 dependencies {
     //location service needed
     implementation 'com.google.android.gms:play-services:7.0.0'
-
     //android UI needed
     implementation 'com.android.support:support-v13:23.4.0'
-//    implementation 'com.android.support:support-v4:23.4.0'
+    //    implementation 'com.android.support:support-v4:23.4.0'
     implementation 'com.android.support:design:23.4.0'
     implementation 'com.android.support:appcompat-v7:23.4.0'
-
     //bluetooth needed
     implementation 'com.akexorcist:bluetoothspp:1.0.0'
     //same as com.akexorcist:bluetoothspp:1.0.0,  but from https://github.com/skyforcetw/Android-BluetoothSPPLibrary
-//    api files('libs/library-release.aar')
-
+    //    api files('libs/library-release.aar')
     //prompt needed
     implementation 'uk.co.samuelwall:material-tap-target-prompt:2.14.0'
 }
