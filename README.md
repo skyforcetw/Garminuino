@@ -5,8 +5,8 @@ There has two sub-project use GarminHUD as:
  [Downloading newest release App here.](https://github.com/skyforcetw/Garminuino/releases)
  * a speedometer HUD  (Arduino+GarminHUD, STOP MAINTAIN)
  
-<img src="./P_20190125_225356-02.jpeg" alt="Two Garmin HUD application" width="500"/>
-<img src="./119031.jpg" alt="App layout" width="200"/>
+<img src="./pics/P_20190125_225356-02.jpeg" alt="Two Garmin HUD application" width="500"/>
+<img src="./pics/pic (4).jpg" alt="App layout" width="200"/>
 
 ## GoogleMap navigation HUD App Release History ##
 
