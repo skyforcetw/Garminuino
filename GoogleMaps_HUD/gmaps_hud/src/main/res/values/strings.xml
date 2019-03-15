@@ -54,6 +54,6 @@
     <string name="prompt_switch_hud_connected" >This indicates the connection status of GARMIN HUD.</string>
     <string name="prompt_btn_scan_bt" >If GARMIN HUD is disconnected, you should connect to GARMIN HUD with this button.</string>
     <string name="prompt_switch_notification_catched" >This indicates the app can capture Notification.</string>
-    <string name="prompt_switch_gmaps_notification_catched" >This indicates the GoogleMaps on Navigating/Driving Mode.</string>
+    <string name="prompt_switch_gmaps_navigation_catched" >This indicates the GoogleMaps on Navigating Mode.</string>
     <string name="prompt_layout_status" >All of this indicates should be ON, then GARMIN HUD will receive Navigation information.</string>
 </resources>

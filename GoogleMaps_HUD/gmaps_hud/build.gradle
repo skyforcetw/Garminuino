@@ -10,7 +10,7 @@ def keyfile = file('s.keystore.temp')
 
 Properties properties = new Properties()
 // local.properties file in the root director
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
+properties.load(project.rootProject.file('keystore.properties').newDataInputStream())
 keystoreFilepath = properties.getProperty("keystore.path")
 
 if (keystoreFilepath) {

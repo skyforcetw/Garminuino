@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                         if (lastReallyInNavigation != is_really_in_navigation && null != garminHud) {
                             garminHud.SetDirection(eOutAngle.AsDirection);
                         }
-                        lastReallyInNavigation =is_really_in_navigation;
+                        lastReallyInNavigation = is_really_in_navigation;
                     }
                 }
 
@@ -368,6 +368,15 @@ public class MainActivity extends AppCompatActivity {
 
             if (useLocationService && !locationServiceConnected) {
                 bindLocationService();
+            }
+
+            if (null != garminHud) {
+                if (switchAutoBrightness.isChecked()) {
+                    garminHud.SetAutoBrightness();
+                } else {
+                    final int brightness = getGammaBrightness();
+                    garminHud.SetBrightness(brightness);
+                }
             }
 
             String connected_device_name = bt.getConnectedDeviceName();
