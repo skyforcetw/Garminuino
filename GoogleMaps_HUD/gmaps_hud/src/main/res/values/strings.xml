@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name"   translatable="false">GoogleMaps HUD</string>
+    <string name="app_name" translatable="false">GoogleMaps HUD</string>
     <string name="action_settings">Settings</string>
 
     <string name="active_notification_count_zero">No active notification</string>
@@ -23,9 +23,9 @@
     <string name="km">km</string>
     <string name="meter">m</string>
     <string name="feet">ft</string>
-    <string name="miles" >mi</string>
+    <string name="miles">mi</string>
 
-    <string name="chinese_after"   translatable="false">後</string>
+    <string name="chinese_after" translatable="false">後</string>
 
     <!--options-->
     <string name="bt_bind_name_key" translatable="false">bt_bind_name_key</string>
@@ -51,9 +51,16 @@
     <string name="arrivals_msg" translatable="false">arrivals_msg</string>
 
     <!--Prompt-->
-    <string name="prompt_switch_hud_connected" >This indicates the connection status of GARMIN HUD.</string>
-    <string name="prompt_btn_scan_bt" >If GARMIN HUD is disconnected, you should connect to GARMIN HUD with this button.</string>
-    <string name="prompt_switch_notification_catched" >This indicates the app can capture Notification.</string>
-    <string name="prompt_switch_gmaps_navigation_catched" >This indicates the GoogleMaps on Navigating Mode.</string>
-    <string name="prompt_layout_status" >All of this indicates should be ON, then GARMIN HUD will receive Navigation information.</string>
+    <string name="prompt_switch_hud_connected">This indicates the connection status of GARMIN HUD.</string>
+    <string name="prompt_btn_scan_bt">If GARMIN HUD is disconnected, you should connect to GARMIN HUD with this button.</string>
+    <string name="prompt_switch_notification_catched">This indicates the app can capture Notification.</string>
+    <string name="prompt_switch_gmaps_navigation_catched">This indicates the GoogleMaps on Navigating Mode.</string>
+    <string name="prompt_layout_status">All of this indicates should be ON, then GARMIN HUD will receive Navigation information.</string>
+
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title"  translatable="false">Googles Map HUD</string>
+    <string name="nav_header_subtitle"  translatable="false">skyforce@gmail.com</string>
+    <string name="nav_header_desc">Navigation header</string>
 </resources>

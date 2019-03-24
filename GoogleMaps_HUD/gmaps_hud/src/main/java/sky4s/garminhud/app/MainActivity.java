@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.ActivityCompat;
@@ -31,10 +32,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -201,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
 
     /* PagerAdapter for supplying the ViewPager with the pages (fragments) to display. */
-    public class MyPagerAdapter extends FragmentPagerAdapter {
+    private class MyPagerAdapter extends FragmentPagerAdapter {
 
         public MyPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
@@ -225,6 +228,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //========================================================================================
+
+    private NavigationItemSelectedListener navigationListener=new NavigationItemSelectedListener();
+    private class NavigationItemSelectedListener implements NavigationView.OnNavigationItemSelectedListener {
+
+
+        @Override
+        public boolean onNavigationItemSelected(MenuItem item) {
+            return false;
+        }
+    }
+
 
     private SharedPreferences sharedPref;
 
@@ -309,16 +323,29 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar); //when pass toolbar as actionBar, toolbar has title
         ActionBar actionBar = getSupportActionBar();
-        int versionCode = BuildConfig.VERSION_CODE;
+//        int versionCode = BuildConfig.VERSION_CODE;
         String versionName = BuildConfig.VERSION_NAME;
 
         String title = actionBar.getTitle() + " v" + versionName;// + " (b" + versionCode + ")" + bt_status;
         actionBar.setTitle(title);
-        actionBar.setLogo(R.mipmap.ic_launcher);
+//        actionBar.setLogo(R.mipmap.ic_launcher);
 
         //========================================================================================
 
-        createNotification(this);
+        //========================================================================================
+        // NavigationView
+        //========================================================================================
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(navigationListener);
+        //========================================================================================
+
+//        createNotification(this);
 
         //========================================================================================
         // messageer
