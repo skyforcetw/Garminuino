@@ -113,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-
             boolean notify_parse_failed = intent.getBooleanExtra(getString(R.string.notify_parse_failed), false);
 
             if (notify_parse_failed) {
@@ -137,6 +136,12 @@ public class MainActivity extends AppCompatActivity {
                         switchGmapsNotificationCaught.setChecked(false);
                     } else {
                         switchNotificationCaught.setChecked(notify_catched);
+                        if(!gmaps_notify_catched) {
+                            Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.google.maps");
+                            if (launchIntent != null) {
+                                startActivity(launchIntent);//null pointer check in case package name was not found
+                            }
+                        }
                         final boolean is_really_in_navigation = gmaps_notify_catched && is_in_navigation;
                         switchGmapsNotificationCaught.setChecked(is_really_in_navigation);
                         if (lastReallyInNavigation != is_really_in_navigation && null != garminHud) {
