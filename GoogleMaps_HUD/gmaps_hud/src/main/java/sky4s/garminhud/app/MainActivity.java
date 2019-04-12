@@ -474,7 +474,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        isEnabledNLS = isEnabled();
+        isEnabledNLS = isNLSEnabled();
         log("isEnabledNLS = " + isEnabledNLS);
         if (!isEnabledNLS) {
             showConfirmDialog();
@@ -668,7 +668,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private boolean isEnabled() {
+    private boolean isNLSEnabled() {
         String pkgName = getPackageName();
         final String flat = Settings.Secure.getString(getContentResolver(),
                 ENABLED_NOTIFICATION_LISTENERS);
