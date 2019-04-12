@@ -29,3 +29,8 @@ For parsing the navigation informations the app will need a few keywords. The fo
 * Chinese (Traditional Han)
 * Korean
 * German
+
+## For Developers
+If you want to modifiy code and compile apk, you need sign your app.
+Store keystore.properties and gmaps_hud.jks at GoogleMaps_HUD directory.
+Please reference detail at https://developer.android.com/studio/publish/app-signing .
