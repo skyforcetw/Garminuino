@@ -292,6 +292,8 @@ public class MainActivity extends AppCompatActivity {
         String bt_status = "";
         if (!IGNORE_BT_DEVICE) {
             bt = new BluetoothSPP(this);
+            bt.setBluetoothConnectionListener(btConnectionListener);
+            bt.setAutoConnectionListener(btConnectionListener);
             garminHud = new GarminHUD(bt);
             if (!bt.isBluetoothAvailable()) {
                 Toast.makeText(getApplicationContext()
@@ -315,8 +317,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            bt.setBluetoothConnectionListener(btConnectionListener);
-            bt.setAutoConnectionListener(btConnectionListener);
+
 
         } else {
             bt_status = "(NO BT)";
@@ -649,6 +650,8 @@ public class MainActivity extends AppCompatActivity {
                     , Toast.LENGTH_SHORT).show();
         } else {
             bt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
+            bt.setBluetoothConnectionListener(btConnectionListener);
+            bt.setAutoConnectionListener(btConnectionListener);
 
             Intent intent = new Intent(getApplicationContext(), DeviceList.class);
             startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
