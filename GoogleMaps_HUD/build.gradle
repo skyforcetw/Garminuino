@@ -23,3 +23,7 @@ allprojects {
         google()
     }
 }
+
+def isReleaseBuild() {
+    return version.contains("SNAPSHOT") == false
+}

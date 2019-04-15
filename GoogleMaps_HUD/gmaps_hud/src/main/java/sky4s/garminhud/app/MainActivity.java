@@ -330,12 +330,10 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar); //when pass toolbar as actionBar, toolbar has title
         ActionBar actionBar = getSupportActionBar();
-//        int versionCode = BuildConfig.VERSION_CODE;
         String versionName = BuildConfig.VERSION_NAME;
 
         String title = actionBar.getTitle() + " v" + versionName;// + " (b" + versionCode + ")" + bt_status;
         actionBar.setTitle(title);
-//        actionBar.setLogo(R.mipmap.ic_launcher);
 
         //========================================================================================
 
