@@ -2,12 +2,13 @@ package sky4s.garminhud;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import sky4s.garminhud.app.MainActivity;
+import sky4s.garminhud.hud.HUDInterface;
 
 /**
  * Created by skyforce on 2018/8/13.
  */
 
-public class GarminHUD {
+public class GarminHUD implements HUDInterface {
     //===========================================================================================
     // 不與C++共用的部分
     //===========================================================================================
@@ -116,11 +117,6 @@ public class GarminHUD {
 
         sendResult = SendPacket(sendBuf, len);
     }
-
-
-//    public void SetTime(int nH, int nM) {
-//        SetTime(nH, nM, false, false, true, false);
-//    }
 
     public void SetTime(int nH, int nM, boolean bH, boolean bFlag) {
         SetTime(nH, nM, bFlag, false, true, bH);
@@ -268,14 +264,6 @@ public class GarminHUD {
     byte3:  When not LeftDown/RightDown, 箭頭方向: eOutAngle
 
      */
-//    public void SetDirection(char nDir, char nType, char nRoundaboutOut) {
-//        char arr[] = {(char) 0x01,
-//                (nDir == eOutAngle.LeftDown.value1) ? (char) 0x10 : ((nDir == eOutAngle.RightDown.value1) ? (char) 0x20 : nType), //byte1
-//                ((nType & eOutType.RightRoundabout.value1) != 0 || (nType & eOutType.LeftRoundabout.value1) != 0) ? //byte2
-//                        ((nRoundaboutOut == eOutAngle.AsDirection.value1) ? nDir : nRoundaboutOut) : (char) 0x00,
-//                (nDir == eOutAngle.LeftDown.value1 || nDir == eOutAngle.RightDown.value1) ? (char) 0x00 : nDir}; //byte3
-//        SendHud2(arr);
-//    }
 
     /**
      * @param nDir           箭頭

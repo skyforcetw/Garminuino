@@ -173,8 +173,9 @@ public class LocationService extends Service implements
             return;
         if (speed >= 0.0) {
             setSpeed((int) speed, true);
-        } else
+        } else {
             clearSpeed();
+        }
 
 //        lStart = lEnd;
     }
@@ -223,7 +224,10 @@ public class LocationService extends Service implements
             if (prevIsOnNavigating != isOnNavigating) {
                 // Delete Speed in last line, when showing speed in distance line (when navigation finished)
                 if (null != garminHud) {
-                    if (!isOnNavigating) {
+                    //original is not logic, different with other, curious!
+                    //change to no not logic to try.
+                    //if (!isOnNavigating) { //original
+                    if (isOnNavigating) {
                         garminHud.ClearSpeedandWarning();
                     } else {
                         garminHud.ClearDistance();

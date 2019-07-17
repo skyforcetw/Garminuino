@@ -178,9 +178,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Timer timer = new Timer(true);
-    private UpdateTimeTask updateTimeTask;
+    private CurrentTimeTask currentTimeTask;
 
-    private class UpdateTimeTask extends TimerTask {
+    private class CurrentTimeTask extends TimerTask {
         public void run() {
             if (null != garminHud && !isInNavigation() && showCurrentTime) {
                 Calendar c = Calendar.getInstance();
@@ -350,6 +350,7 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(navigationListener);
         //========================================================================================
 
+        //experiment:
 //        createNotification(this);
 
         //========================================================================================
@@ -595,9 +596,9 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.switchIdleShowCurrentTime:
                 showCurrentTime = ((Switch) view).isChecked();
-                if (showCurrentTime && null == updateTimeTask) {
-                    updateTimeTask = new UpdateTimeTask();
-                    timer.schedule(updateTimeTask, 1000, 1000);
+                if (showCurrentTime && null == currentTimeTask) {
+                    currentTimeTask = new CurrentTimeTask();
+                    timer.schedule(currentTimeTask, 1000, 1000);
                 }
                 break;
 
