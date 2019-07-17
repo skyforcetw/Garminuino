@@ -34,7 +34,7 @@ public class LocationService extends Service implements
     private static final long FASTEST_INTERVAL = 200 * 1;
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
-//    Location mCurrentLocation, lStart, lEnd; //seems no function
+    //    Location mCurrentLocation, lStart, lEnd; //seems no function
 //    private static double distance = 0;
     public static double speed;
     private GarminHUD garminHud;
@@ -115,8 +115,9 @@ public class LocationService extends Service implements
     @Override
     public void onConnectionSuspended(int cause) {
         if (cause == CAUSE_NETWORK_LOST) { // not tested
-            if (null != garminHud)
+            if (null != garminHud) {
                 setSpeed((int) speed, false);
+            }
         }
     }
 
@@ -180,18 +181,22 @@ public class LocationService extends Service implements
 
 
     private void setSpeed(int nSpeed, boolean bIcon) {
-        if (isOnNavigating) {
-            garminHud.SetSpeed(nSpeed, bIcon);
-        } else {
-            garminHud.SetDistance(nSpeed, eUnits.None);
+        if (null != garminHud) {
+            if (isOnNavigating) {
+                garminHud.SetSpeed(nSpeed, bIcon);
+            } else {
+                garminHud.SetDistance(nSpeed, eUnits.None);
+            }
         }
     }
 
     private void clearSpeed() {
-        if (isOnNavigating) {
-            garminHud.ClearSpeedandWarning();
-        } else {
-            garminHud.ClearDistance();
+        if (null != garminHud) {
+            if (isOnNavigating) {
+                garminHud.ClearSpeedandWarning();
+            } else {
+                garminHud.ClearDistance();
+            }
         }
     }
 
@@ -217,10 +222,12 @@ public class LocationService extends Service implements
 
             if (prevIsOnNavigating != isOnNavigating) {
                 // Delete Speed in last line, when showing speed in distance line (when navigation finished)
-                if(!isOnNavigating) {
-                    garminHud.ClearSpeedandWarning();
-                }else {
-                    garminHud.ClearDistance();
+                if (null != garminHud) {
+                    if (!isOnNavigating) {
+                        garminHud.ClearSpeedandWarning();
+                    } else {
+                        garminHud.ClearDistance();
+                    }
                 }
             }
         }

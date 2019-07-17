@@ -790,7 +790,7 @@ public class NotificationMonitor extends NotificationListenerService {
             } else {
                 garminHud.ClearDistance();
             }
-            final boolean distanceSendResult = garminHud.getSendResult();
+            final boolean distanceSendResult = null != garminHud ? garminHud.getSendResult() : false;
             //===================================================================================
 
             //===================================================================================
@@ -804,8 +804,10 @@ public class NotificationMonitor extends NotificationListenerService {
                         boolean sameAsLast = arrivalHour == lastArrivalHour && arrivalMinute == lastArrivalMinute;
 
                         if (!sameAsLast) {
-                            garminHud.SetTime(arrivalHour, arrivalMinute, false);
-                            timeSendResult = garminHud.getSendResult();
+                            if (null != garminHud) {
+                                garminHud.SetTime(arrivalHour, arrivalMinute, false);
+                            }
+                            timeSendResult = (null != garminHud) ? garminHud.getSendResult() : false;
                             lastArrivalMinute = arrivalMinute;
                             lastArrivalHour = arrivalHour;
                         }
@@ -820,8 +822,10 @@ public class NotificationMonitor extends NotificationListenerService {
                     sameAsLast = false;
                     if (!sameAsLast) {
 //                        garminHud.SetRemainTime(hh, mm);
-                        garminHud.SetTime(hh, mm, true);
-                        timeSendResult = garminHud.getSendResult();
+                        if (null != garminHud) {
+                            garminHud.SetTime(hh, mm, true);
+                        }
+                        timeSendResult = (null != garminHud) ? garminHud.getSendResult() : false;
                         lastRemainMinute = remainMinute;
                         lastRemainHour = remainHour;
                     }
@@ -836,7 +840,7 @@ public class NotificationMonitor extends NotificationListenerService {
             // if same as last arrow, should be process, because GARMIN Hud will erase the arrow without data receive during sometime..
             //===================================================================================
             processArrow(foundArrow);
-            final boolean arrowSendResult = garminHud.getSendResult();
+            final boolean arrowSendResult = (null != garminHud) ? garminHud.getSendResult() : false;
             //===================================================================================
 
             String sendResultInfo = "dist: " + (distanceSendResult ? '1' : '0')
