@@ -625,6 +625,7 @@ public class MainActivity extends AppCompatActivity {
                 useLocationService = true;
             }
         } else {
+            //do not show speed
             if (true == locationServiceConnected) {
                 unbindLocationService();
             }

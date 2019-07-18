@@ -209,12 +209,13 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private void addStringExtra(String key, String string) {
         checkIntentForExtra();
-        intent2Main.putExtra(string, string);
+        intent2Main.putExtra(key, string);
     }
 
     private void sendIntent2MainActivity() {
         if (null != intent2Main) {
             sendBroadcast(intent2Main);
+            intent2Main = null;
         }
     }
 
@@ -401,10 +402,9 @@ public class NotificationMonitor extends NotificationListenerService {
                 " " + (null == remainHour ? 00 : remainHour) + ":" + remainMinute + " " + remainDistance + remainDistanceUnit + " " + arrivalHour + ":" + arrivalMinute
                 + " (period: " + notifyPeriodTime + ")";
         logi(notifyMessage);
-//        sendStringExtra2MainActivity(getString(R.string.notify_msg), notifyMessage);
+
         addStringExtra(getString(R.string.notify_msg), notifyMessage);
         if (Arrow.Arrivals == foundArrow || Arrow.ArrivalsLeft == foundArrow || Arrow.ArrivalsRight == foundArrow) {
-//            sendBooleanExtra2MainActivity(getString(R.string.arrivals_msg), true);
             addBooleanExtra(getString(R.string.arrivals_msg), true);
         }
         sendIntent2MainActivity();
@@ -766,89 +766,94 @@ public class NotificationMonitor extends NotificationListenerService {
     private String lastRemainHour = null, lastRemainMinute = null;
 
     private void updateGaminHudInformation() {
-        if (null != garminHud) {
-            //===================================================================================
-            // distance
-            //===================================================================================
-            if (null != distanceNum && null != distanceUnit) {
-                float float_distance = Float.parseFloat(distanceNum);
-                eUnits units = get_eUnits(distanceUnit);
 
-                int int_distance = (int) float_distance;
-                boolean decimal = ((eUnits.Kilometres == units) || (eUnits.Miles == units)) && float_distance < 10;
+        //===================================================================================
+        // distance
+        //===================================================================================
+        if (null != distanceNum && null != distanceUnit) {
+            float float_distance = Float.parseFloat(distanceNum);
+            eUnits units = get_eUnits(distanceUnit);
 
-                if (decimal) { //with floating point
-                    int_distance = (int) (float_distance * 10);
-                }
+            int int_distance = (int) float_distance;
+            boolean decimal = ((eUnits.Kilometres == units) || (eUnits.Miles == units)) && float_distance < 10;
 
+            if (decimal) { //with floating point
+                int_distance = (int) (float_distance * 10);
+            }
+
+            if (null != garminHud) {
                 if (-1 != int_distance) {
                     garminHud.SetDistance(int_distance, units, decimal, false);
                 } else {
                     garminHud.ClearDistance();
                 }
+            }
 
-            } else {
+        } else {
+            if (null != garminHud) {
                 garminHud.ClearDistance();
             }
-            final boolean distanceSendResult = null != garminHud ? garminHud.getSendResult() : false;
-            //===================================================================================
+        }
 
-            //===================================================================================
-            // time
-            //===================================================================================
-            boolean timeSendResult = false;
+        final boolean distanceSendResult = null != garminHud ? garminHud.getSendResult() : false;
+        //===================================================================================
 
-            if (null != remainMinute) {
-                if (showETA) { //show ETA
-                    if (arrivalHour != -1 && arrivalMinute != -1) {
-                        boolean sameAsLast = arrivalHour == lastArrivalHour && arrivalMinute == lastArrivalMinute;
+        //===================================================================================
+        // time
+        //===================================================================================
+        boolean timeSendResult = false;
 
-                        if (!sameAsLast) {
-                            if (null != garminHud) {
-                                garminHud.SetTime(arrivalHour, arrivalMinute, false);
-                            }
-                            timeSendResult = (null != garminHud) ? garminHud.getSendResult() : false;
-                            lastArrivalMinute = arrivalMinute;
-                            lastArrivalHour = arrivalHour;
-                        }
-                    }
-                } else { //show remain time
-                    int hh = null != remainHour ? Integer.parseInt(remainHour) : 0;
-                    int mm = Integer.parseInt(remainMinute);
+        if (null != remainMinute) {
+            if (showETA) { //show ETA
+                if (arrivalHour != -1 && arrivalMinute != -1) {
+                    boolean sameAsLast = arrivalHour == lastArrivalHour && arrivalMinute == lastArrivalMinute;
 
-                    boolean sameAsLast = null == remainHour ?
-                            remainMinute.equals(lastRemainMinute) : remainMinute.equals(lastRemainMinute) && remainHour.equals(lastRemainHour);
-                    //need to verify the necessary of check same as last.
-                    sameAsLast = false;
                     if (!sameAsLast) {
-//                        garminHud.SetRemainTime(hh, mm);
                         if (null != garminHud) {
-                            garminHud.SetTime(hh, mm, true);
+                            garminHud.SetTime(arrivalHour, arrivalMinute, false);
                         }
                         timeSendResult = (null != garminHud) ? garminHud.getSendResult() : false;
-                        lastRemainMinute = remainMinute;
-                        lastRemainHour = remainHour;
+                        lastArrivalMinute = arrivalMinute;
+                        lastArrivalHour = arrivalHour;
                     }
                 }
-            } else {
+            } else { //show remain time
+                int hh = null != remainHour ? Integer.parseInt(remainHour) : 0;
+                int mm = Integer.parseInt(remainMinute);
 
+                boolean sameAsLast = null == remainHour ?
+                        remainMinute.equals(lastRemainMinute) : remainMinute.equals(lastRemainMinute) && remainHour.equals(lastRemainHour);
+
+                //need to verify the necessary of check same as last.
+                sameAsLast = false;
+                if (!sameAsLast) {
+//                        garminHud.SetRemainTime(hh, mm);
+                    if (null != garminHud) {
+                        garminHud.SetTime(hh, mm, true);
+                    }
+                    timeSendResult = (null != garminHud) ? garminHud.getSendResult() : false;
+                    lastRemainMinute = remainMinute;
+                    lastRemainHour = remainHour;
+                }
             }
-            //===================================================================================
-
-            //===================================================================================
-            // arrow
-            // if same as last arrow, should be process, because GARMIN Hud will erase the arrow without data receive during sometime..
-            //===================================================================================
-            processArrow(foundArrow);
-            final boolean arrowSendResult = (null != garminHud) ? garminHud.getSendResult() : false;
-            //===================================================================================
-
-            String sendResultInfo = "dist: " + (distanceSendResult ? '1' : '0')
-                    + " time: " + (timeSendResult ? '1' : '0')
-                    + " arrow: " + (arrowSendResult ? '1' : '0');
-            logi(sendResultInfo);
+        } else {
 
         }
+        //===================================================================================
+
+        //===================================================================================
+        // arrow
+        // if same as last arrow, should be process, because GARMIN Hud will erase the arrow without data receive during sometime..
+        //===================================================================================
+        processArrow(foundArrow);
+        final boolean arrowSendResult = (null != garminHud) ? garminHud.getSendResult() : false;
+        //===================================================================================
+
+        String sendResultInfo = "dist: " + (distanceSendResult ? '1' : '0')
+                + " time: " + (timeSendResult ? '1' : '0')
+                + " arrow: " + (arrowSendResult ? '1' : '0');
+        logi(sendResultInfo);
+
     }
 
     private void parseTimeAndDistanceToDest(String timeDistanceStirng) {

@@ -183,7 +183,7 @@ public class LocationService extends Service implements
 
     private void setSpeed(int nSpeed, boolean bIcon) {
         if (null != garminHud) {
-            if (isOnNavigating) {
+            if (isInNavigating) {
                 garminHud.SetSpeed(nSpeed, bIcon);
             } else {
                 garminHud.SetDistance(nSpeed, eUnits.None);
@@ -193,7 +193,7 @@ public class LocationService extends Service implements
 
     private void clearSpeed() {
         if (null != garminHud) {
-            if (isOnNavigating) {
+            if (isInNavigating) {
                 garminHud.ClearSpeedandWarning();
             } else {
                 garminHud.ClearDistance();
@@ -213,24 +213,33 @@ public class LocationService extends Service implements
     }
 
     private MsgReceiver msgReceiver;
-    private boolean isOnNavigating = false;
+    private boolean isInNavigating = false;
+    private boolean navigatingConfirmed = false;
 
     private class MsgReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            boolean prevIsOnNavigating = isOnNavigating;
-            isOnNavigating = intent.getBooleanExtra(getString(R.string.is_in_navigation), isOnNavigating);
+            boolean has_in_navigation = intent.hasExtra(getString(R.string.is_in_navigation));
+            if (has_in_navigation) {
+                navigatingConfirmed = true;
+            }
 
-            if (prevIsOnNavigating != isOnNavigating) {
+            boolean prevIsInNavigating = isInNavigating;
+            isInNavigating = intent.getBooleanExtra(getString(R.string.is_in_navigation), isInNavigating);
+
+            //works only after navigation confirmed
+            if (navigatingConfirmed && prevIsInNavigating != isInNavigating) {
                 // Delete Speed in last line, when showing speed in distance line (when navigation finished)
                 if (null != garminHud) {
-                    //original is not logic, different with other, curious!
-                    //change to no not logic to try.
-                    //if (!isOnNavigating) { //original
-                    if (isOnNavigating) {
-                        garminHud.ClearSpeedandWarning();
-                    } else {
+                    /**
+                     * original is "not logic", different with others, curious!
+                     * change to no not logic to try.
+                     */
+                    //if (!isInNavigating) { //original
+                    if (isInNavigating) { // from no navigating to navigating
                         garminHud.ClearDistance();
+                    } else { // from  navigating to no navigating
+                        garminHud.ClearSpeedandWarning();
                     }
                 }
             }
