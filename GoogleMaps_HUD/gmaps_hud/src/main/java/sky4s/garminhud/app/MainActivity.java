@@ -55,6 +55,9 @@ import chutka.bitman.com.speedometersimplified.LocationService;
 import sky4s.garminhud.Arrow;
 import sky4s.garminhud.GarminHUD;
 import sky4s.garminhud.eOutAngle;
+import sky4s.garminhud.eUnits;
+import sky4s.garminhud.hud.DummyHUD;
+import sky4s.garminhud.hud.HUDInterface;
 
 public class MainActivity extends AppCompatActivity {
     //for test with virtual device which no BT device
@@ -92,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private BluetoothSPP bt;
-    private GarminHUD garminHud;
+    private HUDInterface hud = new DummyHUD();
     private NotificationManager manager;
 
     private void sendBooleanExtraByBroadcast(String receiver, String key, boolean b) {
@@ -103,16 +106,61 @@ public class MainActivity extends AppCompatActivity {
 
     private MsgReceiver msgReceiver;
     private boolean lastReallyInNavigation = false;
+    private boolean is_in_navigation = false;
+
+    private void setSpeed(int nSpeed, boolean bIcon) {
+        if (null != hud) {
+            if (is_in_navigation) {
+                hud.SetSpeed(nSpeed, bIcon);
+            } else {
+                hud.SetDistance(nSpeed, eUnits.None);
+            }
+        }
+    }
+
+    private void clearSpeed() {
+        if (null != hud) {
+            if (is_in_navigation) {
+                hud.ClearSpeedandWarning();
+            } else {
+                hud.ClearDistance();
+            }
+        }
+    }
 
     private class MsgReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.hasExtra(getString(R.string.notify_msg))) {
+            String whoami = intent.getStringExtra(getString(R.string.whoami)); //for debug
+
+            //=======================================================================
+            // for debug message
+            //=======================================================================
+            boolean has_notify_msg = intent.hasExtra(getString(R.string.notify_msg));
+            if (has_notify_msg) {
                 String notify_msg = intent.getStringExtra(getString(R.string.notify_msg));
-                textViewDebug.setText(notify_msg);
+                CharSequence orignal_text = textViewDebug.getText();
+                orignal_text = orignal_text.length() > 1000 ? "" : orignal_text;
+                textViewDebug.setText(notify_msg + "\n\n" + orignal_text);
+//                int line_height = textViewDebug.getLineHeight();
                 return;
             }
 
+            //=======================================================================
+            boolean has_gps_speed = intent.hasExtra(getString(R.string.gps_speed));
+            if (has_gps_speed) {
+                double speed = intent.getDoubleExtra(getString(R.string.gps_speed), 0);
+                int int_speed = (int) Math.round(speed);
+                setSpeed(int_speed, true);
+
+                CharSequence orignal_text = textViewDebug.getText();
+                textViewDebug.setText("speed: " + int_speed + "\n\n" + orignal_text);
+
+                return;
+            }
+            //=======================================================================
+            // for UI usage
+            //=======================================================================
             boolean notify_parse_failed = intent.getBooleanExtra(getString(R.string.notify_parse_failed), false);
 
             if (notify_parse_failed) {
@@ -128,7 +176,8 @@ public class MainActivity extends AppCompatActivity {
                 final boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched),
                         null != switchGmapsNotificationCaught ? switchGmapsNotificationCaught.isChecked() : false);
 
-                final boolean is_in_navigation = intent.getBooleanExtra(getString(R.string.is_in_navigation), false);
+
+                final boolean is_in_navigation_now = intent.getBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
 
                 if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
                     if (!notify_catched) { //no notify catched
@@ -136,22 +185,22 @@ public class MainActivity extends AppCompatActivity {
                         switchGmapsNotificationCaught.setChecked(false);
                     } else {
                         switchNotificationCaught.setChecked(notify_catched);
-//                        if (!gmaps_notify_catched) {
-//                            Intent launchIntent = getPackageManager().getLaunchIntentForPackage(NotificationMonitor.GOOGLE_MAPS_PACKAGE_NAME);
-//                            if (launchIntent != null) {
-//                                startActivity(launchIntent);//null pointer check in case package name was not found
-//                            }
-//                        }
-                        final boolean is_really_in_navigation = gmaps_notify_catched && is_in_navigation;
+                        final boolean is_really_in_navigation = gmaps_notify_catched && is_in_navigation_now;
                         switchGmapsNotificationCaught.setChecked(is_really_in_navigation);
-                        if (lastReallyInNavigation != is_really_in_navigation && null != garminHud) {
-                            garminHud.SetDirection(eOutAngle.AsDirection);
+
+                        if (lastReallyInNavigation != is_really_in_navigation &&
+                                false == is_really_in_navigation &&
+                                null != hud) {
+                            //exit navigation
+                            hud.SetDirection(eOutAngle.AsDirection); //maybe in this line
                         }
+                        is_in_navigation = is_really_in_navigation;
                         lastReallyInNavigation = is_really_in_navigation;
                     }
                 }
 
-                sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_location_service), getString(R.string.is_in_navigation), isInNavigation());
+                //for location usage
+//                sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_location_service), getString(R.string.is_in_navigation), isInNavigation());
             }
 
         }
@@ -182,11 +231,11 @@ public class MainActivity extends AppCompatActivity {
 
     private class CurrentTimeTask extends TimerTask {
         public void run() {
-            if (null != garminHud && !isInNavigation() && showCurrentTime) {
+            if (null != hud && !isInNavigation() && showCurrentTime) {
                 Calendar c = Calendar.getInstance();
                 int hour = c.get(Calendar.HOUR_OF_DAY);
                 int minute = c.get(Calendar.MINUTE);
-                garminHud.SetTime(hour, minute, false, false);
+                hud.SetTime(hour, minute, false, false);
             }
         }
     }
@@ -281,6 +330,7 @@ public class MainActivity extends AppCompatActivity {
         // and when the ViewPager switches to a new page, the corresponding tab is selected)
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(mViewPager);
+        //========================================================================================
 
 
         startService(new Intent(this, NotificationCollectorMonitorService.class));
@@ -294,18 +344,18 @@ public class MainActivity extends AppCompatActivity {
             bt = new BluetoothSPP(this);
             bt.setBluetoothConnectionListener(btConnectionListener);
             bt.setAutoConnectionListener(btConnectionListener);
-            garminHud = new GarminHUD(bt);
             if (!bt.isBluetoothAvailable()) {
                 Toast.makeText(getApplicationContext()
                         , "Bluetooth is not available"
                         , Toast.LENGTH_SHORT).show();
                 finish();
             }
+            hud = new GarminHUD(bt);
 
             String bt_bind_name = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
 
             if (null != bt_bind_name) {
-                if (!bt.isBluetoothEnabled()) {
+                if (!bt.isBluetoothEnabled()) { //bt cannot work
                     Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
                 } else {
@@ -316,7 +366,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-
 
 
         } else {
@@ -334,7 +383,6 @@ public class MainActivity extends AppCompatActivity {
 
         String title = actionBar.getTitle() + " v" + versionName;// + " (b" + versionCode + ")" + bt_status;
         actionBar.setTitle(title);
-
         //========================================================================================
 
         //========================================================================================
@@ -350,9 +398,6 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(navigationListener);
         //========================================================================================
 
-        //experiment:
-//        createNotification(this);
-
         //========================================================================================
         // messageer
         //========================================================================================
@@ -367,6 +412,9 @@ public class MainActivity extends AppCompatActivity {
         screenReceiver = new ScreenReceiver();
         registerReceiver(screenReceiver, filter);
         //========================================================================================
+
+        //experiment:
+//        createNotification(this);
     }
 
     private boolean garminHudConnected;
@@ -396,19 +444,19 @@ public class MainActivity extends AppCompatActivity {
             switchHudConnected.setTextColor(Color.BLACK);
             switchHudConnected.setChecked(true);
 
-            NotificationMonitor.garminHud = garminHud;
+            NotificationMonitor.hud = hud;
             log("onDeviceConnected");
 
             if (useLocationService && !locationServiceConnected) {
                 bindLocationService();
             }
 
-            if (null != garminHud) {
+            if (null != hud) {
                 if (switchAutoBrightness.isChecked()) {
-                    garminHud.SetAutoBrightness();
+                    hud.SetAutoBrightness();
                 } else {
                     final int brightness = getGammaBrightness();
-                    garminHud.SetBrightness(brightness);
+                    hud.SetBrightness(brightness);
                 }
             }
 
@@ -424,7 +472,7 @@ public class MainActivity extends AppCompatActivity {
             switchHudConnected.setText("HUD disconnected");
             switchHudConnected.setTextColor(Color.RED);
             switchHudConnected.setChecked(false);
-            NotificationMonitor.garminHud = null;
+            NotificationMonitor.hud = null;
             log("onDeviceDisconnected");
         }
 
@@ -433,7 +481,7 @@ public class MainActivity extends AppCompatActivity {
             switchHudConnected.setText("HUD connect failed");
             switchHudConnected.setTextColor(Color.RED);
             switchHudConnected.setChecked(false);
-            NotificationMonitor.garminHud = null;
+            NotificationMonitor.hud = null;
             log("onDeviceConnectionFailed");
         }
     }
@@ -501,9 +549,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             switchAutoBrightness.setText("Brightness " + (progress * 10) + "%");
-            if (null != garminHud) {
+            if (null != hud) {
                 int brightness = getGammaBrightness();
-                garminHud.SetBrightness(brightness);
+                hud.SetBrightness(brightness);
             }
         }
 
@@ -559,6 +607,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
 
+            case R.id.btnResetBT:
+                log("Reset Bluetooth...");
+                break;
+
             case R.id.switchShowSpeed:
                 final boolean canShowSpeed = showSpeed(((Switch) view).isChecked());
                 if (!canShowSpeed) {
@@ -576,12 +628,12 @@ public class MainActivity extends AppCompatActivity {
                 seekBarBrightness.setEnabled(!autoBrightness);
                 seekBarBrightness.setOnSeekBarChangeListener(seekbarChangeListener);
 
-                if (null != garminHud) {
+                if (null != hud) {
                     if (autoBrightness) {
-                        garminHud.SetAutoBrightness();
+                        hud.SetAutoBrightness();
                     } else {
                         final int brightness = getGammaBrightness();
-                        garminHud.SetBrightness(brightness);
+                        hud.SetBrightness(brightness);
                     }
                 }
                 break;
@@ -619,7 +671,7 @@ public class MainActivity extends AppCompatActivity {
             if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 return false;
             }
-            if (false == locationServiceConnected && null != garminHud) {
+            if (false == locationServiceConnected) {
                 //Here, the Location Service gets bound and the GPS Speedometer gets Active.
                 bindLocationService();
                 useLocationService = true;
@@ -629,12 +681,12 @@ public class MainActivity extends AppCompatActivity {
             if (true == locationServiceConnected) {
                 unbindLocationService();
             }
-            if (null != garminHud) {
+            if (null != hud) {
                 //clear according to navigate status
                 if (isInNavigation()) {
-                    garminHud.ClearSpeedandWarning();
+                    hud.ClearSpeedandWarning();
                 } else {
-                    garminHud.ClearDistance();
+                    hud.ClearDistance();
                 }
             }
             useLocationService = false;
@@ -739,7 +791,8 @@ public class MainActivity extends AppCompatActivity {
                 result = String.format(getResources().getQuantityString(R.plurals.active_notification_count_nonzero, n, n));
             }
             result = result + "\n" + getCurrentNotificationString();
-            textViewDebug.setText(result);
+            CharSequence text = textViewDebug.getText();
+            textViewDebug.setText(result + "\n\n" + text);
         } else {
             textViewDebug.setTextColor(Color.RED);
             textViewDebug.setText("Please Enable Notification Access");
@@ -806,7 +859,7 @@ public class MainActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
             locationService = binder.getService();
-            locationService.setGarminHUD(garminHud);
+//            locationService.hud = hud;
             locationServiceConnected = true;
         }
 

@@ -17,10 +17,10 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import sky4s.garminhud.GarminHUD;
 import sky4s.garminhud.app.NotificationMonitor;
 import sky4s.garminhud.app.R;
 import sky4s.garminhud.eUnits;
+import sky4s.garminhud.hud.HUDInterface;
 
 /**
  * Created by vipul on 12/13/2015.
@@ -34,14 +34,9 @@ public class LocationService extends Service implements
     private static final long FASTEST_INTERVAL = 200 * 1;
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
-    //    Location mCurrentLocation, lStart, lEnd; //seems no function
-//    private static double distance = 0;
-    public static double speed;
-    private GarminHUD garminHud;
 
-    public void setGarminHUD(GarminHUD hud) {
-        this.garminHud = hud;
-    }
+    public static double speed;
+//    public static HUDInterface hud;
 
     private final IBinder mBinder = new LocalBinder();
 
@@ -67,17 +62,17 @@ public class LocationService extends Service implements
         //========================================================================================
         // messageer
         //========================================================================================
-        msgReceiver = new MsgReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(getString(R.string.broadcast_receiver_location_service));
-        registerReceiver(msgReceiver, intentFilter);
+//        msgReceiver = new MsgReceiver();
+//        IntentFilter intentFilter = new IntentFilter();
+//        intentFilter.addAction(getString(R.string.broadcast_receiver_location_service));
+//        registerReceiver(msgReceiver, intentFilter);
         //========================================================================================
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(msgReceiver);
+//        unregisterReceiver(msgReceiver);
     }
 
     protected void createLocationRequest() {
@@ -115,15 +110,23 @@ public class LocationService extends Service implements
     @Override
     public void onConnectionSuspended(int cause) {
         if (cause == CAUSE_NETWORK_LOST) { // not tested
-            if (null != garminHud) {
-                setSpeed((int) speed, false);
-            }
+//            if (null != hud) {
+//                setSpeed((int) speed, false);
+//            }
         }
     }
 
-    private void sendLocationExtraByBroadcast(String receiver, String key, Location location) {
-        Intent intent = new Intent(receiver);
+    private void sendLocationExtraByBroadcast(String key, Location location) {
+        Intent intent = new Intent(getString(R.string.broadcast_receiver_main_activity));
+        intent.putExtra(getString(R.string.whoami), getString(R.string.broadcast_sender_location_service));
         intent.putExtra(key, location);
+        sendBroadcast(intent);
+    }
+
+    private void sendSpeedExtraByBroadcast(double speed) {
+        Intent intent = new Intent(getString(R.string.broadcast_receiver_main_activity));
+        intent.putExtra(getString(R.string.whoami), getString(R.string.broadcast_sender_location_service));
+        intent.putExtra(getString(R.string.gps_speed), speed);
         sendBroadcast(intent);
     }
 
@@ -142,9 +145,10 @@ public class LocationService extends Service implements
         } else if (eUnits.Miles == NotificationMonitor.getCurrentUnit()) {
             speed = location.getSpeed() * 2236 / 1000;
         }
+        sendSpeedExtraByBroadcast(speed);
 
         //Calling the method below updates the  live values of distance and speed to the TextViews.
-        updateHUD();
+//        updateHUD();
 
         //send lat/lon for recognize history
 //        sendLocationExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor), getString(R.string.location), location);
@@ -168,37 +172,37 @@ public class LocationService extends Service implements
     }
 
     //The live feed of Distance and Speed are being set in the method below .
-    private void updateHUD() {
-        if (null == garminHud)
-            return;
-        if (speed >= 0.0) {
-            setSpeed((int) speed, true);
-        } else {
-            clearSpeed();
-        }
+//    private void updateHUD() {
+//        if (null == hud)
+//            return;
+//        if (speed >= 0.0) {
+//            setSpeed((int) speed, true);
+//        } else {
+//            clearSpeed();
+//        }
 
 //        lStart = lEnd;
-    }
+//    }
 
 
     private void setSpeed(int nSpeed, boolean bIcon) {
-        if (null != garminHud) {
-            if (isInNavigating) {
-                garminHud.SetSpeed(nSpeed, bIcon);
-            } else {
-                garminHud.SetDistance(nSpeed, eUnits.None);
-            }
-        }
+//        if (null != hud) {
+//            if (isInNavigating) {
+//                hud.SetSpeed(nSpeed, bIcon);
+//            } else {
+//                hud.SetDistance(nSpeed, eUnits.None);
+//            }
+//        }
     }
 
     private void clearSpeed() {
-        if (null != garminHud) {
-            if (isInNavigating) {
-                garminHud.ClearSpeedandWarning();
-            } else {
-                garminHud.ClearDistance();
-            }
-        }
+//        if (null != hud) {
+//            if (isInNavigating) {
+//                hud.ClearSpeedandWarning();
+//            } else {
+//                hud.ClearDistance();
+//            }
+//        }
     }
 
     @Override
@@ -212,38 +216,34 @@ public class LocationService extends Service implements
         return super.onUnbind(intent);
     }
 
-    private MsgReceiver msgReceiver;
-    private boolean isInNavigating = false;
-    private boolean navigatingConfirmed = false;
+//    private MsgReceiver msgReceiver;
+//    private boolean isInNavigating = false;
+//    private boolean navigatingConfirmed = false;
 
-    private class MsgReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            boolean has_in_navigation = intent.hasExtra(getString(R.string.is_in_navigation));
-            if (has_in_navigation) {
-                navigatingConfirmed = true;
-            }
-
-            boolean prevIsInNavigating = isInNavigating;
-            isInNavigating = intent.getBooleanExtra(getString(R.string.is_in_navigation), isInNavigating);
-
-            //works only after navigation confirmed
-            if (navigatingConfirmed && prevIsInNavigating != isInNavigating) {
-                // Delete Speed in last line, when showing speed in distance line (when navigation finished)
-                if (null != garminHud) {
-                    /**
-                     * original is "not logic", different with others, curious!
-                     * change to no not logic to try.
-                     */
-                    //if (!isInNavigating) { //original
-                    if (isInNavigating) { // from no navigating to navigating
-                        garminHud.ClearDistance();
-                    } else { // from  navigating to no navigating
-                        garminHud.ClearSpeedandWarning();
-                    }
-                }
-            }
-        }
-    }
+//    private class MsgReceiver extends BroadcastReceiver {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            boolean has_in_navigation = intent.hasExtra(getString(R.string.is_in_navigation));
+//            boolean prevIsInNavigating = isInNavigating;
+//            isInNavigating = intent.getBooleanExtra(getString(R.string.is_in_navigation), isInNavigating);
+//
+//            //works only after navigation confirmed
+//            if (has_in_navigation && prevIsInNavigating != isInNavigating) {
+//                // Delete Speed in last line, when showing speed in distance line (when navigation finished)
+////                if (null != hud) {
+////                    /**
+////                     * original is "not logic", different with others, curious!
+////                     * change to no not logic to try.
+////                     */
+////                    //if (!isInNavigating) { //original
+////                    if (isInNavigating) { // from no navigating to navigating
+////                        hud.ClearDistance();
+////                    } else { // from  navigating to no navigating
+////                        hud.ClearSpeedandWarning();
+////                    }
+////                }
+//            }
+//        }
+//    }
 }
 

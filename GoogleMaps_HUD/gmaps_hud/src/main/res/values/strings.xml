@@ -39,7 +39,12 @@
     <!--broadcast receiver-->
     <string name="broadcast_receiver_main_activity" translatable="false">sky4s.garminhud.app.MainActivity.RECEIVER</string>
     <string name="broadcast_receiver_notification_monitor" translatable="false">sky4s.garminhud.app.NotificationMonitor.RECEIVER</string>
-    <string name="broadcast_receiver_location_service" translatable="false">chutka.bitman.com.speedometersimplified.LocationService.RECEIVER</string>
+    <!--<string name="broadcast_receiver_location_service" translatable="false">chutka.bitman.com.speedometersimplified.LocationService.RECEIVER</string>-->
+
+    <!--broadcast sender-->
+    <string name="whoami" translatable="false">who_am_i</string>
+    <string name="broadcast_sender_notification_monitor" translatable="false">notification_monitor.SENDER</string>
+    <string name="broadcast_sender_location_service" translatable="false">location_service.SENDER</string>
 
     <!--broadcast keys-->
     <string name="notify_catched" translatable="false">notify_catched</string>
@@ -48,7 +53,10 @@
     <string name="notify_msg" translatable="false">notify_msg</string>
     <string name="is_in_navigation" translatable="false">is_in_navigation</string>
     <string name="location" translatable="false">location</string>
+    <string name="gps_speed" translatable="false">gps_speed</string>
     <string name="arrivals_msg" translatable="false">arrivals_msg</string>
+
+
 
     <!--Prompt-->
     <string name="prompt_switch_hud_connected">This indicates the connection status of GARMIN HUD.</string>

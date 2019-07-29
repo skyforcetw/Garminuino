@@ -36,10 +36,10 @@ import java.util.List;
 
 import sky4s.garminhud.Arrow;
 import sky4s.garminhud.ArrowImage;
-import sky4s.garminhud.GarminHUD;
 import sky4s.garminhud.eOutAngle;
 import sky4s.garminhud.eOutType;
 import sky4s.garminhud.eUnits;
+import sky4s.garminhud.hud.HUDInterface;
 
 
 public class NotificationMonitor extends NotificationListenerService {
@@ -63,7 +63,7 @@ public class NotificationMonitor extends NotificationListenerService {
     private CancelNotificationReceiver mReceiver = new CancelNotificationReceiver();
 
     //    public static BluetoothSPP bt = null;
-    static GarminHUD garminHud = null;
+    static HUDInterface hud = null;
     private RecognizeDBHelper dbHelper = null;
 
     private void openDB() {
@@ -214,6 +214,8 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private void sendIntent2MainActivity() {
         if (null != intent2Main) {
+            addStringExtra(getString(R.string.whoami), getString(R.string.broadcast_sender_notification_monitor));
+            addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
             sendBroadcast(intent2Main);
             intent2Main = null;
         }
@@ -267,7 +269,7 @@ public class NotificationMonitor extends NotificationListenerService {
         } else {
             addBooleanExtra(getString(R.string.notify_parse_failed), false);
             addBooleanExtra(getString(R.string.gmaps_notify_catched), true);
-            addBooleanExtra(getString(R.string.is_in_navigation), isInNavigation);
+            //addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
             sendIntent2MainActivity();
         }
     }
@@ -403,14 +405,17 @@ public class NotificationMonitor extends NotificationListenerService {
                 + " (period: " + notifyPeriodTime + ")";
         logi(notifyMessage);
 
-        addStringExtra(getString(R.string.notify_msg), notifyMessage);
-        if (Arrow.Arrivals == foundArrow || Arrow.ArrivalsLeft == foundArrow || Arrow.ArrivalsRight == foundArrow) {
-            addBooleanExtra(getString(R.string.arrivals_msg), true);
+        boolean output_parse_message_to_ui = true;
+        if(output_parse_message_to_ui) {
+            addStringExtra(getString(R.string.notify_msg), notifyMessage);
+            if (Arrow.Arrivals == foundArrow || Arrow.ArrivalsLeft == foundArrow || Arrow.ArrivalsRight == foundArrow) {
+                addBooleanExtra(getString(R.string.arrivals_msg), true);
+            }
+            sendIntent2MainActivity();
         }
-        sendIntent2MainActivity();
     }
 
-    private boolean isInNavigation = false;
+    private boolean is_in_navigation = false;
 
     private boolean parseNotificationByExtras(Notification notification) {
         if (null == notification) {
@@ -483,9 +488,9 @@ public class NotificationMonitor extends NotificationListenerService {
                 }
                 logParseMessage();
                 updateGaminHudInformation();
-                isInNavigation = true;
+                is_in_navigation = true;
             } else {
-                isInNavigation = false;
+                is_in_navigation = false;
             }
             return true;
         } else {
@@ -625,7 +630,7 @@ public class NotificationMonitor extends NotificationListenerService {
     private Arrow preArrow = Arrow.None;
 
     void processArrow(Arrow arrow) {
-        if (null == garminHud) {
+        if (null == hud) {
             return;
         }
         if (preArrow == arrow) {
@@ -635,130 +640,130 @@ public class NotificationMonitor extends NotificationListenerService {
         }
         switch (arrow) {
             case Arrivals:
-                garminHud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
+                hud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
                 break;
             case ArrivalsLeft:
-                garminHud.SetDirection(eOutAngle.Left, eOutType.RightFlag, eOutAngle.AsDirection);
+                hud.SetDirection(eOutAngle.Left, eOutType.RightFlag, eOutAngle.AsDirection);
                 break;
             case ArrivalsRight:
-                garminHud.SetDirection(eOutAngle.Right, eOutType.RightFlag, eOutAngle.AsDirection);
+                hud.SetDirection(eOutAngle.Right, eOutType.RightFlag, eOutAngle.AsDirection);
                 break;
 
             case EasyLeft:
             case KeepLeft:
-                garminHud.SetDirection(eOutAngle.EasyLeft);
+                hud.SetDirection(eOutAngle.EasyLeft);
                 break;
 
             case EasyRight:
             case KeepRight:
-                garminHud.SetDirection(eOutAngle.EasyRight);
+                hud.SetDirection(eOutAngle.EasyRight);
                 break;
             case GoTo:
-                garminHud.SetDirection(eOutAngle.Straight);
+                hud.SetDirection(eOutAngle.Straight);
                 break;
 
             case LeaveRoundabout://1 checked
-                garminHud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
+                hud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
                 break;
 
             case LeaveRoundaboutAsUTurn:
-                garminHud.SetDirection(eOutAngle.Down, eOutType.LeftRoundabout, eOutAngle.Down);
+                hud.SetDirection(eOutAngle.Down, eOutType.LeftRoundabout, eOutAngle.Down);
                 break;
 
 
             case LeaveRoundaboutAsUTurnCC:
-                garminHud.SetDirection(eOutAngle.Down, eOutType.RightRoundabout, eOutAngle.Down);
+                hud.SetDirection(eOutAngle.Down, eOutType.RightRoundabout, eOutAngle.Down);
                 break;
 
 
             case LeaveRoundaboutEasyLeft://4 checked
-                garminHud.SetDirection(eOutAngle.EasyLeft, eOutType.LeftRoundabout, eOutAngle.EasyLeft);
+                hud.SetDirection(eOutAngle.EasyLeft, eOutType.LeftRoundabout, eOutAngle.EasyLeft);
                 break;
 
             case LeaveRoundaboutEasyLeftCC://5 checked
-                garminHud.SetDirection(eOutAngle.EasyLeft, eOutType.RightRoundabout, eOutAngle.EasyLeft);
+                hud.SetDirection(eOutAngle.EasyLeft, eOutType.RightRoundabout, eOutAngle.EasyLeft);
                 break;
 
             case LeaveRoundaboutEasyRight://6 checked
-                garminHud.SetDirection(eOutAngle.EasyRight, eOutType.LeftRoundabout, eOutAngle.EasyRight);
+                hud.SetDirection(eOutAngle.EasyRight, eOutType.LeftRoundabout, eOutAngle.EasyRight);
                 break;
             case LeaveRoundaboutEasyRightCC://7 checked
-                garminHud.SetDirection(eOutAngle.EasyRight, eOutType.RightRoundabout, eOutAngle.EasyRight);
+                hud.SetDirection(eOutAngle.EasyRight, eOutType.RightRoundabout, eOutAngle.EasyRight);
                 break;
 
             case LeaveRoundaboutCC://8 checked
-                garminHud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
+                hud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
                 break;
 
             case LeaveRoundaboutLeft://9 checked
-                garminHud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
+                hud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
                 break;
             case LeaveRoundaboutLeftCC://10 checked
-                garminHud.SetDirection(eOutAngle.Left, eOutType.RightRoundabout, eOutAngle.Left);
+                hud.SetDirection(eOutAngle.Left, eOutType.RightRoundabout, eOutAngle.Left);
                 break;
             case LeaveRoundaboutRight://11 checked
-                garminHud.SetDirection(eOutAngle.Right, eOutType.LeftRoundabout, eOutAngle.Right);
+                hud.SetDirection(eOutAngle.Right, eOutType.LeftRoundabout, eOutAngle.Right);
                 break;
             case LeaveRoundaboutRightCC://12 checked
-                garminHud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
+                hud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
                 break;
 
             case LeaveRoundaboutSharpLeft://13 checked
-                garminHud.SetDirection(eOutAngle.SharpLeft, eOutType.LeftRoundabout, eOutAngle.SharpLeft);
+                hud.SetDirection(eOutAngle.SharpLeft, eOutType.LeftRoundabout, eOutAngle.SharpLeft);
                 break;
             case LeaveRoundaboutSharpLeftCC://14 checked
-                garminHud.SetDirection(eOutAngle.SharpLeft, eOutType.RightRoundabout, eOutAngle.SharpLeft);
+                hud.SetDirection(eOutAngle.SharpLeft, eOutType.RightRoundabout, eOutAngle.SharpLeft);
                 break;
 
             case LeaveRoundaboutSharpRight://15 checked
-                garminHud.SetDirection(eOutAngle.SharpRight, eOutType.LeftRoundabout, eOutAngle.SharpRight);
+                hud.SetDirection(eOutAngle.SharpRight, eOutType.LeftRoundabout, eOutAngle.SharpRight);
                 break;
             case LeaveRoundaboutSharpRightCC://16
-                garminHud.SetDirection(eOutAngle.SharpRight, eOutType.RightRoundabout, eOutAngle.SharpRight);
+                hud.SetDirection(eOutAngle.SharpRight, eOutType.RightRoundabout, eOutAngle.SharpRight);
                 break;
 
             case LeaveRoundaboutStraight://
-                garminHud.SetDirection(eOutAngle.Straight, eOutType.LeftRoundabout, eOutAngle.Straight);
+                hud.SetDirection(eOutAngle.Straight, eOutType.LeftRoundabout, eOutAngle.Straight);
                 break;
 
             case LeaveRoundaboutStraightCC://
-                garminHud.SetDirection(eOutAngle.Straight, eOutType.RightRoundabout, eOutAngle.Straight);
+                hud.SetDirection(eOutAngle.Straight, eOutType.RightRoundabout, eOutAngle.Straight);
                 break;
 
             case Left:
-                garminHud.SetDirection(eOutAngle.Left);
+                hud.SetDirection(eOutAngle.Left);
                 break;
 
             case LeftDown:
-                garminHud.SetDirection(eOutAngle.LeftDown);
+                hud.SetDirection(eOutAngle.LeftDown);
                 break;
             case LeftToLeave:
-                garminHud.SetDirection(eOutAngle.EasyLeft, eOutType.LongerLane, eOutAngle.AsDirection);
+                hud.SetDirection(eOutAngle.EasyLeft, eOutType.LongerLane, eOutAngle.AsDirection);
                 break;
 
             case Right:
-                garminHud.SetDirection(eOutAngle.Right);
+                hud.SetDirection(eOutAngle.Right);
                 break;
             case RightDown:
-                garminHud.SetDirection(eOutAngle.RightDown);
+                hud.SetDirection(eOutAngle.RightDown);
                 break;
             case RightToLeave:
-                garminHud.SetDirection(eOutAngle.EasyRight, eOutType.LongerLane, eOutAngle.AsDirection);
+                hud.SetDirection(eOutAngle.EasyRight, eOutType.LongerLane, eOutAngle.AsDirection);
                 break;
             case SharpLeft:
-                garminHud.SetDirection(eOutAngle.SharpLeft);
+                hud.SetDirection(eOutAngle.SharpLeft);
                 break;
             case SharpRight:
-                garminHud.SetDirection(eOutAngle.SharpRight);
+                hud.SetDirection(eOutAngle.SharpRight);
                 break;
             case Straight:
-                garminHud.SetDirection(eOutAngle.Straight);
+                hud.SetDirection(eOutAngle.Straight);
                 break;
 
             case Convergence:
             case None:
             default:
-                garminHud.SetDirection(eOutAngle.AsDirection);
+                hud.SetDirection(eOutAngle.AsDirection);
                 break;
         }
     }
@@ -781,21 +786,21 @@ public class NotificationMonitor extends NotificationListenerService {
                 int_distance = (int) (float_distance * 10);
             }
 
-            if (null != garminHud) {
+            if (null != hud) {
                 if (-1 != int_distance) {
-                    garminHud.SetDistance(int_distance, units, decimal, false);
+                    hud.SetDistance(int_distance, units, decimal, false);
                 } else {
-                    garminHud.ClearDistance();
+                    hud.ClearDistance();
                 }
             }
 
         } else {
-            if (null != garminHud) {
-                garminHud.ClearDistance();
+            if (null != hud) {
+                hud.ClearDistance();
             }
         }
 
-        final boolean distanceSendResult = null != garminHud ? garminHud.getSendResult() : false;
+        final boolean distanceSendResult = null != hud ? hud.getSendResult() : false;
         //===================================================================================
 
         //===================================================================================
@@ -809,10 +814,10 @@ public class NotificationMonitor extends NotificationListenerService {
                     boolean sameAsLast = arrivalHour == lastArrivalHour && arrivalMinute == lastArrivalMinute;
 
                     if (!sameAsLast) {
-                        if (null != garminHud) {
-                            garminHud.SetTime(arrivalHour, arrivalMinute, false);
+                        if (null != hud) {
+                            hud.SetTime(arrivalHour, arrivalMinute, false);
                         }
-                        timeSendResult = (null != garminHud) ? garminHud.getSendResult() : false;
+                        timeSendResult = (null != hud) ? hud.getSendResult() : false;
                         lastArrivalMinute = arrivalMinute;
                         lastArrivalHour = arrivalHour;
                     }
@@ -827,11 +832,11 @@ public class NotificationMonitor extends NotificationListenerService {
                 //need to verify the necessary of check same as last.
                 sameAsLast = false;
                 if (!sameAsLast) {
-//                        garminHud.SetRemainTime(hh, mm);
-                    if (null != garminHud) {
-                        garminHud.SetTime(hh, mm, true);
+//                        hud.SetRemainTime(hh, mm);
+                    if (null != hud) {
+                        hud.SetTime(hh, mm, true);
                     }
-                    timeSendResult = (null != garminHud) ? garminHud.getSendResult() : false;
+                    timeSendResult = (null != hud) ? hud.getSendResult() : false;
                     lastRemainMinute = remainMinute;
                     lastRemainHour = remainHour;
                 }
@@ -846,7 +851,7 @@ public class NotificationMonitor extends NotificationListenerService {
         // if same as last arrow, should be process, because GARMIN Hud will erase the arrow without data receive during sometime..
         //===================================================================================
         processArrow(foundArrow);
-        final boolean arrowSendResult = (null != garminHud) ? garminHud.getSendResult() : false;
+        final boolean arrowSendResult = (null != hud) ? hud.getSendResult() : false;
         //===================================================================================
 
         String sendResultInfo = "dist: " + (distanceSendResult ? '1' : '0')
@@ -1050,13 +1055,13 @@ public class NotificationMonitor extends NotificationListenerService {
             if (hh == 0 && mm <= 5 && mm != -1) {
                 // Arrived: Delete Distance to turn
                 if ((lastFoundArrow != Arrow.Arrivals) && (lastFoundArrow != Arrow.ArrivalsLeft) && (lastFoundArrow != Arrow.ArrivalsRight)) {
-                    if (garminHud != null) {
-                        garminHud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
-                        garminHud.ClearDistance();
+                    if (hud != null) {
+                        hud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
+                        hud.ClearDistance();
                     }
                 } else {
-                    if (garminHud != null)
-                        garminHud.ClearDistance();
+                    if (hud != null)
+                        hud.ClearDistance();
                 }
             } else {
 
