@@ -312,33 +312,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
 //    private ActionBarDrawerToggle mDrawerToggle;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        //=======================================================================================
-        // tabs
-        //========================================================================================
-        // Connect the ViewPager to our custom PagerAdapter. The PagerAdapter supplies the pages
-        // (fragments) to the ViewPager, which the ViewPager needs to display.
-        mViewPager = (ViewPager) findViewById(R.id.viewpager);
-        mViewPager.setAdapter(new MyPagerAdapter(getFragmentManager()));
-
-        // Connect the tabs with the ViewPager (the setupWithViewPager method does this for us in
-        // both directions, i.e. when a new tab is selected, the ViewPager switches to this page,
-        // and when the ViewPager switches to a new page, the corresponding tab is selected)
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(mViewPager);
-        //========================================================================================
-
-
-        startService(new Intent(this, NotificationCollectorMonitorService.class));
-
-        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        //========================================================================================
-        // BT related
-        //========================================================================================
+    private String init_bt() {
         String bt_status = "";
         if (!IGNORE_BT_DEVICE) {
             bt = new BluetoothSPP(this);
@@ -370,7 +344,40 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             bt_status = "(NO BT)";
+            NotificationMonitor.hud = hud;
         }
+
+        return bt_status;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        //=======================================================================================
+        // tabs
+        //========================================================================================
+        // Connect the ViewPager to our custom PagerAdapter. The PagerAdapter supplies the pages
+        // (fragments) to the ViewPager, which the ViewPager needs to display.
+        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        mViewPager.setAdapter(new MyPagerAdapter(getFragmentManager()));
+
+        // Connect the tabs with the ViewPager (the setupWithViewPager method does this for us in
+        // both directions, i.e. when a new tab is selected, the ViewPager switches to this page,
+        // and when the ViewPager switches to a new page, the corresponding tab is selected)
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(mViewPager);
+        //========================================================================================
+
+
+        startService(new Intent(this, NotificationCollectorMonitorService.class));
+
+        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        //========================================================================================
+        // BT related
+        //========================================================================================
+        String bt_status = init_bt();
         //========================================================================================
 
         //=======================================================================================
@@ -609,6 +616,9 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.btnResetBT:
                 log("Reset Bluetooth...");
+                if (!IGNORE_BT_DEVICE) {
+                    init_bt();
+                }
                 break;
 
             case R.id.switchShowSpeed:
