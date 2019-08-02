@@ -29,6 +29,7 @@
 
     <!--options-->
     <string name="bt_bind_name_key" translatable="false">bt_bind_name_key</string>
+
     <string name="option_show_eta" translatable="false">option_show_eta</string>
     <string name="option_show_speed" translatable="false">option_show_speed</string>
     <string name="option_auto_brightness" translatable="false">option_auto_brightness</string>
@@ -55,7 +56,7 @@
     <string name="location" translatable="false">location</string>
     <string name="gps_speed" translatable="false">gps_speed</string>
     <string name="arrivals_msg" translatable="false">arrivals_msg</string>
-
+    <string name="busy_traffic" translatable="false">busy_traffic</string>
 
 
     <!--Prompt-->

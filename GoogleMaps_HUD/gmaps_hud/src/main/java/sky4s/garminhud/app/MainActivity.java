@@ -17,10 +17,22 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.graphics.Point;
+import android.hardware.display.DisplayManager;
+import android.hardware.display.VirtualDisplay;
 import android.location.LocationManager;
+import android.media.Image;
+import android.media.ImageReader;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
 import android.support.design.widget.NavigationView;
@@ -36,14 +48,24 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.MenuItem;
+import android.view.OrientationEventListener;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -59,35 +81,6 @@ import sky4s.garminhud.eUnits;
 import sky4s.garminhud.hud.DummyHUD;
 import sky4s.garminhud.hud.HUDInterface;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.PixelFormat;
-import android.graphics.Point;
-import android.hardware.display.DisplayManager;
-import android.hardware.display.VirtualDisplay;
-import android.media.Image;
-import android.media.ImageReader;
-import android.media.projection.MediaProjection;
-import android.media.projection.MediaProjectionManager;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Display;
-import android.view.OrientationEventListener;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
 
 public class MainActivity extends AppCompatActivity {
     //for test with virtual device which no BT device
@@ -172,7 +165,6 @@ public class MainActivity extends AppCompatActivity {
                 CharSequence orignal_text = textViewDebug.getText();
                 orignal_text = orignal_text.length() > 1000 ? "" : orignal_text;
                 textViewDebug.setText(notify_msg + "\n\n" + orignal_text);
-//                int line_height = textViewDebug.getLineHeight();
                 return;
             }
 
@@ -265,7 +257,8 @@ public class MainActivity extends AppCompatActivity {
                 Calendar c = Calendar.getInstance();
                 int hour = c.get(Calendar.HOUR_OF_DAY);
                 int minute = c.get(Calendar.MINUTE);
-                hud.SetTime(hour, minute, false, false);
+//                hud.SetTime(hour, minute, false, false);
+                hud.SetCurrentTime(hour, minute);
             }
         }
     }
@@ -448,6 +441,22 @@ public class MainActivity extends AppCompatActivity {
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         screenReceiver = new ScreenReceiver();
         registerReceiver(screenReceiver, filter);
+        //========================================================================================
+
+        //========================================================================================
+        // MediaProjection
+        //========================================================================================
+        // call for the projection manager
+        mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        // start capture handling thread
+        new Thread() {
+            @Override
+            public void run() {
+                Looper.prepare();
+                mHandler = new Handler();
+                Looper.loop();
+            }
+        }.start();
         //========================================================================================
 
         //experiment:
@@ -679,13 +688,21 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.switchTrafficAndLane:
+                if (((Switch) view).isChecked()) {
+                    startProjection();
+                } else {
+                    stopProjection();
+                }
                 break;
 
 
             case R.id.switchShowETA:
-                sendBooleanExtraByBroadcast(
-                        getString(R.string.broadcast_receiver_notification_monitor),
-                        Integer.toString(R.id.switchShowETA), ((Switch) view).isChecked());
+                sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
+                        getString(R.string.option_show_eta), ((Switch) view).isChecked());
+
+//                sendBooleanExtraByBroadcast(
+//                        getString(R.string.broadcast_receiver_notification_monitor),
+//                        Integer.toString(R.id.switchShowETA), ((Switch) view).isChecked());
                 break;
 
 
@@ -876,8 +893,9 @@ public class MainActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (!IGNORE_BT_DEVICE) {
             if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
-                if (resultCode == Activity.RESULT_OK)
+                if (resultCode == Activity.RESULT_OK) {
                     bt.connect(data);
+                }
             } else if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
                 if (resultCode == Activity.RESULT_OK) {
                     bt.setupService();
@@ -888,6 +906,46 @@ public class MainActivity extends AppCompatActivity {
                             , Toast.LENGTH_SHORT).show();
                     finish();
                 }
+            }
+        }
+
+        if (requestCode == REQUEST_CODE) {
+            sMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
+
+            if (sMediaProjection != null) {
+
+                File dataFilesDir = getFilesDir();
+                if (dataFilesDir != null) {
+                    STORE_DIRECTORY = dataFilesDir.getAbsolutePath() + "/screenshots/";
+                    File storeDirectory = new File(STORE_DIRECTORY);
+                    if (!storeDirectory.exists()) {
+                        boolean success = storeDirectory.mkdirs();
+                        if (!success) {
+                            Log.e(TAG, "failed to create file storage directory.");
+                            return;
+                        }
+                    }
+                } else {
+                    Log.e(TAG, "failed to create file storage directory, getFilesDir is null.");
+                    return;
+                }
+
+                // display metrics
+                DisplayMetrics metrics = getResources().getDisplayMetrics();
+                mDensity = metrics.densityDpi;
+                mDisplay = getWindowManager().getDefaultDisplay();
+
+                // create virtual display depending on device width / height
+                createVirtualDisplay();
+
+                // register orientation change callback
+                mOrientationChangeCallback = new OrientationChangeCallback(this);
+                if (mOrientationChangeCallback.canDetectOrientation()) {
+                    mOrientationChangeCallback.enable();
+                }
+
+                // register media projection stop callback
+                sMediaProjection.registerCallback(new MediaProjectionStopCallback(), mHandler);
             }
         }
     }
@@ -1008,7 +1066,7 @@ public class MainActivity extends AppCompatActivity {
 //    private static final String TAG = ScreenCaptureImageActivity.class.getName();
     private static final int REQUEST_CODE = 100;
     private static String STORE_DIRECTORY;
-    private static int IMAGES_PRODUCED;
+    //    private static int IMAGES_PRODUCED;
     private static final String SCREENCAP_NAME = "screencap";
     private static final int VIRTUAL_DISPLAY_FLAGS = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
     private static MediaProjection sMediaProjection;
@@ -1024,11 +1082,48 @@ public class MainActivity extends AppCompatActivity {
     private int mRotation;
     private OrientationChangeCallback mOrientationChangeCallback;
 
-    private static long lastUpdateTime=0;
+    private static long lastUpdateTime = 0;
     public final static long UpdateInterval = 1000;
+
+
+    static class Rect {
+        public int x;
+        public int y;
+        public int width;
+        public int height;
+
+        public Rect(int x, int y, int width, int height) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+        }
+
+        @Override
+        public final String toString() {
+            return Integer.toString(x) + "," + Integer.toString(y) + " " + Integer.toString(width) + "/" + Integer.toString(height);
+        }
+    }
 
     private class ImageAvailableListener
             implements ImageReader.OnImageAvailableListener {
+        public final String PreImage = "myscreen_pre.png";
+        public final String NowImage = "myscreen_now.png";
+        public final String MapImage = "map.png";
+        public final String LaneImage = "lane.png";
+
+        public final int ArrowColor_1 = Color.rgb(66, 133, 244);
+        public final int ArrowColor_2 = Color.rgb(223, 246, 255);
+
+        public final int TitleGreen = Color.rgb(12, 126, 70);
+        public final int RoadBgGreen = Color.rgb(15, 157, 88);
+        public final int LaneBgGreen = Color.rgb(11, 128, 67);
+
+        public final int BlueTraffic_1 = Color.rgb(69, 151, 255);
+        public final int BlueTraffic_2 = Color.rgb(102, 157, 246);
+        public final int OrangeTraffic = Color.rgb(255, 171, 52);
+        public final int RedTraffic = Color.rgb(221, 25, 29);
+
         @Override
         public void onImageAvailable(ImageReader reader) {
             Image image = null;
@@ -1040,7 +1135,7 @@ public class MainActivity extends AppCompatActivity {
                 image = reader.acquireLatestImage();
                 if (image != null) {
                     long currentTime = System.currentTimeMillis();
-                    if(currentTime- lastUpdateTime > UpdateInterval) {
+                    if (currentTime - lastUpdateTime > UpdateInterval) {
                         lastUpdateTime = currentTime;
                         Image.Plane[] planes = image.getPlanes();
                         ByteBuffer buffer = planes[0].getBuffer();
@@ -1052,12 +1147,19 @@ public class MainActivity extends AppCompatActivity {
                         bitmap = Bitmap.createBitmap(mWidth + rowPadding / pixelStride, mHeight, Bitmap.Config.ARGB_8888);
                         bitmap.copyPixelsFromBuffer(buffer);
 
+                        screenDetection(bitmap);
+
+
+                        File nowImage = new File(STORE_DIRECTORY + NowImage);
+                        if (nowImage.exists()) {
+                            File preImage = new File(STORE_DIRECTORY + PreImage);
+                            copy(nowImage, preImage);
+                        }
+
                         // write bitmap to a file
-                        fos = new FileOutputStream(STORE_DIRECTORY + "/myscreen_" + IMAGES_PRODUCED + ".png");
+                        fos = new FileOutputStream(STORE_DIRECTORY + NowImage);
                         bitmap.compress(CompressFormat.PNG, 100, fos);
 
-                        IMAGES_PRODUCED++;
-                        Log.e(TAG, "captured image: " + IMAGES_PRODUCED);
                     }
                 }
 
@@ -1078,6 +1180,141 @@ public class MainActivity extends AppCompatActivity {
 
                 if (image != null) {
                     image.close();
+                }
+            }
+        }
+
+
+        boolean isSameRGB(int color1, int color2) {
+            return Color.red(color1) == Color.red(color2) &&
+                    Color.green(color1) == Color.green(color2) &&
+                    Color.blue(color1) == Color.blue(color2);
+        }
+
+        int findColor(Bitmap image, int color, boolean vertical, boolean up, boolean left) {
+            int width = image.getWidth();
+            int height = image.getHeight();
+
+            int h_start = vertical ? up ? 0 : height - 1 : 0;
+            int h_inc = vertical ? up ? 1 : -1 : 1;
+            int h_end = vertical ? up ? height - 1 : 0 : height - 1;
+
+            int w_start = vertical ? 0 : left ? 0 : width - 1;
+            int w_inc = vertical ? 1 : left ? 1 : -1;
+            int w_end = vertical ? width - 1 : left ? width - 1 : 0;
+
+            int w0_end = vertical ? w_start + w_inc : w_end;
+            int w1_end = vertical ? w_end : w_start + w_inc;
+
+            for (int w0 = w_start; w0 != w0_end; w0 += w_inc) {
+                for (int h = h_start; h != h_end; h += h_inc) {
+                    for (int w1 = w_start; w1 != w1_end; w1 += w_inc) {
+
+                        int w = vertical ? w1 : w0;
+                        int pixel = image.getPixel(w, h);
+//                    auto& pixel = p<cv::Vec3b>(image, w, h);
+                        if (isSameRGB(pixel, color)) {
+                            if (vertical) {
+                                return h;
+                            } else {
+                                return w;
+                            }
+                        }
+                    }
+                }
+            }
+            return -1;
+        }
+
+        Rect getRoi(Bitmap image, int color) {
+            int top = findColor(image, color, true, true, false);
+            int bottom = findColor(image, color, true, false, false);
+            int left = findColor(image, color, false, true, true);
+            int right = findColor(image, color, false, true, false);
+            return new Rect(left, top, right - left, bottom - top);
+        }
+
+
+        private void screenDetection(Bitmap screen) {
+//        int width = screen.getWidth();
+            int height = screen.getHeight();
+
+            Rect title_roi = getRoi(screen, TitleGreen);
+            if (-1 == title_roi.x) {
+                return;
+            }
+
+            int gmapHeight = height - (title_roi.y + title_roi.height);
+            Bitmap gmapScreen = Bitmap.createBitmap(screen, title_roi.x, title_roi.y + title_roi.height, title_roi.width, gmapHeight);
+
+            Rect arrow_roi = getRoi(gmapScreen, ArrowColor_1);
+            if (-1 == arrow_roi.x) {
+                arrow_roi = getRoi(gmapScreen, ArrowColor_2);
+            }
+
+            if (-1 == arrow_roi.x) {
+                return;
+            }
+
+            int end_y = arrow_roi.y;
+            Log.i(TAG, "Found Arrow: " + arrow_roi.toString());
+
+            Rect road_roi = getRoi(gmapScreen, RoadBgGreen);
+            Rect lane_roi = getRoi(gmapScreen, LaneBgGreen);
+            final boolean lane_roi_exist = -1 != lane_roi.x;
+
+
+            if (lane_roi_exist) {
+                Bitmap lane_roi_image = Bitmap.createBitmap(gmapScreen, lane_roi.x, lane_roi.y, lane_roi.width, lane_roi.height);
+                try (FileOutputStream fos = new FileOutputStream(STORE_DIRECTORY + LaneImage)) {
+                    lane_roi_image.compress(CompressFormat.PNG, 100, fos);
+                } catch (IOException ex) {
+                    Log.e(TAG, ex.toString());
+                }
+                laneDetect(lane_roi_image);
+            }
+
+            Bitmap map_roi_image;
+            if (-1 != road_roi.x) {
+                Rect target_roi = lane_roi_exist ? lane_roi : road_roi;
+                map_roi_image = Bitmap.createBitmap(gmapScreen, target_roi.x, target_roi.y + target_roi.height,
+                        target_roi.width, gmapScreen.getHeight() - (target_roi.y + target_roi.height));
+
+                // write bitmap to a file
+                try (FileOutputStream fos = new FileOutputStream(STORE_DIRECTORY + MapImage)) {
+                    map_roi_image.compress(CompressFormat.PNG, 100, fos);
+                } catch (IOException ex) {
+                    Log.e(TAG, ex.toString());
+                }
+
+                boolean busyTraffic = busyTrafficDetect(map_roi_image);
+                sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
+                        getString(R.string.busy_traffic),busyTraffic);
+            }
+
+
+        }
+
+        private void laneDetect(Bitmap lane) {
+
+        }
+
+        private boolean busyTrafficDetect(Bitmap map) {
+            Rect orange_roi = getRoi(map, OrangeTraffic);
+            Rect roi_red = getRoi(map, RedTraffic);
+            boolean busyTraffic = -1 != orange_roi.x || -1 != roi_red.x;
+            return busyTraffic;
+        }
+    }
+
+    public static void copy(File src, File dst) throws IOException {
+        try (InputStream in = new FileInputStream(src)) {
+            try (OutputStream out = new FileOutputStream(dst)) {
+                // Transfer bytes from in to out
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
                 }
             }
         }
@@ -1123,6 +1360,23 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
+
+    /****************************************** UI Widget Callbacks *******************************/
+    private void startProjection() {
+        startActivityForResult(mProjectionManager.createScreenCaptureIntent(), REQUEST_CODE);
+    }
+
+    private void stopProjection() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (sMediaProjection != null) {
+                    sMediaProjection.stop();
+                }
+            }
+        });
+    }
+
 
     /****************************************** Factoring Virtual Display creation ****************/
     private void createVirtualDisplay() {

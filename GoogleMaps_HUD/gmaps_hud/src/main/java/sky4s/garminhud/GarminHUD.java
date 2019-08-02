@@ -2,13 +2,13 @@ package sky4s.garminhud;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import sky4s.garminhud.app.MainActivity;
-import sky4s.garminhud.hud.HUDInterface;
+import sky4s.garminhud.hud.HUDAdapter;
 
 /**
  * Created by skyforce on 2018/8/13.
  */
 
-public class GarminHUD implements HUDInterface {
+public class GarminHUD extends HUDAdapter {
     //===========================================================================================
     // 不與C++共用的部分
     //===========================================================================================
@@ -118,13 +118,14 @@ public class GarminHUD implements HUDInterface {
         sendResult = SendPacket(sendBuf, len);
     }
 
-    public void SetTime(int nH, int nM, boolean bH, boolean bFlag) {
-        SetTime(nH, nM, bFlag, false, true, bH);
-    }
+//    public void SetTime(int nH, int nM, boolean bH, boolean bFlag) {
+//        SetTime(nH, nM, bFlag, false, true, bH);
+//    }
+//
+//    public void SetTime(int nH, int nM, boolean bH) {
+//        SetTime(nH, nM, true, false, true, bH);
+//    }
 
-    public void SetTime(int nH, int nM, boolean bH) {
-        SetTime(nH, nM, true, false, true, bH);
-    }
 
     public void SetTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
         char arr[] = {(char) 0x05,
@@ -137,9 +138,9 @@ public class GarminHUD implements HUDInterface {
         SendHud2(arr);
     }
 
-    public void SetRemainTime(int nH, int nM) {
-        final boolean bTraffic = false;
-        final boolean bH = true;
+    public void SetRemainTime(int nH, int nM, boolean bTraffic) {
+//        final boolean bTraffic = false;
+        final boolean bH = false;
         final boolean bFlag = true;
 
         boolean noHour = 0 == nH;
@@ -169,9 +170,9 @@ public class GarminHUD implements HUDInterface {
     }
 
 
-    public void SetDistance(int nDist, eUnits unit) {
-        SetDistance(nDist, unit, false, false);
-    }
+//    public void SetDistance(int nDist, eUnits unit) {
+//        SetDistance(nDist, unit, false, false);
+//    }
 
     public void SetDistance(int nDist, eUnits unit, boolean bDecimal, boolean bLeadingZero) {
         char arr[] = {(char) 0x03,
@@ -219,9 +220,9 @@ public class GarminHUD implements HUDInterface {
         SendHud2(arr);
     }
 
-    public void SetDirection(eOutAngle nDir) {
-        SetDirection(nDir, eOutType.Lane, eOutAngle.AsDirection);
-    }
+//    public void SetDirection(eOutAngle nDir) {
+//        SetDirection(nDir, eOutType.Lane, eOutAngle.AsDirection);
+//    }
 
     /*
     eOutType:
@@ -308,9 +309,9 @@ public class GarminHUD implements HUDInterface {
         SendHud2(arr);
     }
 
-    public void SetSpeedAndWarning(int nSpeed, int nLimit) {
-        SetSpeedWarning(nSpeed, nLimit, false, true, true);
-    }
+//    public void SetSpeedAndWarning(int nSpeed, int nLimit) {
+//        SetSpeedWarning(nSpeed, nLimit, false, true, true);
+//    }
 
     public void SetSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash) {
         char arr[] = {(char) 0x06,
@@ -329,18 +330,18 @@ public class GarminHUD implements HUDInterface {
         SendHud2(arr);
     }
 
-    public void ShowCameraIcon() {
-        SetCameraIcon(true);
-    }
+//    public void ShowCameraIcon() {
+//        SetCameraIcon(true);
+//    }
 
     public void SetCameraIcon(boolean visible) {
         char arr[] = {0x04, (char) (visible ? 1 : 0)};
         SendHud2(arr);
     }
 
-    public void ShowGpsLabel() {
-        SetGpsLabel(true);
-    }
+//    public void ShowGpsLabel() {
+//        SetGpsLabel(true);
+//    }
 
     public void SetGpsLabel(boolean visible) {
         char arr[] = {0x07, (char) (visible ? 1 : 0)};
@@ -377,9 +378,9 @@ public class GarminHUD implements HUDInterface {
         sendResult = SendPacket(sendBuf, sendBuf.length);
     }
 
-    public void clear() {
-        SetCameraIcon(false);
-        SetGpsLabel(false);
-    }
+//    public void clear() {
+//        SetCameraIcon(false);
+//        SetGpsLabel(false);
+//    }
 
 }

@@ -6,7 +6,7 @@ import sky4s.garminhud.eOutAngle;
 import sky4s.garminhud.eOutType;
 import sky4s.garminhud.eUnits;
 
-public class DummyHUD implements HUDInterface {
+public class DummyHUD extends HUDAdapter {
     private static final String TAG = DummyHUD.class.getSimpleName();
 
     private void log(Object object) {
@@ -28,24 +28,30 @@ public class DummyHUD implements HUDInterface {
         return true;
     }
 
-    @Override
-    public void SetTime(int nH, int nM, boolean bH, boolean bFlag) {
-        log("Time: " + nH + ":" + nM + (bH ? "h" : "") + " " + bFlag);
-    }
+//    @Override
+//    public void SetTime(int nH, int nM, boolean bH, boolean bFlag) {
+//        SetTime(nH, nM, bFlag, false, true, bH);
+//    }
 
-    @Override
-    public void SetTime(int nH, int nM, boolean bH) {
-        log("Time: " + nH + ":" + nM + (bH ? "h" : ""));
-    }
+//    @Override
+//    public void SetTime(int nH, int nM, boolean bH) {
+//        log("Time: " + nH + ":" + nM + (bH ? "h" : ""));
+//    }
+
 
     @Override
     public void SetTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
         log("Time: " + nH + (bColon ? ":" : " ") + nM + (bH ? "h" : "") + " " + bFlag + " " + bTraffic);
     }
 
+//    @Override
+//    public void SetRemainTime(int nH, int nM) {
+//        log("Remain Time: " + nH + ":" + nM);
+//    }
+
     @Override
-    public void SetRemainTime(int nH, int nM) {
-        log("Remain Time: " + nH + ":" + nM);
+    public final void SetRemainTime(int nH, int nM, boolean bTraffic) {
+        log("Time: " + nH + " " + bTraffic);
     }
 
     @Override
@@ -53,10 +59,10 @@ public class DummyHUD implements HUDInterface {
         log("Clear Time");
     }
 
-    @Override
-    public void SetDistance(int nDist, eUnits unit) {
-        log("Distance: " + nDist + " " + unit);
-    }
+//    @Override
+//    public void SetDistance(int nDist, eUnits unit) {
+//        log("Distance: " + nDist + " " + unit);
+//    }
 
     @Override
     public void SetDistance(int nDist, eUnits unit, boolean bDecimal, boolean bLeadingZero) {
@@ -73,10 +79,10 @@ public class DummyHUD implements HUDInterface {
 
     }
 
-    @Override
-    public void SetDirection(eOutAngle nDir) {
-
-    }
+//    @Override
+//    public void SetDirection(eOutAngle nDir) {
+//
+//    }
 
     @Override
     public void SetDirection(eOutAngle nDir, eOutType nType, eOutAngle nRoundaboutOut) {
@@ -93,10 +99,10 @@ public class DummyHUD implements HUDInterface {
         log("Speed: " + nSpeed + " " + bIcon);
     }
 
-    @Override
-    public void SetSpeedAndWarning(int nSpeed, int nLimit) {
-        log("Speed: " + nSpeed + " / " + nLimit);
-    }
+//    @Override
+//    public void SetSpeedAndWarning(int nSpeed, int nLimit) {
+//        log("Speed: " + nSpeed + " / " + nLimit);
+//    }
 
     @Override
     public void SetSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash) {
@@ -108,20 +114,20 @@ public class DummyHUD implements HUDInterface {
         log("Clear Speed & Warning");
     }
 
-    @Override
-    public void ShowCameraIcon() {
-
-    }
+//    @Override
+//    public void ShowCameraIcon() {
+//
+//    }
 
     @Override
     public void SetCameraIcon(boolean visible) {
 
     }
 
-    @Override
-    public void ShowGpsLabel() {
-
-    }
+//    @Override
+//    public void ShowGpsLabel() {
+//
+//    }
 
     @Override
     public void SetGpsLabel(boolean visible) {
@@ -138,8 +144,8 @@ public class DummyHUD implements HUDInterface {
 
     }
 
-    @Override
-    public void clear() {
-        log("Clear");
-    }
+//    @Override
+//    public void clear() {
+//        log("Clear");
+//    }
 }

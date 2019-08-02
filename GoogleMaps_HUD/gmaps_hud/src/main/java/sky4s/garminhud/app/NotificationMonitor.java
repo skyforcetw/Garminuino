@@ -145,8 +145,9 @@ public class NotificationMonitor extends NotificationListenerService {
             if (null != parcelablelocation && parcelablelocation instanceof Location) {
                 location = (Location) parcelablelocation;
             }
-            showETA = intent.getBooleanExtra(Integer.toString(R.id.switchShowETA), showETA);
+            showETA = intent.getBooleanExtra( getString(R.string.option_show_eta), showETA);
             lastArrivalMinute = -1; // Force to switch to ETA after several toggles
+            busyTraffic = intent.getBooleanExtra( getString(R.string.busy_traffic), busyTraffic);
         }
     }
 
@@ -406,7 +407,7 @@ public class NotificationMonitor extends NotificationListenerService {
         logi(notifyMessage);
 
         boolean output_parse_message_to_ui = true;
-        if(output_parse_message_to_ui) {
+        if (output_parse_message_to_ui) {
             addStringExtra(getString(R.string.notify_msg), notifyMessage);
             if (Arrow.Arrivals == foundArrow || Arrow.ArrivalsLeft == foundArrow || Arrow.ArrivalsRight == foundArrow) {
                 addBooleanExtra(getString(R.string.arrivals_msg), true);
@@ -769,6 +770,7 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     private String lastRemainHour = null, lastRemainMinute = null;
+    private boolean busyTraffic = false;
 
     private void updateGaminHudInformation() {
 
@@ -815,7 +817,8 @@ public class NotificationMonitor extends NotificationListenerService {
 
                     if (!sameAsLast) {
                         if (null != hud) {
-                            hud.SetTime(arrivalHour, arrivalMinute, false);
+//                            hud.SetTime(arrivalHour, arrivalMinute, false);
+                            hud.SetRemainTime(arrivalHour, arrivalMinute, busyTraffic);
                         }
                         timeSendResult = (null != hud) ? hud.getSendResult() : false;
                         lastArrivalMinute = arrivalMinute;
@@ -832,9 +835,8 @@ public class NotificationMonitor extends NotificationListenerService {
                 //need to verify the necessary of check same as last.
                 sameAsLast = false;
                 if (!sameAsLast) {
-//                        hud.SetRemainTime(hh, mm);
                     if (null != hud) {
-                        hud.SetTime(hh, mm, true);
+                        hud.SetRemainTime(hh, mm,busyTraffic);
                     }
                     timeSendResult = (null != hud) ? hud.getSendResult() : false;
                     lastRemainMinute = remainMinute;
@@ -934,6 +936,7 @@ public class NotificationMonitor extends NotificationListenerService {
             final int amIndex = arrivalTime.indexOf(getString(R.string.am));
             final int pmIndex = arrivalTime.indexOf(getString(R.string.pm));
             final boolean ampmAtFirst = 0 == amIndex || 0 == pmIndex;
+
             if (-1 != amIndex || -1 != pmIndex) { // 12-hour-format
                 final int index = Math.max(amIndex, pmIndex);  // index of "am" or "pm"
                 arrivalTime = ampmAtFirst ? arrivalTime.substring(index + 2) : arrivalTime.substring(0, index);
