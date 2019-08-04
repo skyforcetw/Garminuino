@@ -1063,10 +1063,8 @@ public class MainActivity extends AppCompatActivity {
     //===============================================================================================
     // screen capture
     //===============================================================================================
-//    private static final String TAG = ScreenCaptureImageActivity.class.getName();
     private static final int REQUEST_CODE = 100;
     private static String STORE_DIRECTORY;
-    //    private static int IMAGES_PRODUCED;
     private static final String SCREENCAP_NAME = "screencap";
     private static final int VIRTUAL_DISPLAY_FLAGS = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
     private static MediaProjection sMediaProjection;
@@ -1113,18 +1111,17 @@ public class MainActivity extends AppCompatActivity {
         public final String MapImage = "map.png";
         public final String LaneImage = "lane.png";
 
-        public final int ArrowColor_1 = Color.rgb(66, 133, 244);
+        public final int ArrowColor_Day = Color.rgb(66, 133, 244);
         public final int ArrowColor_Night = Color.rgb(223, 246, 255);
         public final int ArrowColor_Static = Color.rgb(199, 201, 201);
 
-        //        public final int TitleGreen = Color.rgb(12, 126, 70);
         public final int RoadBgGreen_1 = Color.rgb(15, 157, 88);
         public final int RoadBgGreen_2 = Color.rgb(13, 144, 79);
-        public final int LaneBgGreen = Color.rgb(11, 128, 67);
+        public final int LaneBgGreen_Day = Color.rgb(11, 128, 67);
         public final int LaneBgGreen_Night = Color.rgb(9, 113, 56);
 
-        public final int BlueTraffic_1 = Color.rgb(69, 151, 255);
-        public final int BlueTraffic_2 = Color.rgb(102, 157, 246);
+//        public final int BlueTraffic_1 = Color.rgb(69, 151, 255);
+//        public final int BlueTraffic_2 = Color.rgb(102, 157, 246);
         public final int OrangeTraffic = Color.rgb(255, 171, 52);
         public final int RedTraffic = Color.rgb(221, 25, 29);
 
@@ -1191,10 +1188,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         boolean isSameRGB(int color1, int color2) {
-            return color1 == color2;
-//            return Color.red(color1) == Color.red(color2) &&
-//                    Color.green(color1) == Color.green(color2) &&
-//                    Color.blue(color1) == Color.blue(color2);
+//            return color1 == color2;
+            return Color.red(color1) == Color.red(color2) &&
+                    Color.green(color1) == Color.green(color2) &&
+                    Color.blue(color1) == Color.blue(color2);
         }
 
         int[] pixelsInFindColor;
@@ -1253,12 +1250,6 @@ public class MainActivity extends AppCompatActivity {
                     return rect;
                 }
             }
-//            for (int color : colors) {
-//                Rect rect = getRoi(image, color);
-//                if (-1 != rect.x) {
-//                    return rect;
-//                }
-//            }
             return new Rect(-1, -1, 0, 0);
         }
 
@@ -1297,7 +1288,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, ex.toString());
             }
 
-            Rect arrow_roi = getRoi(gmapScreen, ArrowColor_1, ArrowColor_Night, ArrowColor_Static);
+            Rect arrow_roi = getRoi(gmapScreen, ArrowColor_Day, ArrowColor_Night, ArrowColor_Static);
             if (-1 == arrow_roi.x) {
                 Log.i(TAG, "NoFound Arrow");
                 return;
@@ -1308,7 +1299,7 @@ public class MainActivity extends AppCompatActivity {
             int end_y = arrow_roi.y;
 
 
-            Rect lane_roi = getRoi(gmapScreen, LaneBgGreen);
+            Rect lane_roi = getRoi(gmapScreen, LaneBgGreen_Day);
             if (-1 != lane_roi.x && lane_roi.width != screen_width) {
                 lane_roi = getRoi(gmapScreen, LaneBgGreen_Night);
             }
