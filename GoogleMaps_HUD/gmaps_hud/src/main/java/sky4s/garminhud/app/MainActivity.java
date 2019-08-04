@@ -367,8 +367,8 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             bt_status = "(NO BT)";
-            NotificationMonitor.hud = hud;
         }
+        NotificationMonitor.hud = hud;
 
         return bt_status;
     }
@@ -490,7 +490,7 @@ public class MainActivity extends AppCompatActivity {
             switchHudConnected.setTextColor(Color.BLACK);
             switchHudConnected.setChecked(true);
 
-            NotificationMonitor.hud = hud;
+//            NotificationMonitor.hud = hud;
             log("onDeviceConnected");
 
             if (useLocationService && !locationServiceConnected) {
@@ -518,7 +518,7 @@ public class MainActivity extends AppCompatActivity {
             switchHudConnected.setText("HUD disconnected");
             switchHudConnected.setTextColor(Color.RED);
             switchHudConnected.setChecked(false);
-            NotificationMonitor.hud = null;
+//            NotificationMonitor.hud = null;
             log("onDeviceDisconnected");
         }
 
@@ -527,7 +527,7 @@ public class MainActivity extends AppCompatActivity {
             switchHudConnected.setText("HUD connect failed");
             switchHudConnected.setTextColor(Color.RED);
             switchHudConnected.setChecked(false);
-            NotificationMonitor.hud = null;
+//            NotificationMonitor.hud = null;
             log("onDeviceConnectionFailed");
         }
     }
