@@ -51,7 +51,7 @@ public class DummyHUD extends HUDAdapter {
 
     @Override
     public final void SetRemainTime(int nH, int nM, boolean bTraffic) {
-        log("Time: " + nH + " " + bTraffic);
+        log("Time: " + nH + ":" + nM + " " + bTraffic);
     }
 
     @Override

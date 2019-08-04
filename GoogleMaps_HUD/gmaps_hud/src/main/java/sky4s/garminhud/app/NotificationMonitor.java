@@ -145,9 +145,9 @@ public class NotificationMonitor extends NotificationListenerService {
             if (null != parcelablelocation && parcelablelocation instanceof Location) {
                 location = (Location) parcelablelocation;
             }
-            showETA = intent.getBooleanExtra( getString(R.string.option_show_eta), showETA);
+            showETA = intent.getBooleanExtra(getString(R.string.option_show_eta), showETA);
             lastArrivalMinute = -1; // Force to switch to ETA after several toggles
-            busyTraffic = intent.getBooleanExtra( getString(R.string.busy_traffic), busyTraffic);
+            busyTraffic = intent.getBooleanExtra(getString(R.string.busy_traffic), busyTraffic);
         }
     }
 
@@ -773,7 +773,7 @@ public class NotificationMonitor extends NotificationListenerService {
     private boolean busyTraffic = false;
 
     private void updateGaminHudInformation() {
-
+        Log.i(TAG, "hud: " + hud);
         //===================================================================================
         // distance
         //===================================================================================
@@ -836,7 +836,7 @@ public class NotificationMonitor extends NotificationListenerService {
                 sameAsLast = false;
                 if (!sameAsLast) {
                     if (null != hud) {
-                        hud.SetRemainTime(hh, mm,busyTraffic);
+                        hud.SetRemainTime(hh, mm, busyTraffic);
                     }
                     timeSendResult = (null != hud) ? hud.getSendResult() : false;
                     lastRemainMinute = remainMinute;
@@ -856,7 +856,7 @@ public class NotificationMonitor extends NotificationListenerService {
         final boolean arrowSendResult = (null != hud) ? hud.getSendResult() : false;
         //===================================================================================
 
-        String sendResultInfo = "dist: " + (distanceSendResult ? '1' : '0')
+        String sendResultInfo = "SendResult dist: " + (distanceSendResult ? '1' : '0')
                 + " time: " + (timeSendResult ? '1' : '0')
                 + " arrow: " + (arrowSendResult ? '1' : '0');
         logi(sendResultInfo);

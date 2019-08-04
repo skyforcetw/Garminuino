@@ -1109,15 +1109,19 @@ public class MainActivity extends AppCompatActivity {
             implements ImageReader.OnImageAvailableListener {
         public final String PreImage = "myscreen_pre.png";
         public final String NowImage = "myscreen_now.png";
+        public final String GmapImage = "gmap.png";
         public final String MapImage = "map.png";
         public final String LaneImage = "lane.png";
 
         public final int ArrowColor_1 = Color.rgb(66, 133, 244);
-        public final int ArrowColor_2 = Color.rgb(223, 246, 255);
+        public final int ArrowColor_Night = Color.rgb(223, 246, 255);
+        public final int ArrowColor_Static = Color.rgb(199, 201, 201);
 
-        public final int TitleGreen = Color.rgb(12, 126, 70);
-        public final int RoadBgGreen = Color.rgb(15, 157, 88);
+        //        public final int TitleGreen = Color.rgb(12, 126, 70);
+        public final int RoadBgGreen_1 = Color.rgb(15, 157, 88);
+        public final int RoadBgGreen_2 = Color.rgb(13, 144, 79);
         public final int LaneBgGreen = Color.rgb(11, 128, 67);
+        public final int LaneBgGreen_Night = Color.rgb(9, 113, 56);
 
         public final int BlueTraffic_1 = Color.rgb(69, 151, 255);
         public final int BlueTraffic_2 = Color.rgb(102, 157, 246);
@@ -1135,7 +1139,8 @@ public class MainActivity extends AppCompatActivity {
                 image = reader.acquireLatestImage();
                 if (image != null) {
                     long currentTime = System.currentTimeMillis();
-                    if (currentTime - lastUpdateTime > UpdateInterval) {
+                    long deltaTime = currentTime - lastUpdateTime;
+                    if (deltaTime > UpdateInterval) {
                         lastUpdateTime = currentTime;
                         Image.Plane[] planes = image.getPlanes();
                         ByteBuffer buffer = planes[0].getBuffer();
@@ -1146,9 +1151,7 @@ public class MainActivity extends AppCompatActivity {
                         // create bitmap
                         bitmap = Bitmap.createBitmap(mWidth + rowPadding / pixelStride, mHeight, Bitmap.Config.ARGB_8888);
                         bitmap.copyPixelsFromBuffer(buffer);
-
-                        screenDetection(bitmap);
-
+//                        Log.i(TAG, "onImageAvailable()");
 
                         File nowImage = new File(STORE_DIRECTORY + NowImage);
                         if (nowImage.exists()) {
@@ -1160,11 +1163,13 @@ public class MainActivity extends AppCompatActivity {
                         fos = new FileOutputStream(STORE_DIRECTORY + NowImage);
                         bitmap.compress(CompressFormat.PNG, 100, fos);
 
+                        screenDetection(bitmap);
                     }
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+//                e.printStackTrace();
+                Log.e(TAG, e.toString());
             } finally {
                 if (fos != null) {
                     try {
@@ -1186,33 +1191,47 @@ public class MainActivity extends AppCompatActivity {
 
 
         boolean isSameRGB(int color1, int color2) {
-            return Color.red(color1) == Color.red(color2) &&
-                    Color.green(color1) == Color.green(color2) &&
-                    Color.blue(color1) == Color.blue(color2);
+            return color1 == color2;
+//            return Color.red(color1) == Color.red(color2) &&
+//                    Color.green(color1) == Color.green(color2) &&
+//                    Color.blue(color1) == Color.blue(color2);
         }
+
+        int[] pixelsInFindColor;
 
         int findColor(Bitmap image, int color, boolean vertical, boolean up, boolean left) {
             int width = image.getWidth();
             int height = image.getHeight();
+            int totalSize = width * height;
+            if (null == pixelsInFindColor || totalSize != pixelsInFindColor.length) {
+                pixelsInFindColor = null;
+                pixelsInFindColor = new int[width * height];
+            }
+
+//            int[] pixels = new int[width*height];
+            image.getPixels(pixelsInFindColor, 0, width, 0, 0, width, height);
+
+            int inc = 1;
 
             int h_start = vertical ? up ? 0 : height - 1 : 0;
-            int h_inc = vertical ? up ? 1 : -1 : 1;
+            int h_inc = (vertical ? up ? 1 : -1 : 1) * inc;
             int h_end = vertical ? up ? height - 1 : 0 : height - 1;
 
             int w_start = vertical ? 0 : left ? 0 : width - 1;
-            int w_inc = vertical ? 1 : left ? 1 : -1;
+            int w_inc = (vertical ? 1 : left ? 1 : -1) * inc;
             int w_end = vertical ? width - 1 : left ? width - 1 : 0;
 
             int w0_end = vertical ? w_start + w_inc : w_end;
             int w1_end = vertical ? w_end : w_start + w_inc;
 
+
             for (int w0 = w_start; w0 != w0_end; w0 += w_inc) {
                 for (int h = h_start; h != h_end; h += h_inc) {
                     for (int w1 = w_start; w1 != w1_end; w1 += w_inc) {
-
                         int w = vertical ? w1 : w0;
-                        int pixel = image.getPixel(w, h);
-//                    auto& pixel = p<cv::Vec3b>(image, w, h);
+//                        int pixel = image.getPixel(w, h);
+                        int pixel = pixelsInFindColor[w + h * width];
+
                         if (isSameRGB(pixel, color)) {
                             if (vertical) {
                                 return h;
@@ -1226,6 +1245,23 @@ public class MainActivity extends AppCompatActivity {
             return -1;
         }
 
+        Rect getRoi(Bitmap image, int... colors) {
+            for (int x = 0; x < colors.length; x++) {
+                int color = colors[x];
+                Rect rect = getRoi(image, color);
+                if (-1 != rect.x) {
+                    return rect;
+                }
+            }
+//            for (int color : colors) {
+//                Rect rect = getRoi(image, color);
+//                if (-1 != rect.x) {
+//                    return rect;
+//                }
+//            }
+            return new Rect(-1, -1, 0, 0);
+        }
+
         Rect getRoi(Bitmap image, int color) {
             int top = findColor(image, color, true, true, false);
             int bottom = findColor(image, color, true, false, false);
@@ -1236,35 +1272,52 @@ public class MainActivity extends AppCompatActivity {
 
 
         private void screenDetection(Bitmap screen) {
-//        int width = screen.getWidth();
-            int height = screen.getHeight();
+            int screen_width = screen.getWidth();
+            int screen_height = screen.getHeight();
 
-            Rect title_roi = getRoi(screen, TitleGreen);
-            if (-1 == title_roi.x) {
+            Bitmap halfScreen = Bitmap.createBitmap(screen, 0, 0, screen.getWidth(), screen_height >> 1);
+
+            Rect road_roi = getRoi(halfScreen, RoadBgGreen_1);
+            if (-1 == road_roi.x || road_roi.width != screen_width) {
+                road_roi = getRoi(halfScreen, RoadBgGreen_2);
+            }
+
+            Log.i(TAG, "Road roi: " + road_roi.toString());
+            if (-1 == road_roi.x) {
                 return;
             }
 
-            int gmapHeight = height - (title_roi.y + title_roi.height);
-            Bitmap gmapScreen = Bitmap.createBitmap(screen, title_roi.x, title_roi.y + title_roi.height, title_roi.width, gmapHeight);
+            int gmapHeight = screen_height - road_roi.y;
+            Bitmap gmapScreen = Bitmap.createBitmap(screen, road_roi.x, road_roi.y, road_roi.width, gmapHeight);
 
-            Rect arrow_roi = getRoi(gmapScreen, ArrowColor_1);
-            if (-1 == arrow_roi.x) {
-                arrow_roi = getRoi(gmapScreen, ArrowColor_2);
+            // write bitmap to a file
+            try (FileOutputStream fos = new FileOutputStream(STORE_DIRECTORY + GmapImage)) {
+                gmapScreen.compress(CompressFormat.PNG, 100, fos);
+            } catch (IOException ex) {
+                Log.e(TAG, ex.toString());
             }
 
+            Rect arrow_roi = getRoi(gmapScreen, ArrowColor_1, ArrowColor_Night, ArrowColor_Static);
             if (-1 == arrow_roi.x) {
+                Log.i(TAG, "NoFound Arrow");
                 return;
+            } else {
+                Log.i(TAG, "Found Arrow: " + arrow_roi.toString());
             }
 
             int end_y = arrow_roi.y;
-            Log.i(TAG, "Found Arrow: " + arrow_roi.toString());
 
-            Rect road_roi = getRoi(gmapScreen, RoadBgGreen);
+
             Rect lane_roi = getRoi(gmapScreen, LaneBgGreen);
+            if (-1 != lane_roi.x && lane_roi.width != screen_width) {
+                lane_roi = getRoi(gmapScreen, LaneBgGreen_Night);
+            }
             final boolean lane_roi_exist = -1 != lane_roi.x;
 
 
             if (lane_roi_exist) {
+                Log.i(TAG, "Lane ROI Found");
+
                 Bitmap lane_roi_image = Bitmap.createBitmap(gmapScreen, lane_roi.x, lane_roi.y, lane_roi.width, lane_roi.height);
                 try (FileOutputStream fos = new FileOutputStream(STORE_DIRECTORY + LaneImage)) {
                     lane_roi_image.compress(CompressFormat.PNG, 100, fos);
@@ -1272,13 +1325,18 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(TAG, ex.toString());
                 }
                 laneDetect(lane_roi_image);
+            } else {
+                Log.i(TAG, "Lane ROI NoFound");
             }
 
             Bitmap map_roi_image;
             if (-1 != road_roi.x) {
-                Rect target_roi = lane_roi_exist ? lane_roi : road_roi;
+                Rect target_roi = lane_roi_exist ? lane_roi : new Rect(0, 0, road_roi.width, road_roi.height);
+                int map_roi_height = gmapScreen.getHeight() - (target_roi.y + target_roi.height) - (gmapScreen.getHeight() - arrow_roi.y);
+
+
                 map_roi_image = Bitmap.createBitmap(gmapScreen, target_roi.x, target_roi.y + target_roi.height,
-                        target_roi.width, gmapScreen.getHeight() - (target_roi.y + target_roi.height));
+                        target_roi.width, map_roi_height);
 
                 // write bitmap to a file
                 try (FileOutputStream fos = new FileOutputStream(STORE_DIRECTORY + MapImage)) {
@@ -1289,7 +1347,7 @@ public class MainActivity extends AppCompatActivity {
 
                 boolean busyTraffic = busyTrafficDetect(map_roi_image);
                 sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
-                        getString(R.string.busy_traffic),busyTraffic);
+                        getString(R.string.busy_traffic), busyTraffic);
             }
 
 
@@ -1302,6 +1360,8 @@ public class MainActivity extends AppCompatActivity {
         private boolean busyTrafficDetect(Bitmap map) {
             Rect orange_roi = getRoi(map, OrangeTraffic);
             Rect roi_red = getRoi(map, RedTraffic);
+            Log.i(TAG, "busyTrafficDetect: " + "Orange" + orange_roi + " Red" + roi_red);
+
             boolean busyTraffic = -1 != orange_roi.x || -1 != roi_red.x;
             return busyTraffic;
         }

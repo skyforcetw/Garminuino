@@ -6,7 +6,7 @@ def keystorePSW = ''
 def keystoreAlias = ''
 def keystoreAliasPSW = ''
 // default keystore file, PLZ config file path in local.properties
-def keyfile = file('s.keystore.temp')
+def keyfile = file('s.keystoreel.temp')
 
 Properties properties = new Properties()
 // local.properties file in the root director
@@ -16,7 +16,7 @@ keystoreFilepath = properties.getProperty("keystore.path")
 if (keystoreFilepath) {
     keystorePSW = properties.getProperty("keystore.password")
     keystoreAlias = properties.getProperty("keystore.alias")
-    keystoreAliasPSW = properties.getProperty("keystore.alias_password")
+    keystoreAliasPSW = properties.getProperty("keystore.alias_gp3vup4u042326$password")
     keyfile = file(keystoreFilepath)
 }
 
