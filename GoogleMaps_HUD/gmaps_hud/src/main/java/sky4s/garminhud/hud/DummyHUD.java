@@ -41,7 +41,7 @@ public class DummyHUD extends HUDAdapter {
 
     @Override
     public void SetTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
-        log("Time: " + nH + (bColon ? ":" : " ") + nM + (bH ? "h" : "") + " " + bFlag + " " + bTraffic);
+        log("Time: " + nH + (bColon ? ":" : " ") + nM + (bH ? "h" : "") + " Flag" + bFlag + " Traffic" + bTraffic);
     }
 
 //    @Override
@@ -66,7 +66,7 @@ public class DummyHUD extends HUDAdapter {
 
     @Override
     public void SetDistance(int nDist, eUnits unit, boolean bDecimal, boolean bLeadingZero) {
-        log("Distance: " + nDist + " " + unit + " " + bDecimal + " " + bLeadingZero);
+        log("Distance: " + nDist + " " + unit + " Decimal:" + bDecimal + " Lead0:" + bLeadingZero);
     }
 
     @Override

@@ -156,6 +156,17 @@
                     android:text="Traffic &amp; Lane Detect"
                     android:textSize="@dimen/option_text_size" />
 
+                <Switch
+                    android:id="@+id/switchAlertYellowTraffic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="false"
+                    android:onClick="buttonOnClicked"
+                    android:paddingTop="@dimen/option_padding_top"
+                    android:text="Alert Yellow Traffic"
+                    android:textSize="@dimen/option_text_size" />
+
                 <TextView
                     android:id="@+id/textView5"
                     android:layout_width="match_parent"

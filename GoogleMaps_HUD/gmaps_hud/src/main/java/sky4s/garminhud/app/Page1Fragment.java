@@ -32,12 +32,11 @@ public class Page1Fragment extends Fragment {
         ((MainActivity) getActivity()).switchGmapsNotificationCaught = (Switch) getView().findViewById(R.id.switchGmapsNotificationCaught);
 
         ((MainActivity) getActivity()).switchShowSpeed = (Switch) getView().findViewById(R.id.switchShowSpeed);
-        Switch switchAutoBrightness = (Switch) getView().findViewById(R.id.switchAutoBrightness);;
+//        Switch switchAutoBrightness = (Switch) getView().findViewById(R.id.switchAutoBrightness);;
 
-        ((MainActivity) getActivity()).switchAutoBrightness = switchAutoBrightness;
+        ((MainActivity) getActivity()).switchAutoBrightness =  (Switch) getView().findViewById(R.id.switchAutoBrightness);;
 
         SeekBar seekBarBrightness= (SeekBar) getView().findViewById(R.id.seekBarBrightness);
-//        seekBarBrightness.incrementProgressBy(10);
         seekBarBrightness.setEnabled(false);
 
         ((MainActivity) getActivity()).seekBarBrightness = seekBarBrightness;
@@ -45,8 +44,12 @@ public class Page1Fragment extends Fragment {
         ((MainActivity) getActivity()).switchShowETA = (Switch) getView().findViewById(R.id.switchShowETA);
         ((MainActivity) getActivity()).switchIdleShowCurrrentTime = (Switch) getView().findViewById(R.id.switchIdleShowCurrentTime);
 
+        ((MainActivity) getActivity()).switchTrafficAndLane = (Switch) getView().findViewById(R.id.switchTrafficAndLane);
+        ((MainActivity) getActivity()).switchAlertYellowTraffic = (Switch) getView().findViewById(R.id.switchAlertYellowTraffic);
+
         SharedPreferences sharedPref = ((MainActivity) getActivity()).getPreferences(Context.MODE_PRIVATE);
         boolean showPrompt = sharedPref.getBoolean(getString(R.string.option_show_prompt), true);
+        //first lesson for GarminHUD app
         if (showPrompt) {
             MaterialTapTargetSequence sequence = new MaterialTapTargetSequence();
             prompt(sequence, R.id.switchHudConnected, getString(R.string.prompt_switch_hud_connected));
@@ -60,6 +63,8 @@ public class Page1Fragment extends Fragment {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(getString(R.string.option_show_prompt), false);
         editor.commit();
+
+//        ((MainActivity) getActivity()).loadOptions();
     }
 
     private MaterialTapTargetSequence prompt(MaterialTapTargetSequence sequence, final int target, String text) {

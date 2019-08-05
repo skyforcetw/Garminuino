@@ -85,51 +85,148 @@ import sky4s.garminhud.hud.HUDInterface;
 public class MainActivity extends AppCompatActivity {
     //for test with virtual device which no BT device
     public final static boolean IGNORE_BT_DEVICE = (null == BluetoothAdapter.getDefaultAdapter());
-
+    public final static long UpdateInterval = 1000;
     private static final String TAG = MainActivity.class.getSimpleName();
-
     private static final String ENABLED_NOTIFICATION_LISTENERS = "enabled_notification_listeners";
     private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-
-    private boolean isEnabledNLS = false;
-    private boolean showCurrentTime = false;
-
+    //===============================================================================================
+    // screen capture
+    //===============================================================================================
+    private static final int REQUEST_CODE = 100;
+    private static final String SCREENCAP_NAME = "screencap";
+    private static final int VIRTUAL_DISPLAY_FLAGS = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
+    private static String STORE_DIRECTORY;
+    private static MediaProjection sMediaProjection;
+    private static long lastUpdateTime = 0;
+    //========================================================================================
+    // tabs
+    //========================================================================================
+    // Titles of the individual pages (displayed in tabs)
+    private final String[] PAGE_TITLES = new String[]{
+            "Setup",
+            "Debug"
+    };
+    // The fragments that are used as the individual pages
+    private final Fragment[] PAGES = new Fragment[]{
+            new Page1Fragment(),
+            new Page2Fragment()
+    };
     //========================================
     // UI for Page1Fragment
     //========================================
     TextView textViewDebug;
     Switch switchHudConnected;
+    //========================================
     Switch switchNotificationCaught;
     Switch switchGmapsNotificationCaught;
-
-
     Switch switchShowSpeed;
     Switch switchAutoBrightness;
     SeekBar seekBarBrightness;
-
     Switch switchShowETA;
-
     Switch switchIdleShowCurrrentTime;
-    //========================================
+
+    Switch switchTrafficAndLane;
+    Switch switchAlertYellowTraffic;
+
+    private boolean isEnabledNLS = false;
+    private boolean showCurrentTime = false;
+    private BluetoothSPP bt;
+    private HUDInterface hud = new DummyHUD();
+    private NotificationManager manager;
+    private MsgReceiver msgReceiver;
+    private boolean lastReallyInNavigation = false;
+    private boolean is_in_navigation = false;
+    private int int_speed = 0;
+    private ScreenReceiver screenReceiver;
+    private Timer timer = new Timer(true);
+    private CurrentTimeTask currentTimeTask;
+    // The ViewPager is responsible for sliding pages (fragments) in and out upon user input
+    private ViewPager mViewPager;
+    private NavigationItemSelectedListener navigationListener = new NavigationItemSelectedListener();
+
+    //========================================================================================
+    private SharedPreferences sharedPref;
+    private DrawerLayout mDrawerLayout;
+    private boolean garminHudConnected;
+    private BluetoothConnectionListener btConnectionListener = new BluetoothConnectionListener();
+    private SeekBar.OnSeekBarChangeListener seekbarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            switchAutoBrightness.setText("Brightness " + (progress * 10) + "%");
+            if (null != hud) {
+                int brightness = getGammaBrightness();
+                hud.SetBrightness(brightness);
+            }
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    };
+    //    private ActionBarDrawerToggle mDrawerToggle;
+    //===============================================================================================
+    // location
+    //===============================================================================================
+    private boolean locationServiceConnected;
+    private boolean useLocationService;
+    private LocationService locationService;
+    private LocationManager locationManager;
+    private ServiceConnection locationServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
+            locationService = binder.getService();
+//            locationService.hud = hud;
+            locationServiceConnected = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            locationServiceConnected = false;
+        }
+    };
+    private MediaProjectionManager mProjectionManager;
+    private ImageReader mImageReader;
+    private Handler mHandler;
+    private Display mDisplay;
+    private VirtualDisplay mVirtualDisplay;
+    private int mDensity;
+    private int mWidth;
+    private int mHeight;
+    private int mRotation;
+    private OrientationChangeCallback mOrientationChangeCallback;
+    private boolean alertYellowTraffic = false;
+
+    public static void copy(File src, File dst) throws IOException {
+        try (InputStream in = new FileInputStream(src)) {
+            try (OutputStream out = new FileOutputStream(dst)) {
+                // Transfer bytes from in to out
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+            }
+        }
+    }
 
     private boolean isInNavigation() {
         return switchGmapsNotificationCaught.isChecked();
     }
-
-    private BluetoothSPP bt;
-    private HUDInterface hud = new DummyHUD();
-    private NotificationManager manager;
 
     private void sendBooleanExtraByBroadcast(String receiver, String key, boolean b) {
         Intent intent = new Intent(receiver);
         intent.putExtra(key, b);
         sendBroadcast(intent);
     }
-
-    private MsgReceiver msgReceiver;
-    private boolean lastReallyInNavigation = false;
-    private boolean is_in_navigation = false;
 
     private void setSpeed(int nSpeed, boolean bIcon) {
         if (null != hud) {
@@ -151,189 +248,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class MsgReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String whoami = intent.getStringExtra(getString(R.string.whoami)); //for debug
-
-            //=======================================================================
-            // for debug message
-            //=======================================================================
-            boolean has_notify_msg = intent.hasExtra(getString(R.string.notify_msg));
-            if (has_notify_msg) {
-                String notify_msg = intent.getStringExtra(getString(R.string.notify_msg));
-                CharSequence orignal_text = textViewDebug.getText();
-                orignal_text = orignal_text.length() > 1000 ? "" : orignal_text;
-                textViewDebug.setText(notify_msg + "\n\n" + orignal_text);
-                return;
-            }
-
-            //=======================================================================
-            boolean has_gps_speed = intent.hasExtra(getString(R.string.gps_speed));
-            if (has_gps_speed) {
-                double speed = intent.getDoubleExtra(getString(R.string.gps_speed), 0);
-                int int_speed = (int) Math.round(speed);
-                setSpeed(int_speed, true);
-
-                CharSequence orignal_text = textViewDebug.getText();
-                textViewDebug.setText("speed: " + int_speed + "\n\n" + orignal_text);
-
-                return;
-            }
-            //=======================================================================
-            // for UI usage
-            //=======================================================================
-            boolean notify_parse_failed = intent.getBooleanExtra(getString(R.string.notify_parse_failed), false);
-
-            if (notify_parse_failed) {
-                //when pass fail
-                if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
-                    switchNotificationCaught.setChecked(false);
-                    switchGmapsNotificationCaught.setChecked(false);
-                }
-            } else {
-                //pass success
-                final boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched),
-                        null != switchNotificationCaught ? switchNotificationCaught.isChecked() : false);
-                final boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched),
-                        null != switchGmapsNotificationCaught ? switchGmapsNotificationCaught.isChecked() : false);
-
-
-                final boolean is_in_navigation_now = intent.getBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
-
-                if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
-                    if (!notify_catched) { //no notify catched
-                        switchNotificationCaught.setChecked(false);
-                        switchGmapsNotificationCaught.setChecked(false);
-                    } else {
-                        switchNotificationCaught.setChecked(notify_catched);
-                        final boolean is_really_in_navigation = gmaps_notify_catched && is_in_navigation_now;
-                        switchGmapsNotificationCaught.setChecked(is_really_in_navigation);
-
-                        if (lastReallyInNavigation != is_really_in_navigation &&
-                                false == is_really_in_navigation &&
-                                null != hud) {
-                            //exit navigation
-                            hud.SetDirection(eOutAngle.AsDirection); //maybe in this line
-                        }
-                        is_in_navigation = is_really_in_navigation;
-                        lastReallyInNavigation = is_really_in_navigation;
-                    }
-                }
-
-                //for location usage
-//                sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_location_service), getString(R.string.is_in_navigation), isInNavigation());
-            }
-
-        }
-    }
-
-    private ScreenReceiver screenReceiver;
-
-    private class ScreenReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                if (useLocationService) {
-
-                }
-                // DO WHATEVER YOU NEED TO DO HERE
-//                wasScreenOn = false;
-            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                // AND DO WHATEVER YOU NEED TO DO HERE
-//                wasScreenOn = true;
-            }
-        }
-
-    }
-
-    private Timer timer = new Timer(true);
-    private CurrentTimeTask currentTimeTask;
-
-    private class CurrentTimeTask extends TimerTask {
-        public void run() {
-            if (null != hud && !isInNavigation() && showCurrentTime) {
-                Calendar c = Calendar.getInstance();
-                int hour = c.get(Calendar.HOUR_OF_DAY);
-                int minute = c.get(Calendar.MINUTE);
-//                hud.SetTime(hour, minute, false, false);
-                hud.SetCurrentTime(hour, minute);
-            }
-        }
-    }
-
-    //========================================================================================
-    // tabs
-    //========================================================================================
-    // Titles of the individual pages (displayed in tabs)
-    private final String[] PAGE_TITLES = new String[]{
-            "Setup",
-            "Debug"
-    };
-
-    // The fragments that are used as the individual pages
-    private final Fragment[] PAGES = new Fragment[]{
-            new Page1Fragment(),
-            new Page2Fragment()
-    };
-    // The ViewPager is responsible for sliding pages (fragments) in and out upon user input
-    private ViewPager mViewPager;
-
-    /* PagerAdapter for supplying the ViewPager with the pages (fragments) to display. */
-    private class MyPagerAdapter extends FragmentPagerAdapter {
-
-        public MyPagerAdapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return PAGES[position];
-        }
-
-        @Override
-        public int getCount() {
-            return PAGES.length;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return PAGE_TITLES[position];
-        }
-
-    }
-
-    //========================================================================================
-
-    private NavigationItemSelectedListener navigationListener = new NavigationItemSelectedListener();
-
-    private class NavigationItemSelectedListener implements NavigationView.OnNavigationItemSelectedListener {
-
-
-        @Override
-        public boolean onNavigationItemSelected(MenuItem item) {
-            return false;
-        }
-    }
-
-
-    private SharedPreferences sharedPref;
-
     void loadOptions() {
 
-//        boolean optionNavigatingShowSpeed = sharedPref.getBoolean(getString(R.string.option_navigating_show_speed), false);
-//        boolean optionIdleShowSpeed = sharedPref.getBoolean(getString(R.string.option_idle_show_speed), false);
-//        switchNavShowSpeed.setChecked(optionNavigatingShowSpeed);
-//        switchIdleShowSpeed.setChecked(optionIdleShowSpeed);
-//        showSpeed(optionNavigatingShowSpeed, optionIdleShowSpeed);
-
+        boolean optionShowSpeed = sharedPref.getBoolean(getString(R.string.option_show_speed), false);
+        boolean optionTrafficAndLaneDetect = sharedPref.getBoolean(getString(R.string.option_traffic_and_lane_detect), false);
+        boolean optionAlertYellowTraffic = sharedPref.getBoolean(getString(R.string.option_alert_yellow_traffic), false);
         boolean optionShowEta = sharedPref.getBoolean(getString(R.string.option_show_eta), false);
         boolean optionIdleShowTime = sharedPref.getBoolean(getString(R.string.option_idle_show_current_time), false);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                switchShowSpeed.setChecked(optionShowSpeed);
+                switchTrafficAndLane.setChecked(optionTrafficAndLaneDetect);
+                switchAlertYellowTraffic.setChecked(optionAlertYellowTraffic);
+                switchShowETA.setChecked(optionShowEta);
+                switchIdleShowCurrrentTime.setChecked(optionIdleShowTime);
+            }
+        });
     }
-
-    private DrawerLayout mDrawerLayout;
-//    private ActionBarDrawerToggle mDrawerToggle;
 
     private String init_bt() {
         String bt_status = "";
@@ -463,77 +395,6 @@ public class MainActivity extends AppCompatActivity {
 //        createNotification(this);
     }
 
-    private boolean garminHudConnected;
-
-    private class BluetoothConnectionListener implements BluetoothSPP.BluetoothConnectionListener, BluetoothSPP.AutoConnectionListener {
-        @Override
-        public void onAutoConnectionStarted() {
-            int a = 1;
-        }
-
-        @Override
-        public void onNewConnection(String name, String address) {
-            int a = 1;
-        }
-
-        /*
-        talk about location service:
-        only work when device connected.
-        not work when device disconnected or panel off => can android send location to garmin hud when panel off?
-
-         */
-
-        @Override
-        public void onDeviceConnected(String name, String address) {
-            garminHudConnected = true;
-            switchHudConnected.setText("'" + name + "' connected");
-            switchHudConnected.setTextColor(Color.BLACK);
-            switchHudConnected.setChecked(true);
-
-//            NotificationMonitor.hud = hud;
-            log("onDeviceConnected");
-
-            if (useLocationService && !locationServiceConnected) {
-                bindLocationService();
-            }
-
-            if (null != hud) {
-                if (switchAutoBrightness.isChecked()) {
-                    hud.SetAutoBrightness();
-                } else {
-                    final int brightness = getGammaBrightness();
-                    hud.SetBrightness(brightness);
-                }
-            }
-
-            String connected_device_name = bt.getConnectedDeviceName();
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString(getString(R.string.bt_bind_name_key), connected_device_name);
-            editor.commit();
-        }
-
-        @Override
-        public void onDeviceDisconnected() {
-            garminHudConnected = false;
-            switchHudConnected.setText("HUD disconnected");
-            switchHudConnected.setTextColor(Color.RED);
-            switchHudConnected.setChecked(false);
-//            NotificationMonitor.hud = null;
-            log("onDeviceDisconnected");
-        }
-
-        @Override
-        public void onDeviceConnectionFailed() {
-            switchHudConnected.setText("HUD connect failed");
-            switchHudConnected.setTextColor(Color.RED);
-            switchHudConnected.setChecked(false);
-//            NotificationMonitor.hud = null;
-            log("onDeviceConnectionFailed");
-        }
-    }
-
-    private BluetoothConnectionListener btConnectionListener = new BluetoothConnectionListener();
-
     public void onStop() {
         super.onStop();
     }
@@ -569,6 +430,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
+//        loadOptions();
     }
 
     @Override
@@ -590,28 +453,6 @@ public class MainActivity extends AppCompatActivity {
 //        unregisterReceiver(msgReceiver);
     }
 
-    private SeekBar.OnSeekBarChangeListener seekbarChangeListener = new SeekBar.OnSeekBarChangeListener() {
-
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            switchAutoBrightness.setText("Brightness " + (progress * 10) + "%");
-            if (null != hud) {
-                int brightness = getGammaBrightness();
-                hud.SetBrightness(brightness);
-            }
-        }
-
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-
-        }
-
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
-
-        }
-    };
-
     private int getGammaBrightness() {
         final int progress = seekBarBrightness.getProgress();
         float progress_normal = progress * 1.0f / seekBarBrightness.getMax();
@@ -621,6 +462,12 @@ public class MainActivity extends AppCompatActivity {
         return gamma_brightness;
     }
 
+    private void storeOptions(int optionID, boolean option) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+//        editor.putBoolean(optionString, option);
+        editor.putBoolean(getString(optionID), option);
+        editor.commit();
+    }
 
     public void buttonOnClicked(View view) {
         switch (view.getId()) {
@@ -665,6 +512,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!canShowSpeed) {
                     ((Switch) view).setChecked(false);
                 }
+                storeOptions(R.string.option_show_speed, ((Switch) view).isChecked());
                 break;
 
             case R.id.switchAutoBrightness:
@@ -693,16 +541,19 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     stopProjection();
                 }
+                storeOptions(R.string.option_traffic_and_lane_detect, ((Switch) view).isChecked());
                 break;
 
+            case R.id.switchAlertYellowTraffic:
+                alertYellowTraffic = ((Switch) view).isChecked();
+                storeOptions(R.string.option_alert_yellow_traffic, ((Switch) view).isChecked());
+                break;
 
             case R.id.switchShowETA:
                 sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
                         getString(R.string.option_show_eta), ((Switch) view).isChecked());
+                storeOptions(R.string.option_show_eta, ((Switch) view).isChecked());
 
-//                sendBooleanExtraByBroadcast(
-//                        getString(R.string.broadcast_receiver_notification_monitor),
-//                        Integer.toString(R.id.switchShowETA), ((Switch) view).isChecked());
                 break;
 
 
@@ -712,6 +563,7 @@ public class MainActivity extends AppCompatActivity {
                     currentTimeTask = new CurrentTimeTask();
                     timer.schedule(currentTimeTask, 1000, 1000);
                 }
+                storeOptions(R.string.option_idle_show_current_time, ((Switch) view).isChecked());
                 break;
 
             default:
@@ -834,7 +686,6 @@ public class MainActivity extends AppCompatActivity {
         return listNos;
     }
 
-
     private void listCurrentNotification() {
         String result = "";
         if (isEnabledNLS) {
@@ -858,7 +709,6 @@ public class MainActivity extends AppCompatActivity {
             textViewDebug.setText("Please Enable Notification Access");
         }
     }
-
 
     private void openNotificationAccess() {
         startActivity(new Intent(ACTION_NOTIFICATION_LISTENER_SETTINGS));
@@ -950,29 +800,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //===============================================================================================
-    // location
-    //===============================================================================================
-    private boolean locationServiceConnected;
-    private boolean useLocationService;
-    private LocationService locationService;
-    private LocationManager locationManager;
-
-    private ServiceConnection locationServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
-            locationService = binder.getService();
-//            locationService.hud = hud;
-            locationServiceConnected = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            locationServiceConnected = false;
-        }
-    };
-
     // bind/activate LocationService
     void bindLocationService() {
         if (true == locationServiceConnected)
@@ -1060,29 +887,41 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //===============================================================================================
-    // screen capture
-    //===============================================================================================
-    private static final int REQUEST_CODE = 100;
-    private static String STORE_DIRECTORY;
-    private static final String SCREENCAP_NAME = "screencap";
-    private static final int VIRTUAL_DISPLAY_FLAGS = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
-    private static MediaProjection sMediaProjection;
+    /****************************************** UI Widget Callbacks *******************************/
+    private void startProjection() {
+        startActivityForResult(mProjectionManager.createScreenCaptureIntent(), REQUEST_CODE);
+    }
 
-    private MediaProjectionManager mProjectionManager;
-    private ImageReader mImageReader;
-    private Handler mHandler;
-    private Display mDisplay;
-    private VirtualDisplay mVirtualDisplay;
-    private int mDensity;
-    private int mWidth;
-    private int mHeight;
-    private int mRotation;
-    private OrientationChangeCallback mOrientationChangeCallback;
+    private void stopProjection() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (sMediaProjection != null) {
+                    sMediaProjection.stop();
+                }
+            }
+        });
+    }
 
-    private static long lastUpdateTime = 0;
-    public final static long UpdateInterval = 1000;
+    /****************************************** Factoring Virtual Display creation ****************/
+    private void createVirtualDisplay() {
+        // get width and height
+        Point size = new Point();
+        mDisplay.getSize(size);
+//        mWidth = size.x;
+//        mHeight = size.y;
 
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        mWidth = dm.widthPixels;
+        mHeight = dm.heightPixels;
+
+
+        // start capture reader
+        mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 2);
+        mVirtualDisplay = sMediaProjection.createVirtualDisplay(SCREENCAP_NAME, mWidth, mHeight, mDensity, VIRTUAL_DISPLAY_FLAGS, mImageReader.getSurface(), null, mHandler);
+        mImageReader.setOnImageAvailableListener(new ImageAvailableListener(), mHandler);
+    }
 
     static class Rect {
         public int x;
@@ -1103,6 +942,213 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private class MsgReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String whoami = intent.getStringExtra(getString(R.string.whoami)); //for debug
+
+            //=======================================================================
+            // for debug message
+            //=======================================================================
+            boolean has_notify_msg = intent.hasExtra(getString(R.string.notify_msg));
+            if (has_notify_msg) {
+                String notify_msg = intent.getStringExtra(getString(R.string.notify_msg));
+                CharSequence orignal_text = textViewDebug.getText();
+                orignal_text = orignal_text.length() > 1000 ? "" : orignal_text;
+                textViewDebug.setText(notify_msg + "\n\n" + orignal_text);
+                return;
+            }
+
+            //=======================================================================
+            boolean has_gps_speed = intent.hasExtra(getString(R.string.gps_speed));
+            if (has_gps_speed) {
+                double speed = intent.getDoubleExtra(getString(R.string.gps_speed), 0);
+                int int_speed = (int) Math.round(speed);
+                setSpeed(int_speed, true);
+
+                CharSequence orignal_text = textViewDebug.getText();
+                textViewDebug.setText("speed: " + int_speed + "\n\n" + orignal_text);
+
+                return;
+            }
+            //=======================================================================
+            // for UI usage
+            //=======================================================================
+            boolean notify_parse_failed = intent.getBooleanExtra(getString(R.string.notify_parse_failed), false);
+
+            if (notify_parse_failed) {
+                //when pass fail
+                if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
+                    switchNotificationCaught.setChecked(false);
+                    switchGmapsNotificationCaught.setChecked(false);
+                }
+            } else {
+                //pass success
+                final boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched),
+                        null != switchNotificationCaught ? switchNotificationCaught.isChecked() : false);
+                final boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched),
+                        null != switchGmapsNotificationCaught ? switchGmapsNotificationCaught.isChecked() : false);
+
+
+                final boolean is_in_navigation_now = intent.getBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
+
+                if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
+                    if (!notify_catched) { //no notify catched
+                        switchNotificationCaught.setChecked(false);
+                        switchGmapsNotificationCaught.setChecked(false);
+                    } else {
+                        switchNotificationCaught.setChecked(notify_catched);
+                        final boolean is_really_in_navigation = gmaps_notify_catched && is_in_navigation_now;
+                        switchGmapsNotificationCaught.setChecked(is_really_in_navigation);
+
+                        if (lastReallyInNavigation != is_really_in_navigation &&
+                                false == is_really_in_navigation &&
+                                null != hud) {
+                            //exit navigation
+                            hud.SetDirection(eOutAngle.AsDirection); //maybe in this line
+                        }
+                        is_in_navigation = is_really_in_navigation;
+                        lastReallyInNavigation = is_really_in_navigation;
+                    }
+                }
+
+                //for location usage
+//                sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_location_service), getString(R.string.is_in_navigation), isInNavigation());
+            }
+
+        }
+    }
+
+    private class ScreenReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                if (useLocationService) {
+
+                }
+                // DO WHATEVER YOU NEED TO DO HERE
+//                wasScreenOn = false;
+            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                // AND DO WHATEVER YOU NEED TO DO HERE
+//                wasScreenOn = true;
+            }
+        }
+
+    }
+
+    private class CurrentTimeTask extends TimerTask {
+        public void run() {
+            if (null != hud && !isInNavigation() && showCurrentTime) {
+                Calendar c = Calendar.getInstance();
+                int hour = c.get(Calendar.HOUR_OF_DAY);
+                int minute = c.get(Calendar.MINUTE);
+//                hud.SetTime(hour, minute, false, false);
+                hud.SetCurrentTime(hour, minute);
+            }
+        }
+    }
+
+    /* PagerAdapter for supplying the ViewPager with the pages (fragments) to display. */
+    private class MyPagerAdapter extends FragmentPagerAdapter {
+
+        public MyPagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return PAGES[position];
+        }
+
+        @Override
+        public int getCount() {
+            return PAGES.length;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return PAGE_TITLES[position];
+        }
+
+    }
+
+    private class NavigationItemSelectedListener implements NavigationView.OnNavigationItemSelectedListener {
+
+
+        @Override
+        public boolean onNavigationItemSelected(MenuItem item) {
+            return false;
+        }
+    }
+
+    private class BluetoothConnectionListener implements BluetoothSPP.BluetoothConnectionListener, BluetoothSPP.AutoConnectionListener {
+        @Override
+        public void onAutoConnectionStarted() {
+            int a = 1;
+        }
+
+        @Override
+        public void onNewConnection(String name, String address) {
+            int a = 1;
+        }
+
+        /*
+        talk about location service:
+        only work when device connected.
+        not work when device disconnected or panel off => can android send location to garmin hud when panel off?
+
+         */
+
+        @Override
+        public void onDeviceConnected(String name, String address) {
+            garminHudConnected = true;
+            switchHudConnected.setText("'" + name + "' connected");
+            switchHudConnected.setTextColor(Color.BLACK);
+            switchHudConnected.setChecked(true);
+
+//            NotificationMonitor.hud = hud;
+            log("onDeviceConnected");
+
+            if (useLocationService && !locationServiceConnected) {
+                bindLocationService();
+            }
+
+            if (null != hud) {
+                if (switchAutoBrightness.isChecked()) {
+                    hud.SetAutoBrightness();
+                } else {
+                    final int brightness = getGammaBrightness();
+                    hud.SetBrightness(brightness);
+                }
+            }
+
+            String connected_device_name = bt.getConnectedDeviceName();
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(getString(R.string.bt_bind_name_key), connected_device_name);
+            editor.commit();
+        }
+
+        @Override
+        public void onDeviceDisconnected() {
+            garminHudConnected = false;
+            switchHudConnected.setText("HUD disconnected");
+            switchHudConnected.setTextColor(Color.RED);
+            switchHudConnected.setChecked(false);
+//            NotificationMonitor.hud = null;
+            log("onDeviceDisconnected");
+        }
+
+        @Override
+        public void onDeviceConnectionFailed() {
+            switchHudConnected.setText("HUD connect failed");
+            switchHudConnected.setTextColor(Color.RED);
+            switchHudConnected.setChecked(false);
+//            NotificationMonitor.hud = null;
+            log("onDeviceConnectionFailed");
+        }
+    }
+
     private class ImageAvailableListener
             implements ImageReader.OnImageAvailableListener {
         public final String PreImage = "myscreen_pre.png";
@@ -1117,13 +1163,17 @@ public class MainActivity extends AppCompatActivity {
 
         public final int RoadBgGreen_1 = Color.rgb(15, 157, 88);
         public final int RoadBgGreen_2 = Color.rgb(13, 144, 79);
+
         public final int LaneBgGreen_Day = Color.rgb(11, 128, 67);
         public final int LaneBgGreen_Night = Color.rgb(9, 113, 56);
 
-//        public final int BlueTraffic_1 = Color.rgb(69, 151, 255);
+        public final int NextArrow_Day = LaneBgGreen_Day;
+
+        //        public final int BlueTraffic_1 = Color.rgb(69, 151, 255);
 //        public final int BlueTraffic_2 = Color.rgb(102, 157, 246);
         public final int OrangeTraffic = Color.rgb(255, 171, 52);
         public final int RedTraffic = Color.rgb(221, 25, 29);
+        int[] pixelsInFindColor;
 
         @Override
         public void onImageAvailable(ImageReader reader) {
@@ -1137,7 +1187,9 @@ public class MainActivity extends AppCompatActivity {
                 if (image != null) {
                     long currentTime = System.currentTimeMillis();
                     long deltaTime = currentTime - lastUpdateTime;
-                    if (deltaTime > UpdateInterval) {
+                    boolean do_detection = deltaTime > UpdateInterval;//&& int_speed>40;
+
+                    if (do_detection) {
                         lastUpdateTime = currentTime;
                         Image.Plane[] planes = image.getPlanes();
                         ByteBuffer buffer = planes[0].getBuffer();
@@ -1148,7 +1200,6 @@ public class MainActivity extends AppCompatActivity {
                         // create bitmap
                         bitmap = Bitmap.createBitmap(mWidth + rowPadding / pixelStride, mHeight, Bitmap.Config.ARGB_8888);
                         bitmap.copyPixelsFromBuffer(buffer);
-//                        Log.i(TAG, "onImageAvailable()");
 
                         File nowImage = new File(STORE_DIRECTORY + NowImage);
                         if (nowImage.exists()) {
@@ -1157,15 +1208,13 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         // write bitmap to a file
-                        fos = new FileOutputStream(STORE_DIRECTORY + NowImage);
-                        bitmap.compress(CompressFormat.PNG, 100, fos);
+                        storeToPNG(bitmap, STORE_DIRECTORY + NowImage);
 
                         screenDetection(bitmap);
                     }
                 }
 
             } catch (Exception e) {
-//                e.printStackTrace();
                 Log.e(TAG, e.toString());
             } finally {
                 if (fos != null) {
@@ -1186,15 +1235,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-
         boolean isSameRGB(int color1, int color2) {
-//            return color1 == color2;
+//            return color1==color2;
             return Color.red(color1) == Color.red(color2) &&
                     Color.green(color1) == Color.green(color2) &&
                     Color.blue(color1) == Color.blue(color2);
         }
-
-        int[] pixelsInFindColor;
 
         int findColor(Bitmap image, int color, boolean vertical, boolean up, boolean left) {
             int width = image.getWidth();
@@ -1205,7 +1251,6 @@ public class MainActivity extends AppCompatActivity {
                 pixelsInFindColor = new int[width * height];
             }
 
-//            int[] pixels = new int[width*height];
             image.getPixels(pixelsInFindColor, 0, width, 0, 0, width, height);
 
             int inc = 1;
@@ -1226,7 +1271,6 @@ public class MainActivity extends AppCompatActivity {
                 for (int h = h_start; h != h_end; h += h_inc) {
                     for (int w1 = w_start; w1 != w1_end; w1 += w_inc) {
                         int w = vertical ? w1 : w0;
-//                        int pixel = image.getPixel(w, h);
                         int pixel = pixelsInFindColor[w + h * width];
 
                         if (isSameRGB(pixel, color)) {
@@ -1262,112 +1306,138 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        private void screenDetection(Bitmap screen) {
-            int screen_width = screen.getWidth();
-            int screen_height = screen.getHeight();
-
-            Bitmap halfScreen = Bitmap.createBitmap(screen, 0, 0, screen.getWidth(), screen_height >> 1);
-
-            Rect road_roi = getRoi(halfScreen, RoadBgGreen_1);
-            if (-1 == road_roi.x || road_roi.width != screen_width) {
-                road_roi = getRoi(halfScreen, RoadBgGreen_2);
-            }
-
-            Log.i(TAG, "Road roi: " + road_roi.toString());
-            if (-1 == road_roi.x) {
-                return;
-            }
-
-            int gmapHeight = screen_height - road_roi.y;
-            Bitmap gmapScreen = Bitmap.createBitmap(screen, road_roi.x, road_roi.y, road_roi.width, gmapHeight);
-
-            // write bitmap to a file
-            try (FileOutputStream fos = new FileOutputStream(STORE_DIRECTORY + GmapImage)) {
-                gmapScreen.compress(CompressFormat.PNG, 100, fos);
+        private boolean storeToPNG(Bitmap image, String filename) {
+            try (FileOutputStream fos = new FileOutputStream(filename)) {
+                image.compress(CompressFormat.PNG, 100, fos);
             } catch (IOException ex) {
                 Log.e(TAG, ex.toString());
+                return false;
             }
+            return true;
+        }
 
-            Rect arrow_roi = getRoi(gmapScreen, ArrowColor_Day, ArrowColor_Night, ArrowColor_Static);
-            if (-1 == arrow_roi.x) {
-                Log.i(TAG, "NoFound Arrow");
-                return;
-            } else {
-                Log.i(TAG, "Found Arrow: " + arrow_roi.toString());
-            }
+        /**
+         * detect procedure:
+         * 1. road
+         * 2. arrow
+         * 3. lane -> lane detect
+         * 4. traffic detect
+         *
+         * @param screen
+         */
+        private void screenDetection(Bitmap screen) {
+            boolean road_detect_result = false;
+            boolean arrow_detect_result = false;
+            boolean lane_detect_result = false;
+            boolean traffic_detect_result = false;
 
-            int end_y = arrow_roi.y;
+            boolean busyTraffic = false;
 
+            try {
+                int screen_width = screen.getWidth();
+                int screen_height = screen.getHeight();
+                //=====================================
+                // road
+                //=====================================
+                Bitmap halfScreen = Bitmap.createBitmap(screen, 0, 0, screen.getWidth(), screen_height >> 1);
+                Rect road_roi = getRoi(halfScreen, RoadBgGreen_1);
 
-            Rect lane_roi = getRoi(gmapScreen, LaneBgGreen_Day);
-            if (-1 != lane_roi.x && lane_roi.width != screen_width) {
-                lane_roi = getRoi(gmapScreen, LaneBgGreen_Night);
-            }
-            final boolean lane_roi_exist = -1 != lane_roi.x;
-
-
-            if (lane_roi_exist) {
-                Log.i(TAG, "Lane ROI Found");
-
-                Bitmap lane_roi_image = Bitmap.createBitmap(gmapScreen, lane_roi.x, lane_roi.y, lane_roi.width, lane_roi.height);
-                try (FileOutputStream fos = new FileOutputStream(STORE_DIRECTORY + LaneImage)) {
-                    lane_roi_image.compress(CompressFormat.PNG, 100, fos);
-                } catch (IOException ex) {
-                    Log.e(TAG, ex.toString());
+                if (-1 == road_roi.x || Math.abs(road_roi.width - screen_width) > 77) {
+                    road_roi = getRoi(halfScreen, RoadBgGreen_2);
                 }
-                laneDetect(lane_roi_image);
-            } else {
-                Log.i(TAG, "Lane ROI NoFound");
-            }
+                int roi_width = road_roi.width;
 
-            Bitmap map_roi_image;
-            if (-1 != road_roi.x) {
-                Rect target_roi = lane_roi_exist ? lane_roi : new Rect(0, 0, road_roi.width, road_roi.height);
-                int map_roi_height = gmapScreen.getHeight() - (target_roi.y + target_roi.height) - (gmapScreen.getHeight() - arrow_roi.y);
+                Log.i(TAG, "Road roi: " + road_roi.toString());
+                if (-1 == road_roi.x) {
+                    return;
+                }
 
-
-                map_roi_image = Bitmap.createBitmap(gmapScreen, target_roi.x, target_roi.y + target_roi.height,
-                        target_roi.width, map_roi_height);
+                int gmapHeight = screen_height - road_roi.y;
+                Bitmap gmapScreen = Bitmap.createBitmap(screen, road_roi.x, road_roi.y, road_roi.width, gmapHeight);
 
                 // write bitmap to a file
-                try (FileOutputStream fos = new FileOutputStream(STORE_DIRECTORY + MapImage)) {
-                    map_roi_image.compress(CompressFormat.PNG, 100, fos);
-                } catch (IOException ex) {
-                    Log.e(TAG, ex.toString());
-                }
+                storeToPNG(gmapScreen, STORE_DIRECTORY + GmapImage);
 
-                boolean busyTraffic = busyTrafficDetect(map_roi_image);
+                road_detect_result = true;
+                //=====================================
+                // arrow
+                //=====================================
+                Rect arrow_roi = getRoi(gmapScreen, ArrowColor_Day, ArrowColor_Night);
+                if (-1 == arrow_roi.x) {
+                    Log.i(TAG, "NoFound Arrow");
+                    return;
+                } else {
+                    Log.i(TAG, "Found Arrow: " + arrow_roi.toString());
+                }
+                arrow_detect_result = true;
+//            int end_y = arrow_roi.y;
+
+                //=====================================
+                // lane
+                //=====================================
+                Rect lane_roi = getRoi(gmapScreen, LaneBgGreen_Day);
+                if (-1 != lane_roi.x && lane_roi.width != roi_width) {
+                    lane_roi = getRoi(gmapScreen, LaneBgGreen_Night);
+                }
+                final boolean lane_roi_exist = -1 != lane_roi.x;
+
+
+                if (lane_roi_exist) {
+                    Bitmap lane_roi_image = Bitmap.createBitmap(gmapScreen, lane_roi.x, lane_roi.y, lane_roi.width, lane_roi.height);
+                    storeToPNG(lane_roi_image, STORE_DIRECTORY + LaneImage);
+                    laneDetect(lane_roi_image);
+                }
+                lane_detect_result = lane_roi_exist;
+                //=====================================
+                // traffic
+                //=====================================
+                Bitmap map_roi_image;
+                if (-1 != road_roi.x) {
+                    Rect target_roi = lane_roi_exist ? lane_roi : new Rect(0, 0, road_roi.width, road_roi.height);
+                    int map_roi_height = gmapScreen.getHeight() - (target_roi.y + target_roi.height) - (gmapScreen.getHeight() - arrow_roi.y);
+
+                    map_roi_image = Bitmap.createBitmap(gmapScreen, target_roi.x, target_roi.y + target_roi.height,
+                            target_roi.width, map_roi_height);
+
+                    // write bitmap to a file
+                    storeToPNG(map_roi_image, STORE_DIRECTORY + MapImage);
+
+                    if (arrow_detect_result) {
+                        busyTraffic = busyTrafficDetect(map_roi_image, alertYellowTraffic);
+                    } else {
+                        busyTraffic = false;
+                    }
+
+
+                    traffic_detect_result = true;
+                }
+            } finally {
                 sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
                         getString(R.string.busy_traffic), busyTraffic);
+                Log.i(TAG, "detect result: " +
+                        Boolean.toString(road_detect_result) + " " +
+                        Boolean.toString(arrow_detect_result) + " " +
+                        Boolean.toString(lane_detect_result) + " " +
+                        Boolean.toString(traffic_detect_result) + ":" +
+                        (busyTraffic ? "Busy" : "Normal")
+                );
             }
-
-
         }
 
         private void laneDetect(Bitmap lane) {
 
         }
 
-        private boolean busyTrafficDetect(Bitmap map) {
+        private boolean busyTrafficDetect(Bitmap map, boolean alertYellowTraffic) {
             Rect orange_roi = getRoi(map, OrangeTraffic);
             Rect roi_red = getRoi(map, RedTraffic);
             Log.i(TAG, "busyTrafficDetect: " + "Orange" + orange_roi + " Red" + roi_red);
 
-            boolean busyTraffic = -1 != orange_roi.x || -1 != roi_red.x;
-            return busyTraffic;
-        }
-    }
+            boolean yellowTraffic = -1 != orange_roi.x;
+            boolean redTraffic = -1 != roi_red.x;
 
-    public static void copy(File src, File dst) throws IOException {
-        try (InputStream in = new FileInputStream(src)) {
-            try (OutputStream out = new FileOutputStream(dst)) {
-                // Transfer bytes from in to out
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-            }
+            boolean busyTraffic = alertYellowTraffic ? yellowTraffic || redTraffic : redTraffic;
+            return busyTraffic;
         }
     }
 
@@ -1410,37 +1480,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-    }
-
-    /****************************************** UI Widget Callbacks *******************************/
-    private void startProjection() {
-        startActivityForResult(mProjectionManager.createScreenCaptureIntent(), REQUEST_CODE);
-    }
-
-    private void stopProjection() {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (sMediaProjection != null) {
-                    sMediaProjection.stop();
-                }
-            }
-        });
-    }
-
-
-    /****************************************** Factoring Virtual Display creation ****************/
-    private void createVirtualDisplay() {
-        // get width and height
-        Point size = new Point();
-        mDisplay.getSize(size);
-        mWidth = size.x;
-        mHeight = size.y;
-
-        // start capture reader
-        mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 2);
-        mVirtualDisplay = sMediaProjection.createVirtualDisplay(SCREENCAP_NAME, mWidth, mHeight, mDensity, VIRTUAL_DISPLAY_FLAGS, mImageReader.getSurface(), null, mHandler);
-        mImageReader.setOnImageAvailableListener(new ImageAvailableListener(), mHandler);
     }
 
 }
