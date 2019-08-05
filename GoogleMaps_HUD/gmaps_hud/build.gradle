@@ -16,7 +16,7 @@ keystoreFilepath = properties.getProperty("keystore.path")
 if (keystoreFilepath) {
     keystorePSW = properties.getProperty("keystore.password")
     keystoreAlias = properties.getProperty("keystore.alias")
-    keystoreAliasPSW = properties.getProperty("keystore.alias_gp3vup4u042326$password")
+    keystoreAliasPSW = properties.getProperty("keystore.alias_password")
     keyfile = file(keystoreFilepath)
 }
 
