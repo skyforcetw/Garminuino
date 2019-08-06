@@ -142,6 +142,15 @@
                 android:progress="0"
                 android:textSize="@dimen/option_text_size" />
 
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="Traffic"
+                android:textSize="@dimen/option_title_size" />
+
             <Switch
                 android:id="@+id/switchTrafficAndLane"
                 android:layout_width="match_parent"
@@ -159,7 +168,6 @@
                 android:layout_weight="1"
                 android:checked="false"
                 android:clickable="false"
-                android:onClick="buttonOnClicked"
                 android:paddingTop="@dimen/option_padding_top"
                 android:text="Alert Yellow Traffic"
                 android:textSize="@dimen/option_text_size" />
@@ -178,8 +186,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="buttonOnClicked"
-
                 android:text="Show Speed"
                 android:textSize="@dimen/option_text_size"
                 android:visibility="gone" />
@@ -189,8 +195,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="buttonOnClicked"
-
                 android:text="Show ETA"
                 android:textSize="@dimen/option_text_size" />
 
@@ -209,8 +213,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-
-                android:onClick="buttonOnClicked"
                 android:text="Show Current Time"
                 android:textSize="@dimen/option_text_size" />
 
