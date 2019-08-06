@@ -1,8 +1,8 @@
 # Garminuino
 There has two sub-project use GarminHUD as:
 * a GoogleMap navigation HUD  (Android App+GarminHUD).  
- [Downloading newest release App here.](https://github.com/skyforcetw/Garminuino/releases)
- [Further Information for Android App.](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/README.md)  
+ 1.[Downloading newest release App here.](https://github.com/skyforcetw/Garminuino/releases)
+ 2.[Further Information for Android App.](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/README.md)  
  
  * a speedometer HUD  (Arduino+GarminHUD, STOP MAINTAIN)
  
