@@ -36,4 +36,10 @@
         <service android:name="chutka.bitman.com.speedometersimplified.LocationService" />
     </application>
 
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true" />
+
 </manifest>

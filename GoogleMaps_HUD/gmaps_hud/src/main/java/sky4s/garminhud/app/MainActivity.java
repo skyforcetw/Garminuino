@@ -21,7 +21,6 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
-import android.graphics.Point;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
 import android.location.LocationManager;
@@ -67,6 +66,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -134,11 +134,11 @@ public class MainActivity extends AppCompatActivity {
     private boolean showCurrentTime = false;
     private BluetoothSPP bt;
     private HUDInterface hud = new DummyHUD();
-    private NotificationManager manager;
+    private NotificationManager notifyManager;
     private MsgReceiver msgReceiver;
     private boolean lastReallyInNavigation = false;
     private boolean is_in_navigation = false;
-    private int int_speed = 0;
+    //    private int int_speed = 0;
     private ScreenReceiver screenReceiver;
     private Timer timer = new Timer(true);
     private CurrentTimeTask currentTimeTask;
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
     //========================================================================================
     private SharedPreferences sharedPref;
     private DrawerLayout mDrawerLayout;
-    private boolean garminHudConnected;
+    //    private boolean garminHudConnected;
     private BluetoothConnectionListener btConnectionListener = new BluetoothConnectionListener();
     private SeekBar.OnSeekBarChangeListener seekbarChangeListener = new SeekBar.OnSeekBarChangeListener() {
 
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
     };
     private MediaProjectionManager mProjectionManager;
     private ImageReader mImageReader;
-    private Handler mHandler;
+    private Handler mProjectionHandler;
     private Display mDisplay;
     private VirtualDisplay mVirtualDisplay;
     private int mDensity;
@@ -385,14 +385,14 @@ public class MainActivity extends AppCompatActivity {
         //========================================================================================
         // MediaProjection
         //========================================================================================
-        // call for the projection manager
+        // call for the projection notifyManager
         mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
         // start capture handling thread
         new Thread() {
             @Override
             public void run() {
                 Looper.prepare();
-                mHandler = new Handler();
+                mProjectionHandler = new Handler();
                 Looper.loop();
             }
         }.start();
@@ -404,6 +404,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onStop() {
         super.onStop();
+
     }
 
     public void onDestroy() {
@@ -413,8 +414,8 @@ public class MainActivity extends AppCompatActivity {
             bt.stopService();
         }
         unbindLocationService();
-        if (manager != null) {
-            manager.cancel(1);
+        if (notifyManager != null) {
+            notifyManager.cancel(1);
         }
 
         unregisterReceiver(msgReceiver);
@@ -471,7 +472,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void storeOptions(int optionID, boolean option) {
         SharedPreferences.Editor editor = sharedPref.edit();
-//        editor.putBoolean(optionString, option);
         editor.putBoolean(getString(optionID), option);
         editor.commit();
     }
@@ -681,7 +681,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createNotification(Context context) {
-        manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+        notifyManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         //ignore OREO NotificationChannel, because GARMINuino no need this new feature.
 
         NotificationCompat.Builder builder =
@@ -692,7 +692,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAutoCancel(false);
 
         Notification notification = builder.build();
-        manager.notify(1, notification);
+        notifyManager.notify(1, notification);
 
     }
 
@@ -816,7 +816,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 // register media projection stop callback
-                sMediaProjection.registerCallback(new MediaProjectionStopCallback(), mHandler);
+                sMediaProjection.registerCallback(new MediaProjectionStopCallback(), mProjectionHandler);
             }
         }
     }
@@ -914,7 +914,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void stopProjection() {
-        mHandler.post(new Runnable() {
+        mProjectionHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (sMediaProjection != null) {
@@ -927,8 +927,8 @@ public class MainActivity extends AppCompatActivity {
     /****************************************** Factoring Virtual Display creation ****************/
     private void createVirtualDisplay() {
         // get width and height
-        Point size = new Point();
-        mDisplay.getSize(size);
+//        Point size = new Point();
+//        mDisplay.getSize(size);
 //        mWidth = size.x;
 //        mHeight = size.y;
 
@@ -937,11 +937,12 @@ public class MainActivity extends AppCompatActivity {
         mWidth = dm.widthPixels;
         mHeight = dm.heightPixels;
 
+//        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
 
         // start capture reader
         mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 2);
-        mVirtualDisplay = sMediaProjection.createVirtualDisplay(SCREENCAP_NAME, mWidth, mHeight, mDensity, VIRTUAL_DISPLAY_FLAGS, mImageReader.getSurface(), null, mHandler);
-        mImageReader.setOnImageAvailableListener(new ImageAvailableListener(), mHandler);
+        mVirtualDisplay = sMediaProjection.createVirtualDisplay(SCREENCAP_NAME, mWidth, mHeight, mDensity, VIRTUAL_DISPLAY_FLAGS, mImageReader.getSurface(), null, mProjectionHandler);
+        mImageReader.setOnImageAvailableListener(new ImageAvailableListener(), mProjectionHandler);
     }
 
     static class Rect {
@@ -974,9 +975,11 @@ public class MainActivity extends AppCompatActivity {
             boolean has_notify_msg = intent.hasExtra(getString(R.string.notify_msg));
             if (has_notify_msg) {
                 String notify_msg = intent.getStringExtra(getString(R.string.notify_msg));
-                CharSequence orignal_text = textViewDebug.getText();
-                orignal_text = orignal_text.length() > 1000 ? "" : orignal_text;
-                textViewDebug.setText(notify_msg + "\n\n" + orignal_text);
+                if (null != textViewDebug) {
+                    CharSequence orignal_text = textViewDebug.getText();
+                    orignal_text = orignal_text.length() > 1000 ? "" : orignal_text;
+                    textViewDebug.setText(notify_msg + "\n\n" + orignal_text);
+                }
                 return;
             }
 
@@ -1123,7 +1126,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceConnected(String name, String address) {
-            garminHudConnected = true;
+//            garminHudConnected = true;
             switchHudConnected.setText("'" + name + "' connected");
             switchHudConnected.setTextColor(Color.BLACK);
             switchHudConnected.setChecked(true);
@@ -1152,7 +1155,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceDisconnected() {
-            garminHudConnected = false;
+//            garminHudConnected = false;
             switchHudConnected.setText("HUD disconnected");
             switchHudConnected.setTextColor(Color.RED);
             switchHudConnected.setChecked(false);
@@ -1187,6 +1190,9 @@ public class MainActivity extends AppCompatActivity {
 
         public final int LaneBgGreen_Day = Color.rgb(11, 128, 67);
         public final int LaneBgGreen_Night = Color.rgb(9, 113, 56);
+        public final int LaneDivideWhite = Color.rgb(255, 255, 255);
+        public final int LaneNowWhite = Color.rgb(255, 255, 255);
+        public final int LaneOtherWhite = Color.rgb(51, 172, 113);
 
         public final int NextArrow_Day = LaneBgGreen_Day;
 
@@ -1353,6 +1359,8 @@ public class MainActivity extends AppCompatActivity {
             boolean traffic_detect_result = false;
 
             boolean busyTraffic = false;
+            int ROAD_ROI_WIDTH_TOL = 77;
+            int LANE_ROI_WIDTH_TOL = 10;
 
             try {
                 int screen_width = screen.getWidth();
@@ -1363,17 +1371,17 @@ public class MainActivity extends AppCompatActivity {
                 Bitmap halfScreen = Bitmap.createBitmap(screen, 0, 0, screen.getWidth(), screen_height >> 1);
                 Rect road_roi = getRoi(halfScreen, RoadBgGreen_1);
 
-                if (-1 == road_roi.x || Math.abs(road_roi.width - screen_width) > 77) {
+                if (-1 == road_roi.x || Math.abs(road_roi.width - screen_width) > ROAD_ROI_WIDTH_TOL) {
                     road_roi = getRoi(halfScreen, RoadBgGreen_2);
                 }
-                int roi_width = road_roi.width;
+                final int roi_width = road_roi.width;
 
                 Log.i(TAG, "Road roi: " + road_roi.toString());
                 if (-1 == road_roi.x) {
                     return;
                 }
 
-                int gmapHeight = screen_height - road_roi.y;
+                final int gmapHeight = screen_height - road_roi.y;
                 Bitmap gmapScreen = Bitmap.createBitmap(screen, road_roi.x, road_roi.y, road_roi.width, gmapHeight);
 
                 // write bitmap to a file
@@ -1391,45 +1399,62 @@ public class MainActivity extends AppCompatActivity {
                     Log.i(TAG, "Found Arrow: " + arrow_roi.toString());
                 }
                 arrow_detect_result = true;
-//            int end_y = arrow_roi.y;
+                //=====================================
+                Bitmap map_roi_image = null;
+                if (road_detect_result && arrow_detect_result) {
+                    int x = road_roi.x;
+                    int y = road_roi.height;
+                    int width = road_roi.width - x;
+                    int height = gmapScreen.getHeight() - y - (gmapScreen.getHeight() - arrow_roi.y);
 
+                    map_roi_image = Bitmap.createBitmap(gmapScreen, x, y, width, height);
+
+                    // write bitmap to a file
+                    storeToPNG(map_roi_image, STORE_DIRECTORY + MapImage);
+                }
                 //=====================================
                 // lane
                 //=====================================
-                Rect lane_roi = getRoi(gmapScreen, LaneBgGreen_Day);
-                if (-1 != lane_roi.x && lane_roi.width != roi_width) {
-                    lane_roi = getRoi(gmapScreen, LaneBgGreen_Night);
+                Rect lane_roi = getRoi(map_roi_image, LaneBgGreen_Day);
+                int lane_bg_color = LaneBgGreen_Day;
+                Bitmap lane_roi_image = null;
+
+                int lane_delta_width = Math.abs(lane_roi.width - map_roi_image.getWidth());
+
+                if (-1 == lane_roi.x || lane_delta_width > LANE_ROI_WIDTH_TOL) {
+                    if (-1 != lane_roi.x) {
+                        lane_roi_image = Bitmap.createBitmap(map_roi_image, lane_roi.x, lane_roi.y, lane_roi.width, lane_roi.height);
+                        storeToPNG(lane_roi_image, STORE_DIRECTORY + "lane_day.png");
+                    }
+                    lane_roi = getRoi(map_roi_image, LaneBgGreen_Night);
+                    lane_bg_color = LaneBgGreen_Night;
                 }
+
+//                if (-1 != lane_roi.x) {
+//                    lane_roi_image = Bitmap.createBitmap(map_roi_image, lane_roi.x, lane_roi.y, lane_roi.width, lane_roi.height);
+//                    storeToPNG(lane_roi_image, STORE_DIRECTORY + "lane1.png");
+//                } else {
+//                    lane_roi = getRoi(map_roi_image, LaneBgGreen_Night);
+//                    lane_roi_image = Bitmap.createBitmap(map_roi_image, lane_roi.x, lane_roi.y, lane_roi.width, lane_roi.height);
+//                    storeToPNG(lane_roi_image, STORE_DIRECTORY + "lane2.png");
+//                }
                 final boolean lane_roi_exist = -1 != lane_roi.x;
 
-
                 if (lane_roi_exist) {
-                    Bitmap lane_roi_image = Bitmap.createBitmap(gmapScreen, lane_roi.x, lane_roi.y, lane_roi.width, lane_roi.height);
+                    lane_roi_image = Bitmap.createBitmap(map_roi_image, lane_roi.x, lane_roi.y, lane_roi.width, lane_roi.height);
                     storeToPNG(lane_roi_image, STORE_DIRECTORY + LaneImage);
-                    laneDetect(lane_roi_image);
+                    laneDetect(lane_roi_image, lane_bg_color);
                 }
                 lane_detect_result = lane_roi_exist;
                 //=====================================
                 // traffic
                 //=====================================
-                Bitmap map_roi_image;
-                if (-1 != road_roi.x) {
-                    Rect target_roi = lane_roi_exist ? lane_roi : new Rect(0, 0, road_roi.width, road_roi.height);
-                    int map_roi_height = gmapScreen.getHeight() - (target_roi.y + target_roi.height) - (gmapScreen.getHeight() - arrow_roi.y);
-
-                    map_roi_image = Bitmap.createBitmap(gmapScreen, target_roi.x, target_roi.y + target_roi.height,
-                            target_roi.width, map_roi_height);
-
-                    // write bitmap to a file
-                    storeToPNG(map_roi_image, STORE_DIRECTORY + MapImage);
-
+                if (road_detect_result && arrow_detect_result) {
                     if (arrow_detect_result) {
                         busyTraffic = busyTrafficDetect(map_roi_image, alertYellowTraffic);
                     } else {
                         busyTraffic = false;
                     }
-
-
                     traffic_detect_result = true;
                 }
             } finally {
@@ -1445,8 +1470,32 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        private void laneDetect(Bitmap lane) {
+        private ArrayList<Integer> findLaneDivide(Bitmap lane, int y, int bgColor, int divideColor) {
+            ArrayList<Integer> result = new ArrayList<Integer>();
+            final int width = lane.getWidth();
+            for (int x = 0; x < width - 6; x++) {
+                int pixel0 = lane.getPixel(x, y);
+                int pixel3 = lane.getPixel(x + 3, y);
+                int pixel6 = lane.getPixel(x + 6, y);
+                if (isSameRGB(pixel0, bgColor) &&
+                        isSameRGB(pixel3, divideColor) &&
+                        isSameRGB(pixel6, bgColor)) {
+                    result.add(x + 3);
+                    x += 6;
+                }
+            }
+            return result;
+        }
 
+        private ArrayList<Boolean> laneDetect(Bitmap lane, int bgColor) {
+            final int height = lane.getHeight() - 1;
+            ArrayList<Integer> laneDivide = findLaneDivide(lane, height, bgColor, LaneDivideWhite);
+
+            ArrayList<Boolean> result = new ArrayList<Boolean>();
+            if (laneDivide.size() >= 2) {
+                int divideWidth = laneDivide.get(1) - laneDivide.get(0);
+            }
+            return result;
         }
 
         private boolean busyTrafficDetect(Bitmap map, boolean alertYellowTraffic) {
@@ -1491,7 +1540,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onStop() {
             Log.e("ScreenCapture", "stopping projection.");
-            mHandler.post(new Runnable() {
+            mProjectionHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     if (mVirtualDisplay != null) mVirtualDisplay.release();
