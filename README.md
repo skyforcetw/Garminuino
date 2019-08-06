@@ -12,8 +12,8 @@ There has two sub-project use GarminHUD as:
 ## GoogleMap navigation HUD App Release History ##
 
 ### [2019-08-06 v0.4.3](https://github.com/skyforcetw/Garminuino/releases/download/0.4.3/gmaps_hud-release_v0.4.3.apk)
-Add traffic detect function
-Add reset bt function, test it when your bt connection is unable.
+1. Add traffic detect function
+2. Add reset bt function, test it when your bt connection is unable.
 
 ### [2019-03-15 v0.4.0s](https://github.com/skyforcetw/Garminuino/releases/download/0.4.0s/gmaps_hud-release.apk)
 Auto/Manual Brightness Setting for Garmin HUD.
