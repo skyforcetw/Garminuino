@@ -1,14 +1,19 @@
 # Garminuino
 There has two sub-project use GarminHUD as:
 * a GoogleMap navigation HUD  (Android App+GarminHUD).  
- [Further Information for Android App.](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/README.md)  
- [Downloading newest release App here.](https://github.com/skyforcetw/Garminuino/releases)
+1. [Downloading newest release App here.](https://github.com/skyforcetw/Garminuino/releases)
+2. [Further Information for Android App.](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/README.md)  
+ 
  * a speedometer HUD  (Arduino+GarminHUD, STOP MAINTAIN)
  
 <img src="./pics/P_20190125_225356-02.jpeg" alt="Two Garmin HUD application" width="500"/>
-<img src="./pics/pic%20(4).png" alt="App layout" width="400"/>
+<img src="./pics/371209.jpg" alt="App layout" width="400"/>
 
 ## GoogleMap navigation HUD App Release History ##
+
+### [2019-08-06 v0.4.3](https://github.com/skyforcetw/Garminuino/releases/download/0.4.3/gmaps_hud-release_v0.4.3.apk)
+1. Add traffic detect function
+2. Add reset bt function, test it when your bt connection is unable.
 
 ### [2019-03-15 v0.4.0s](https://github.com/skyforcetw/Garminuino/releases/download/0.4.0s/gmaps_hud-release.apk)
 Auto/Manual Brightness Setting for Garmin HUD.
