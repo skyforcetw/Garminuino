@@ -64,7 +64,7 @@ public class Page1Fragment extends Fragment {
         editor.putBoolean(getString(R.string.option_show_prompt), false);
         editor.commit();
 
-//        ((MainActivity) getActivity()).loadOptions();
+        ((MainActivity) getActivity()).loadOptions();
     }
 
     private MaterialTapTargetSequence prompt(MaterialTapTargetSequence sequence, final int target, String text) {

@@ -54,6 +54,7 @@ import android.view.Display;
 import android.view.MenuItem;
 import android.view.OrientationEventListener;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -249,6 +250,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void loadOptions() {
+
+        switchShowSpeed.setOnCheckedChangeListener(onCheckedChangedListener);
+        switchTrafficAndLane.setOnCheckedChangeListener(onCheckedChangedListener);
+        switchAlertYellowTraffic.setOnCheckedChangeListener(onCheckedChangedListener);
+        switchShowETA.setOnCheckedChangeListener(onCheckedChangedListener);
+        switchIdleShowCurrrentTime.setOnCheckedChangeListener(onCheckedChangedListener);
 
         boolean optionShowSpeed = sharedPref.getBoolean(getString(R.string.option_show_speed), false);
         boolean optionTrafficAndLaneDetect = sharedPref.getBoolean(getString(R.string.option_traffic_and_lane_detect), false);
@@ -469,6 +476,60 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
     }
 
+    public class OnCheckedChangedListener implements CompoundButton.OnCheckedChangeListener {
+
+        @Override
+        public void onCheckedChanged(CompoundButton view, boolean b) {
+            switch (view.getId()) {
+                case R.id.switchShowSpeed:
+                    final boolean canShowSpeed = showSpeed(((Switch) view).isChecked());
+                    if (!canShowSpeed) {
+                        ((Switch) view).setChecked(false);
+                    }
+                    storeOptions(R.string.option_show_speed, ((Switch) view).isChecked());
+                    break;
+
+                case R.id.switchTrafficAndLane:
+                    if (((Switch) view).isChecked()) {
+                        startProjection();
+                    } else {
+                        stopProjection();
+                    }
+                    storeOptions(R.string.option_traffic_and_lane_detect, ((Switch) view).isChecked());
+                    break;
+
+                case R.id.switchAlertYellowTraffic:
+                    alertYellowTraffic = ((Switch) view).isChecked();
+                    storeOptions(R.string.option_alert_yellow_traffic, ((Switch) view).isChecked());
+                    break;
+
+                case R.id.switchShowETA:
+                    sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
+                            getString(R.string.option_show_eta), ((Switch) view).isChecked());
+                    storeOptions(R.string.option_show_eta, ((Switch) view).isChecked());
+
+                    break;
+
+
+                case R.id.switchIdleShowCurrentTime:
+                    showCurrentTime = ((Switch) view).isChecked();
+                    if (showCurrentTime && null == currentTimeTask) {
+                        currentTimeTask = new CurrentTimeTask();
+                        timer.schedule(currentTimeTask, 1000, 1000);
+                    }
+                    storeOptions(R.string.option_idle_show_current_time, ((Switch) view).isChecked());
+                    break;
+
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    private OnCheckedChangedListener onCheckedChangedListener = new OnCheckedChangedListener();
+
+
     public void buttonOnClicked(View view) {
         switch (view.getId()) {
 
@@ -507,14 +568,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
 
-            case R.id.switchShowSpeed:
-                final boolean canShowSpeed = showSpeed(((Switch) view).isChecked());
-                if (!canShowSpeed) {
-                    ((Switch) view).setChecked(false);
-                }
-                storeOptions(R.string.option_show_speed, ((Switch) view).isChecked());
-                break;
-
             case R.id.switchAutoBrightness:
                 Switch theAutoBrightness = (Switch) view;
                 final boolean autoBrightness = theAutoBrightness.isChecked();
@@ -534,38 +587,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 break;
-
-            case R.id.switchTrafficAndLane:
-                if (((Switch) view).isChecked()) {
-                    startProjection();
-                } else {
-                    stopProjection();
-                }
-                storeOptions(R.string.option_traffic_and_lane_detect, ((Switch) view).isChecked());
-                break;
-
-            case R.id.switchAlertYellowTraffic:
-                alertYellowTraffic = ((Switch) view).isChecked();
-                storeOptions(R.string.option_alert_yellow_traffic, ((Switch) view).isChecked());
-                break;
-
-            case R.id.switchShowETA:
-                sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
-                        getString(R.string.option_show_eta), ((Switch) view).isChecked());
-                storeOptions(R.string.option_show_eta, ((Switch) view).isChecked());
-
-                break;
-
-
-            case R.id.switchIdleShowCurrentTime:
-                showCurrentTime = ((Switch) view).isChecked();
-                if (showCurrentTime && null == currentTimeTask) {
-                    currentTimeTask = new CurrentTimeTask();
-                    timer.schedule(currentTimeTask, 1000, 1000);
-                }
-                storeOptions(R.string.option_idle_show_current_time, ((Switch) view).isChecked());
-                break;
-
             default:
                 break;
         }

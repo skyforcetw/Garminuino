@@ -31,16 +31,12 @@
     <string name="bt_bind_name_key" translatable="false">bt_bind_name_key</string>
 
     <string name="option_show_speed" translatable="false">option_show_speed</string>
-
     <string name="option_traffic_and_lane_detect" translatable="false">option_traffic_and_lane_detect</string>
     <string name="option_alert_yellow_traffic" translatable="false">option_alert_yellow_traffic</string>
-
     <string name="option_show_eta" translatable="false">option_show_eta</string>
     <string name="option_idle_show_current_time" translatable="false">option_idle_show_current_time</string>
-
     <string name="option_auto_brightness" translatable="false">option_auto_brightness</string>
     <string name="option_manual_brightness" translatable="false">option_manual_brightness</string>
-
     <string name="option_show_prompt" translatable="false">option_show_prompt</string>
 
     <!--broadcast receiver-->
