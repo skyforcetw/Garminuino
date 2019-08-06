@@ -1269,7 +1269,7 @@ public class MainActivity extends AppCompatActivity {
                     Color.blue(color1) == Color.blue(color2);
         }
 
-        int findColor(Bitmap image, int color, boolean vertical, boolean up, boolean left) {
+        int findColor(Bitmap image, int color, boolean vertical, boolean up, boolean left, boolean printDetail) {
             int width = image.getWidth();
             int height = image.getHeight();
             int totalSize = width * height;
@@ -1302,8 +1302,12 @@ public class MainActivity extends AppCompatActivity {
 
                         if (isSameRGB(pixel, color)) {
                             if (vertical) {
+                                if (printDetail)
+                                    Log.i(TAG, "vertical: " + h + "," + w);
                                 return h;
                             } else {
+                                if (printDetail)
+                                    Log.i(TAG, "horizontal: " + h + "," + w);
                                 return w;
                             }
                         }
@@ -1316,7 +1320,7 @@ public class MainActivity extends AppCompatActivity {
         Rect getRoi(Bitmap image, int... colors) {
             for (int x = 0; x < colors.length; x++) {
                 int color = colors[x];
-                Rect rect = getRoi(image, color);
+                Rect rect = getRoi(image, color, false);
                 if (-1 != rect.x) {
                     return rect;
                 }
@@ -1324,11 +1328,11 @@ public class MainActivity extends AppCompatActivity {
             return new Rect(-1, -1, 0, 0);
         }
 
-        Rect getRoi(Bitmap image, int color) {
-            int top = findColor(image, color, true, true, false);
-            int bottom = findColor(image, color, true, false, false);
-            int left = findColor(image, color, false, true, true);
-            int right = findColor(image, color, false, true, false);
+        Rect getRoi(Bitmap image, int color, boolean printDetail) {
+            int top = findColor(image, color, true, true, false, printDetail);
+            int bottom = findColor(image, color, true, false, false, printDetail);
+            int left = findColor(image, color, false, true, true, printDetail);
+            int right = findColor(image, color, false, true, false, printDetail);
             return new Rect(left, top, right - left, bottom - top);
         }
 
@@ -1369,10 +1373,12 @@ public class MainActivity extends AppCompatActivity {
                 // road
                 //=====================================
                 Bitmap halfScreen = Bitmap.createBitmap(screen, 0, 0, screen.getWidth(), screen_height >> 1);
-                Rect road_roi = getRoi(halfScreen, RoadBgGreen_1);
+                boolean dayTheme = true;
+                Rect road_roi = getRoi(halfScreen, RoadBgGreen_1, false);
 
                 if (-1 == road_roi.x || Math.abs(road_roi.width - screen_width) > ROAD_ROI_WIDTH_TOL) {
-                    road_roi = getRoi(halfScreen, RoadBgGreen_2);
+                    road_roi = getRoi(halfScreen, RoadBgGreen_2, true);
+                    dayTheme = false;
                 }
                 final int roi_width = road_roi.width;
 
@@ -1380,6 +1386,8 @@ public class MainActivity extends AppCompatActivity {
                 if (-1 == road_roi.x) {
                     return;
                 }
+
+                storeToPNG(Bitmap.createBitmap(halfScreen, road_roi.x, road_roi.y, road_roi.width, road_roi.height), STORE_DIRECTORY + "road.png");
 
                 final int gmapHeight = screen_height - road_roi.y;
                 Bitmap gmapScreen = Bitmap.createBitmap(screen, road_roi.x, road_roi.y, road_roi.width, gmapHeight);
@@ -1430,14 +1438,6 @@ public class MainActivity extends AppCompatActivity {
                     lane_bg_color = LaneBgGreen_Night;
                 }
 
-//                if (-1 != lane_roi.x) {
-//                    lane_roi_image = Bitmap.createBitmap(map_roi_image, lane_roi.x, lane_roi.y, lane_roi.width, lane_roi.height);
-//                    storeToPNG(lane_roi_image, STORE_DIRECTORY + "lane1.png");
-//                } else {
-//                    lane_roi = getRoi(map_roi_image, LaneBgGreen_Night);
-//                    lane_roi_image = Bitmap.createBitmap(map_roi_image, lane_roi.x, lane_roi.y, lane_roi.width, lane_roi.height);
-//                    storeToPNG(lane_roi_image, STORE_DIRECTORY + "lane2.png");
-//                }
                 final boolean lane_roi_exist = -1 != lane_roi.x;
 
                 if (lane_roi_exist) {
@@ -1487,14 +1487,48 @@ public class MainActivity extends AppCompatActivity {
             return result;
         }
 
+        private int getFirstVertical(Bitmap lane, int x0, int y0, int color,
+                                     boolean notLogic, boolean inverse_scan) {
+//            final int height = lane.getHeight();
+            final int width = lane.getWidth();
+
+            int end = inverse_scan ? y0 : width;
+            int h_step = inverse_scan ? -1 : 1;
+            for (int h = inverse_scan ? width - 1 : y0; h != end; h += h_step) {
+                final int pixel = lane.getPixel(x0, h);
+                if (notLogic ? pixel != color : pixel == color) {
+                    return h;
+                }
+            }
+            return -1;
+        }
+
         private ArrayList<Boolean> laneDetect(Bitmap lane, int bgColor) {
             final int height = lane.getHeight() - 1;
             ArrayList<Integer> laneDivide = findLaneDivide(lane, height, bgColor, LaneDivideWhite);
 
             ArrayList<Boolean> result = new ArrayList<Boolean>();
             if (laneDivide.size() >= 2) {
-                int divideWidth = laneDivide.get(1) - laneDivide.get(0);
+                int yOffset = -1;
+                final int divideWidth = laneDivide.get(1) - laneDivide.get(0);
+                final int halfDivideWidth = divideWidth >> 1;
+//                final int divide_y_start = getFirstVertical(lane, laneDivide.get(0), 0, LaneDivideWhite, false, false);
+
+                for (int x = 0; x < laneDivide.size(); x++) {
+                    final int laneCenter = laneDivide.get(x) - halfDivideWidth;
+                    final int notBGy = getFirstVertical(lane, laneCenter, 0, bgColor, true, true);
+                    int pixel = lane.getPixel(laneCenter, notBGy + yOffset);
+                    result.add(isSameRGB(pixel, LaneNowWhite));
+                }
+
+                //last
+                final int v = laneDivide.get(laneDivide.size() - 1);
+                int lastLaneCenter = v - halfDivideWidth;
+                final int notBGy = getFirstVertical(lane, lastLaneCenter, 0, bgColor, true, true);
+                final int pixel = lane.getPixel(lastLaneCenter, notBGy + yOffset);
+                result.add(isSameRGB(pixel, LaneNowWhite));
             }
+
             return result;
         }
 
