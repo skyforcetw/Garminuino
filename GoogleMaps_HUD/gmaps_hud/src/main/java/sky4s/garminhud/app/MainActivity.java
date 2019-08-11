@@ -298,7 +298,8 @@ public class MainActivity extends AppCompatActivity {
                     if (!bt.isServiceAvailable()) {
                         bt.setupService();
                         bt.startService(BluetoothState.DEVICE_OTHER);
-                        bt.autoConnect(bt_bind_name);
+//                        bt.autoConnect(bt_bind_name);
+                        bt.connect(bt_bind_name);
                     }
                 }
             }
@@ -409,6 +410,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onDestroy() {
         super.onDestroy();
+        reconnectTH = false;
         if (!IGNORE_BT_DEVICE) {
             bt.stopAutoConnect();
             bt.stopService();
@@ -1114,15 +1116,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private boolean garminHudConnected;
+
     private class BluetoothConnectionListener implements BluetoothSPP.BluetoothConnectionListener, BluetoothSPP.AutoConnectionListener {
         @Override
         public void onAutoConnectionStarted() {
-            int a = 1;
         }
 
         @Override
         public void onNewConnection(String name, String address) {
-            int a = 1;
+
         }
 
         /*
@@ -1134,12 +1137,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceConnected(String name, String address) {
-//            garminHudConnected = true;
+            garminHudConnected = true;
             switchHudConnected.setText("'" + name + "' connected");
             switchHudConnected.setTextColor(Color.BLACK);
             switchHudConnected.setChecked(true);
 
-//            NotificationMonitor.hud = hud;
             log("onDeviceConnected");
 
             if (useLocationService && !locationServiceConnected) {
@@ -1163,21 +1165,24 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceDisconnected() {
-//            garminHudConnected = false;
+            garminHudConnected = false;
             switchHudConnected.setText("HUD disconnected");
             switchHudConnected.setTextColor(Color.RED);
             switchHudConnected.setChecked(false);
-//            NotificationMonitor.hud = null;
+
             log("onDeviceDisconnected");
+            resetBT();
         }
 
         @Override
         public void onDeviceConnectionFailed() {
+            garminHudConnected = false;
             switchHudConnected.setText("HUD connect failed");
             switchHudConnected.setTextColor(Color.RED);
             switchHudConnected.setChecked(false);
-//            NotificationMonitor.hud = null;
+
             log("onDeviceConnectionFailed");
+            resetBT();
         }
     }
 
@@ -1212,10 +1217,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         public final int LaneNowWhite = Color.rgb(255, 255, 255);
-//        public final int LaneOtherWhite = Color.rgb(51, 172, 113);
 
-        public final int NextArrow_Day = LaneBgGreen_DayV1;
-
+        //        public final int NextArrow_Day = LaneBgGreen_DayV1;
         //        public final int BlueTraffic_1 = Color.rgb(69, 151, 255);
 //        public final int BlueTraffic_2 = Color.rgb(102, 157, 246);
         public final int OrangeTraffic_V1 = Color.rgb(255, 171, 52);
@@ -1444,7 +1447,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         boolean isSameRGB(int color1, int color2) {
-//            return color1==color2;
             return Color.red(color1) == Color.red(color2) &&
                     Color.green(color1) == Color.green(color2) &&
                     Color.blue(color1) == Color.blue(color2);
@@ -1484,7 +1486,6 @@ public class MainActivity extends AppCompatActivity {
                 for (int h = h_start; h != h_end; h += h_inc) {
                     for (int w1 = w_start; w1 != w1_end; w1 += w_inc) {
                         int w = vertical ? w1 : w0;
-//                        int pixel = pixelsInFindColor[w + h * width];
 
                         boolean allSameColor = true;
                         for (int x = 0; x < findWidth; x++) {
@@ -1494,7 +1495,6 @@ public class MainActivity extends AppCompatActivity {
                             allSameColor = allSameColor && isSameRGB(pixel, color);
                         }
 
-//                        boolean sameColor = isSameRGB(pixel, color);
                         boolean sameColor = allSameColor;
 
                         if (sameColor) {
@@ -1531,7 +1531,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         Rect getRoi(int findWidth, Bitmap image, int color, boolean printDetail) {
-//            findWidth = 1;
             int top = findColor(image, color, true, true, false, printDetail, findWidth);
             int bottom = findColor(image, color, true, false, false, printDetail, findWidth);
             int left = findColor(image, color, false, true, true, printDetail, findWidth);
@@ -1747,6 +1746,33 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private boolean reconnectTH = true;
+
+    private class ReconnectThread extends Thread {
+        public void run() {
+            try {
+                Thread.sleep(2000);
+            } catch (Exception e) {
+                log(e);
+            }
+
+            if (!garminHudConnected && reconnectTH) {
+                String address_reconnect = sharedPref.getString(getString(R.string.bt_bind_name_key), "");
+                log("reconnect address:" + address_reconnect);
+                bt.connect(address_reconnect);
+            }
+
+        }
+    }
+
+    private void resetBT() {
+        bt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
+        bt.setBluetoothConnectionListener(btConnectionListener);
+        bt.setAutoConnectionListener(btConnectionListener);
+
+        Thread rh = new ReconnectThread();
+        rh.start();
+    }
 }
 
 

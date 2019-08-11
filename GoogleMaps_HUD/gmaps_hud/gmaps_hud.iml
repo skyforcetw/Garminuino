@@ -184,7 +184,5 @@
     <orderEntry type="library" name="Gradle: com.android.support.constraint:constraint-layout-solver:1.1.3@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-gcm:7.0.0@aar" level="project" />
     <orderEntry type="module" module-name="bt-spp-library" />
-    <orderEntry type="module" module-name="bt-spp-library" />
-    <orderEntry type="module" module-name="bt-spp-library" />
   </component>
 </module>
