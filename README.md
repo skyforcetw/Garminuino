@@ -11,6 +11,9 @@ There has two sub-project use GarminHUD as:
 
 ## GoogleMap navigation HUD App Release History ##
 
+### [2019-08-11 v0.4.4]
+Lane detection mechanism done.
+
 ### [2019-08-06 v0.4.3](https://github.com/skyforcetw/Garminuino/releases/download/0.4.3/gmaps_hud-release_v0.4.3.apk)
 1. Add traffic detect function
 2. Add reset bt function, test it when your bt connection is unable.
