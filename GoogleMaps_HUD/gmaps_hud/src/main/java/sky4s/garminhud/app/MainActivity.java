@@ -86,7 +86,7 @@ import sky4s.garminhud.hud.HUDInterface;
 public class MainActivity extends AppCompatActivity {
     //for test with virtual device which no BT device
     public final static boolean IGNORE_BT_DEVICE = (null == BluetoothAdapter.getDefaultAdapter());
-    public final static long UpdateInterval = 1000;
+    public final static long UpdateInterval = 1500;
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String ENABLED_NOTIFICATION_LISTENERS = "enabled_notification_listeners";
     private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
@@ -962,6 +962,16 @@ public class MainActivity extends AppCompatActivity {
         public final String toString() {
             return Integer.toString(x) + "," + Integer.toString(y) + " " + Integer.toString(width) + "/" + Integer.toString(height);
         }
+
+        public boolean valid() {
+            return -1 != x && -1 != y && -1 != width && -1 != height;
+        }
+    }
+
+    private void updateTextViewDebug(String msg) {
+        CharSequence orignal_text = textViewDebug.getText();
+        orignal_text = orignal_text.length() > 1000 ? "" : orignal_text;
+        textViewDebug.setText(msg + "\n\n" + orignal_text);
     }
 
     private class MsgReceiver extends BroadcastReceiver {
@@ -976,9 +986,7 @@ public class MainActivity extends AppCompatActivity {
             if (has_notify_msg) {
                 String notify_msg = intent.getStringExtra(getString(R.string.notify_msg));
                 if (null != textViewDebug) {
-                    CharSequence orignal_text = textViewDebug.getText();
-                    orignal_text = orignal_text.length() > 1000 ? "" : orignal_text;
-                    textViewDebug.setText(notify_msg + "\n\n" + orignal_text);
+                    updateTextViewDebug(notify_msg);
                 }
                 return;
             }
@@ -1173,6 +1181,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    enum Theme {
+        DayV1, NightV1, V2, Unknow
+    }
+
+    ;
+
+
     private class ImageAvailableListener
             implements ImageReader.OnImageAvailableListener {
         public final String PreImage = "myscreen_pre.png";
@@ -1185,22 +1200,173 @@ public class MainActivity extends AppCompatActivity {
         public final int ArrowColor_Night = Color.rgb(223, 246, 255);
         public final int ArrowColor_Static = Color.rgb(199, 201, 201);
 
-        public final int RoadBgGreen_1 = Color.rgb(15, 157, 88);
-        public final int RoadBgGreen_2 = Color.rgb(13, 144, 79);
+        public final int RoadBgGreen_Day = Color.rgb(15, 157, 88);
+        public final int RoadBgGreen_Night = Color.rgb(13, 144, 79);
 
-        public final int LaneBgGreen_Day = Color.rgb(11, 128, 67);
-        public final int LaneBgGreen_Night = Color.rgb(9, 113, 56);
-        public final int LaneDivideWhite = Color.rgb(255, 255, 255);
+        public final int RoadBgGreen_V2 = Color.rgb(11, 128, 67);
+//        public final int RoadBgGreen_NightV2 = Color.rgb(11, 128, 67);
+
+        public final int LaneBgGreen_DayV1 = Color.rgb(11, 128, 67);
+        public final int LaneBgGreen_NightV1 = Color.rgb(9, 113, 56);
+
+        public final int LaneBgGreen_V2 = Color.rgb(13, 101, 45);
+//        public final int LaneBgGreen_NightV2 = Color.rgb(13, 101, 45);
+
+        public final int LaneDivideWhiteV1 = Color.rgb(255, 255, 255);
+        public final int LaneDivideWhiteV2 = Color.rgb(129, 201, 149);
+
+
         public final int LaneNowWhite = Color.rgb(255, 255, 255);
-        public final int LaneOtherWhite = Color.rgb(51, 172, 113);
+//        public final int LaneOtherWhite = Color.rgb(51, 172, 113);
 
-        public final int NextArrow_Day = LaneBgGreen_Day;
+        public final int NextArrow_Day = LaneBgGreen_DayV1;
 
         //        public final int BlueTraffic_1 = Color.rgb(69, 151, 255);
 //        public final int BlueTraffic_2 = Color.rgb(102, 157, 246);
         public final int OrangeTraffic = Color.rgb(255, 171, 52);
         public final int RedTraffic = Color.rgb(221, 25, 29);
         int[] pixelsInFindColor;
+
+
+        /**
+         * detect procedure:
+         * 1. road
+         * 2. arrow
+         * 3. lane -> lane detect
+         * 4. traffic detect
+         *
+         * @param screen
+         */
+        private void screenDetection(Bitmap screen) {
+            boolean road_detect_result = false;
+            boolean arrow_detect_result = false;
+            boolean lane_detect_result = false;
+            boolean traffic_detect_result = false;
+
+            boolean busyTraffic = false;
+            int ROAD_ROI_WIDTH_TOL = 118;
+            int LANE_ROI_WIDTH_TOL = 10;
+            Theme theme = Theme.Unknow;
+
+            try {
+                int screen_width = screen.getWidth();
+                int screen_height = screen.getHeight();
+                //=====================================
+                // road
+                //=====================================
+                Bitmap half_screen_img = Bitmap.createBitmap(screen, 0, 0, screen.getWidth(), screen_height >> 1);
+                storeToPNG(half_screen_img, STORE_DIRECTORY + "half.png");
+
+                Rect road_roi = getRoi(2, half_screen_img, RoadBgGreen_Day);
+                theme = Theme.DayV1;
+
+                if (!road_roi.valid() || Math.abs(road_roi.width - screen_width) > ROAD_ROI_WIDTH_TOL) {
+                    road_roi = getRoi(2, half_screen_img, RoadBgGreen_Night);
+                    theme = Theme.NightV1;
+                }
+
+                if (!road_roi.valid() || Math.abs(road_roi.width - screen_width) > ROAD_ROI_WIDTH_TOL) {
+                    road_roi = getRoi(2, half_screen_img, RoadBgGreen_V2);
+                    theme = Theme.V2;
+                }
+
+                Log.i(TAG, "Road roi: " + road_roi.toString());
+                if (!road_roi.valid()) {
+                    return;
+                }
+
+                storeToPNG(Bitmap.createBitmap(half_screen_img, road_roi.x, road_roi.y, road_roi.width, road_roi.height), STORE_DIRECTORY + "road.png");
+
+                final int gmapHeight = screen_height - road_roi.y;
+                Bitmap gmapScreen = Bitmap.createBitmap(screen, road_roi.x, road_roi.y, road_roi.width, gmapHeight);
+
+                // write bitmap to a file
+                storeToPNG(gmapScreen, STORE_DIRECTORY + GmapImage);
+
+                road_detect_result = true;
+                //=====================================
+                // arrow
+                //=====================================
+                final boolean approveArrowStatic = false;
+                Rect arrow_roi = null;
+                if (Theme.DayV1 == theme || Theme.NightV1 == theme) {
+                    int ArrowColor = theme == Theme.DayV1 ? ArrowColor_Day : ArrowColor_Night;
+                    arrow_roi = approveArrowStatic ? getRoi(gmapScreen, ArrowColor, ArrowColor_Static) : getRoi(gmapScreen, ArrowColor);
+                } else {
+                    arrow_roi = approveArrowStatic ? getRoi(gmapScreen, ArrowColor_Day, ArrowColor_Night, ArrowColor_Static) : getRoi(gmapScreen, ArrowColor_Day, ArrowColor_Night);
+                }
+
+                if (arrow_roi.valid()) {
+                    Log.i(TAG, "Found Arrow: " + arrow_roi.toString());
+                } else {
+                    Log.i(TAG, "NoFound Arrow");
+                    return;
+                }
+                arrow_detect_result = true;
+                //=====================================
+                Bitmap map_roi_image = null;
+                if (road_detect_result && arrow_detect_result) {
+                    int x = 0;//road_roi.x;
+                    int y = road_roi.height;
+                    int width = gmapScreen.getWidth();
+                    int height = gmapScreen.getHeight() - y - (gmapScreen.getHeight() - arrow_roi.y);
+
+                    map_roi_image = Bitmap.createBitmap(gmapScreen, x, y, width, height);
+
+                    // write bitmap to a file
+                    storeToPNG(map_roi_image, STORE_DIRECTORY + MapImage);
+                }
+                //=====================================
+                // lane
+                //=====================================
+                final int lane_bg_color = theme == Theme.DayV1 ? LaneBgGreen_DayV1 :
+                        theme == Theme.NightV1 ? LaneBgGreen_NightV1 :
+                                theme == Theme.V2 ? LaneBgGreen_V2 : 0;
+                Rect lane_roi = getRoi(2, map_roi_image, lane_bg_color);
+
+                final boolean lane_roi_exist = lane_roi.valid();
+                if (lane_roi_exist) {
+                    Bitmap lane_roi_image = Bitmap.createBitmap(map_roi_image, lane_roi.x, lane_roi.y, lane_roi.width, lane_roi.height);
+                    storeToPNG(lane_roi_image, STORE_DIRECTORY + LaneImage);
+
+                    final int lane_color = theme == Theme.DayV1 || theme == Theme.NightV1 ? LaneDivideWhiteV1 :
+                            theme == Theme.V2 ? LaneDivideWhiteV2 : 0;
+                    ArrayList<Boolean> laneDetectResult = laneDetect(lane_roi_image, lane_bg_color, lane_color);
+                    if (laneDetectResult.size() != 0) {
+                        if (!landDetectToHUD(laneDetectResult)) {
+                            storeToPNG(lane_roi_image, STORE_DIRECTORY + "NG_lane.png");
+                        }
+                    } else {
+                        hud.SetLanes((char) 0, (char) 0);
+                        storeToPNG(lane_roi_image, STORE_DIRECTORY + "NG_lane.png");
+                    }
+                } else {
+                    hud.SetLanes((char) 0, (char) 0);
+                }
+                lane_detect_result = lane_roi_exist;
+                //=====================================
+                // traffic
+                //=====================================
+                if (road_detect_result && arrow_detect_result) {
+                    if (arrow_detect_result) {
+                        busyTraffic = busyTrafficDetect(map_roi_image, alertYellowTraffic);
+                    } else {
+                        busyTraffic = false;
+                    }
+                    traffic_detect_result = true;
+                }
+            } finally {
+                sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
+                        getString(R.string.busy_traffic), busyTraffic);
+                Log.i(TAG, "detect result: " +
+                        Boolean.toString(road_detect_result) + " " +
+                        Boolean.toString(arrow_detect_result) + " " +
+                        Boolean.toString(lane_detect_result) + " " +
+                        Boolean.toString(traffic_detect_result) + ":" +
+                        (busyTraffic ? "Busy" : "Normal")
+                );
+            }
+        }
 
         @Override
         public void onImageAvailable(ImageReader reader) {
@@ -1303,15 +1469,18 @@ public class MainActivity extends AppCompatActivity {
                 for (int h = h_start; h != h_end; h += h_inc) {
                     for (int w1 = w_start; w1 != w1_end; w1 += w_inc) {
                         int w = vertical ? w1 : w0;
-                        int pixel = pixelsInFindColor[w + h * width];
+//                        int pixel = pixelsInFindColor[w + h * width];
 
+                        boolean allSameColor = true;
                         for (int x = 0; x < findWidth; x++) {
-                            int hh = 0;
-                            int ww = 0;
-                            pixel = pixelsInFindColor[w + h * width];
+                            int hh = vertical ? h : h + x;
+                            int ww = vertical ? w + x : w;
+                            int pixel = pixelsInFindColor[ww + hh * width];
+                            allSameColor = allSameColor && isSameRGB(pixel, color);
                         }
 
-                        boolean sameColor = isSameRGB(pixel, color);
+//                        boolean sameColor = isSameRGB(pixel, color);
+                        boolean sameColor = allSameColor;
 
                         if (sameColor) {
                             if (vertical) {
@@ -1347,7 +1516,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         Rect getRoi(int findWidth, Bitmap image, int color, boolean printDetail) {
-//            int findWidth = 1;
+//            findWidth = 1;
             int top = findColor(image, color, true, true, false, printDetail, findWidth);
             int bottom = findColor(image, color, true, false, false, printDetail, findWidth);
             int left = findColor(image, color, false, true, true, printDetail, findWidth);
@@ -1366,128 +1535,56 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        /**
-         * detect procedure:
-         * 1. road
-         * 2. arrow
-         * 3. lane -> lane detect
-         * 4. traffic detect
-         *
-         * @param screen
-         */
-        private void screenDetection(Bitmap screen) {
-            boolean road_detect_result = false;
-            boolean arrow_detect_result = false;
-            boolean lane_detect_result = false;
-            boolean traffic_detect_result = false;
 
-            boolean busyTraffic = false;
-            int ROAD_ROI_WIDTH_TOL = 77;
-            int LANE_ROI_WIDTH_TOL = 10;
+        private boolean landDetectToHUD(ArrayList<Boolean> laneDetectResult) {
+            int lanes = laneDetectResult.size();
 
-            try {
-                int screen_width = screen.getWidth();
-                int screen_height = screen.getHeight();
-                //=====================================
-                // road
-                //=====================================
-                Bitmap halfScreen = Bitmap.createBitmap(screen, 0, 0, screen.getWidth(), screen_height >> 1);
-                boolean dayTheme = true;
-                Rect road_roi = getRoi(2, halfScreen, RoadBgGreen_1);
+            /*
+                OuterRight(0x02), 6
+                MiddleRight(0x04), 5,4
+                InnerRight(0x08), 3,2
+                InnerLeft(0x10),
+                MiddleLeft(0x20),
+                OuterLeft(0x40),
 
-                if (-1 == road_roi.x || Math.abs(road_roi.width - screen_width) > ROAD_ROI_WIDTH_TOL) {
-                    road_roi = getRoi(2, halfScreen, RoadBgGreen_2);
-                    dayTheme = false;
-                }
-                final int roi_width = road_roi.width;
+             */
+            int x_start = 0;
 
-                Log.i(TAG, "Road roi: " + road_roi.toString());
-                if (-1 == road_roi.x) {
-                    return;
-                }
-
-                storeToPNG(Bitmap.createBitmap(halfScreen, road_roi.x, road_roi.y, road_roi.width, road_roi.height), STORE_DIRECTORY + "road.png");
-
-                final int gmapHeight = screen_height - road_roi.y;
-                Bitmap gmapScreen = Bitmap.createBitmap(screen, road_roi.x, road_roi.y, road_roi.width, gmapHeight);
-
-                // write bitmap to a file
-                storeToPNG(gmapScreen, STORE_DIRECTORY + GmapImage);
-
-                road_detect_result = true;
-                //=====================================
-                // arrow
-                //=====================================
-                Rect arrow_roi = getRoi(gmapScreen, ArrowColor_Day, ArrowColor_Night);
-                if (-1 == arrow_roi.x) {
-                    Log.i(TAG, "NoFound Arrow");
-                    return;
-                } else {
-                    Log.i(TAG, "Found Arrow: " + arrow_roi.toString());
-                }
-                arrow_detect_result = true;
-                //=====================================
-                Bitmap map_roi_image = null;
-                if (road_detect_result && arrow_detect_result) {
-                    int x = road_roi.x;
-                    int y = road_roi.height;
-                    int width = road_roi.width - x;
-                    int height = gmapScreen.getHeight() - y - (gmapScreen.getHeight() - arrow_roi.y);
-
-                    map_roi_image = Bitmap.createBitmap(gmapScreen, x, y, width, height);
-
-                    // write bitmap to a file
-                    storeToPNG(map_roi_image, STORE_DIRECTORY + MapImage);
-                }
-                //=====================================
-                // lane
-                //=====================================
-                int lane_bg_color = LaneBgGreen_Day;
-                Rect lane_roi = getRoi(2, map_roi_image, lane_bg_color);
-                Bitmap lane_roi_image = null;
-
-                int lane_delta_width = Math.abs(lane_roi.width - map_roi_image.getWidth());
-
-                if (-1 == lane_roi.x || lane_delta_width > LANE_ROI_WIDTH_TOL) {
-                    if (-1 != lane_roi.x) {
-                        lane_roi_image = Bitmap.createBitmap(map_roi_image, lane_roi.x, lane_roi.y, lane_roi.width, lane_roi.height);
-                        storeToPNG(lane_roi_image, STORE_DIRECTORY + "lane_day.png");
-                    }
-                    lane_bg_color = LaneBgGreen_Night;
-                    lane_roi = getRoi(2, map_roi_image, lane_bg_color);
-
-                }
-
-                final boolean lane_roi_exist = -1 != lane_roi.x;
-
-                if (lane_roi_exist) {
-                    lane_roi_image = Bitmap.createBitmap(map_roi_image, lane_roi.x, lane_roi.y, lane_roi.width, lane_roi.height);
-                    storeToPNG(lane_roi_image, STORE_DIRECTORY + LaneImage);
-                    laneDetect(lane_roi_image, lane_bg_color);
-                }
-                lane_detect_result = lane_roi_exist;
-                //=====================================
-                // traffic
-                //=====================================
-                if (road_detect_result && arrow_detect_result) {
-                    if (arrow_detect_result) {
-                        busyTraffic = busyTrafficDetect(map_roi_image, alertYellowTraffic);
-                    } else {
-                        busyTraffic = false;
-                    }
-                    traffic_detect_result = true;
-                }
-            } finally {
-                sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
-                        getString(R.string.busy_traffic), busyTraffic);
-                Log.i(TAG, "detect result: " +
-                        Boolean.toString(road_detect_result) + " " +
-                        Boolean.toString(arrow_detect_result) + " " +
-                        Boolean.toString(lane_detect_result) + " " +
-                        Boolean.toString(traffic_detect_result) + ":" +
-                        (busyTraffic ? "Busy" : "Normal")
-                );
+            switch (lanes) {
+                case 6:
+                    x_start = 0;
+                    break;
+                case 5:
+                case 4:
+                    x_start = 1;
+                    break;
+                case 3:
+                case 2:
+                    x_start = 2;
+                    break;
             }
+
+            boolean hasDrivingLane = false;
+            char nOutline = 0;
+            char nArrow = 0;
+            int now_lane_index = 0;
+            for (int x = x_start; x < x_start + lanes; x++, now_lane_index++) {
+                int currentLaneValue = 2 << x;
+                nOutline += currentLaneValue;
+                boolean drivingLane = laneDetectResult.get(now_lane_index);
+                if (drivingLane) {
+                    nArrow += currentLaneValue;
+                    hasDrivingLane = true;
+                }
+            }
+            hud.SetLanes(nArrow, nOutline);
+
+            String msg = "";
+            for (Boolean b : laneDetectResult) {
+                msg += " " + (b ? "1" : "0");
+            }
+            Log.i(TAG, "lane detect: " + msg + " / " + (int) nArrow + "," + (int) nOutline);
+            return hasDrivingLane;
         }
 
         private ArrayList<Integer> findLaneDivide(Bitmap lane, int y, int bgColor, int divideColor) {
@@ -1509,11 +1606,10 @@ public class MainActivity extends AppCompatActivity {
 
         private int getFirstVertical(Bitmap lane, int x0, int y0, int color,
                                      boolean notLogic, boolean inverse_scan) {
-            final int width = lane.getWidth();
-
-            int end = inverse_scan ? y0 : width;
+            final int height = lane.getHeight();
+            int end = inverse_scan ? y0 : height;
             int h_step = inverse_scan ? -1 : 1;
-            for (int h = inverse_scan ? width - 1 : y0; h != end; h += h_step) {
+            for (int h = inverse_scan ? height - 1 : y0; h != end; h += h_step) {
                 final int pixel = lane.getPixel(x0, h);
                 if (notLogic ? pixel != color : pixel == color) {
                     return h;
@@ -1522,16 +1618,57 @@ public class MainActivity extends AppCompatActivity {
             return -1;
         }
 
-        private ArrayList<Boolean> laneDetect(Bitmap lane, int bgColor) {
-            final int height = lane.getHeight() - 1;
-            ArrayList<Integer> laneDivide = findLaneDivide(lane, height, bgColor, LaneDivideWhite);
+        private int getFirstHorizontal(Bitmap lane, int x0, int y0, int color,
+                                       boolean notLogic, boolean inverse_scan) {
+            final int width = lane.getWidth();
+            int end = inverse_scan ? x0 : width;
+            int w_step = inverse_scan ? -1 : 1;
+            for (int w = inverse_scan ? width - 1 : x0; w != end; w += w_step) {
+                final int pixel = lane.getPixel(w, y0);
+                if (notLogic ? pixel != color : pixel == color) {
+                    return w;
+                }
+            }
+            return -1;
+        }
 
+        private int getFirstHorizontal(Bitmap lane, int x0, int x1, int y0, int color,
+                                       boolean notLogic, boolean inverse_scan) {
+//            final int width = lane.getWidth();
+            int end = inverse_scan ? x0 : x1;
+            int w_step = inverse_scan ? -1 : 1;
+            for (int w = inverse_scan ? x1 : x0; w != end; w += w_step) {
+                final int pixel = lane.getPixel(w, y0);
+                if (notLogic ? pixel != color : pixel == color) {
+                    return w;
+                }
+            }
+            return -1;
+        }
+
+        private ArrayList<Boolean> laneDetect(Bitmap lane, int bgColor, int laneColor) {
+            final int height = lane.getHeight() - 1;
+            ArrayList<Integer> laneDivide = findLaneDivide(lane, height, bgColor, laneColor);
             ArrayList<Boolean> result = new ArrayList<Boolean>();
-            if (laneDivide.size() >= 2) {
-                int yOffset = -1;
-                final int divideWidth = laneDivide.get(1) - laneDivide.get(0);
-                final int halfDivideWidth = divideWidth >> 1;
-//                final int divide_y_start = getFirstVertical(lane, laneDivide.get(0), 0, LaneDivideWhite, false, false);
+            final int yOffset = -2;
+
+            if (laneDivide.size() >= 1) {
+                int halfDivideWidth = -1;
+                if (laneDivide.size() == 1) {
+                    int divide_x = laneDivide.get(0);
+                    final int arrow_y = getFirstVertical(lane, divide_x, 0, laneColor, true, true);
+                    final int scan_y = arrow_y + yOffset;
+                    final int x_offset = 100;
+                    final int left_arrow_x0 = getFirstHorizontal(lane, x_offset, divide_x, scan_y, bgColor, true, false);
+                    final int left_arrow_x1 = getFirstHorizontal(lane, x_offset, divide_x, scan_y, bgColor, true, true);
+                    final int arrow_width = left_arrow_x1 - left_arrow_x0;
+                    final int left_arrow_center = left_arrow_x0 + (arrow_width >> 1);
+                    halfDivideWidth = divide_x - left_arrow_center;
+//                    return result;
+                } else {
+                    final int divideWidth = laneDivide.size() >= 2 ? laneDivide.get(1) - laneDivide.get(0) : 0;
+                    halfDivideWidth = divideWidth >> 1;
+                }
 
                 for (int x = 0; x < laneDivide.size(); x++) {
                     final int laneCenter = laneDivide.get(x) - halfDivideWidth;
@@ -1542,7 +1679,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //last
                 final int v = laneDivide.get(laneDivide.size() - 1);
-                int lastLaneCenter = v - halfDivideWidth;
+                int lastLaneCenter = v + halfDivideWidth;
                 final int notBGy = getFirstVertical(lane, lastLaneCenter, 0, bgColor, true, true);
                 final int pixel = lane.getPixel(lastLaneCenter, notBGy + yOffset);
                 result.add(isSameRGB(pixel, LaneNowWhite));
