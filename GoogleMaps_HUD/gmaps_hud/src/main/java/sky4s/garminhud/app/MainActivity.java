@@ -1202,17 +1202,12 @@ public class MainActivity extends AppCompatActivity {
 
         public final int RoadBgGreen_Day = Color.rgb(15, 157, 88);
         public final int RoadBgGreen_Night = Color.rgb(13, 144, 79);
-
-        public final int RoadBgGreen_V2 = Color.rgb(11, 128, 67);
-//        public final int RoadBgGreen_NightV2 = Color.rgb(11, 128, 67);
-
         public final int LaneBgGreen_DayV1 = Color.rgb(11, 128, 67);
         public final int LaneBgGreen_NightV1 = Color.rgb(9, 113, 56);
-
-        public final int LaneBgGreen_V2 = Color.rgb(13, 101, 45);
-//        public final int LaneBgGreen_NightV2 = Color.rgb(13, 101, 45);
-
         public final int LaneDivideWhiteV1 = Color.rgb(255, 255, 255);
+
+        public final int RoadBgGreen_V2 = Color.rgb(11, 128, 67);
+        public final int LaneBgGreen_V2 = Color.rgb(13, 101, 45);
         public final int LaneDivideWhiteV2 = Color.rgb(129, 201, 149);
 
 
@@ -1223,10 +1218,28 @@ public class MainActivity extends AppCompatActivity {
 
         //        public final int BlueTraffic_1 = Color.rgb(69, 151, 255);
 //        public final int BlueTraffic_2 = Color.rgb(102, 157, 246);
-        public final int OrangeTraffic = Color.rgb(255, 171, 52);
-        public final int RedTraffic = Color.rgb(221, 25, 29);
+        public final int OrangeTraffic_V1 = Color.rgb(255, 171, 52);
+        public final int OrangeTraffic_DayV2 = Color.rgb(255, 171, 52);
+        public final int OrangeTraffic_NightV2 = Color.rgb(163, 113, 55);
+        public final int RedTraffic_V1 = Color.rgb(221, 25, 29);
+        public final int RedTraffic_DayV2 = Color.rgb(221, 25, 29);
+        public final int RedTraffic_NightV2 = Color.rgb(146, 96, 92);
         int[] pixelsInFindColor;
 
+
+        private boolean busyTrafficDetect(Bitmap map, boolean alertYellowTraffic, Theme theme) {
+            final boolean isV1 = Theme.DayV1 == theme || Theme.NightV1 == theme;
+
+            Rect orange_roi = isV1 ? getRoi(map, OrangeTraffic_V1) : getRoi(map, OrangeTraffic_DayV2, OrangeTraffic_NightV2);
+            Rect roi_red = isV1 ? getRoi(map, RedTraffic_V1) : getRoi(map, RedTraffic_DayV2, RedTraffic_NightV2);
+            Log.i(TAG, "busyTrafficDetect: " + "Orange" + orange_roi + " Red" + roi_red);
+
+            boolean yellowTraffic = -1 != orange_roi.x;
+            boolean redTraffic = -1 != roi_red.x;
+
+            boolean busyTraffic = alertYellowTraffic ? yellowTraffic || redTraffic : redTraffic;
+            return busyTraffic;
+        }
 
         /**
          * detect procedure:
@@ -1317,6 +1330,18 @@ public class MainActivity extends AppCompatActivity {
                     storeToPNG(map_roi_image, STORE_DIRECTORY + MapImage);
                 }
                 //=====================================
+                // traffic
+                //=====================================
+                if (road_detect_result && arrow_detect_result) {
+                    if (arrow_detect_result) {
+                        busyTraffic = busyTrafficDetect(map_roi_image, alertYellowTraffic, theme);
+                    } else {
+                        busyTraffic = false;
+                    }
+                    traffic_detect_result = true;
+                }
+
+                //=====================================
                 // lane
                 //=====================================
                 final int lane_bg_color = theme == Theme.DayV1 ? LaneBgGreen_DayV1 :
@@ -1324,7 +1349,7 @@ public class MainActivity extends AppCompatActivity {
                                 theme == Theme.V2 ? LaneBgGreen_V2 : 0;
                 Rect lane_roi = getRoi(2, map_roi_image, lane_bg_color);
 
-                final boolean lane_roi_exist = lane_roi.valid();
+                final boolean lane_roi_exist = lane_roi.valid() && Math.abs(lane_roi.width - road_roi.width) < LANE_ROI_WIDTH_TOL;
                 if (lane_roi_exist) {
                     Bitmap lane_roi_image = Bitmap.createBitmap(map_roi_image, lane_roi.x, lane_roi.y, lane_roi.width, lane_roi.height);
                     storeToPNG(lane_roi_image, STORE_DIRECTORY + LaneImage);
@@ -1344,17 +1369,7 @@ public class MainActivity extends AppCompatActivity {
                     hud.SetLanes((char) 0, (char) 0);
                 }
                 lane_detect_result = lane_roi_exist;
-                //=====================================
-                // traffic
-                //=====================================
-                if (road_detect_result && arrow_detect_result) {
-                    if (arrow_detect_result) {
-                        busyTraffic = busyTrafficDetect(map_roi_image, alertYellowTraffic);
-                    } else {
-                        busyTraffic = false;
-                    }
-                    traffic_detect_result = true;
-                }
+
             } finally {
                 sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
                         getString(R.string.busy_traffic), busyTraffic);
@@ -1688,17 +1703,7 @@ public class MainActivity extends AppCompatActivity {
             return result;
         }
 
-        private boolean busyTrafficDetect(Bitmap map, boolean alertYellowTraffic) {
-            Rect orange_roi = getRoi(map, OrangeTraffic);
-            Rect roi_red = getRoi(map, RedTraffic);
-            Log.i(TAG, "busyTrafficDetect: " + "Orange" + orange_roi + " Red" + roi_red);
 
-            boolean yellowTraffic = -1 != orange_roi.x;
-            boolean redTraffic = -1 != roi_red.x;
-
-            boolean busyTraffic = alertYellowTraffic ? yellowTraffic || redTraffic : redTraffic;
-            return busyTraffic;
-        }
     }
 
     private class OrientationChangeCallback extends OrientationEventListener {
