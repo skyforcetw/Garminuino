@@ -16,7 +16,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 public class ImageDetectListener implements ImageReader.OnImageAvailableListener {
-    static class Rect {
+    private static class Rect {
         public int x;
         public int y;
         public int width;
@@ -39,7 +39,7 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
         }
     }
 
-    enum Theme {
+    private enum Theme {
         DayV1, NightV1, V2, Unknow
     }
 
@@ -144,7 +144,6 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
             if (!road_roi.valid()) {
                 return;
             }
-
             storeToPNG(Bitmap.createBitmap(half_screen_img, road_roi.x, road_roi.y, road_roi.width, road_roi.height), MainActivity.STORE_DIRECTORY + "road.png");
 
             final int gmapHeight = screen_height - road_roi.y;
@@ -277,7 +276,6 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
 
                     // write bitmap to a file
                     storeToPNG(bitmap, MainActivity.STORE_DIRECTORY + NowImage);
-
                     screenDetection(bitmap);
                 }
             }
@@ -489,19 +487,19 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
         return -1;
     }
 
-//    private int getFirstHorizontal(Bitmap lane, int x0, int y0, int color,
-//                                   boolean notLogic, boolean inverse_scan) {
-//        final int width = lane.getWidth();
-//        int end = inverse_scan ? x0 : width;
-//        int w_step = inverse_scan ? -1 : 1;
-//        for (int w = inverse_scan ? width - 1 : x0; w != end; w += w_step) {
-//            final int pixel = lane.getPixel(w, y0);
-//            if (notLogic ? pixel != color : pixel == color) {
-//                return w;
-//            }
-//        }
-//        return -1;
-//    }
+/*    private int getFirstHorizontal(Bitmap lane, int x0, int y0, int color,
+                                   boolean notLogic, boolean inverse_scan) {
+        final int width = lane.getWidth();
+        int end = inverse_scan ? x0 : width;
+        int w_step = inverse_scan ? -1 : 1;
+        for (int w = inverse_scan ? width - 1 : x0; w != end; w += w_step) {
+            final int pixel = lane.getPixel(w, y0);
+            if (notLogic ? pixel != color : pixel == color) {
+                return w;
+            }
+        }
+        return -1;
+    }*/
 
     private int getFirstHorizontal(Bitmap lane, int x0, int x1, int y0, int color,
                                    boolean notLogic, boolean inverse_scan) {
@@ -535,7 +533,6 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
                 final int arrow_width = left_arrow_x1 - left_arrow_x0;
                 final int left_arrow_center = left_arrow_x0 + (arrow_width >> 1);
                 halfDivideWidth = divide_x - left_arrow_center;
-//                    return result;
             } else {
                 final int divideWidth = laneDivide.size() >= 2 ? laneDivide.get(1) - laneDivide.get(0) : 0;
                 halfDivideWidth = divideWidth >> 1;
@@ -559,7 +556,7 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
         return result;
     }
 
-    public static void copy(File src, File dst) throws IOException {
+    private static void copy(File src, File dst) throws IOException {
         try (InputStream in = new FileInputStream(src)) {
             try (OutputStream out = new FileOutputStream(dst)) {
                 // Transfer bytes from in to out

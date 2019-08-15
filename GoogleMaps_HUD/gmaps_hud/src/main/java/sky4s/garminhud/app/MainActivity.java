@@ -81,27 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String ENABLED_NOTIFICATION_LISTENERS = "enabled_notification_listeners";
     private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    //===============================================================================================
-    // screen capture
-    //===============================================================================================
-    private static final int REQUEST_CODE = 100;
-    private static final String SCREENCAP_NAME = "screencap";
-    private static final int VIRTUAL_DISPLAY_FLAGS = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
-    static String STORE_DIRECTORY;
-    private static MediaProjection sMediaProjection;
-    //========================================================================================
-    // tabs
-    //========================================================================================
-    // Titles of the individual pages (displayed in tabs)
-    private final String[] PAGE_TITLES = new String[]{
-            "Setup",
-            "Debug"
-    };
-    // The fragments that are used as the individual pages
-    private final Fragment[] PAGES = new Fragment[]{
-            new Page1Fragment(),
-            new Page2Fragment()
-    };
+
     //========================================
     // UI for Page1Fragment
     //========================================
@@ -126,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
 
     //bluetooth
     Switch switchBtBindAddress;
-
 
     private boolean isEnabledNLS = false;
     private boolean showCurrentTime = false;
@@ -153,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
     //========================================================================================
     private SharedPreferences sharedPref;
-    private DrawerLayout mDrawerLayout;
+    //    private DrawerLayout mDrawerLayout;
     private BluetoothConnectionListener btConnectionListener = new BluetoothConnectionListener();
     private SeekBar.OnSeekBarChangeListener seekbarChangeListener = new SeekBar.OnSeekBarChangeListener() {
 
@@ -176,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
-    //    private ActionBarDrawerToggle mDrawerToggle;
+
     //===============================================================================================
     // location
     //===============================================================================================
@@ -197,17 +176,6 @@ public class MainActivity extends AppCompatActivity {
             locationServiceConnected = false;
         }
     };
-    private MediaProjectionManager mProjectionManager;
-    private ImageReader mImageReader;
-    private Handler mProjectionHandler;
-    private Display mDisplay;
-    private VirtualDisplay mVirtualDisplay;
-    private int mDensity;
-    int mWidth;
-    int mHeight;
-    private int mRotation;
-    private OrientationChangeCallback mOrientationChangeCallback;
-    boolean alertYellowTraffic = false;
 
 
     private boolean isInNavigation() {
@@ -410,6 +378,67 @@ public class MainActivity extends AppCompatActivity {
 
         //experiment:
 //        createNotification(this);
+    }
+
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!IGNORE_BT_DEVICE) {
+            if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
+                if (resultCode == Activity.RESULT_OK) {
+                    bt.connect(data);
+                }
+            } else if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
+                if (resultCode == Activity.RESULT_OK) {
+                    bt.setupService();
+                    bt.startService(BluetoothState.DEVICE_OTHER);
+                } else {
+                    Toast.makeText(getApplicationContext()
+                            , "Bluetooth was not enabled."
+                            , Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+        }
+
+        if (requestCode == REQUEST_CODE) {
+            sMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
+
+            if (sMediaProjection != null) {
+
+                File dataFilesDir = getFilesDir();
+                if (dataFilesDir != null) {
+                    STORE_DIRECTORY = dataFilesDir.getAbsolutePath() + "/screenshots/";
+                    File storeDirectory = new File(STORE_DIRECTORY);
+                    if (!storeDirectory.exists()) {
+                        boolean success = storeDirectory.mkdirs();
+                        if (!success) {
+                            Log.e(TAG, "failed to create file storage directory.");
+                            return;
+                        }
+                    }
+                } else {
+                    Log.e(TAG, "failed to create file storage directory, getFilesDir is null.");
+                    return;
+                }
+
+                // display metrics
+                DisplayMetrics metrics = getResources().getDisplayMetrics();
+                mDensity = metrics.densityDpi;
+                mDisplay = getWindowManager().getDefaultDisplay();
+
+                // create virtual display depending on device width / height
+                createVirtualDisplay();
+
+                // register orientation change callback
+                mOrientationChangeCallback = new OrientationChangeCallback(this);
+                if (mOrientationChangeCallback.canDetectOrientation()) {
+                    mOrientationChangeCallback.enable();
+                }
+
+                // register media projection stop callback
+                sMediaProjection.registerCallback(new MediaProjectionStopCallback(), mProjectionHandler);
+            }
+        }
     }
 
     public void onStop() {
@@ -783,65 +812,6 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, object.toString());
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!IGNORE_BT_DEVICE) {
-            if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
-                if (resultCode == Activity.RESULT_OK) {
-                    bt.connect(data);
-                }
-            } else if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
-                if (resultCode == Activity.RESULT_OK) {
-                    bt.setupService();
-                    bt.startService(BluetoothState.DEVICE_OTHER);
-                } else {
-                    Toast.makeText(getApplicationContext()
-                            , "Bluetooth was not enabled."
-                            , Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            }
-        }
-
-        if (requestCode == REQUEST_CODE) {
-            sMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
-
-            if (sMediaProjection != null) {
-
-                File dataFilesDir = getFilesDir();
-                if (dataFilesDir != null) {
-                    STORE_DIRECTORY = dataFilesDir.getAbsolutePath() + "/screenshots/";
-                    File storeDirectory = new File(STORE_DIRECTORY);
-                    if (!storeDirectory.exists()) {
-                        boolean success = storeDirectory.mkdirs();
-                        if (!success) {
-                            Log.e(TAG, "failed to create file storage directory.");
-                            return;
-                        }
-                    }
-                } else {
-                    Log.e(TAG, "failed to create file storage directory, getFilesDir is null.");
-                    return;
-                }
-
-                // display metrics
-                DisplayMetrics metrics = getResources().getDisplayMetrics();
-                mDensity = metrics.densityDpi;
-                mDisplay = getWindowManager().getDefaultDisplay();
-
-                // create virtual display depending on device width / height
-                createVirtualDisplay();
-
-                // register orientation change callback
-                mOrientationChangeCallback = new OrientationChangeCallback(this);
-                if (mOrientationChangeCallback.canDetectOrientation()) {
-                    mOrientationChangeCallback.enable();
-                }
-
-                // register media projection stop callback
-                sMediaProjection.registerCallback(new MediaProjectionStopCallback(), mProjectionHandler);
-            }
-        }
-    }
 
     // bind/activate LocationService
     void bindLocationService() {
@@ -931,7 +901,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void updateTextViewDebug(String msg) {
         CharSequence orignal_text = textViewDebug.getText();
         orignal_text = orignal_text.length() > 1000 ? "" : orignal_text;
@@ -1011,6 +980,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //========================================================================================
+    // tabs
+    //========================================================================================
+    // Titles of the individual pages (displayed in tabs)
+    private final String[] PAGE_TITLES = new String[]{
+            "Setup",
+            "Debug"
+    };
+    // The fragments that are used as the individual pages
+    private final Fragment[] PAGES = new Fragment[]{
+            new Page1Fragment(),
+            new Page2Fragment()
+    };
+
     /* PagerAdapter for supplying the ViewPager with the pages (fragments) to display. */
     private class MyPagerAdapter extends FragmentPagerAdapter {
 
@@ -1036,6 +1019,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean garminHudConnected;
+
     private class BluetoothConnectionListener implements BluetoothSPP.BluetoothConnectionListener, BluetoothSPP.AutoConnectionListener {
         @Override
         public void onAutoConnectionStarted() {
@@ -1108,6 +1092,23 @@ public class MainActivity extends AppCompatActivity {
     //================================================================================
     // media proejct
     //================================================================================
+    private MediaProjectionManager mProjectionManager;
+    private ImageReader mImageReader;
+    private Handler mProjectionHandler;
+    private Display mDisplay;
+    private VirtualDisplay mVirtualDisplay;
+    private int mDensity;
+    int mWidth;
+    int mHeight;
+    private int mRotation;
+    private OrientationChangeCallback mOrientationChangeCallback;
+    boolean alertYellowTraffic = false;
+
+    private static final int REQUEST_CODE = 100;
+    private static final String SCREENCAP_NAME = "screencap";
+    private static final int VIRTUAL_DISPLAY_FLAGS = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
+    static String STORE_DIRECTORY;
+    private static MediaProjection sMediaProjection;
 
     private class OrientationChangeCallback extends OrientationEventListener {
 
@@ -1133,6 +1134,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 
     private class MediaProjectionStopCallback extends MediaProjection.Callback {
         @Override
