@@ -142,34 +142,6 @@
                 android:progress="0"
                 android:textSize="@dimen/option_text_size" />
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingTop="@dimen/option_padding_top"
-                android:text="Traffic"
-                android:textSize="@dimen/option_title_size" />
-
-            <Switch
-                android:id="@+id/switchTrafficAndLane"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="false"
-                android:paddingTop="@dimen/option_padding_top"
-                android:text="Traffic &amp; Lane Detect(Experiment)"
-                android:textSize="@dimen/option_text_size" />
-
-            <Switch
-                android:id="@+id/switchAlertYellowTraffic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="false"
-                android:paddingTop="@dimen/option_padding_top"
-                android:text="Alert Yellow Traffic"
-                android:textSize="@dimen/option_text_size" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -219,6 +191,60 @@
                 android:layout_width="fill_parent"
                 android:layout_height="2dip"
                 android:background="@color/horizontal_line" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="Traffic"
+                android:textSize="@dimen/option_title_size" />
+
+            <Switch
+                android:id="@+id/switchTrafficAndLane"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="Traffic &amp; Lane Detect(Experiment)"
+                android:textSize="@dimen/option_text_size" />
+
+            <Switch
+                android:id="@+id/switchAlertYellowTraffic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="Alert Yellow Traffic"
+                android:textSize="@dimen/option_text_size" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dip"
+                android:background="@color/horizontal_line" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="Bluetooth"
+                android:textSize="@dimen/option_title_size" />
+
+            <Switch
+                android:id="@+id/switchBtBindAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:clickable="false"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="Bind Address"
+                android:textSize="@dimen/option_text_size" />
 
         </LinearLayout>
 
