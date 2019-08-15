@@ -467,7 +467,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onDestroy() {
         super.onDestroy();
-        reconnectThreadEN = false;
+        btTeconnectThreadEN = false;
         if (!IGNORE_BT_DEVICE) {
             bt.stopAutoConnect();
             bt.stopService();
@@ -589,7 +589,9 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.switchBtBindAddress:
-                    storeOptions(R.string.option_bt_bind_address, ((Switch) view).isChecked());
+                    final boolean isBindAddress = ((Switch) view).isChecked();
+                    useBTAddressReconnectThread = isBindAddress;
+                    storeOptions(R.string.option_bt_bind_address, isBindAddress);
                     break;
 
                 default:
@@ -1037,7 +1039,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private boolean garminHudConnected;
+    private boolean hudConnected;
 
     private class BluetoothConnectionListener implements BluetoothSPP.BluetoothConnectionListener, BluetoothSPP.AutoConnectionListener {
         @Override
@@ -1058,7 +1060,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceConnected(String name, String address) {
-            garminHudConnected = true;
+            hudConnected = true;
             switchHudConnected.setText("'" + name + "' connected");
             switchHudConnected.setTextColor(Color.BLACK);
             switchHudConnected.setChecked(true);
@@ -1090,7 +1092,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceDisconnected() {
-            garminHudConnected = false;
+            hudConnected = false;
             switchHudConnected.setText("HUD disconnected");
             switchHudConnected.setTextColor(Color.RED);
             switchHudConnected.setChecked(false);
@@ -1101,7 +1103,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceConnectionFailed() {
-            garminHudConnected = false;
+            hudConnected = false;
             switchHudConnected.setText("HUD connect failed");
             switchHudConnected.setTextColor(Color.RED);
             switchHudConnected.setChecked(false);
@@ -1207,9 +1209,9 @@ public class MainActivity extends AppCompatActivity {
     //================================================================================
     // bt reconnect
     //================================================================================
-    private boolean reconnectThreadEN = true;
+    private boolean btTeconnectThreadEN = true;
 
-    private class ReconnectThread extends Thread {
+    private class BTReconnectThread extends Thread {
         public void run() {
             try {
                 Thread.sleep(2000);
@@ -1217,7 +1219,7 @@ public class MainActivity extends AppCompatActivity {
                 log(e);
             }
 
-            if (!garminHudConnected && reconnectThreadEN) {
+            if (!hudConnected && btTeconnectThreadEN) {
                 String reconnectAddress = sharedPref.getString(getString(R.string.bt_bind_address_key), null);
                 log("reconnect address:" + reconnectAddress);
                 if (null != reconnectAddress) {
@@ -1228,16 +1230,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private final boolean usBTReconnectThread = false;
+    private   boolean useBTAddressReconnectThread = false;
     private Thread btReconnectThread;
 
     private void resetBT() {
-        if (usBTReconnectThread) {
+        if (useBTAddressReconnectThread) {
             bt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
             bt.setBluetoothConnectionListener(btConnectionListener);
             bt.setAutoConnectionListener(btConnectionListener);
 
-            btReconnectThread = new ReconnectThread();
+            btReconnectThread = new BTReconnectThread();
             btReconnectThread.start();
         }
     }
