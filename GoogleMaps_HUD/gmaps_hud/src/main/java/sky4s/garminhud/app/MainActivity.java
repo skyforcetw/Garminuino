@@ -259,9 +259,28 @@ public class MainActivity extends AppCompatActivity {
                     bt.setupService();
                     bt.startService(BluetoothState.DEVICE_OTHER);
 
-                    String bt_bind_name = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
-                    bt.autoConnect(bt_bind_name);
-//                        bt.connect(bt_bind_name);
+                    boolean isBindName = false;
+                    if (null != switchBtBindAddress) {
+                        boolean isBindAddress = switchBtBindAddress.isChecked();
+                        if (isBindAddress) {
+                            String bindAddress = sharedPref.getString(getString(R.string.bt_bind_address_key), null);
+                            if (null != bindAddress) {
+                                bt.connect(bindAddress);
+                            }
+                        } else {
+                            isBindName = true;
+                            ;
+                        }
+                    } else {
+                        isBindName = true;
+                    }
+
+                    if (isBindName) {
+                        String bindName = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
+                        if (null != bindName) {
+                            bt.autoConnect(bindName);
+                        }
+                    }
                 }
             }
 
@@ -1059,9 +1078,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            String connected_device_name = bt.getConnectedDeviceName();
+            String connectedDeviceName = bt.getConnectedDeviceName();
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString(getString(R.string.bt_bind_name_key), connected_device_name);
+            editor.putString(getString(R.string.bt_bind_name_key), connectedDeviceName);
+
+            String connectedDeviceAddress = bt.getConnectedDeviceAddress();
+            editor.putString(getString(R.string.bt_bind_address_key), connectedDeviceAddress);
+
             editor.commit();
         }
 
@@ -1195,9 +1218,11 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (!garminHudConnected && reconnectThreadEN) {
-                String address_reconnect = sharedPref.getString(getString(R.string.bt_bind_address_key), "");
-                log("reconnect address:" + address_reconnect);
-                bt.connect(address_reconnect);
+                String reconnectAddress = sharedPref.getString(getString(R.string.bt_bind_address_key), null);
+                log("reconnect address:" + reconnectAddress);
+                if (null != reconnectAddress) {
+                    bt.connect(reconnectAddress);
+                }
             }
 
         }
