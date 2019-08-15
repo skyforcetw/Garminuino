@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
+import sky4s.garminhud.eLane;
 import sky4s.garminhud.hud.HUDInterface;
 
 public class ImageDetectListener implements ImageReader.OnImageAvailableListener {
@@ -102,6 +103,9 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
         return busyTraffic;
     }
 
+    private final int ROAD_ROI_WIDTH_TOL = activity.getResources().getInteger(R.integer.road_roi_width_tol);
+    private final int LANE_ROI_WIDTH_TOL = activity.getResources().getInteger(R.integer.lane_roi_width_tol);
+    private final int LANE_DETECT_X_OFFSET=   activity.getResources().getInteger(R.integer.lane_detect_x_offset);
     /**
      * detect procedure:
      * 1. road
@@ -118,8 +122,7 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
         boolean traffic_detect_result = false;
 
         boolean busyTraffic = false;
-        final int ROAD_ROI_WIDTH_TOL = 118;
-        final int LANE_ROI_WIDTH_TOL = 10;
+
         Theme theme = Theme.Unknow;
 
         try {
@@ -243,8 +246,53 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
         }
     }
 
+
+
+
+    private ArrayList<Boolean> laneDetect(Bitmap lane, int bgColor, int laneColor) {
+        final int height = lane.getHeight() - 1;
+        ArrayList<Integer> laneDivide = findLaneDivide(lane, height, bgColor, laneColor);
+        ArrayList<Boolean> result = new ArrayList<Boolean>();
+        final int yOffset = -2;
+
+        if (laneDivide.size() >= 1) {
+            int halfDivideWidth = -1;
+            if (laneDivide.size() == 1) {
+                int divide_x = laneDivide.get(0);
+                final int arrow_y = getFirstVertical(lane, divide_x, 0, laneColor, true, true);
+                final int scan_y = arrow_y + yOffset;
+
+                final int left_arrow_x0 = getFirstHorizontal(lane, LANE_DETECT_X_OFFSET, divide_x, scan_y, bgColor, true, false);
+                final int left_arrow_x1 = getFirstHorizontal(lane, LANE_DETECT_X_OFFSET, divide_x, scan_y, bgColor, true, true);
+                final int arrow_width = left_arrow_x1 - left_arrow_x0;
+                final int left_arrow_center = left_arrow_x0 + (arrow_width >> 1);
+                halfDivideWidth = divide_x - left_arrow_center;
+            } else {
+                final int divideWidth = laneDivide.size() >= 2 ? laneDivide.get(1) - laneDivide.get(0) : 0;
+                halfDivideWidth = divideWidth >> 1;
+            }
+
+            for (int x = 0; x < laneDivide.size(); x++) {
+                final int laneCenter = laneDivide.get(x) - halfDivideWidth;
+                final int notBGy = getFirstVertical(lane, laneCenter, 0, bgColor, true, true);
+                int pixel = lane.getPixel(laneCenter, notBGy + yOffset);
+                result.add(isSameRGB(pixel, LaneNowWhite));
+            }
+
+            //last
+            final int v = laneDivide.get(laneDivide.size() - 1);
+            int lastLaneCenter = v + halfDivideWidth;
+            final int notBGy = getFirstVertical(lane, lastLaneCenter, 0, bgColor, true, true);
+            final int pixel = lane.getPixel(lastLaneCenter, notBGy + yOffset);
+            result.add(isSameRGB(pixel, LaneNowWhite));
+        }
+
+        return result;
+    }
+
+
     private static long lastUpdateTime = 0;
-    private final static long UpdateInterval = 1500;
+    private final long UpdateInterval = activity.getResources().getInteger(R.integer.detect_update_interval);
 
     @Override
     public void onImageAvailable(ImageReader reader) {
@@ -443,7 +491,7 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
         int now_lane_index = 0;
         for (int x = x_start; x < x_start + lanes; x++, now_lane_index++) {
             // the num in lane is from right to left, but laneDetectResult is from left to right, need handle it
-            final int currentLaneValue = 64 - (2 << x);
+            final int currentLaneValue = eLane.OuterLeft.value - (2 << x);
             nOutline += currentLaneValue;
             boolean drivingLane = laneDetectResult.get(now_lane_index);
             if (drivingLane) {
@@ -508,7 +556,6 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
 
     private int getFirstHorizontal(Bitmap lane, int x0, int x1, int y0, int color,
                                    boolean notLogic, boolean inverse_scan) {
-//            final int width = lane.getWidth();
         int end = inverse_scan ? x0 : x1;
         int w_step = inverse_scan ? -1 : 1;
         for (int w = inverse_scan ? x1 : x0; w != end; w += w_step) {
@@ -518,47 +565,6 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
             }
         }
         return -1;
-    }
-
-    private ArrayList<Boolean> laneDetect(Bitmap lane, int bgColor, int laneColor) {
-        final int height = lane.getHeight() - 1;
-        ArrayList<Integer> laneDivide = findLaneDivide(lane, height, bgColor, laneColor);
-        ArrayList<Boolean> result = new ArrayList<Boolean>();
-        final int yOffset = -2;
-
-        if (laneDivide.size() >= 1) {
-            int halfDivideWidth = -1;
-            if (laneDivide.size() == 1) {
-                int divide_x = laneDivide.get(0);
-                final int arrow_y = getFirstVertical(lane, divide_x, 0, laneColor, true, true);
-                final int scan_y = arrow_y + yOffset;
-                final int x_offset = 100;
-                final int left_arrow_x0 = getFirstHorizontal(lane, x_offset, divide_x, scan_y, bgColor, true, false);
-                final int left_arrow_x1 = getFirstHorizontal(lane, x_offset, divide_x, scan_y, bgColor, true, true);
-                final int arrow_width = left_arrow_x1 - left_arrow_x0;
-                final int left_arrow_center = left_arrow_x0 + (arrow_width >> 1);
-                halfDivideWidth = divide_x - left_arrow_center;
-            } else {
-                final int divideWidth = laneDivide.size() >= 2 ? laneDivide.get(1) - laneDivide.get(0) : 0;
-                halfDivideWidth = divideWidth >> 1;
-            }
-
-            for (int x = 0; x < laneDivide.size(); x++) {
-                final int laneCenter = laneDivide.get(x) - halfDivideWidth;
-                final int notBGy = getFirstVertical(lane, laneCenter, 0, bgColor, true, true);
-                int pixel = lane.getPixel(laneCenter, notBGy + yOffset);
-                result.add(isSameRGB(pixel, LaneNowWhite));
-            }
-
-            //last
-            final int v = laneDivide.get(laneDivide.size() - 1);
-            int lastLaneCenter = v + halfDivideWidth;
-            final int notBGy = getFirstVertical(lane, lastLaneCenter, 0, bgColor, true, true);
-            final int pixel = lane.getPixel(lastLaneCenter, notBGy + yOffset);
-            result.add(isSameRGB(pixel, LaneNowWhite));
-        }
-
-        return result;
     }
 
     private static void copy(File src, File dst) throws IOException {

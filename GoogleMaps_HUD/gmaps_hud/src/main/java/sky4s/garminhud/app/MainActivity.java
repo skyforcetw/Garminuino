@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
@@ -293,10 +294,30 @@ public class MainActivity extends AppCompatActivity {
         return bt_status;
     }
 
+    static Boolean isDebug = null;
+
+    private static boolean isDebug() {
+        return isDebug == null ? false : isDebug.booleanValue();
+    }
+
+    /**
+     * Sync lib debug with app's debug value. Should be called in module Application
+     *
+     * @param context
+     */
+    private static void syncIsDebug(Context context) {
+        if (isDebug == null) {
+            isDebug = context.getApplicationInfo() != null &&
+                    (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        syncIsDebug(getApplicationContext());
 
         //=======================================================================================
         // tabs
@@ -1216,7 +1237,8 @@ public class MainActivity extends AppCompatActivity {
     private class BTReconnectThread extends Thread {
         public void run() {
             try {
-                Thread.sleep(2000);
+                final int interval = getResources(). getInteger(R.integer.bt_reconnect_interval);
+                Thread.sleep(interval);
             } catch (Exception e) {
                 log(e);
             }
