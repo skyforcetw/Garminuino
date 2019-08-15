@@ -51,7 +51,7 @@ public class GarminHUD extends HUDAdapter {
     }
 
     private boolean SendPacket(char[] pBuf, int length_of_data) {
-        if (!isUpdatable()) {
+        if (!isUpdatable() || null == bt) {
             return false;
         }
         updateCount++;

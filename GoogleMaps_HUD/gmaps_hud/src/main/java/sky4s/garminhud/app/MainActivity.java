@@ -16,15 +16,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
 import android.location.LocationManager;
-import android.media.Image;
 import android.media.ImageReader;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
@@ -60,13 +58,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -86,70 +77,63 @@ import sky4s.garminhud.hud.HUDInterface;
 public class MainActivity extends AppCompatActivity {
     //for test with virtual device which no BT device
     public final static boolean IGNORE_BT_DEVICE = (null == BluetoothAdapter.getDefaultAdapter());
-    public final static long UpdateInterval = 1500;
+
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String ENABLED_NOTIFICATION_LISTENERS = "enabled_notification_listeners";
     private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    //===============================================================================================
-    // screen capture
-    //===============================================================================================
-    private static final int REQUEST_CODE = 100;
-    private static final String SCREENCAP_NAME = "screencap";
-    private static final int VIRTUAL_DISPLAY_FLAGS = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
-    private static String STORE_DIRECTORY;
-    private static MediaProjection sMediaProjection;
-    private static long lastUpdateTime = 0;
-    //========================================================================================
-    // tabs
-    //========================================================================================
-    // Titles of the individual pages (displayed in tabs)
-    private final String[] PAGE_TITLES = new String[]{
-            "Setup",
-            "Debug"
-    };
-    // The fragments that are used as the individual pages
-    private final Fragment[] PAGES = new Fragment[]{
-            new Page1Fragment(),
-            new Page2Fragment()
-    };
+
     //========================================
     // UI for Page1Fragment
     //========================================
     TextView textViewDebug;
+
+    //status
     Switch switchHudConnected;
-    //========================================
     Switch switchNotificationCaught;
     Switch switchGmapsNotificationCaught;
+
+    //setting
     Switch switchShowSpeed;
     Switch switchAutoBrightness;
     SeekBar seekBarBrightness;
+
     Switch switchShowETA;
     Switch switchIdleShowCurrrentTime;
 
+    //traffic
     Switch switchTrafficAndLane;
     Switch switchAlertYellowTraffic;
+
+    //bluetooth
+    Switch switchBtBindAddress;
 
     private boolean isEnabledNLS = false;
     private boolean showCurrentTime = false;
     private BluetoothSPP bt;
-    private HUDInterface hud = new DummyHUD();
+    HUDInterface hud = new DummyHUD();
     private NotificationManager notifyManager;
     private MsgReceiver msgReceiver;
     private boolean lastReallyInNavigation = false;
     private boolean is_in_navigation = false;
-    //    private int int_speed = 0;
-    private ScreenReceiver screenReceiver;
+    private BroadcastReceiver screenReceiver;
     private Timer timer = new Timer(true);
-    private CurrentTimeTask currentTimeTask;
+    private TimerTask currentTimeTask;
     // The ViewPager is responsible for sliding pages (fragments) in and out upon user input
     private ViewPager mViewPager;
-    private NavigationItemSelectedListener navigationListener = new NavigationItemSelectedListener();
+
+    //    private NavigationItemSelectedListener navigationListener = new NavigationItemSelectedListener();
+    private NavigationView.OnNavigationItemSelectedListener navigationListener = new NavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(MenuItem item) {
+            return false;
+        }
+    };
+
 
     //========================================================================================
     private SharedPreferences sharedPref;
-    private DrawerLayout mDrawerLayout;
-    //    private boolean garminHudConnected;
+    //    private DrawerLayout mDrawerLayout;
     private BluetoothConnectionListener btConnectionListener = new BluetoothConnectionListener();
     private SeekBar.OnSeekBarChangeListener seekbarChangeListener = new SeekBar.OnSeekBarChangeListener() {
 
@@ -172,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
-    //    private ActionBarDrawerToggle mDrawerToggle;
+
     //===============================================================================================
     // location
     //===============================================================================================
@@ -185,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
             locationService = binder.getService();
-//            locationService.hud = hud;
             locationServiceConnected = true;
         }
 
@@ -194,36 +177,13 @@ public class MainActivity extends AppCompatActivity {
             locationServiceConnected = false;
         }
     };
-    private MediaProjectionManager mProjectionManager;
-    private ImageReader mImageReader;
-    private Handler mProjectionHandler;
-    private Display mDisplay;
-    private VirtualDisplay mVirtualDisplay;
-    private int mDensity;
-    private int mWidth;
-    private int mHeight;
-    private int mRotation;
-    private OrientationChangeCallback mOrientationChangeCallback;
-    private boolean alertYellowTraffic = false;
 
-    public static void copy(File src, File dst) throws IOException {
-        try (InputStream in = new FileInputStream(src)) {
-            try (OutputStream out = new FileOutputStream(dst)) {
-                // Transfer bytes from in to out
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-            }
-        }
-    }
 
     private boolean isInNavigation() {
         return switchGmapsNotificationCaught.isChecked();
     }
 
-    private void sendBooleanExtraByBroadcast(String receiver, String key, boolean b) {
+    void sendBooleanExtraByBroadcast(String receiver, String key, boolean b) {
         Intent intent = new Intent(receiver);
         intent.putExtra(key, b);
         sendBroadcast(intent);
@@ -256,12 +216,15 @@ public class MainActivity extends AppCompatActivity {
         switchAlertYellowTraffic.setOnCheckedChangeListener(onCheckedChangedListener);
         switchShowETA.setOnCheckedChangeListener(onCheckedChangedListener);
         switchIdleShowCurrrentTime.setOnCheckedChangeListener(onCheckedChangedListener);
+        switchBtBindAddress.setOnCheckedChangeListener(onCheckedChangedListener);
 
-        boolean optionShowSpeed = sharedPref.getBoolean(getString(R.string.option_show_speed), false);
-        boolean optionTrafficAndLaneDetect = sharedPref.getBoolean(getString(R.string.option_traffic_and_lane_detect), false);
-        boolean optionAlertYellowTraffic = sharedPref.getBoolean(getString(R.string.option_alert_yellow_traffic), false);
-        boolean optionShowEta = sharedPref.getBoolean(getString(R.string.option_show_eta), false);
-        boolean optionIdleShowTime = sharedPref.getBoolean(getString(R.string.option_idle_show_current_time), false);
+        final boolean optionShowSpeed = sharedPref.getBoolean(getString(R.string.option_show_speed), false);
+        final boolean optionTrafficAndLaneDetect = sharedPref.getBoolean(getString(R.string.option_traffic_and_lane_detect), false);
+        final boolean optionAlertYellowTraffic = sharedPref.getBoolean(getString(R.string.option_alert_yellow_traffic), false);
+        final boolean optionShowEta = sharedPref.getBoolean(getString(R.string.option_show_eta), false);
+        final boolean optionIdleShowTime = sharedPref.getBoolean(getString(R.string.option_idle_show_current_time), false);
+        final boolean optionBtBindAddress = sharedPref.getBoolean(getString(R.string.option_bt_bind_address), false);
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -270,11 +233,12 @@ public class MainActivity extends AppCompatActivity {
                 switchAlertYellowTraffic.setChecked(optionAlertYellowTraffic);
                 switchShowETA.setChecked(optionShowEta);
                 switchIdleShowCurrrentTime.setChecked(optionIdleShowTime);
+                switchBtBindAddress.setChecked(optionBtBindAddress);
             }
         });
     }
 
-    private String init_bt() {
+    private String initBluetooth() {
         String bt_status = "";
         if (!IGNORE_BT_DEVICE) {
             bt = new BluetoothSPP(this);
@@ -288,18 +252,35 @@ public class MainActivity extends AppCompatActivity {
             }
             hud = new GarminHUD(bt);
 
-            String bt_bind_name = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
+            if (!bt.isBluetoothEnabled()) { //bt cannot work
+                Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
+            } else {
+                if (!bt.isServiceAvailable()) {
+                    bt.setupService();
+                    bt.startService(BluetoothState.DEVICE_OTHER);
 
-            if (null != bt_bind_name) {
-                if (!bt.isBluetoothEnabled()) { //bt cannot work
-                    Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
-                } else {
-                    if (!bt.isServiceAvailable()) {
-                        bt.setupService();
-                        bt.startService(BluetoothState.DEVICE_OTHER);
-//                        bt.autoConnect(bt_bind_name);
-                        bt.connect(bt_bind_name);
+                    boolean isBindName = false;
+                    if (null != switchBtBindAddress) {
+                        boolean isBindAddress = switchBtBindAddress.isChecked();
+                        if (isBindAddress) {
+                            String bindAddress = sharedPref.getString(getString(R.string.bt_bind_address_key), null);
+                            if (null != bindAddress) {
+                                bt.connect(bindAddress);
+                            }
+                        } else {
+                            isBindName = true;
+                            ;
+                        }
+                    } else {
+                        isBindName = true;
+                    }
+
+                    if (isBindName) {
+                        String bindName = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
+                        if (null != bindName) {
+                            bt.autoConnect(bindName);
+                        }
                     }
                 }
             }
@@ -313,10 +294,30 @@ public class MainActivity extends AppCompatActivity {
         return bt_status;
     }
 
+    static Boolean isDebug = null;
+
+    private static boolean isDebug() {
+        return isDebug == null ? false : isDebug.booleanValue();
+    }
+
+    /**
+     * Sync lib debug with app's debug value. Should be called in module Application
+     *
+     * @param context
+     */
+    private static void syncIsDebug(Context context) {
+        if (isDebug == null) {
+            isDebug = context.getApplicationInfo() != null &&
+                    (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        syncIsDebug(getApplicationContext());
 
         //=======================================================================================
         // tabs
@@ -340,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
         //========================================================================================
         // BT related
         //========================================================================================
-        String bt_status = init_bt();
+        String bt_status = initBluetooth();
         //========================================================================================
 
         //=======================================================================================
@@ -379,7 +380,23 @@ public class MainActivity extends AppCompatActivity {
         // INITIALIZE RECEIVER
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-        screenReceiver = new ScreenReceiver();
+//        screenReceiver = new ScreenReceiver();
+        screenReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                    if (useLocationService) {
+
+                    }
+                    // DO WHATEVER YOU NEED TO DO HERE
+//                wasScreenOn = false;
+                } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                    // AND DO WHATEVER YOU NEED TO DO HERE
+//                wasScreenOn = true;
+                }
+            }
+        };
+
         registerReceiver(screenReceiver, filter);
         //========================================================================================
 
@@ -403,6 +420,67 @@ public class MainActivity extends AppCompatActivity {
 //        createNotification(this);
     }
 
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!IGNORE_BT_DEVICE) {
+            if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
+                if (resultCode == Activity.RESULT_OK) {
+                    bt.connect(data);
+                }
+            } else if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
+                if (resultCode == Activity.RESULT_OK) {
+                    bt.setupService();
+                    bt.startService(BluetoothState.DEVICE_OTHER);
+                } else {
+                    Toast.makeText(getApplicationContext()
+                            , "Bluetooth was not enabled."
+                            , Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+        }
+
+        if (requestCode == REQUEST_CODE) {
+            sMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
+
+            if (sMediaProjection != null) {
+
+                File dataFilesDir = getFilesDir();
+                if (dataFilesDir != null) {
+                    STORE_DIRECTORY = dataFilesDir.getAbsolutePath() + "/screenshots/";
+                    File storeDirectory = new File(STORE_DIRECTORY);
+                    if (!storeDirectory.exists()) {
+                        boolean success = storeDirectory.mkdirs();
+                        if (!success) {
+                            Log.e(TAG, "failed to create file storage directory.");
+                            return;
+                        }
+                    }
+                } else {
+                    Log.e(TAG, "failed to create file storage directory, getFilesDir is null.");
+                    return;
+                }
+
+                // display metrics
+                DisplayMetrics metrics = getResources().getDisplayMetrics();
+                mDensity = metrics.densityDpi;
+                mDisplay = getWindowManager().getDefaultDisplay();
+
+                // create virtual display depending on device width / height
+                createVirtualDisplay();
+
+                // register orientation change callback
+                mOrientationChangeCallback = new OrientationChangeCallback(this);
+                if (mOrientationChangeCallback.canDetectOrientation()) {
+                    mOrientationChangeCallback.enable();
+                }
+
+                // register media projection stop callback
+                sMediaProjection.registerCallback(new MediaProjectionStopCallback(), mProjectionHandler);
+            }
+        }
+    }
+
     public void onStop() {
         super.onStop();
 
@@ -410,7 +488,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onDestroy() {
         super.onDestroy();
-        reconnectTH = false;
+        btTeconnectThreadEN = false;
         if (!IGNORE_BT_DEVICE) {
             bt.stopAutoConnect();
             bt.stopService();
@@ -441,7 +519,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-//        loadOptions();
     }
 
     @Override
@@ -478,7 +555,7 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
     }
 
-    public class OnCheckedChangedListener implements CompoundButton.OnCheckedChangeListener {
+    private class OnCheckedChangedListener implements CompoundButton.OnCheckedChangeListener {
 
         @Override
         public void onCheckedChanged(CompoundButton view, boolean b) {
@@ -509,19 +586,34 @@ public class MainActivity extends AppCompatActivity {
                     sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
                             getString(R.string.option_show_eta), ((Switch) view).isChecked());
                     storeOptions(R.string.option_show_eta, ((Switch) view).isChecked());
-
                     break;
-
 
                 case R.id.switchIdleShowCurrentTime:
                     showCurrentTime = ((Switch) view).isChecked();
                     if (showCurrentTime && null == currentTimeTask) {
-                        currentTimeTask = new CurrentTimeTask();
+//                        currentTimeTask = new CurrentTimeTask();
+                        currentTimeTask = new TimerTask() {
+                            @Override
+                            public void run() {
+                                if (null != hud && !isInNavigation() && showCurrentTime) {
+                                    Calendar c = Calendar.getInstance();
+                                    int hour = c.get(Calendar.HOUR_OF_DAY);
+                                    int minute = c.get(Calendar.MINUTE);
+                                    hud.SetCurrentTime(hour, minute);
+                                }
+                            }
+                        };
+
                         timer.schedule(currentTimeTask, 1000, 1000);
                     }
                     storeOptions(R.string.option_idle_show_current_time, ((Switch) view).isChecked());
                     break;
 
+                case R.id.switchBtBindAddress:
+                    final boolean isBindAddress = ((Switch) view).isChecked();
+                    useBTAddressReconnectThread = isBindAddress;
+                    storeOptions(R.string.option_bt_bind_address, isBindAddress);
+                    break;
 
                 default:
                     break;
@@ -566,7 +658,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.btnResetBT:
                 log("Reset Bluetooth...");
                 if (!IGNORE_BT_DEVICE) {
-                    init_bt();
+                    initBluetooth();
                 }
                 break;
 
@@ -695,7 +787,6 @@ public class MainActivity extends AppCompatActivity {
 
         Notification notification = builder.build();
         notifyManager.notify(1, notification);
-
     }
 
     private String getCurrentNotificationString() {
@@ -763,65 +854,6 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, object.toString());
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!IGNORE_BT_DEVICE) {
-            if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
-                if (resultCode == Activity.RESULT_OK) {
-                    bt.connect(data);
-                }
-            } else if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
-                if (resultCode == Activity.RESULT_OK) {
-                    bt.setupService();
-                    bt.startService(BluetoothState.DEVICE_OTHER);
-                } else {
-                    Toast.makeText(getApplicationContext()
-                            , "Bluetooth was not enabled."
-                            , Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            }
-        }
-
-        if (requestCode == REQUEST_CODE) {
-            sMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
-
-            if (sMediaProjection != null) {
-
-                File dataFilesDir = getFilesDir();
-                if (dataFilesDir != null) {
-                    STORE_DIRECTORY = dataFilesDir.getAbsolutePath() + "/screenshots/";
-                    File storeDirectory = new File(STORE_DIRECTORY);
-                    if (!storeDirectory.exists()) {
-                        boolean success = storeDirectory.mkdirs();
-                        if (!success) {
-                            Log.e(TAG, "failed to create file storage directory.");
-                            return;
-                        }
-                    }
-                } else {
-                    Log.e(TAG, "failed to create file storage directory, getFilesDir is null.");
-                    return;
-                }
-
-                // display metrics
-                DisplayMetrics metrics = getResources().getDisplayMetrics();
-                mDensity = metrics.densityDpi;
-                mDisplay = getWindowManager().getDefaultDisplay();
-
-                // create virtual display depending on device width / height
-                createVirtualDisplay();
-
-                // register orientation change callback
-                mOrientationChangeCallback = new OrientationChangeCallback(this);
-                if (mOrientationChangeCallback.canDetectOrientation()) {
-                    mOrientationChangeCallback.enable();
-                }
-
-                // register media projection stop callback
-                sMediaProjection.registerCallback(new MediaProjectionStopCallback(), mProjectionHandler);
-            }
-        }
-    }
 
     // bind/activate LocationService
     void bindLocationService() {
@@ -910,65 +942,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /****************************************** UI Widget Callbacks *******************************/
-    private void startProjection() {
-        startActivityForResult(mProjectionManager.createScreenCaptureIntent(), REQUEST_CODE);
-    }
-
-    private void stopProjection() {
-        mProjectionHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (sMediaProjection != null) {
-                    sMediaProjection.stop();
-                }
-            }
-        });
-    }
-
-    /****************************************** Factoring Virtual Display creation ****************/
-    private void createVirtualDisplay() {
-        // get width and height
-//        Point size = new Point();
-//        mDisplay.getSize(size);
-//        mWidth = size.x;
-//        mHeight = size.y;
-
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        mWidth = dm.widthPixels;
-        mHeight = dm.heightPixels;
-
-//        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-
-        // start capture reader
-        mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 2);
-        mVirtualDisplay = sMediaProjection.createVirtualDisplay(SCREENCAP_NAME, mWidth, mHeight, mDensity, VIRTUAL_DISPLAY_FLAGS, mImageReader.getSurface(), null, mProjectionHandler);
-        mImageReader.setOnImageAvailableListener(new ImageAvailableListener(), mProjectionHandler);
-    }
-
-    static class Rect {
-        public int x;
-        public int y;
-        public int width;
-        public int height;
-
-        public Rect(int x, int y, int width, int height) {
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-        }
-
-        @Override
-        public final String toString() {
-            return Integer.toString(x) + "," + Integer.toString(y) + " " + Integer.toString(width) + "/" + Integer.toString(height);
-        }
-
-        public boolean valid() {
-            return -1 != x && -1 != y && -1 != width && -1 != height;
-        }
-    }
 
     private void updateTextViewDebug(String msg) {
         CharSequence orignal_text = textViewDebug.getText();
@@ -1002,7 +975,6 @@ public class MainActivity extends AppCompatActivity {
 
                 CharSequence orignal_text = textViewDebug.getText();
                 textViewDebug.setText("speed: " + int_speed + "\n\n" + orignal_text);
-
                 return;
             }
             //=======================================================================
@@ -1045,43 +1017,24 @@ public class MainActivity extends AppCompatActivity {
                         lastReallyInNavigation = is_really_in_navigation;
                     }
                 }
-
-                //for location usage
-//                sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_location_service), getString(R.string.is_in_navigation), isInNavigation());
             }
 
         }
     }
 
-    private class ScreenReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                if (useLocationService) {
-
-                }
-                // DO WHATEVER YOU NEED TO DO HERE
-//                wasScreenOn = false;
-            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                // AND DO WHATEVER YOU NEED TO DO HERE
-//                wasScreenOn = true;
-            }
-        }
-
-    }
-
-    private class CurrentTimeTask extends TimerTask {
-        public void run() {
-            if (null != hud && !isInNavigation() && showCurrentTime) {
-                Calendar c = Calendar.getInstance();
-                int hour = c.get(Calendar.HOUR_OF_DAY);
-                int minute = c.get(Calendar.MINUTE);
-//                hud.SetTime(hour, minute, false, false);
-                hud.SetCurrentTime(hour, minute);
-            }
-        }
-    }
+    //========================================================================================
+    // tabs
+    //========================================================================================
+    // Titles of the individual pages (displayed in tabs)
+    private final String[] PAGE_TITLES = new String[]{
+            "Setup",
+            "Debug"
+    };
+    // The fragments that are used as the individual pages
+    private final Fragment[] PAGES = new Fragment[]{
+            new Page1Fragment(),
+            new Page2Fragment()
+    };
 
     /* PagerAdapter for supplying the ViewPager with the pages (fragments) to display. */
     private class MyPagerAdapter extends FragmentPagerAdapter {
@@ -1107,16 +1060,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private class NavigationItemSelectedListener implements NavigationView.OnNavigationItemSelectedListener {
-
-
-        @Override
-        public boolean onNavigationItemSelected(MenuItem item) {
-            return false;
-        }
-    }
-
-    private boolean garminHudConnected;
+    private boolean hudConnected;
 
     private class BluetoothConnectionListener implements BluetoothSPP.BluetoothConnectionListener, BluetoothSPP.AutoConnectionListener {
         @Override
@@ -1137,7 +1081,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceConnected(String name, String address) {
-            garminHudConnected = true;
+            hudConnected = true;
             switchHudConnected.setText("'" + name + "' connected");
             switchHudConnected.setTextColor(Color.BLACK);
             switchHudConnected.setChecked(true);
@@ -1157,15 +1101,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            String connected_device_name = bt.getConnectedDeviceName();
+            String connectedDeviceName = bt.getConnectedDeviceName();
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString(getString(R.string.bt_bind_name_key), connected_device_name);
+            editor.putString(getString(R.string.bt_bind_name_key), connectedDeviceName);
+
+            String connectedDeviceAddress = bt.getConnectedDeviceAddress();
+            editor.putString(getString(R.string.bt_bind_address_key), connectedDeviceAddress);
+
             editor.commit();
         }
 
         @Override
         public void onDeviceDisconnected() {
-            garminHudConnected = false;
+            hudConnected = false;
             switchHudConnected.setText("HUD disconnected");
             switchHudConnected.setTextColor(Color.RED);
             switchHudConnected.setChecked(false);
@@ -1176,7 +1124,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceConnectionFailed() {
-            garminHudConnected = false;
+            hudConnected = false;
             switchHudConnected.setText("HUD connect failed");
             switchHudConnected.setTextColor(Color.RED);
             switchHudConnected.setChecked(false);
@@ -1186,524 +1134,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    enum Theme {
-        DayV1, NightV1, V2, Unknow
-    }
 
-    ;
-
-
-    private class ImageAvailableListener
-            implements ImageReader.OnImageAvailableListener {
-        public final String PreImage = "myscreen_pre.png";
-        public final String NowImage = "myscreen_now.png";
-        public final String GmapImage = "gmap.png";
-        public final String MapImage = "map.png";
-        public final String LaneImage = "lane.png";
-
-        public final int ArrowColor_Day = Color.rgb(66, 133, 244);
-        public final int ArrowColor_Night = Color.rgb(223, 246, 255);
-        public final int ArrowColor_Static = Color.rgb(199, 201, 201);
-
-        public final int RoadBgGreen_Day = Color.rgb(15, 157, 88);
-        public final int RoadBgGreen_Night = Color.rgb(13, 144, 79);
-        public final int LaneBgGreen_DayV1 = Color.rgb(11, 128, 67);
-        public final int LaneBgGreen_NightV1 = Color.rgb(9, 113, 56);
-        public final int LaneDivideWhiteV1 = Color.rgb(255, 255, 255);
-
-        public final int RoadBgGreen_V2 = Color.rgb(11, 128, 67);
-        public final int LaneBgGreen_V2 = Color.rgb(13, 101, 45);
-        public final int LaneDivideWhiteV2 = Color.rgb(129, 201, 149);
-
-
-        public final int LaneNowWhite = Color.rgb(255, 255, 255);
-
-        //        public final int NextArrow_Day = LaneBgGreen_DayV1;
-        //        public final int BlueTraffic_1 = Color.rgb(69, 151, 255);
-//        public final int BlueTraffic_2 = Color.rgb(102, 157, 246);
-        public final int OrangeTraffic_V1 = Color.rgb(255, 171, 52);
-        public final int OrangeTraffic_DayV2 = Color.rgb(255, 171, 52);
-        public final int OrangeTraffic_NightV2 = Color.rgb(163, 113, 55);
-        public final int RedTraffic_V1 = Color.rgb(221, 25, 29);
-        public final int RedTraffic_DayV2 = Color.rgb(221, 25, 29);
-        public final int RedTraffic_NightV2 = Color.rgb(146, 96, 92);
-        int[] pixelsInFindColor;
-
-
-        private boolean busyTrafficDetect(Bitmap map, boolean alertYellowTraffic, Theme theme) {
-            final boolean isV1 = Theme.DayV1 == theme || Theme.NightV1 == theme;
-
-            Rect orange_roi = isV1 ? getRoi(map, OrangeTraffic_V1) : getRoi(map, OrangeTraffic_DayV2, OrangeTraffic_NightV2);
-            Rect roi_red = isV1 ? getRoi(map, RedTraffic_V1) : getRoi(map, RedTraffic_DayV2, RedTraffic_NightV2);
-            Log.i(TAG, "busyTrafficDetect: " + "Orange" + orange_roi + " Red" + roi_red);
-
-            boolean yellowTraffic = -1 != orange_roi.x;
-            boolean redTraffic = -1 != roi_red.x;
-
-            boolean busyTraffic = alertYellowTraffic ? yellowTraffic || redTraffic : redTraffic;
-            return busyTraffic;
-        }
-
-        /**
-         * detect procedure:
-         * 1. road
-         * 2. arrow
-         * 3. lane -> lane detect
-         * 4. traffic detect
-         *
-         * @param screen
-         */
-        private void screenDetection(Bitmap screen) {
-            boolean road_detect_result = false;
-            boolean arrow_detect_result = false;
-            boolean lane_detect_result = false;
-            boolean traffic_detect_result = false;
-
-            boolean busyTraffic = false;
-            int ROAD_ROI_WIDTH_TOL = 118;
-            int LANE_ROI_WIDTH_TOL = 10;
-            Theme theme = Theme.Unknow;
-
-            try {
-                int screen_width = screen.getWidth();
-                int screen_height = screen.getHeight();
-                //=====================================
-                // road
-                //=====================================
-                Bitmap half_screen_img = Bitmap.createBitmap(screen, 0, 0, screen.getWidth(), screen_height >> 1);
-                storeToPNG(half_screen_img, STORE_DIRECTORY + "half.png");
-
-                Rect road_roi = getRoi(2, half_screen_img, RoadBgGreen_Day);
-                theme = Theme.DayV1;
-
-                if (!road_roi.valid() || Math.abs(road_roi.width - screen_width) > ROAD_ROI_WIDTH_TOL) {
-                    road_roi = getRoi(2, half_screen_img, RoadBgGreen_Night);
-                    theme = Theme.NightV1;
-                }
-
-                if (!road_roi.valid() || Math.abs(road_roi.width - screen_width) > ROAD_ROI_WIDTH_TOL) {
-                    road_roi = getRoi(2, half_screen_img, RoadBgGreen_V2);
-                    theme = Theme.V2;
-                }
-
-                Log.i(TAG, "Road roi: " + road_roi.toString());
-                if (!road_roi.valid()) {
-                    return;
-                }
-
-                storeToPNG(Bitmap.createBitmap(half_screen_img, road_roi.x, road_roi.y, road_roi.width, road_roi.height), STORE_DIRECTORY + "road.png");
-
-                final int gmapHeight = screen_height - road_roi.y;
-                Bitmap gmapScreen = Bitmap.createBitmap(screen, road_roi.x, road_roi.y, road_roi.width, gmapHeight);
-
-                // write bitmap to a file
-                storeToPNG(gmapScreen, STORE_DIRECTORY + GmapImage);
-
-                road_detect_result = true;
-                //=====================================
-                // arrow
-                //=====================================
-                final boolean approveArrowStatic = false;
-                Rect arrow_roi = null;
-                if (Theme.DayV1 == theme || Theme.NightV1 == theme) {
-                    int ArrowColor = theme == Theme.DayV1 ? ArrowColor_Day : ArrowColor_Night;
-                    arrow_roi = approveArrowStatic ? getRoi(gmapScreen, ArrowColor, ArrowColor_Static) : getRoi(gmapScreen, ArrowColor);
-                } else {
-                    arrow_roi = approveArrowStatic ? getRoi(gmapScreen, ArrowColor_Day, ArrowColor_Night, ArrowColor_Static) : getRoi(gmapScreen, ArrowColor_Day, ArrowColor_Night);
-                }
-
-                if (arrow_roi.valid()) {
-                    Log.i(TAG, "Found Arrow: " + arrow_roi.toString());
-                } else {
-                    Log.i(TAG, "NoFound Arrow");
-                    return;
-                }
-                arrow_detect_result = true;
-                //=====================================
-                Bitmap map_roi_image = null;
-                if (road_detect_result && arrow_detect_result) {
-                    int x = 0;//road_roi.x;
-                    int y = road_roi.height;
-                    int width = gmapScreen.getWidth();
-                    int height = gmapScreen.getHeight() - y - (gmapScreen.getHeight() - arrow_roi.y);
-
-                    map_roi_image = Bitmap.createBitmap(gmapScreen, x, y, width, height);
-
-                    // write bitmap to a file
-                    storeToPNG(map_roi_image, STORE_DIRECTORY + MapImage);
-                }
-                //=====================================
-                // traffic
-                //=====================================
-                if (road_detect_result && arrow_detect_result) {
-                    if (arrow_detect_result) {
-                        busyTraffic = busyTrafficDetect(map_roi_image, alertYellowTraffic, theme);
-                    } else {
-                        busyTraffic = false;
-                    }
-                    traffic_detect_result = true;
-                }
-
-                //=====================================
-                // lane
-                //=====================================
-                final int lane_bg_color = theme == Theme.DayV1 ? LaneBgGreen_DayV1 :
-                        theme == Theme.NightV1 ? LaneBgGreen_NightV1 :
-                                theme == Theme.V2 ? LaneBgGreen_V2 : 0;
-                Rect lane_roi = getRoi(2, map_roi_image, lane_bg_color);
-
-                final boolean lane_roi_exist = lane_roi.valid() && Math.abs(lane_roi.width - road_roi.width) < LANE_ROI_WIDTH_TOL;
-                if (lane_roi_exist) {
-                    Bitmap lane_roi_image = Bitmap.createBitmap(map_roi_image, lane_roi.x, lane_roi.y, lane_roi.width, lane_roi.height);
-                    storeToPNG(lane_roi_image, STORE_DIRECTORY + LaneImage);
-
-                    final int lane_color = theme == Theme.DayV1 || theme == Theme.NightV1 ? LaneDivideWhiteV1 :
-                            theme == Theme.V2 ? LaneDivideWhiteV2 : 0;
-                    ArrayList<Boolean> laneDetectResult = laneDetect(lane_roi_image, lane_bg_color, lane_color);
-                    if (laneDetectResult.size() != 0) {
-                        if (!landDetectToHUD(laneDetectResult)) {
-                            storeToPNG(lane_roi_image, STORE_DIRECTORY + "NG_lane.png");
-                        }
-                    } else {
-                        hud.SetLanes((char) 0, (char) 0);
-                        storeToPNG(lane_roi_image, STORE_DIRECTORY + "NG_lane.png");
-                    }
-                } else {
-                    hud.SetLanes((char) 0, (char) 0);
-                }
-                lane_detect_result = lane_roi_exist;
-
-            } finally {
-                sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
-                        getString(R.string.busy_traffic), busyTraffic);
-                Log.i(TAG, "detect result: " +
-                        Boolean.toString(road_detect_result) + " " +
-                        Boolean.toString(arrow_detect_result) + " " +
-                        Boolean.toString(lane_detect_result) + " " +
-                        Boolean.toString(traffic_detect_result) + ":" +
-                        (busyTraffic ? "Busy" : "Normal")
-                );
-            }
-        }
-
-        @Override
-        public void onImageAvailable(ImageReader reader) {
-            Image image = null;
-            FileOutputStream fos = null;
-            Bitmap bitmap = null;
-
-
-            try {
-                image = reader.acquireLatestImage();
-                if (image != null) {
-                    long currentTime = System.currentTimeMillis();
-                    long deltaTime = currentTime - lastUpdateTime;
-                    boolean do_detection = deltaTime > UpdateInterval;//&& int_speed>40;
-
-                    if (do_detection) {
-                        lastUpdateTime = currentTime;
-                        Image.Plane[] planes = image.getPlanes();
-                        ByteBuffer buffer = planes[0].getBuffer();
-                        int pixelStride = planes[0].getPixelStride();
-                        int rowStride = planes[0].getRowStride();
-                        int rowPadding = rowStride - pixelStride * mWidth;
-
-                        // create bitmap
-                        bitmap = Bitmap.createBitmap(mWidth + rowPadding / pixelStride, mHeight, Bitmap.Config.ARGB_8888);
-                        bitmap.copyPixelsFromBuffer(buffer);
-
-                        File nowImage = new File(STORE_DIRECTORY + NowImage);
-                        if (nowImage.exists()) {
-                            File preImage = new File(STORE_DIRECTORY + PreImage);
-                            copy(nowImage, preImage);
-                        }
-
-                        // write bitmap to a file
-                        storeToPNG(bitmap, STORE_DIRECTORY + NowImage);
-
-                        screenDetection(bitmap);
-                    }
-                }
-
-            } catch (Exception e) {
-                Log.e(TAG, e.toString());
-            } finally {
-                if (fos != null) {
-                    try {
-                        fos.close();
-                    } catch (IOException ioe) {
-                        ioe.printStackTrace();
-                    }
-                }
-
-                if (bitmap != null) {
-                    bitmap.recycle();
-                }
-
-                if (image != null) {
-                    image.close();
-                }
-            }
-        }
-
-        boolean isSameRGB(int color1, int color2) {
-            return Color.red(color1) == Color.red(color2) &&
-                    Color.green(color1) == Color.green(color2) &&
-                    Color.blue(color1) == Color.blue(color2);
-        }
-
-        int findColor(Bitmap image, int color, boolean vertical, boolean up, boolean left, boolean printDetail, int findWidth) {
-            int width = image.getWidth();
-            int height = image.getHeight();
-            int totalSize = width * height;
-            if (null == pixelsInFindColor || totalSize != pixelsInFindColor.length) {
-                pixelsInFindColor = null;
-                pixelsInFindColor = new int[width * height];
-            }
-
-            image.getPixels(pixelsInFindColor, 0, width, 0, 0, width, height);
-
-            int inc = 1;
-
-            int h_start = vertical ? (up ? 0 : height - findWidth) : 0;
-            int h_inc = (vertical ? up ? 1 : -1 : 1) * inc;
-            int h_end = vertical ? (up ? height - findWidth : 0) : height - 1;
-
-            int w_start = vertical ? 0 : left ? 0 : width - findWidth;
-            int w_inc = (vertical ? 1 : left ? 1 : -1) * inc;
-            int w_end = vertical ? width - findWidth : left ? width - 1 : 0 + findWidth;
-
-            int w0_end = vertical ? w_start + w_inc : w_end;
-            int w1_end = vertical ? w_end : w_start + w_inc;
-
-            /**
-             *  w0
-             *     h
-             *        w1
-             */
-
-            for (int w0 = w_start; w0 != w0_end; w0 += w_inc) {
-                for (int h = h_start; h != h_end; h += h_inc) {
-                    for (int w1 = w_start; w1 != w1_end; w1 += w_inc) {
-                        int w = vertical ? w1 : w0;
-
-                        boolean allSameColor = true;
-                        for (int x = 0; x < findWidth; x++) {
-                            int hh = vertical ? h : h + x;
-                            int ww = vertical ? w + x : w;
-                            int pixel = pixelsInFindColor[ww + hh * width];
-                            allSameColor = allSameColor && isSameRGB(pixel, color);
-                        }
-
-                        boolean sameColor = allSameColor;
-
-                        if (sameColor) {
-                            if (vertical) {
-                                if (printDetail)
-                                    Log.i(TAG, "vertical: " + h + "," + w);
-                                return h;
-                            } else {
-                                if (printDetail)
-                                    Log.i(TAG, "horizontal: " + h + "," + w);
-                                return w;
-                            }
-                        }
-                    }
-                }
-            }
-            return -1;
-        }
-
-        Rect getRoi(Bitmap image, int... colors) {
-            return getRoi(1, image, colors);
-        }
-
-        Rect getRoi(int findWidth, Bitmap image, int... colors) {
-            for (int x = 0; x < colors.length; x++) {
-                int color = colors[x];
-                Rect rect = getRoi(findWidth, image, color, false);
-                if (-1 != rect.x) {
-                    return rect;
-                }
-            }
-            return new Rect(-1, -1, 0, 0);
-        }
-
-
-        Rect getRoi(int findWidth, Bitmap image, int color, boolean printDetail) {
-            int top = findColor(image, color, true, true, false, printDetail, findWidth);
-            int bottom = findColor(image, color, true, false, false, printDetail, findWidth);
-            int left = findColor(image, color, false, true, true, printDetail, findWidth);
-            int right = findColor(image, color, false, true, false, printDetail, findWidth);
-            return new Rect(left, top, right - left, bottom - top);
-        }
-
-
-        private boolean storeToPNG(Bitmap image, String filename) {
-            try (FileOutputStream fos = new FileOutputStream(filename)) {
-                image.compress(CompressFormat.PNG, 100, fos);
-            } catch (IOException ex) {
-                Log.e(TAG, ex.toString());
-                return false;
-            }
-            return true;
-        }
-
-
-        private boolean landDetectToHUD(ArrayList<Boolean> laneDetectResult) {
-            int lanes = laneDetectResult.size();
-
-            /*
-                OuterRight(0x02), 6
-                MiddleRight(0x04), 5,4
-                InnerRight(0x08), 3,2
-                InnerLeft(0x10),
-                MiddleLeft(0x20),
-                OuterLeft(0x40),
-
-             */
-            int x_start = 0;
-
-            switch (lanes) {
-                case 6:
-                    x_start = 0;
-                    break;
-                case 5:
-                case 4:
-                    x_start = 1;
-                    break;
-                case 3:
-                case 2:
-                    x_start = 2;
-                    break;
-            }
-
-            boolean hasDrivingLane = false;
-            char nOutline = 0;
-            char nArrow = 0;
-            int now_lane_index = 0;
-            for (int x = x_start; x < x_start + lanes; x++, now_lane_index++) {
-                int currentLaneValue = 2 << x;
-                nOutline += currentLaneValue;
-                boolean drivingLane = laneDetectResult.get(now_lane_index);
-                if (drivingLane) {
-                    nArrow += currentLaneValue;
-                    hasDrivingLane = true;
-                }
-            }
-            hud.SetLanes(nArrow, nOutline);
-
-            String msg = "";
-            for (Boolean b : laneDetectResult) {
-                msg += " " + (b ? "1" : "0");
-            }
-            Log.i(TAG, "lane detect: " + msg + " / " + (int) nArrow + "," + (int) nOutline);
-            return hasDrivingLane;
-        }
-
-        private ArrayList<Integer> findLaneDivide(Bitmap lane, int y, int bgColor, int divideColor) {
-            ArrayList<Integer> result = new ArrayList<Integer>();
-            final int width = lane.getWidth();
-            for (int x = 0; x < width - 6; x++) {
-                int pixel0 = lane.getPixel(x, y);
-                int pixel3 = lane.getPixel(x + 3, y);
-                int pixel6 = lane.getPixel(x + 6, y);
-                if (isSameRGB(pixel0, bgColor) &&
-                        isSameRGB(pixel3, divideColor) &&
-                        isSameRGB(pixel6, bgColor)) {
-                    result.add(x + 3);
-                    x += 6;
-                }
-            }
-            return result;
-        }
-
-        private int getFirstVertical(Bitmap lane, int x0, int y0, int color,
-                                     boolean notLogic, boolean inverse_scan) {
-            final int height = lane.getHeight();
-            int end = inverse_scan ? y0 : height;
-            int h_step = inverse_scan ? -1 : 1;
-            for (int h = inverse_scan ? height - 1 : y0; h != end; h += h_step) {
-                final int pixel = lane.getPixel(x0, h);
-                if (notLogic ? pixel != color : pixel == color) {
-                    return h;
-                }
-            }
-            return -1;
-        }
-
-        private int getFirstHorizontal(Bitmap lane, int x0, int y0, int color,
-                                       boolean notLogic, boolean inverse_scan) {
-            final int width = lane.getWidth();
-            int end = inverse_scan ? x0 : width;
-            int w_step = inverse_scan ? -1 : 1;
-            for (int w = inverse_scan ? width - 1 : x0; w != end; w += w_step) {
-                final int pixel = lane.getPixel(w, y0);
-                if (notLogic ? pixel != color : pixel == color) {
-                    return w;
-                }
-            }
-            return -1;
-        }
-
-        private int getFirstHorizontal(Bitmap lane, int x0, int x1, int y0, int color,
-                                       boolean notLogic, boolean inverse_scan) {
-//            final int width = lane.getWidth();
-            int end = inverse_scan ? x0 : x1;
-            int w_step = inverse_scan ? -1 : 1;
-            for (int w = inverse_scan ? x1 : x0; w != end; w += w_step) {
-                final int pixel = lane.getPixel(w, y0);
-                if (notLogic ? pixel != color : pixel == color) {
-                    return w;
-                }
-            }
-            return -1;
-        }
-
-        private ArrayList<Boolean> laneDetect(Bitmap lane, int bgColor, int laneColor) {
-            final int height = lane.getHeight() - 1;
-            ArrayList<Integer> laneDivide = findLaneDivide(lane, height, bgColor, laneColor);
-            ArrayList<Boolean> result = new ArrayList<Boolean>();
-            final int yOffset = -2;
-
-            if (laneDivide.size() >= 1) {
-                int halfDivideWidth = -1;
-                if (laneDivide.size() == 1) {
-                    int divide_x = laneDivide.get(0);
-                    final int arrow_y = getFirstVertical(lane, divide_x, 0, laneColor, true, true);
-                    final int scan_y = arrow_y + yOffset;
-                    final int x_offset = 100;
-                    final int left_arrow_x0 = getFirstHorizontal(lane, x_offset, divide_x, scan_y, bgColor, true, false);
-                    final int left_arrow_x1 = getFirstHorizontal(lane, x_offset, divide_x, scan_y, bgColor, true, true);
-                    final int arrow_width = left_arrow_x1 - left_arrow_x0;
-                    final int left_arrow_center = left_arrow_x0 + (arrow_width >> 1);
-                    halfDivideWidth = divide_x - left_arrow_center;
-//                    return result;
-                } else {
-                    final int divideWidth = laneDivide.size() >= 2 ? laneDivide.get(1) - laneDivide.get(0) : 0;
-                    halfDivideWidth = divideWidth >> 1;
-                }
-
-                for (int x = 0; x < laneDivide.size(); x++) {
-                    final int laneCenter = laneDivide.get(x) - halfDivideWidth;
-                    final int notBGy = getFirstVertical(lane, laneCenter, 0, bgColor, true, true);
-                    int pixel = lane.getPixel(laneCenter, notBGy + yOffset);
-                    result.add(isSameRGB(pixel, LaneNowWhite));
-                }
-
-                //last
-                final int v = laneDivide.get(laneDivide.size() - 1);
-                int lastLaneCenter = v + halfDivideWidth;
-                final int notBGy = getFirstVertical(lane, lastLaneCenter, 0, bgColor, true, true);
-                final int pixel = lane.getPixel(lastLaneCenter, notBGy + yOffset);
-                result.add(isSameRGB(pixel, LaneNowWhite));
-            }
-
-            return result;
-        }
-
-
-    }
+    //================================================================================
+    // media proejct
+    //================================================================================
+    private MediaProjectionManager mProjectionManager;
+    private ImageReader mImageReader;
+    private Handler mProjectionHandler;
+    private Display mDisplay;
+    private VirtualDisplay mVirtualDisplay;
+    private int mDensity;
+    int mWidth;
+    int mHeight;
+    private int mRotation;
+    private OrientationChangeCallback mOrientationChangeCallback;
+    boolean alertYellowTraffic = false;
+
+    private static final int REQUEST_CODE = 100;
+    private static final String SCREENCAP_NAME = "screencap";
+    private static final int VIRTUAL_DISPLAY_FLAGS = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
+    static String STORE_DIRECTORY;
+    private static MediaProjection sMediaProjection;
 
     private class OrientationChangeCallback extends OrientationEventListener {
 
@@ -1730,6 +1181,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     private class MediaProjectionStopCallback extends MediaProjection.Callback {
         @Override
         public void onStop() {
@@ -1746,32 +1198,74 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean reconnectTH = true;
+    /****************************************** UI Widget Callbacks *******************************/
+    private void startProjection() {
+        startActivityForResult(mProjectionManager.createScreenCaptureIntent(), REQUEST_CODE);
+    }
 
-    private class ReconnectThread extends Thread {
+    private void stopProjection() {
+        mProjectionHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (sMediaProjection != null) {
+                    sMediaProjection.stop();
+                }
+            }
+        });
+    }
+
+    /****************************************** Factoring Virtual Display creation ****************/
+    private ImageDetectListener detectListener = new ImageDetectListener(this);
+
+    private void createVirtualDisplay() {
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        mWidth = dm.widthPixels;
+        mHeight = dm.heightPixels;
+
+        // start capture reader
+        mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 2);
+        mVirtualDisplay = sMediaProjection.createVirtualDisplay(SCREENCAP_NAME, mWidth, mHeight, mDensity, VIRTUAL_DISPLAY_FLAGS, mImageReader.getSurface(), null, mProjectionHandler);
+        mImageReader.setOnImageAvailableListener(detectListener, mProjectionHandler);
+    }
+
+    //================================================================================
+    // bt reconnect
+    //================================================================================
+    private boolean btTeconnectThreadEN = true;
+
+    private class BTReconnectThread extends Thread {
         public void run() {
             try {
-                Thread.sleep(2000);
+                final int interval = getResources(). getInteger(R.integer.bt_reconnect_interval);
+                Thread.sleep(interval);
             } catch (Exception e) {
                 log(e);
             }
 
-            if (!garminHudConnected && reconnectTH) {
-                String address_reconnect = sharedPref.getString(getString(R.string.bt_bind_name_key), "");
-                log("reconnect address:" + address_reconnect);
-                bt.connect(address_reconnect);
+            if (!hudConnected && btTeconnectThreadEN) {
+                String reconnectAddress = sharedPref.getString(getString(R.string.bt_bind_address_key), null);
+                log("reconnect address:" + reconnectAddress);
+                if (null != reconnectAddress) {
+                    bt.connect(reconnectAddress);
+                }
             }
 
         }
     }
 
-    private void resetBT() {
-        bt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
-        bt.setBluetoothConnectionListener(btConnectionListener);
-        bt.setAutoConnectionListener(btConnectionListener);
+    private boolean useBTAddressReconnectThread = false;
+    private Thread btReconnectThread;
 
-        Thread rh = new ReconnectThread();
-        rh.start();
+    private void resetBT() {
+        if (useBTAddressReconnectThread) {
+            bt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
+            bt.setBluetoothConnectionListener(btConnectionListener);
+            bt.setAutoConnectionListener(btConnectionListener);
+
+            btReconnectThread = new BTReconnectThread();
+            btReconnectThread.start();
+        }
     }
 }
 
