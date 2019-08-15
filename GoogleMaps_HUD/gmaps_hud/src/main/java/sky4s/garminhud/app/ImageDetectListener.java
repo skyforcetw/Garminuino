@@ -15,6 +15,8 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
+import sky4s.garminhud.hud.HUDInterface;
+
 public class ImageDetectListener implements ImageReader.OnImageAvailableListener {
     private static class Rect {
         public int x;
@@ -47,9 +49,11 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
 
     private MainActivity activity;
     private static final String TAG = ImageDetectListener.class.getSimpleName();
+    private HUDInterface hud;
 
     public ImageDetectListener(MainActivity activity) {
         this.activity = activity;
+        this.hud = hud;
     }
 
     public final String PreImage = "myscreen_pre.png";
@@ -218,11 +222,11 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
                         storeToPNG(lane_roi_image, MainActivity.STORE_DIRECTORY + "NG_lane.png");
                     }
                 } else {
-                    activity.hud.SetLanes((char) 0, (char) 0);
+                    hud.SetLanes((char) 0, (char) 0);
                     storeToPNG(lane_roi_image, MainActivity.STORE_DIRECTORY + "NG_lane.png");
                 }
             } else {
-                activity.hud.SetLanes((char) 0, (char) 0);
+                hud.SetLanes((char) 0, (char) 0);
             }
             lane_detect_result = lane_roi_exist;
 
@@ -438,7 +442,8 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
         char nArrow = 0;
         int now_lane_index = 0;
         for (int x = x_start; x < x_start + lanes; x++, now_lane_index++) {
-            int currentLaneValue = 2 << x;
+            // the num in lane is from right to left, but laneDetectResult is from left to right, need handle it
+            final int currentLaneValue = 64 - (2 << x);
             nOutline += currentLaneValue;
             boolean drivingLane = laneDetectResult.get(now_lane_index);
             if (drivingLane) {
@@ -446,7 +451,7 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
                 hasDrivingLane = true;
             }
         }
-        activity.hud.SetLanes(nArrow, nOutline);
+        hud.SetLanes(nArrow, nOutline);
 
         String msg = "";
         for (Boolean b : laneDetectResult) {

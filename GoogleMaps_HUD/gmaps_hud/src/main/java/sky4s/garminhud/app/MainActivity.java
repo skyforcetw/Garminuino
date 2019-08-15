@@ -1194,6 +1194,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /****************************************** Factoring Virtual Display creation ****************/
+    private ImageDetectListener detectListener = new ImageDetectListener(this);
+
     private void createVirtualDisplay() {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -1203,7 +1205,7 @@ public class MainActivity extends AppCompatActivity {
         // start capture reader
         mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 2);
         mVirtualDisplay = sMediaProjection.createVirtualDisplay(SCREENCAP_NAME, mWidth, mHeight, mDensity, VIRTUAL_DISPLAY_FLAGS, mImageReader.getSurface(), null, mProjectionHandler);
-        mImageReader.setOnImageAvailableListener(new ImageDetectListener(this), mProjectionHandler);
+        mImageReader.setOnImageAvailableListener(detectListener, mProjectionHandler);
     }
 
     //================================================================================
@@ -1230,7 +1232,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private   boolean useBTAddressReconnectThread = false;
+    private boolean useBTAddressReconnectThread = false;
     private Thread btReconnectThread;
 
     private void resetBT() {
