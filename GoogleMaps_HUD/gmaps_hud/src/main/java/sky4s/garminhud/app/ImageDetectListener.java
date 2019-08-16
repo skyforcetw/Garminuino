@@ -1,5 +1,6 @@
 package sky4s.garminhud.app;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.Image;
@@ -49,12 +50,23 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
     ;
 
     private MainActivity activity;
+    private MainActivityPostman postman;
     private static final String TAG = ImageDetectListener.class.getSimpleName();
     private HUDInterface hud;
 
     public ImageDetectListener(MainActivity activity) {
         this.activity = activity;
-        this.hud = hud;
+        this.hud = activity.hud;
+        if (null != activity) {
+            Resources resource = activity.getResources();
+            if (null != resource) {
+                ROAD_ROI_WIDTH_TOL = resource.getInteger(R.integer.road_roi_width_tol);
+                LANE_ROI_WIDTH_TOL = resource.getInteger(R.integer.lane_roi_width_tol);
+                LANE_DETECT_X_OFFSET = resource.getInteger(R.integer.lane_detect_x_offset);
+                UPDATE_INTERVAL = resource.getInteger(R.integer.detect_update_interval);
+            }
+        }
+        postman = new MainActivityPostman(activity, activity.getString(R.string.broadcast_sender_image_detect));
     }
 
     public final String PreImage = "myscreen_pre.png";
@@ -103,9 +115,11 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
         return busyTraffic;
     }
 
-    private final int ROAD_ROI_WIDTH_TOL = activity.getResources().getInteger(R.integer.road_roi_width_tol);
-    private final int LANE_ROI_WIDTH_TOL = activity.getResources().getInteger(R.integer.lane_roi_width_tol);
-    private final int LANE_DETECT_X_OFFSET=   activity.getResources().getInteger(R.integer.lane_detect_x_offset);
+
+    private int ROAD_ROI_WIDTH_TOL = 118;
+    private int LANE_ROI_WIDTH_TOL = 10;
+    private int LANE_DETECT_X_OFFSET = 100;
+
     /**
      * detect procedure:
      * 1. road
@@ -247,8 +261,6 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
     }
 
 
-
-
     private ArrayList<Boolean> laneDetect(Bitmap lane, int bgColor, int laneColor) {
         final int height = lane.getHeight() - 1;
         ArrayList<Integer> laneDivide = findLaneDivide(lane, height, bgColor, laneColor);
@@ -292,7 +304,7 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
 
 
     private static long lastUpdateTime = 0;
-    private final long UpdateInterval = activity.getResources().getInteger(R.integer.detect_update_interval);
+    private long UPDATE_INTERVAL = 1500;
 
     @Override
     public void onImageAvailable(ImageReader reader) {
@@ -306,7 +318,7 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
             if (image != null) {
                 long currentTime = System.currentTimeMillis();
                 long deltaTime = currentTime - lastUpdateTime;
-                boolean do_detection = deltaTime > UpdateInterval;//&& int_speed>40;
+                boolean do_detection = deltaTime > UPDATE_INTERVAL;//&& int_speed>40;
 
                 if (do_detection) {
                     lastUpdateTime = currentTime;
@@ -505,7 +517,13 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
         for (Boolean b : laneDetectResult) {
             msg += " " + (b ? "1" : "0");
         }
-        Log.i(TAG, "lane detect: " + msg + " / " + (int) nArrow + "," + (int) nOutline);
+        msg = "lane detect: " + msg;
+        postman.addStringExtra(activity.getString(R.string.notify_msg), msg);
+        postman.sendIntent2MainActivity();
+
+        msg = msg + " / " + (int) nArrow + "," + (int) nOutline;
+        Log.i(TAG, msg);
+
         return hasDrivingLane;
     }
 

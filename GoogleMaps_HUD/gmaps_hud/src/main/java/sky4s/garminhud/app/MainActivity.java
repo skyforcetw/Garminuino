@@ -414,6 +414,7 @@ public class MainActivity extends AppCompatActivity {
                 Looper.loop();
             }
         }.start();
+        detectListener = new ImageDetectListener(this);
         //========================================================================================
 
         //experiment:
@@ -1093,11 +1094,13 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (null != hud) {
-                if (switchAutoBrightness.isChecked()) {
-                    hud.SetAutoBrightness();
-                } else {
-                    final int brightness = getGammaBrightness();
-                    hud.SetBrightness(brightness);
+                if (null != switchAutoBrightness) {
+                    if (switchAutoBrightness.isChecked()) {
+                        hud.SetAutoBrightness();
+                    } else {
+                        final int brightness = getGammaBrightness();
+                        hud.SetBrightness(brightness);
+                    }
                 }
             }
 
@@ -1215,7 +1218,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /****************************************** Factoring Virtual Display creation ****************/
-    private ImageDetectListener detectListener = new ImageDetectListener(this);
+    private ImageDetectListener detectListener ;//= new ImageDetectListener(this);
 
     private void createVirtualDisplay() {
         DisplayMetrics dm = new DisplayMetrics();
@@ -1237,7 +1240,7 @@ public class MainActivity extends AppCompatActivity {
     private class BTReconnectThread extends Thread {
         public void run() {
             try {
-                final int interval = getResources(). getInteger(R.integer.bt_reconnect_interval);
+                final int interval = getResources().getInteger(R.integer.bt_reconnect_interval);
                 Thread.sleep(interval);
             } catch (Exception e) {
                 log(e);
@@ -1258,7 +1261,7 @@ public class MainActivity extends AppCompatActivity {
     private Thread btReconnectThread;
 
     private void resetBT() {
-        if (useBTAddressReconnectThread) {
+        if (useBTAddressReconnectThread && null != bt) {
             bt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
             bt.setBluetoothConnectionListener(btConnectionListener);
             bt.setAutoConnectionListener(btConnectionListener);
@@ -1269,5 +1272,39 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 
+class MainActivityPostman {
+    private String whoami;
+    private Context context;
+    public MainActivityPostman(Context context , String whoami) {
+        this.context=context;
+        this.whoami=whoami;
+    }
+    private Intent intent2Main = null;
 
+    private void checkIntentForExtra() {
+        if (null == intent2Main) {
+            intent2Main = new Intent(context.getString(R.string.broadcast_receiver_main_activity));
+        }
+    }
+
+    public void addBooleanExtra(String key, boolean b) {
+        checkIntentForExtra();
+        intent2Main.putExtra(key, b);
+    }
+
+    public void addStringExtra(String key, String string) {
+        checkIntentForExtra();
+        intent2Main.putExtra(key, string);
+    }
+
+    public void sendIntent2MainActivity() {
+        if (null != intent2Main) {
+            addStringExtra(context.getString(R.string.whoami), whoami);
+//            addBooleanExtra(context.getString(R.string.is_in_navigation), is_in_navigation);
+            context.sendBroadcast(intent2Main);
+            intent2Main = null;
+        }
+    }
+
+}
 

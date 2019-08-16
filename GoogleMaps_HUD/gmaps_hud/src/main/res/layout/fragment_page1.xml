@@ -241,9 +241,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="false"
-                android:clickable="false"
                 android:paddingTop="@dimen/option_padding_top"
-                android:text="Bind Address"
+                android:text="Bind Address(Experiment)"
                 android:textSize="@dimen/option_text_size" />
 
         </LinearLayout>

@@ -51,6 +51,7 @@
     <string name="whoami" translatable="false">who_am_i</string>
     <string name="broadcast_sender_notification_monitor" translatable="false">notification_monitor.SENDER</string>
     <string name="broadcast_sender_location_service" translatable="false">location_service.SENDER</string>
+    <string name="broadcast_sender_image_detect" translatable="false">image_detect.SENDER</string>
 
     <!--broadcast keys-->
     <string name="notify_catched" translatable="false">notify_catched</string>

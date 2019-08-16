@@ -178,8 +178,10 @@ public class NotificationMonitor extends NotificationListenerService {
 
         //========================================================================================
         staticInstance = this;
-        openDB();
+//        openDB();
+        postman = new MainActivityPostman(this,   getString(R.string.broadcast_sender_notification_monitor) );
     }
+    private MainActivityPostman postman;
 
 
     @Override
@@ -195,51 +197,39 @@ public class NotificationMonitor extends NotificationListenerService {
         return super.onBind(intent);
     }
 
-    private Intent intent2Main = null;
-
-    private void checkIntentForExtra() {
-        if (null == intent2Main) {
-            intent2Main = new Intent(getString(R.string.broadcast_receiver_main_activity));
-        }
-    }
-
-    private void addBooleanExtra(String key, boolean b) {
-        checkIntentForExtra();
-        intent2Main.putExtra(key, b);
-    }
-
-    private void addStringExtra(String key, String string) {
-        checkIntentForExtra();
-        intent2Main.putExtra(key, string);
-    }
-
-    private void sendIntent2MainActivity() {
-        if (null != intent2Main) {
-            addStringExtra(getString(R.string.whoami), getString(R.string.broadcast_sender_notification_monitor));
-            addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
-            sendBroadcast(intent2Main);
-            intent2Main = null;
-        }
-    }
-
-//    private void sendBooleanExtra2MainActivity(String string, boolean b) {
-//        Intent intent = new Intent(getString(R.string.broadcast_receiver_main_activity));
-//        intent.putExtra(string, b);
-//        sendBroadcast(intent);
+//    private Intent intent2Main = null;
+//
+//    private void checkIntentForExtra() {
+//        if (null == intent2Main) {
+//            intent2Main = new Intent(getString(R.string.broadcast_receiver_main_activity));
+//        }
 //    }
 //
-//    private void sendStringExtra2MainActivity(String string, String message) {
-//        Intent intent = new Intent(getString(R.string.broadcast_receiver_main_activity));
-//        intent.putExtra(string, message);
-//        sendBroadcast(intent);
+//    private void addBooleanExtra(String key, boolean b) {
+//        checkIntentForExtra();
+//        intent2Main.putExtra(key, b);
 //    }
-
+//
+//    private void addStringExtra(String key, String string) {
+//        checkIntentForExtra();
+//        intent2Main.putExtra(key, string);
+//    }
+//
+//    private void sendIntent2MainActivity() {
+//        if (null != intent2Main) {
+//            addStringExtra(getString(R.string.whoami), getString(R.string.broadcast_sender_notification_monitor));
+//            addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
+//            sendBroadcast(intent2Main);
+//            intent2Main = null;
+//        }
+//    }
 
     private void processGoogleMapsNotification(StatusBarNotification sbn) {
         String packageName = sbn.getPackageName();
 //        sendBooleanExtra2MainActivity(getString(R.string.notify_catched), true);
-        addBooleanExtra(getString(R.string.notify_catched), true);
-        sendIntent2MainActivity();
+        postman.addBooleanExtra(getString(R.string.notify_catched), true);
+        postman.addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
+        postman.sendIntent2MainActivity();
 
         if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
             Notification notification = sbn.getNotification();
@@ -264,14 +254,15 @@ public class NotificationMonitor extends NotificationListenerService {
         }
 
         if (!parseResult) {
-            addBooleanExtra(getString(R.string.notify_parse_failed), true);
-            addBooleanExtra(getString(R.string.gmaps_notify_catched), false);
-            sendIntent2MainActivity();
+            postman.addBooleanExtra(getString(R.string.notify_parse_failed), true);
+            postman.addBooleanExtra(getString(R.string.gmaps_notify_catched), false);
+            postman.addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
+            postman.sendIntent2MainActivity();
         } else {
-            addBooleanExtra(getString(R.string.notify_parse_failed), false);
-            addBooleanExtra(getString(R.string.gmaps_notify_catched), true);
-            //addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
-            sendIntent2MainActivity();
+            postman.addBooleanExtra(getString(R.string.notify_parse_failed), false);
+            postman.addBooleanExtra(getString(R.string.gmaps_notify_catched), true);
+            postman.addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
+            postman.sendIntent2MainActivity();
         }
     }
 
@@ -408,11 +399,12 @@ public class NotificationMonitor extends NotificationListenerService {
 
         boolean output_parse_message_to_ui = true;
         if (output_parse_message_to_ui) {
-            addStringExtra(getString(R.string.notify_msg), notifyMessage);
+            postman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
             if (Arrow.Arrivals == foundArrow || Arrow.ArrivalsLeft == foundArrow || Arrow.ArrivalsRight == foundArrow) {
-                addBooleanExtra(getString(R.string.arrivals_msg), true);
+                postman.addBooleanExtra(getString(R.string.arrivals_msg), true);
             }
-            sendIntent2MainActivity();
+            postman.addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
+            postman.sendIntent2MainActivity();
         }
     }
 
@@ -1047,8 +1039,9 @@ public class NotificationMonitor extends NotificationListenerService {
         if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
 
 //            sendBooleanExtra2MainActivity(getString(R.string.gmaps_notify_catched), false);
-            addBooleanExtra(getString(R.string.gmaps_notify_catched), false);
-            sendIntent2MainActivity();
+            postman.addBooleanExtra(getString(R.string.gmaps_notify_catched), false);
+            postman.addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
+            postman.sendIntent2MainActivity();
 
 
             int hh = null != remainHour ? Integer.parseInt(remainHour) : 0;

@@ -6,5 +6,4 @@
     <integer name="lane_detect_x_offset">100</integer>
 
     <integer name="bt_reconnect_interval">2000</integer>
-
 </resources>
