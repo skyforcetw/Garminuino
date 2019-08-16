@@ -498,6 +498,7 @@ public class MainActivity extends AppCompatActivity {
         if (notifyManager != null) {
             notifyManager.cancel(1);
         }
+        stopProjection();
 
         unregisterReceiver(msgReceiver);
         unregisterReceiver(screenReceiver);
@@ -506,20 +507,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-
-        if (!IGNORE_BT_DEVICE) {
-            if (!bt.isBluetoothEnabled()) {
-                Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                //there comes twice bt permission dialog
-                startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
-            } else {
-                if (!bt.isServiceAvailable()) {
-                    bt.setupService();
-                    bt.startService(BluetoothState.DEVICE_OTHER);
+        final boolean bypassBtInitOnStart = true;
+        if (!bypassBtInitOnStart) {
+            if (!IGNORE_BT_DEVICE) {
+                if (!bt.isBluetoothEnabled()) {
+                    Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    //there comes twice bt permission dialog
+                    startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
+                } else {
+                    if (!bt.isServiceAvailable()) {
+                        bt.setupService();
+                        bt.startService(BluetoothState.DEVICE_OTHER);
+                    }
                 }
             }
         }
-
     }
 
     @Override
@@ -1218,7 +1220,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /****************************************** Factoring Virtual Display creation ****************/
-    private ImageDetectListener detectListener ;//= new ImageDetectListener(this);
+    private ImageDetectListener detectListener;//= new ImageDetectListener(this);
 
     private void createVirtualDisplay() {
         DisplayMetrics dm = new DisplayMetrics();
@@ -1275,10 +1277,12 @@ public class MainActivity extends AppCompatActivity {
 class MainActivityPostman {
     private String whoami;
     private Context context;
-    public MainActivityPostman(Context context , String whoami) {
-        this.context=context;
-        this.whoami=whoami;
+
+    public MainActivityPostman(Context context, String whoami) {
+        this.context = context;
+        this.whoami = whoami;
     }
+
     private Intent intent2Main = null;
 
     private void checkIntentForExtra() {
