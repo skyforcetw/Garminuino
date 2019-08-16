@@ -63,7 +63,9 @@ public class GarminHUD extends HUDAdapter {
             packet[x] = (byte) pBuf[x];
         }
 
-        bt.send(packet, false);
+        if(bt.isServiceAvailable()) { //judge service exist to avoid => app.akexorcist.bluetotohspp.library.BluetoothService.getState()' on a null object reference
+            bt.send(packet, false);
+        }
         return true;
     }
 
