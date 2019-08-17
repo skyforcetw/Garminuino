@@ -2,6 +2,7 @@ package sky4s.garminhud.app;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.Image;
 import android.media.ImageReader;
@@ -119,6 +120,7 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
     private int ROAD_ROI_WIDTH_TOL = 118;
     private int LANE_ROI_WIDTH_TOL = 10;
     private int LANE_DETECT_X_OFFSET = 100;
+    private int ARROW_SIZE_TOL = 200;
 
     /**
      * detect procedure:
@@ -136,10 +138,13 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
         boolean traffic_detect_result = false;
 
         boolean busyTraffic = false;
-
         Theme theme = Theme.Unknow;
 
         try {
+            if (null == screen) {
+                return;
+            }
+
             int screen_width = screen.getWidth();
             int screen_height = screen.getHeight();
             //=====================================
@@ -168,6 +173,9 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
             storeToPNG(Bitmap.createBitmap(half_screen_img, road_roi.x, road_roi.y, road_roi.width, road_roi.height), MainActivity.STORE_DIRECTORY + "road.png");
 
             final int gmapHeight = screen_height - road_roi.y;
+            if (gmapHeight < 0) {
+                return;
+            }
             Bitmap gmapScreen = Bitmap.createBitmap(screen, road_roi.x, road_roi.y, road_roi.width, gmapHeight);
 
             // write bitmap to a file
@@ -177,16 +185,23 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
             //=====================================
             // arrow
             //=====================================
+            Bitmap gmapScreenHalfDown = Bitmap.createBitmap(gmapScreen, 0, gmapScreen.getHeight() >> 1, gmapScreen.getWidth(), gmapScreen.getHeight() >> 1);
+            storeToPNG(gmapScreenHalfDown, MainActivity.STORE_DIRECTORY + "gmap_half_dw.png");
+
             final boolean approveArrowStatic = false;
             Rect arrow_roi = null;
             if (Theme.DayV1 == theme || Theme.NightV1 == theme) {
                 int ArrowColor = theme == Theme.DayV1 ? ArrowColor_Day : ArrowColor_Night;
-                arrow_roi = approveArrowStatic ? getRoi(gmapScreen, ArrowColor, ArrowColor_Static) : getRoi(gmapScreen, ArrowColor);
+                arrow_roi = approveArrowStatic ? getRoi(2, gmapScreenHalfDown, ArrowColor, ArrowColor_Static) :
+                        getRoi(2, gmapScreenHalfDown, ArrowColor);
             } else {
-                arrow_roi = approveArrowStatic ? getRoi(gmapScreen, ArrowColor_Day, ArrowColor_Night, ArrowColor_Static) : getRoi(gmapScreen, ArrowColor_Day, ArrowColor_Night);
+                arrow_roi = approveArrowStatic ? getRoi(2, gmapScreenHalfDown, ArrowColor_Day, ArrowColor_Night, ArrowColor_Static) :
+                        getRoi(2, gmapScreenHalfDown, ArrowColor_Day, ArrowColor_Night);
             }
 
-            if (arrow_roi.valid()) {
+            final boolean arrow_is_valid = arrow_roi.valid() && arrow_roi.height < ARROW_SIZE_TOL && arrow_roi.width < ARROW_SIZE_TOL;
+            if (arrow_is_valid) {
+                arrow_roi.y += gmapScreenHalfDown.getHeight();
                 Log.i(TAG, "Found Arrow: " + arrow_roi.toString());
             } else {
                 Log.i(TAG, "NoFound Arrow");
@@ -201,10 +216,11 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
                 int width = gmapScreen.getWidth();
                 int height = gmapScreen.getHeight() - y - (gmapScreen.getHeight() - arrow_roi.y);
 
-                map_roi_image = Bitmap.createBitmap(gmapScreen, x, y, width, height);
-
-                // write bitmap to a file
-                storeToPNG(map_roi_image, MainActivity.STORE_DIRECTORY + MapImage);
+                if (width > 0 && height > 0) {
+                    map_roi_image = Bitmap.createBitmap(gmapScreen, x, y, width, height);
+                    // write bitmap to a file
+                    storeToPNG(map_roi_image, MainActivity.STORE_DIRECTORY + MapImage);
+                }
             }
             //=====================================
             // traffic
@@ -340,6 +356,12 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
 
                     // write bitmap to a file
                     storeToPNG(bitmap, MainActivity.STORE_DIRECTORY + NowImage);
+
+                    final boolean loadBitmapFromFile = true;
+                    if (loadBitmapFromFile) {
+                        bitmap = BitmapFactory.decodeFile(MainActivity.STORE_DIRECTORY + "q.png");
+                    }
+
                     screenDetection(bitmap);
                 }
             }
@@ -470,7 +492,7 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
 
 
     private boolean landDetectToHUD(ArrayList<Boolean> laneDetectResult) {
-        int lanes = laneDetectResult.size();
+        final int lanes = laneDetectResult.size();
 
             /*
                 OuterRight(0x02), 6
@@ -485,13 +507,13 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
 
         switch (lanes) {
             case 6:
+            case 5:
                 x_start = 0;
                 break;
-            case 5:
             case 4:
+            case 3:
                 x_start = 1;
                 break;
-            case 3:
             case 2:
                 x_start = 2;
                 break;
@@ -503,7 +525,10 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
         int now_lane_index = 0;
         for (int x = x_start; x < x_start + lanes; x++, now_lane_index++) {
             // the num in lane is from right to left, but laneDetectResult is from left to right, need handle it
-            final int currentLaneValue = eLane.OuterLeft.value - (2 << x);
+            //final int currentLaneValue = 2 << x; //original 1
+            //final int currentLaneValue = eLane.OuterLeft.value - (2 << x); //original 2
+            final int currentLaneValue = eLane.OuterLeft.value >> x;
+
             nOutline += currentLaneValue;
             boolean drivingLane = laneDetectResult.get(now_lane_index);
             if (drivingLane) {
@@ -597,4 +622,6 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
             }
         }
     }
+
+
 }
