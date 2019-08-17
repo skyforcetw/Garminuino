@@ -324,6 +324,7 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
 
     @Override
     public void onImageAvailable(ImageReader reader) {
+
         Image image = null;
         FileOutputStream fos = null;
         Bitmap bitmap = null;
@@ -357,11 +358,13 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
                     // write bitmap to a file
                     storeToPNG(bitmap, MainActivity.STORE_DIRECTORY + NowImage);
 
-                    final boolean loadBitmapFromFile = true;
+                    final boolean loadBitmapFromFile = false;
                     if (loadBitmapFromFile) {
                         bitmap = BitmapFactory.decodeFile(MainActivity.STORE_DIRECTORY + "q.png");
                     }
-
+                    if (!activity.is_in_navigation) {
+                        return;
+                    }
                     screenDetection(bitmap);
                 }
             }

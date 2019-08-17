@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     private NotificationManager notifyManager;
     private MsgReceiver msgReceiver;
     private boolean lastReallyInNavigation = false;
-    private boolean is_in_navigation = false;
+    boolean is_in_navigation = false;
     private BroadcastReceiver screenReceiver;
     private Timer timer = new Timer(true);
     private TimerTask currentTimeTask;
