@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.Image;
 import android.media.ImageReader;
+import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
@@ -324,6 +325,17 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
 
     @Override
     public void onImageAvailable(ImageReader reader) {
+
+
+//        try {
+//            String path1 = activity.getApplicationContext().getExternalCacheDir().getAbsolutePath();
+//            String path2 = activity.getApplicationContext().getExternalCacheDir().getCanonicalPath();
+////            String path3=activity.getApplicationContext().getExternalStorageDirectory().getAbsolutePath();
+//            String path3 = Environment.getExternalStorageDirectory().getAbsolutePath();
+//            int a = 1;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         Image image = null;
         FileOutputStream fos = null;

@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -27,6 +28,7 @@ import android.media.ImageReader;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -380,7 +382,6 @@ public class MainActivity extends AppCompatActivity {
         // INITIALIZE RECEIVER
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-//        screenReceiver = new ScreenReceiver();
         screenReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -398,13 +399,14 @@ public class MainActivity extends AppCompatActivity {
         };
 
         registerReceiver(screenReceiver, filter);
-        //========================================================================================
+        registerReceiver(stopProjectReceiver, new IntentFilter(getString(R.string.broadcast_notification_stop_detect)));
+                //========================================================================================
 
-        //========================================================================================
-        // MediaProjection
-        //========================================================================================
-        // call for the projection notifyManager
-        mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+                //========================================================================================
+                // MediaProjection
+                //========================================================================================
+                // call for the projection notifyManager
+                mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
         // start capture handling thread
         new Thread() {
             @Override
@@ -446,9 +448,12 @@ public class MainActivity extends AppCompatActivity {
 
             if (sMediaProjection != null) {
 
-                File dataFilesDir = getFilesDir();
-                if (dataFilesDir != null) {
-                    STORE_DIRECTORY = dataFilesDir.getAbsolutePath() + "/screenshots/";
+                String state = Environment.getExternalStorageState();
+
+                if ("mounted".equals(state)) {
+                    String sdcardPath = getApplicationContext().getExternalCacheDir().getAbsolutePath();
+                    STORE_DIRECTORY = sdcardPath + "/screenshots/";
+
                     File storeDirectory = new File(STORE_DIRECTORY);
                     if (!storeDirectory.exists()) {
                         boolean success = storeDirectory.mkdirs();
@@ -458,7 +463,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 } else {
-                    Log.e(TAG, "failed to create file storage directory, getFilesDir is null.");
+                    Log.e(TAG, "failed to create file storage directory, external storage is not exist.");
                     return;
                 }
 
@@ -502,6 +507,7 @@ public class MainActivity extends AppCompatActivity {
 
         unregisterReceiver(msgReceiver);
         unregisterReceiver(screenReceiver);
+        unregisterReceiver(stopProjectReceiver);
     }
 
     @Override
@@ -540,7 +546,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         //move register/unregister from   onPause/onResume to onCreate/onDestroy,insure got broadcast when in background
-//        unregisterReceiver(msgReceiver);
+
     }
 
     private int getGammaBrightness() {
@@ -594,7 +600,6 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.switchIdleShowCurrentTime:
                     showCurrentTime = ((Switch) view).isChecked();
                     if (showCurrentTime && null == currentTimeTask) {
-//                        currentTimeTask = new CurrentTimeTask();
                         currentTimeTask = new TimerTask() {
                             @Override
                             public void run() {
@@ -1203,9 +1208,72 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    class StopProjectionReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            final int notifyID = intent.getIntExtra("cancel_notify_id", 0);
+            if (switchTrafficAndLane.isChecked()) {
+                stopProjection();
+                switchTrafficAndLane.setChecked(false);
+            }
+        }
+    }
+
+    private StopProjectionReceiver stopProjectReceiver = new StopProjectionReceiver();
+
+
+    private void startNotification() {
+        log("startNotification");
+        //Step1. 初始化NotificationManager，取得Notification服務
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        final Intent intent = getIntent(); // 目前Activity的Intent
+        int flags = PendingIntent.FLAG_CANCEL_CURRENT; // ONE_SHOT：PendingIntent只使用一次；CANCEL_CURRENT：PendingIntent執行前會先結束掉之前的；NO_CREATE：沿用先前的PendingIntent，不建立新的PendingIntent；UPDATE_CURRENT：更新先前PendingIntent所帶的額外資料，並繼續沿用
+        final PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, flags); // 取得PendingIntent
+
+        final int notifyID = 1; // 通知的識別號碼
+
+        final Intent stopDetectIntent = new Intent(getString(R.string.broadcast_notification_stop_detect));
+        stopDetectIntent.putExtra("cancel_notify_id", notifyID); // 傳入通知的識別號碼
+        flags = PendingIntent.FLAG_ONE_SHOT; // ONE_SHOT：PendingIntent只使用一次；CANCEL_CURRENT：PendingIntent執行前會先結束掉之前的；NO_CREATE：沿用先前的PendingIntent，不建立新的PendingIntent；UPDATE_CURRENT：更新先前PendingIntent所帶的額外資料，並繼續沿用
+        final PendingIntent pendingCancelIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, stopDetectIntent, flags); // 取得PendingIntent
+
+
+        Notification notification
+                = new Notification.Builder(MainActivity.this)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setTicker("notification on status bar.") // 設置狀態列的顯示的資訊
+                .setAutoCancel(false) // 設置通知被使用者點擊後是否清除  //notification.flags = Notification.FLAG_AUTO_CANCEL;
+//                .setContentTitle(getString(R.string.app_name)) // 設置下拉清單裡的標題
+//                .setContentText("Notification Content")// 設置上下文內容
+                .setOngoing(true)      //true使notification變為ongoing，用戶不能手動清除// notification.flags = Notification.FLAG_ONGOING_EVENT; notification.flags = Notification.FLAG_NO_CLEAR;
+                .setDefaults(Notification.DEFAULT_ALL) //使用所有默認值，比如聲音，震動，閃屏等等
+                .addAction(R.drawable.ic_launcher, getString(R.string.open_app), pendingIntent)
+                .addAction(android.R.drawable.ic_menu_close_clear_cancel, getString(R.string.stop_lane_traffic_detect), pendingCancelIntent)
+                .build();
+
+        // 將此通知放到通知欄的"Ongoing"即"正在運行"組中
+        notification.flags = Notification.FLAG_ONGOING_EVENT;
+
+        // 表明在點擊了通知欄中的"清除通知"後，此通知不清除，
+        // 經常與FLAG_ONGOING_EVENT一起使用
+        notification.flags = Notification.FLAG_NO_CLEAR;
+
+        // 把指定ID的通知持久的發送到狀態條上.
+        mNotificationManager.notify(notifyID, notification);
+    }
+
+    private void stopNotification() {
+        log("stopNotification");
+    }
+
+
     /****************************************** UI Widget Callbacks *******************************/
     private void startProjection() {
         startActivityForResult(mProjectionManager.createScreenCaptureIntent(), REQUEST_CODE);
+        startNotification();
+
     }
 
     private void stopProjection() {
@@ -1217,6 +1285,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        stopNotification();
     }
 
     /****************************************** Factoring Virtual Display creation ****************/
@@ -1311,4 +1380,6 @@ class MainActivityPostman {
     }
 
 }
+
+
 
