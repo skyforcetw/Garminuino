@@ -1249,8 +1249,16 @@ public class MainActivity extends AppCompatActivity {
 //                .setContentText("Notification Content")// 設置上下文內容
                 .setOngoing(true)      //true使notification變為ongoing，用戶不能手動清除// notification.flags = Notification.FLAG_ONGOING_EVENT; notification.flags = Notification.FLAG_NO_CLEAR;
                 .setDefaults(Notification.DEFAULT_ALL) //使用所有默認值，比如聲音，震動，閃屏等等
+
                 .addAction(R.drawable.ic_launcher, getString(R.string.open_app), pendingIntent)
                 .addAction(android.R.drawable.ic_menu_close_clear_cancel, getString(R.string.stop_lane_traffic_detect), pendingCancelIntent)
+
+                // Add media control buttons that invoke intents in your media service
+//                .addAction(android.R.drawable.ic_prev, "Previous", prevPendingIntent) // #0
+//                .addAction(android.R.drawable.ic_pause, "Pause", pausePendingIntent)  // #1
+//                .addAction(android.R.drawable.ic_next, "Next", nextPendingIntent)     // #2
+
+
                 .build();
 
         // 將此通知放到通知欄的"Ongoing"即"正在運行"組中
