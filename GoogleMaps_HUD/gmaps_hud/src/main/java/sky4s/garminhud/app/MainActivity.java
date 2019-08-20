@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
@@ -400,13 +401,13 @@ public class MainActivity extends AppCompatActivity {
 
         registerReceiver(screenReceiver, filter);
         registerReceiver(stopProjectReceiver, new IntentFilter(getString(R.string.broadcast_notification_stop_detect)));
-                //========================================================================================
+        //========================================================================================
 
-                //========================================================================================
-                // MediaProjection
-                //========================================================================================
-                // call for the projection notifyManager
-                mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        //========================================================================================
+        // MediaProjection
+        //========================================================================================
+        // call for the projection notifyManager
+        mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
         // start capture handling thread
         new Thread() {
             @Override
@@ -508,6 +509,8 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(msgReceiver);
         unregisterReceiver(screenReceiver);
         unregisterReceiver(stopProjectReceiver);
+
+        stopNotification();
     }
 
     @Override
@@ -1239,26 +1242,21 @@ public class MainActivity extends AppCompatActivity {
         flags = PendingIntent.FLAG_ONE_SHOT; // ONE_SHOT：PendingIntent只使用一次；CANCEL_CURRENT：PendingIntent執行前會先結束掉之前的；NO_CREATE：沿用先前的PendingIntent，不建立新的PendingIntent；UPDATE_CURRENT：更新先前PendingIntent所帶的額外資料，並繼續沿用
         final PendingIntent pendingCancelIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, stopDetectIntent, flags); // 取得PendingIntent
 
+        final String channelID = "id";
 
         Notification notification
-                = new Notification.Builder(MainActivity.this)
-                .setSmallIcon(R.drawable.ic_launcher)
+                = new Notification.Builder(MainActivity.this, "0")
+                .setSmallIcon(R.mipmap.ic_notification_foreground)
                 .setTicker("notification on status bar.") // 設置狀態列的顯示的資訊
                 .setAutoCancel(false) // 設置通知被使用者點擊後是否清除  //notification.flags = Notification.FLAG_AUTO_CANCEL;
 //                .setContentTitle(getString(R.string.app_name)) // 設置下拉清單裡的標題
 //                .setContentText("Notification Content")// 設置上下文內容
                 .setOngoing(true)      //true使notification變為ongoing，用戶不能手動清除// notification.flags = Notification.FLAG_ONGOING_EVENT; notification.flags = Notification.FLAG_NO_CLEAR;
                 .setDefaults(Notification.DEFAULT_ALL) //使用所有默認值，比如聲音，震動，閃屏等等
-
+                .setContentIntent(pendingIntent)
                 .addAction(R.drawable.ic_launcher, getString(R.string.open_app), pendingIntent)
                 .addAction(android.R.drawable.ic_menu_close_clear_cancel, getString(R.string.stop_lane_traffic_detect), pendingCancelIntent)
-
-                // Add media control buttons that invoke intents in your media service
-//                .addAction(android.R.drawable.ic_prev, "Previous", prevPendingIntent) // #0
-//                .addAction(android.R.drawable.ic_pause, "Pause", pausePendingIntent)  // #1
-//                .addAction(android.R.drawable.ic_next, "Next", nextPendingIntent)     // #2
-
-
+                .setChannelId(channelID)
                 .build();
 
         // 將此通知放到通知欄的"Ongoing"即"正在運行"組中
@@ -1268,12 +1266,24 @@ public class MainActivity extends AppCompatActivity {
         // 經常與FLAG_ONGOING_EVENT一起使用
         notification.flags = Notification.FLAG_NO_CLEAR;
 
+        NotificationChannel channel = new NotificationChannel(
+                channelID,
+                "Channel",
+                NotificationManager.IMPORTANCE_DEFAULT);
+//        channel.setDescription("最重要的人");
+//        channel.enableLights(true);
+        channel.enableVibration(true);
+
+        mNotificationManager.createNotificationChannel(channel);
         // 把指定ID的通知持久的發送到狀態條上.
         mNotificationManager.notify(notifyID, notification);
     }
 
     private void stopNotification() {
         log("stopNotification");
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotificationManager.cancelAll();
     }
 
 
