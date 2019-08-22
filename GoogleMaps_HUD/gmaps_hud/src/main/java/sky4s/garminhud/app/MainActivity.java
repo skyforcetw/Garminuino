@@ -400,7 +400,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
         registerReceiver(screenReceiver, filter);
-        registerReceiver(stopProjectReceiver, new IntentFilter(getString(R.string.broadcast_notification_stop_detect)));
+        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch)));
         //========================================================================================
 
         //========================================================================================
@@ -422,6 +422,7 @@ public class MainActivity extends AppCompatActivity {
 
         //experiment:
 //        createNotification(this);
+        startNotification();
     }
 
 
@@ -444,7 +445,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (requestCode == REQUEST_CODE) {
+        if (requestCode == PROJECT_REQUEST_CODE) {
             sMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
 
             if (sMediaProjection != null) {
@@ -508,7 +509,7 @@ public class MainActivity extends AppCompatActivity {
 
         unregisterReceiver(msgReceiver);
         unregisterReceiver(screenReceiver);
-        unregisterReceiver(stopProjectReceiver);
+        unregisterReceiver(notificationSwitchReceiver);
 
         stopNotification();
     }
@@ -1163,7 +1164,7 @@ public class MainActivity extends AppCompatActivity {
     private OrientationChangeCallback mOrientationChangeCallback;
     boolean alertYellowTraffic = false;
 
-    private static final int REQUEST_CODE = 100;
+    private static final int PROJECT_REQUEST_CODE = 100;
     private static final String SCREENCAP_NAME = "screencap";
     private static final int VIRTUAL_DISPLAY_FLAGS = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
     static String STORE_DIRECTORY;
@@ -1211,69 +1212,99 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    class StopProjectionReceiver extends BroadcastReceiver {
+    class NotificationSwitchReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(final Context context, final Intent intent) {
-            final int notifyID = intent.getIntExtra("cancel_notify_id", 0);
-            if (switchTrafficAndLane.isChecked()) {
-                stopProjection();
-                switchTrafficAndLane.setChecked(false);
+            final int event = intent.getIntExtra(getString(R.string.notify_switch_event), 0);
+            switch (event) {
+                case 1:
+                    if (switchTrafficAndLane.isChecked()) {
+                        stopProjection();
+                        switchTrafficAndLane.setChecked(false);
+                    } else {
+                        startProjection();
+                        switchTrafficAndLane.setChecked(true);
+                    }
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
             }
+
         }
     }
 
-    private StopProjectionReceiver stopProjectReceiver = new StopProjectionReceiver();
+    private NotificationSwitchReceiver notificationSwitchReceiver = new NotificationSwitchReceiver();
 
 
-    private void startNotification() {
-        log("startNotification");
-        //Step1. 初始化NotificationManager，取得Notification服務
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-        final Intent intent = getIntent(); // 目前Activity的Intent
+    private Notification getNormalNotification() {
+        final Intent mainIntent = getIntent(); // 目前Activity的Intent
         int flags = PendingIntent.FLAG_CANCEL_CURRENT; // ONE_SHOT：PendingIntent只使用一次；CANCEL_CURRENT：PendingIntent執行前會先結束掉之前的；NO_CREATE：沿用先前的PendingIntent，不建立新的PendingIntent；UPDATE_CURRENT：更新先前PendingIntent所帶的額外資料，並繼續沿用
-        final PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, flags); // 取得PendingIntent
+        final PendingIntent pendingMainIntent = PendingIntent.getActivity(getApplicationContext(), 0, mainIntent, flags); // 取得PendingIntent
 
-        final int notifyID = 1; // 通知的識別號碼
 
-        final Intent stopDetectIntent = new Intent(getString(R.string.broadcast_notification_stop_detect));
-        stopDetectIntent.putExtra("cancel_notify_id", notifyID); // 傳入通知的識別號碼
-        flags = PendingIntent.FLAG_ONE_SHOT; // ONE_SHOT：PendingIntent只使用一次；CANCEL_CURRENT：PendingIntent執行前會先結束掉之前的；NO_CREATE：沿用先前的PendingIntent，不建立新的PendingIntent；UPDATE_CURRENT：更新先前PendingIntent所帶的額外資料，並繼續沿用
-        final PendingIntent pendingCancelIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, stopDetectIntent, flags); // 取得PendingIntent
+        Intent notifySwitchIntent1 = new Intent(getString(R.string.broadcast_notification_switch));
+//        Intent notifySwitchIntent1 = new Intent("1");
+        notifySwitchIntent1.putExtra(getString(R.string.notify_switch_event), 1);
+        final PendingIntent switchDetectPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, notifySwitchIntent1, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent notifySwitchIntent2  = new Intent(getString(R.string.broadcast_notification_switch));
+        notifySwitchIntent2.putExtra(getString(R.string.notify_switch_event), 2);
+        final PendingIntent switchSpeedPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, notifySwitchIntent2, PendingIntent.FLAG_UPDATE_CURRENT);
+
+//        Intent notifySwitchIntent3  = new Intent(getString(R.string.broadcast_notification_switch));
+//        notifySwitchIntent3.putExtra(getString(R.string.notify_switch_event), 3);
+//        final PendingIntent switchETAPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, notifySwitchIntent3, PendingIntent.FLAG_UPDATE_CURRENT);
 
         final String channelID = "id";
 
-        Notification notification
-                = new Notification.Builder(MainActivity.this, "0")
+        notification
+                = new Notification.Builder(MainActivity.this, channelID)
                 .setSmallIcon(R.mipmap.ic_notification_foreground)
-                .setTicker("notification on status bar.") // 設置狀態列的顯示的資訊
+//                .setTicker("notification on status bar.") // 設置狀態列的顯示的資訊
                 .setAutoCancel(false) // 設置通知被使用者點擊後是否清除  //notification.flags = Notification.FLAG_AUTO_CANCEL;
 //                .setContentTitle(getString(R.string.app_name)) // 設置下拉清單裡的標題
 //                .setContentText("Notification Content")// 設置上下文內容
                 .setOngoing(true)      //true使notification變為ongoing，用戶不能手動清除// notification.flags = Notification.FLAG_ONGOING_EVENT; notification.flags = Notification.FLAG_NO_CLEAR;
-                .setDefaults(Notification.DEFAULT_ALL) //使用所有默認值，比如聲音，震動，閃屏等等
-                .setContentIntent(pendingIntent)
-                .addAction(R.drawable.ic_launcher, getString(R.string.open_app), pendingIntent)
-                .addAction(android.R.drawable.ic_menu_close_clear_cancel, getString(R.string.stop_lane_traffic_detect), pendingCancelIntent)
+//                .setDefaults(0) //使用所有默認值，比如聲音，震動，閃屏等等
+                .setContentIntent(pendingMainIntent)
+//                .addAction(R.drawable.ic_launcher, getString(R.string.open_app), pendingMainIntent)
+//                .addAction(android.R.drawable.ic_menu_close_clear_cancel, getString(R.string.switch_lane_traffic_detect), switchDetectIntent)
+                .addAction(R.drawable.baseline_traffic_24, getString(R.string.switch_lane_traffic_detect), switchDetectPendingIntent)
+                .addAction(R.drawable.baseline_av_timer_24, getString(R.string.switch_speed), switchSpeedPendingIntent)
+//                .addAction(R.drawable.baseline_drive_eta_24, getString(R.string.switch_ETA), switchETAPendingIntent)
+//                .addAction(actionLaneDetect)
                 .setChannelId(channelID)
+//                .setStyle(new Notification.MediaStyle())
                 .build();
 
-        // 將此通知放到通知欄的"Ongoing"即"正在運行"組中
-        notification.flags = Notification.FLAG_ONGOING_EVENT;
 
-        // 表明在點擊了通知欄中的"清除通知"後，此通知不清除，
-        // 經常與FLAG_ONGOING_EVENT一起使用
-        notification.flags = Notification.FLAG_NO_CLEAR;
+        return notification;
+    }
 
+    private Notification notification;
+    private NotificationManager mNotificationManager;// = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+    private void startNotification() {
+        log("startNotification");
+        //Step1. 初始化NotificationManager，取得Notification服務
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notification = getNormalNotification();
+
+        final String channelID = "id";
         NotificationChannel channel = new NotificationChannel(
                 channelID,
                 "Channel",
                 NotificationManager.IMPORTANCE_DEFAULT);
-//        channel.setDescription("最重要的人");
-//        channel.enableLights(true);
+        channel.enableLights(false);
+//        channel.enableVibration(false);
+        //it had a bug which is vibration cannot be disabled normally.
+        channel.setVibrationPattern(new long[]{0});
         channel.enableVibration(true);
 
+        final int notifyID = 1; // 通知的識別號碼
         mNotificationManager.createNotificationChannel(channel);
         // 把指定ID的通知持久的發送到狀態條上.
         mNotificationManager.notify(notifyID, notification);
@@ -1289,8 +1320,8 @@ public class MainActivity extends AppCompatActivity {
 
     /****************************************** UI Widget Callbacks *******************************/
     private void startProjection() {
-        startActivityForResult(mProjectionManager.createScreenCaptureIntent(), REQUEST_CODE);
-        startNotification();
+        startActivityForResult(mProjectionManager.createScreenCaptureIntent(), PROJECT_REQUEST_CODE);
+//        startNotification();
 
     }
 
@@ -1303,7 +1334,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        stopNotification();
+//        stopNotification();
     }
 
     /****************************************** Factoring Virtual Display creation ****************/
@@ -1395,6 +1426,7 @@ class MainActivityPostman {
             context.sendBroadcast(intent2Main);
             intent2Main = null;
         }
+
     }
 
 }

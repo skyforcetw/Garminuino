@@ -2,9 +2,12 @@
 <resources>
 
     <string name="app_name" translatable="false">GoogleMaps HUD</string>
-    <string name="open_app" >Open app</string>
-    <string name="stop_lane_traffic_detect" >Stop detect</string>
+<!--    <string name="open_app" >Open app</string>-->
     <string name="action_settings">Settings</string>
+    <string name="switch_lane_traffic_detect" >Detect</string>
+    <string name="switch_speed" >Speed</string>
+    <string name="switch_ETA" >ETA</string>
+
 
     <string name="active_notification_count_zero">No active notification</string>
     <plurals name="active_notification_count_nonzero">
@@ -29,45 +32,6 @@
 
     <string name="chinese_after" translatable="false">後</string>
 
-    <!--options-->
-    <string name="bt_bind_name_key" translatable="false">bt_bind_name_key</string>
-    <string name="bt_bind_address_key" translatable="false">bt_bind_address_key</string>
-
-    <string name="option_show_speed" translatable="false">option_show_speed</string>
-    <string name="option_traffic_and_lane_detect" translatable="false">option_traffic_and_lane_detect</string>
-    <string name="option_alert_yellow_traffic" translatable="false">option_alert_yellow_traffic</string>
-    <string name="option_show_eta" translatable="false">option_show_eta</string>
-    <string name="option_idle_show_current_time" translatable="false">option_idle_show_current_time</string>
-    <string name="option_auto_brightness" translatable="false">option_auto_brightness</string>
-    <string name="option_manual_brightness" translatable="false">option_manual_brightness</string>
-    <string name="option_bt_bind_address" translatable="false">option_bt_bind_address</string>
-
-    <string name="option_show_prompt" translatable="false">option_show_prompt</string>
-
-    <!--broadcast receiver-->
-    <string name="broadcast_receiver_main_activity" translatable="false">sky4s.garminhud.app.MainActivity.RECEIVER</string>
-    <string name="broadcast_receiver_notification_monitor" translatable="false">sky4s.garminhud.app.NotificationMonitor.RECEIVER</string>
-    <string name="broadcast_notification_stop_detect" translatable="false">sky4s.garminhud.app.MainActivity.STOP_DETECT</string>
-    <!--<string name="broadcast_receiver_location_service" translatable="false">chutka.bitman.com.speedometersimplified.LocationService.RECEIVER</string>-->
-
-    <!--broadcast sender-->
-    <string name="whoami" translatable="false">who_am_i</string>
-    <string name="broadcast_sender_notification_monitor" translatable="false">notification_monitor.SENDER</string>
-    <string name="broadcast_sender_location_service" translatable="false">location_service.SENDER</string>
-    <string name="broadcast_sender_image_detect" translatable="false">image_detect.SENDER</string>
-
-    <!--broadcast keys-->
-    <string name="notify_catched" translatable="false">notify_catched</string>
-    <string name="gmaps_notify_catched" translatable="false">gmaps_notify_catched</string>
-    <string name="notify_parse_failed" translatable="false">notify_parse_failed</string>
-    <string name="notify_msg" translatable="false">notify_msg</string>
-    <string name="is_in_navigation" translatable="false">is_in_navigation</string>
-    <string name="location" translatable="false">location</string>
-    <string name="gps_speed" translatable="false">gps_speed</string>
-    <string name="arrivals_msg" translatable="false">arrivals_msg</string>
-    <string name="busy_traffic" translatable="false">busy_traffic</string>
-
-
     <!--Prompt-->
     <string name="prompt_switch_hud_connected">This indicates the connection status of GARMIN HUD.</string>
     <string name="prompt_btn_scan_bt">If GARMIN HUD is disconnected, you should connect to GARMIN HUD with this button.</string>
@@ -75,10 +39,4 @@
     <string name="prompt_switch_gmaps_navigation_catched">This indicates the GoogleMaps on Navigating Mode.</string>
     <string name="prompt_layout_status">All of this indicates should be ON, then GARMIN HUD will receive Navigation information.</string>
 
-    <string name="title_activity_main2">MainActivity2</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title"  translatable="false">Googles Map HUD</string>
-    <string name="nav_header_subtitle"  translatable="false">skyforce@gmail.com</string>
-    <string name="nav_header_desc">Navigation header</string>
 </resources>
