@@ -20,9 +20,14 @@
     <string name="broadcast_receiver_main_activity" translatable="false">sky4s.garminhud.app.MainActivity.RECEIVER</string>
     <string name="broadcast_receiver_notification_monitor" translatable="false">sky4s.garminhud.app.NotificationMonitor.RECEIVER</string>
     <string name="broadcast_notification_switch" translatable="false">sky4s.garminhud.app.MainActivity.NOTIFY_SWITCH</string>
+
+    <string name="broadcast_notification_switch_speed" translatable="false">sky4s.garminhud.app.MainActivity.SWITCH_SPEED</string>
+    <string name="broadcast_notification_switch_auto_brightness" translatable="false">sky4s.garminhud.app.MainActivity.SWITCH_AUTO_BRIGHTNESS</string>
+    <string name="broadcast_notification_switch_ETA" translatable="false">sky4s.garminhud.app.MainActivity.SWITCH_ETA</string>
+    <string name="broadcast_notification_switch_time" translatable="false">sky4s.garminhud.app.MainActivity.SWITCH_TIME</string>
     <string name="broadcast_notification_switch_detect" translatable="false">sky4s.garminhud.app.MainActivity.SWITCH_DETECT</string>
-    <string name="broadcast_notification_switch_speed" translatable="false">sky4s.garminhud.app.MainActivity.SPEED_DETECT</string>
-    <string name="broadcast_notification_switch_ETA" translatable="false">sky4s.garminhud.app.MainActivity.ETA_DETECT</string>
+    <string name="broadcast_notification_switch_yellow_alert" translatable="false">sky4s.garminhud.app.MainActivity.SWITCH_YELLOW_ALERT</string>
+
 
     <!--<string name="broadcast_receiver_location_service" translatable="false">chutka.bitman.com.speedometersimplified.LocationService.RECEIVER</string>-->
 
@@ -44,11 +49,6 @@
     <string name="busy_traffic" translatable="false">busy_traffic</string>
     <string name="notify_switch_event" translatable="false">notify_switch_event</string>
 
-    <!--    <string name="title_activity_main2">MainActivity2</string>-->
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title" translatable="false">Googles Map HUD</string>
-    <string name="nav_header_subtitle" translatable="false">skyforce@gmail.com</string>
-    <string name="nav_header_desc">Navigation header</string>
+    <integer name="notify_id">1</integer>
 
 </resources>

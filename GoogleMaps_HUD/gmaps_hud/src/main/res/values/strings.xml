@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name" translatable="false">GoogleMaps HUD</string>
-<!--    <string name="open_app" >Open app</string>-->
-    <string name="action_settings">Settings</string>
-    <string name="switch_lane_traffic_detect" >Detect</string>
-    <string name="switch_speed" >Speed</string>
-    <string name="switch_ETA" >ETA</string>
-
-
-    <string name="active_notification_count_zero">No active notification</string>
     <plurals name="active_notification_count_nonzero">
         <item quantity="one">%d active notification:</item>
         <item quantity="other">%d active notifications:</item>
     </plurals>
+    <!--    <string name="open_app" >Open app</string>-->
+    <string name="app_name" translatable="false">GoogleMaps HUD</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="notify_switch_detect">Detect</string>
+    <string name="notify_switch_speed">Speed</string>
+    <string name="notify_switch_ETA">ETA</string>
+
+    <string name="active_notification_count_zero">No active notification</string>
 
     <!--gmaps' navigation string-->
     <string name="exit_navigation">EXIT NAVIGATION</string>
@@ -38,5 +38,12 @@
     <string name="prompt_switch_notification_catched">This indicates the app can capture Notification.</string>
     <string name="prompt_switch_gmaps_navigation_catched">This indicates the GoogleMaps on Navigating Mode.</string>
     <string name="prompt_layout_status">All of this indicates should be ON, then GARMIN HUD will receive Navigation information.</string>
+
+    <!--    <string name="title_activity_main2">MainActivity2</string>-->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title" translatable="false">Googles Map HUD</string>
+    <string name="nav_header_subtitle" translatable="false">skyforce@gmail.com</string>
+    <string name="nav_header_desc">Navigation header</string>
 
 </resources>

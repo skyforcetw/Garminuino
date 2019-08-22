@@ -400,9 +400,13 @@ public class MainActivity extends AppCompatActivity {
         };
 
         registerReceiver(screenReceiver, filter);
-        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_detect)));
         registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_speed)));
+        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_auto_brightness)));
         registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_ETA)));
+        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_time)));
+        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_detect)));
+
+
         //========================================================================================
 
         //========================================================================================
@@ -1220,19 +1224,47 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(final Context context, final Intent intent) {
             final int event = intent.getIntExtra(getString(R.string.notify_switch_event), 0);
             switch (event) {
-                case 1:
-                    if (switchTrafficAndLane.isChecked()) {
-//                        stopProjection();
-                        switchTrafficAndLane.setChecked(false);
-                    } else {
-//                        startProjection();
-                        switchTrafficAndLane.setChecked(true);
-                    }
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
+
+                case 1: {
+                    final boolean now = !switchShowSpeed.isChecked();
+                    switchShowSpeed.setChecked(now);
+                    notification = getNormalNotification("Show Speed: "
+                            + (now ? "On" : "Off"));
+                    mNotificationManager.notify(R.integer.notify_id, notification);
+                }
+                break;
+                case 2: {
+                    final boolean now = !switchAutoBrightness.isChecked();
+                    switchAutoBrightness.setChecked(now);
+                    notification = getNormalNotification("Auto Brightness: "
+                            + (now ? "On" : "Off"));
+                    mNotificationManager.notify(R.integer.notify_id, notification);
+                }
+                break;
+                case 3: {
+                    final boolean now = !switchShowETA.isChecked();
+                    switchShowETA.setChecked(now);
+                    notification = getNormalNotification("Show ETA: "
+                            + (now ? "On" : "Off"));
+                    mNotificationManager.notify(R.integer.notify_id, notification);
+                }
+                break;
+                case 4: {
+                    final boolean now = !switchIdleShowCurrrentTime.isChecked();
+                    switchIdleShowCurrrentTime.setChecked(now);
+                    notification = getNormalNotification("Show Current Time: "
+                            + (now ? "On" : "Off"));
+                    mNotificationManager.notify(R.integer.notify_id, notification);
+                }
+                break;
+                case 5: {
+                    final boolean now = !switchTrafficAndLane.isChecked();
+                    switchTrafficAndLane.setChecked(now);
+                    notification = getNormalNotification("Traffic & Lane Detection: "
+                            + (now ? "On" : "Off"));
+                    mNotificationManager.notify(R.integer.notify_id, notification);
+                }
+                break;
             }
 
         }
@@ -1240,24 +1272,25 @@ public class MainActivity extends AppCompatActivity {
 
     private NotificationSwitchReceiver notificationSwitchReceiver = new NotificationSwitchReceiver();
 
+    private PendingIntent getPendingIntentForNotify(String action, int switchEvent) {
+        Intent intent = new Intent(action);
+        intent.putExtra(getString(R.string.notify_switch_event), switchEvent);
+        final PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return pendingIntent;
+    }
 
-    private Notification getNormalNotification() {
+    private Notification getNormalNotification(String contentText) {
         final Intent mainIntent = getIntent(); // 目前Activity的Intent
         int flags = PendingIntent.FLAG_CANCEL_CURRENT; // ONE_SHOT：PendingIntent只使用一次；CANCEL_CURRENT：PendingIntent執行前會先結束掉之前的；NO_CREATE：沿用先前的PendingIntent，不建立新的PendingIntent；UPDATE_CURRENT：更新先前PendingIntent所帶的額外資料，並繼續沿用
         final PendingIntent pendingMainIntent = PendingIntent.getActivity(getApplicationContext(), 0, mainIntent, flags); // 取得PendingIntent
 
 
-        Intent notifySwitchIntent1 = new Intent(getString(R.string.broadcast_notification_switch_detect));
-        notifySwitchIntent1.putExtra(getString(R.string.notify_switch_event), 1);
-        final PendingIntent switchDetectPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, notifySwitchIntent1, PendingIntent.FLAG_UPDATE_CURRENT);
+        final PendingIntent switchSpeedPendingIntent =getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_speed),1);
+        final PendingIntent switchAutoBrightnessPendingIntent =getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_auto_brightness),2);
+        final PendingIntent switchETAPendingIntent =getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_ETA),3);
+        final PendingIntent switchTimePendingIntent =getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_time),4);
+        final PendingIntent switchDetectPendingIntent =getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_detect),5);
 
-        Intent notifySwitchIntent2  = new Intent(getString(R.string.broadcast_notification_switch_speed));
-        notifySwitchIntent2.putExtra(getString(R.string.notify_switch_event), 2);
-        final PendingIntent switchSpeedPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, notifySwitchIntent2, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Intent notifySwitchIntent3  = new Intent(getString(R.string.broadcast_notification_switch_ETA));
-        notifySwitchIntent3.putExtra(getString(R.string.notify_switch_event), 3);
-        final PendingIntent switchETAPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, notifySwitchIntent3, PendingIntent.FLAG_UPDATE_CURRENT);
 
         final String channelID = "id";
 
@@ -1267,14 +1300,18 @@ public class MainActivity extends AppCompatActivity {
 //                .setTicker("notification on status bar.") // 設置狀態列的顯示的資訊
                 .setAutoCancel(false) // 設置通知被使用者點擊後是否清除  //notification.flags = Notification.FLAG_AUTO_CANCEL;
 //                .setContentTitle(getString(R.string.app_name)) // 設置下拉清單裡的標題
-//                .setContentText("Notification Content")// 設置上下文內容
+                .setContentText(contentText)// 設置上下文內容
                 .setOngoing(true)      //true使notification變為ongoing，用戶不能手動清除// notification.flags = Notification.FLAG_ONGOING_EVENT; notification.flags = Notification.FLAG_NO_CLEAR;
                 .setContentIntent(pendingMainIntent)
-                .addAction(R.drawable.baseline_traffic_24, getString(R.string.switch_lane_traffic_detect), switchDetectPendingIntent)
-                .addAction(R.drawable.baseline_av_timer_24, getString(R.string.switch_speed), switchSpeedPendingIntent)
-                .addAction(R.drawable.baseline_drive_eta_24, getString(R.string.switch_ETA), switchETAPendingIntent)
+                .addAction(R.drawable.baseline_av_timer_24, getString(R.string.notify_switch_speed), switchSpeedPendingIntent)
+                .addAction(R.drawable.baseline_brightness_auto_24, "Auto Brightness", switchAutoBrightnessPendingIntent)
+                .addAction(R.drawable.baseline_drive_eta_24, getString(R.string.notify_switch_ETA), switchETAPendingIntent)
+                .addAction(R.drawable.baseline_access_time_24, "Current Time", switchTimePendingIntent)
+                .addAction(R.drawable.baseline_traffic_24, getString(R.string.notify_switch_detect), switchDetectPendingIntent)
+
+//                .addAction(R.drawable.baseline_drive_eta_24, getString(R.string.notify_switch_ETA), switchETAPendingIntent)
                 .setChannelId(channelID)
-//                .setStyle(new Notification.MediaStyle())
+                .setStyle(new Notification.MediaStyle())
                 .build();
 
 
@@ -1288,7 +1325,7 @@ public class MainActivity extends AppCompatActivity {
         log("startNotification");
         //Step1. 初始化NotificationManager，取得Notification服務
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notification = getNormalNotification();
+        notification = getNormalNotification("");
 
         final String channelID = "id";
         NotificationChannel channel = new NotificationChannel(
@@ -1301,10 +1338,10 @@ public class MainActivity extends AppCompatActivity {
         channel.setVibrationPattern(new long[]{0});
         channel.enableVibration(true);
 
-        final int notifyID = 1; // 通知的識別號碼
+//        final int notifyID = 1; // 通知的識別號碼
         mNotificationManager.createNotificationChannel(channel);
         // 把指定ID的通知持久的發送到狀態條上.
-        mNotificationManager.notify(notifyID, notification);
+        mNotificationManager.notify(R.integer.notify_id, notification);
     }
 
     private void stopNotification() {
