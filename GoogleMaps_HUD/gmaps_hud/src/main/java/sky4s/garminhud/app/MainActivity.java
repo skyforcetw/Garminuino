@@ -400,7 +400,9 @@ public class MainActivity extends AppCompatActivity {
         };
 
         registerReceiver(screenReceiver, filter);
-        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch)));
+        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_detect)));
+        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_speed)));
+        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_ETA)));
         //========================================================================================
 
         //========================================================================================
@@ -445,7 +447,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (requestCode == PROJECT_REQUEST_CODE) {
+        if (requestCode == SCREENCAP_REQUEST_CODE) {
             sMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
 
             if (sMediaProjection != null) {
@@ -1164,7 +1166,7 @@ public class MainActivity extends AppCompatActivity {
     private OrientationChangeCallback mOrientationChangeCallback;
     boolean alertYellowTraffic = false;
 
-    private static final int PROJECT_REQUEST_CODE = 100;
+    private static final int SCREENCAP_REQUEST_CODE = 100;
     private static final String SCREENCAP_NAME = "screencap";
     private static final int VIRTUAL_DISPLAY_FLAGS = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
     static String STORE_DIRECTORY;
@@ -1220,10 +1222,10 @@ public class MainActivity extends AppCompatActivity {
             switch (event) {
                 case 1:
                     if (switchTrafficAndLane.isChecked()) {
-                        stopProjection();
+//                        stopProjection();
                         switchTrafficAndLane.setChecked(false);
                     } else {
-                        startProjection();
+//                        startProjection();
                         switchTrafficAndLane.setChecked(true);
                     }
                     break;
@@ -1245,18 +1247,17 @@ public class MainActivity extends AppCompatActivity {
         final PendingIntent pendingMainIntent = PendingIntent.getActivity(getApplicationContext(), 0, mainIntent, flags); // 取得PendingIntent
 
 
-        Intent notifySwitchIntent1 = new Intent(getString(R.string.broadcast_notification_switch));
-//        Intent notifySwitchIntent1 = new Intent("1");
+        Intent notifySwitchIntent1 = new Intent(getString(R.string.broadcast_notification_switch_detect));
         notifySwitchIntent1.putExtra(getString(R.string.notify_switch_event), 1);
         final PendingIntent switchDetectPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, notifySwitchIntent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Intent notifySwitchIntent2  = new Intent(getString(R.string.broadcast_notification_switch));
+        Intent notifySwitchIntent2  = new Intent(getString(R.string.broadcast_notification_switch_speed));
         notifySwitchIntent2.putExtra(getString(R.string.notify_switch_event), 2);
         final PendingIntent switchSpeedPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, notifySwitchIntent2, PendingIntent.FLAG_UPDATE_CURRENT);
 
-//        Intent notifySwitchIntent3  = new Intent(getString(R.string.broadcast_notification_switch));
-//        notifySwitchIntent3.putExtra(getString(R.string.notify_switch_event), 3);
-//        final PendingIntent switchETAPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, notifySwitchIntent3, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent notifySwitchIntent3  = new Intent(getString(R.string.broadcast_notification_switch_ETA));
+        notifySwitchIntent3.putExtra(getString(R.string.notify_switch_event), 3);
+        final PendingIntent switchETAPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, notifySwitchIntent3, PendingIntent.FLAG_UPDATE_CURRENT);
 
         final String channelID = "id";
 
@@ -1268,14 +1269,10 @@ public class MainActivity extends AppCompatActivity {
 //                .setContentTitle(getString(R.string.app_name)) // 設置下拉清單裡的標題
 //                .setContentText("Notification Content")// 設置上下文內容
                 .setOngoing(true)      //true使notification變為ongoing，用戶不能手動清除// notification.flags = Notification.FLAG_ONGOING_EVENT; notification.flags = Notification.FLAG_NO_CLEAR;
-//                .setDefaults(0) //使用所有默認值，比如聲音，震動，閃屏等等
                 .setContentIntent(pendingMainIntent)
-//                .addAction(R.drawable.ic_launcher, getString(R.string.open_app), pendingMainIntent)
-//                .addAction(android.R.drawable.ic_menu_close_clear_cancel, getString(R.string.switch_lane_traffic_detect), switchDetectIntent)
                 .addAction(R.drawable.baseline_traffic_24, getString(R.string.switch_lane_traffic_detect), switchDetectPendingIntent)
                 .addAction(R.drawable.baseline_av_timer_24, getString(R.string.switch_speed), switchSpeedPendingIntent)
-//                .addAction(R.drawable.baseline_drive_eta_24, getString(R.string.switch_ETA), switchETAPendingIntent)
-//                .addAction(actionLaneDetect)
+                .addAction(R.drawable.baseline_drive_eta_24, getString(R.string.switch_ETA), switchETAPendingIntent)
                 .setChannelId(channelID)
 //                .setStyle(new Notification.MediaStyle())
                 .build();
@@ -1320,7 +1317,7 @@ public class MainActivity extends AppCompatActivity {
 
     /****************************************** UI Widget Callbacks *******************************/
     private void startProjection() {
-        startActivityForResult(mProjectionManager.createScreenCaptureIntent(), PROJECT_REQUEST_CODE);
+        startActivityForResult(mProjectionManager.createScreenCaptureIntent(), SCREENCAP_REQUEST_CODE);
 //        startNotification();
 
     }
