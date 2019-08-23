@@ -28,6 +28,7 @@ import android.location.LocationManager;
 import android.media.ImageReader;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -39,13 +40,14 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.media.app.NotificationCompat.MediaStyle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -792,20 +794,6 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    private void createNotification(Context context) {
-        notifyManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-        //ignore OREO NotificationChannel, because GARMINuino no need this new feature.
-
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("GARMINuino")
-                        .setContentText("is on working")
-                        .setAutoCancel(false);
-
-        Notification notification = builder.build();
-        notifyManager.notify(1, notification);
-    }
 
     private String getCurrentNotificationString() {
         String listNos = "";
@@ -1285,17 +1273,20 @@ public class MainActivity extends AppCompatActivity {
         final PendingIntent pendingMainIntent = PendingIntent.getActivity(getApplicationContext(), 0, mainIntent, flags); // 取得PendingIntent
 
 
-        final PendingIntent switchSpeedPendingIntent =getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_speed),1);
-        final PendingIntent switchAutoBrightnessPendingIntent =getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_auto_brightness),2);
-        final PendingIntent switchETAPendingIntent =getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_ETA),3);
-        final PendingIntent switchTimePendingIntent =getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_time),4);
-        final PendingIntent switchDetectPendingIntent =getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_detect),5);
+        final PendingIntent switchSpeedPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_speed), 1);
+        final PendingIntent switchAutoBrightnessPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_auto_brightness), 2);
+        final PendingIntent switchETAPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_ETA), 3);
+        final PendingIntent switchTimePendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_time), 4);
+        final PendingIntent switchDetectPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_detect), 5);
 
 
         final String channelID = "id";
 
+        android.support.v4.media.app.NotificationCompat.MediaStyle style = new android.support.v4.media.app.NotificationCompat.MediaStyle();
+
         notification
-                = new Notification.Builder(MainActivity.this, channelID)
+//                = new Notification.Builder(MainActivity.this, channelID)
+                = new NotificationCompat.Builder(MainActivity.this, channelID)
                 .setSmallIcon(R.mipmap.ic_notification_foreground)
 //                .setTicker("notification on status bar.") // 設置狀態列的顯示的資訊
                 .setAutoCancel(false) // 設置通知被使用者點擊後是否清除  //notification.flags = Notification.FLAG_AUTO_CANCEL;
@@ -1309,17 +1300,16 @@ public class MainActivity extends AppCompatActivity {
                 .addAction(R.drawable.baseline_access_time_24, "Current Time", switchTimePendingIntent)
                 .addAction(R.drawable.baseline_traffic_24, getString(R.string.notify_switch_detect), switchDetectPendingIntent)
 
-//                .addAction(R.drawable.baseline_drive_eta_24, getString(R.string.notify_switch_ETA), switchETAPendingIntent)
                 .setChannelId(channelID)
-                .setStyle(new Notification.MediaStyle())
+                .setStyle(style)
                 .build();
 
-
+//        NotificationCompat.MediaStyle style = new NotificationCompat.MediaStyle();
         return notification;
     }
 
     private Notification notification;
-    private NotificationManager mNotificationManager;// = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+    private NotificationManager mNotificationManager;
 
     private void startNotification() {
         log("startNotification");
@@ -1327,19 +1317,22 @@ public class MainActivity extends AppCompatActivity {
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notification = getNormalNotification("");
 
-        final String channelID = "id";
-        NotificationChannel channel = new NotificationChannel(
-                channelID,
-                "Channel",
-                NotificationManager.IMPORTANCE_DEFAULT);
-        channel.enableLights(false);
-//        channel.enableVibration(false);
-        //it had a bug which is vibration cannot be disabled normally.
-        channel.setVibrationPattern(new long[]{0});
-        channel.enableVibration(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            final String channelID = "id";
+            NotificationChannel channel = new NotificationChannel(
+                    channelID,
+                    "Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            channel.enableLights(false);
+            //it had a bug which is vibration cannot be disabled normally.
+            channel.setVibrationPattern(new long[]{0});
+            channel.enableVibration(true);
 
-//        final int notifyID = 1; // 通知的識別號碼
-        mNotificationManager.createNotificationChannel(channel);
+            mNotificationManager.createNotificationChannel(channel);
+        } else {
+            notification.vibrate = new long[]{0};
+        }
+
         // 把指定ID的通知持久的發送到狀態條上.
         mNotificationManager.notify(R.integer.notify_id, notification);
     }
