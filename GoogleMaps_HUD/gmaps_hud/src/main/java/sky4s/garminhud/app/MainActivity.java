@@ -204,15 +204,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void clearSpeed() {
-        if (null != hud) {
-            if (is_in_navigation) {
-                hud.ClearSpeedandWarning();
-            } else {
-                hud.ClearDistance();
-            }
-        }
-    }
+//    private void clearSpeed() {
+//        if (null != hud) {
+//            if (is_in_navigation) {
+//                hud.ClearSpeedandWarning();
+//            } else {
+//                hud.ClearDistance();
+//            }
+//        }
+//    }
 
     void loadOptions() {
 
@@ -1302,6 +1302,7 @@ public class MainActivity extends AppCompatActivity {
 
                 .setChannelId(channelID)
                 .setStyle(style)
+
                 .build();
 
         return notification;
@@ -1321,7 +1322,7 @@ public class MainActivity extends AppCompatActivity {
             NotificationChannel channel = new NotificationChannel(
                     channelID,
                     "Channel",
-                    NotificationManager.IMPORTANCE_DEFAULT);
+                    NotificationManager.IMPORTANCE_MAX);
             channel.enableLights(false);
             //it had a bug which is vibration cannot be disabled normally.
             channel.setVibrationPattern(new long[]{0});
