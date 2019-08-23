@@ -8,9 +8,11 @@ There has two sub-project use GarminHUD as:
  
 
 GoogleMap navigation HUD + Speedometer HUD
+
 <img src="./pics/P_20190125_225356-02.jpeg" alt="Two Garmin HUD application" width="500"/>
 
 Android App: Google Map HUD
+
 <img src="./pics/371209.jpg" alt="App layout" width="400"/>
 
 
