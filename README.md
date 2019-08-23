@@ -1,19 +1,24 @@
 # Garminuino
 There has two sub-project use GarminHUD as:
-* a GoogleMap navigation HUD  (Android App+GarminHUD).  
+* an app, Google Map HUD  (Android App+GarminHUD).  
 1. [Downloading newest release App here.](https://github.com/skyforcetw/Garminuino/releases)
 2. [Further Information for Android App.](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/README.md)  
  
- * a speedometer HUD  (Arduino+GarminHUD, STOP MAINTAIN)
+* a speedometer HUD  (Arduino+GarminHUD, STOP MAINTAIN)
+ 
  
 <img src="./pics/P_20190125_225356-02.jpeg" alt="Two Garmin HUD application" width="500"/>
+GoogleMap navigation HUD + Speedometer HUD
+
 <img src="./pics/371209.jpg" alt="App layout" width="400"/>
+Android App: Google Map HUD
 
 ## GoogleMap navigation HUD App Release History ##
 
 ### [2019-08-23 v0.4.7](https://github.com/skyforcetw/Garminuino/releases/download/0.4.7/gmaps_hud-release_v0.4.7.apk)
 Simple controls in Notification.
-_*NOTE*_ If your android is below Android 8.0(Oreo), please download [this one](https://github.com/skyforcetw/Garminuino/releases/download/0.4.7/gmaps_hud-release_v0.4.7.android6.0.apk).
+
+**NOTE** If your android is below Android 8.0(Oreo), please download [this one](https://github.com/skyforcetw/Garminuino/releases/download/0.4.7/gmaps_hud-release_v0.4.7.android6.0.apk).
 
 ### [2019-08-11 v0.4.6](https://github.com/skyforcetw/Garminuino/releases/download/0.4.6/gmaps_hud-release_v0.4.6.apk)
 Lane detection mechanism revision.
