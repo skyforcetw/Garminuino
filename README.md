@@ -11,6 +11,9 @@ There has two sub-project use GarminHUD as:
 
 ## GoogleMap navigation HUD App Release History ##
 
+### [2019-08-23 v0.4.7](https://github.com/skyforcetw/Garminuino/releases/download/0.4.7/gmaps_hud-release_v0.4.7.apk)
+Simple controls in Notification
+
 ### [2019-08-11 v0.4.6](https://github.com/skyforcetw/Garminuino/releases/download/0.4.6/gmaps_hud-release_v0.4.6.apk)
 Lane detection mechanism revision.
 
