@@ -1285,7 +1285,6 @@ public class MainActivity extends AppCompatActivity {
         android.support.v4.media.app.NotificationCompat.MediaStyle style = new android.support.v4.media.app.NotificationCompat.MediaStyle();
 
         notification
-//                = new Notification.Builder(MainActivity.this, channelID)
                 = new NotificationCompat.Builder(MainActivity.this, channelID)
                 .setSmallIcon(R.mipmap.ic_notification_foreground)
 //                .setTicker("notification on status bar.") // 設置狀態列的顯示的資訊
@@ -1294,6 +1293,7 @@ public class MainActivity extends AppCompatActivity {
                 .setContentText(contentText)// 設置上下文內容
                 .setOngoing(true)      //true使notification變為ongoing，用戶不能手動清除// notification.flags = Notification.FLAG_ONGOING_EVENT; notification.flags = Notification.FLAG_NO_CLEAR;
                 .setContentIntent(pendingMainIntent)
+
                 .addAction(R.drawable.baseline_av_timer_24, getString(R.string.notify_switch_speed), switchSpeedPendingIntent)
                 .addAction(R.drawable.baseline_brightness_auto_24, "Auto Brightness", switchAutoBrightnessPendingIntent)
                 .addAction(R.drawable.baseline_drive_eta_24, getString(R.string.notify_switch_ETA), switchETAPendingIntent)
@@ -1304,7 +1304,6 @@ public class MainActivity extends AppCompatActivity {
                 .setStyle(style)
                 .build();
 
-//        NotificationCompat.MediaStyle style = new NotificationCompat.MediaStyle();
         return notification;
     }
 
