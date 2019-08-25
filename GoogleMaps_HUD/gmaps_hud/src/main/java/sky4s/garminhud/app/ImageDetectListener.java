@@ -252,7 +252,10 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
                         theme == Theme.V2 ? LaneDivideWhiteV2 : 0;
                 ArrayList<Boolean> laneDetectResult = laneDetect(lane_roi_image, lane_bg_color, lane_color);
                 if (laneDetectResult.size() != 0) {
-                    if (!landDetectToHUD(laneDetectResult)) {
+                    if (landDetectToHUD(laneDetectResult)) {
+
+                    } else {
+                        hud.SetLanes((char) 0, (char) 0);
                         storeToPNG(lane_roi_image, MainActivity.STORE_DIRECTORY + "NG_lane.png");
                     }
                 } else {

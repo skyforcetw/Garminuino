@@ -36,6 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:onClick="buttonOnClicked"
                     android:text="Reset Bluetooth"
                     android:textSize="@dimen/option_text_size" />
 

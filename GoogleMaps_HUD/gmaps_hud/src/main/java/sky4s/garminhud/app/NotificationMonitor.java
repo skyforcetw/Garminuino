@@ -52,6 +52,9 @@ public class NotificationMonitor extends NotificationListenerService {
     public static final String ACTION_NLS_CONTROL = "sky4s.garmin.hud.NLSCONTROL";
     public final static String GOOGLE_MAPS_PACKAGE_NAME = "com.google.android.apps.maps";
     public final static String GOOGLE_MAPS_NOTIFICATION_GROUP_NAVIGATION = "navigation_status_notification_group";
+    public final static String OSMAND_PACKAGE_NAME = "net.osmand";
+    public final static String OSMAND_NOTIFICATION_GROUP_NAVIGATION = "NAVIGATION";
+
     private static final String TAG = NotificationMonitor.class.getSimpleName();
     private static final int EVENT_UPDATE_CURRENT_NOS = 0;
 
@@ -179,8 +182,9 @@ public class NotificationMonitor extends NotificationListenerService {
         //========================================================================================
         staticInstance = this;
 //        openDB();
-        postman = new MainActivityPostman(this,   getString(R.string.broadcast_sender_notification_monitor) );
+        postman = new MainActivityPostman(this, getString(R.string.broadcast_sender_notification_monitor));
     }
+
     private MainActivityPostman postman;
 
 
@@ -197,36 +201,9 @@ public class NotificationMonitor extends NotificationListenerService {
         return super.onBind(intent);
     }
 
-//    private Intent intent2Main = null;
-//
-//    private void checkIntentForExtra() {
-//        if (null == intent2Main) {
-//            intent2Main = new Intent(getString(R.string.broadcast_receiver_main_activity));
-//        }
-//    }
-//
-//    private void addBooleanExtra(String key, boolean b) {
-//        checkIntentForExtra();
-//        intent2Main.putExtra(key, b);
-//    }
-//
-//    private void addStringExtra(String key, String string) {
-//        checkIntentForExtra();
-//        intent2Main.putExtra(key, string);
-//    }
-//
-//    private void sendIntent2MainActivity() {
-//        if (null != intent2Main) {
-//            addStringExtra(getString(R.string.whoami), getString(R.string.broadcast_sender_notification_monitor));
-//            addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
-//            sendBroadcast(intent2Main);
-//            intent2Main = null;
-//        }
-//    }
 
-    private void processGoogleMapsNotification(StatusBarNotification sbn) {
+    private void processNotification(StatusBarNotification sbn) {
         String packageName = sbn.getPackageName();
-//        sendBooleanExtra2MainActivity(getString(R.string.notify_catched), true);
         postman.addBooleanExtra(getString(R.string.notify_catched), true);
         postman.addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
         postman.sendIntent2MainActivity();
@@ -236,21 +213,41 @@ public class NotificationMonitor extends NotificationListenerService {
             if (null == notification) {
                 return;
             }
-            processGoogleMapsNotification(notification);
+            processGmapsNotification(notification);
+        } else if (packageName.equals(OSMAND_PACKAGE_NAME)) {
+            Notification notification = sbn.getNotification();
+            if (null == notification) {
+                return;
+            }
+            processOsmandNotification(notification);
         }
     }
 
 
-    private void processGoogleMapsNotification(Notification notification) {
+    private void processOsmandNotification(Notification notification) {
         long currentTime = System.currentTimeMillis();
         notifyPeriodTime = currentTime - lastNotifyTimeMillis;
         lastNotifyTimeMillis = currentTime;
 
         boolean parseResult = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            parseResult = parseNotificationByExtras(notification);
+            parseResult = parseOsmandNotificationByExtras(notification);
         } else {
-            parseResult = parseNotificationByReflection(notification);
+//            parseResult = parseGmapsNotificationByReflection(notification);
+        }
+    }
+
+
+    private void processGmapsNotification(Notification notification) {
+        long currentTime = System.currentTimeMillis();
+        notifyPeriodTime = currentTime - lastNotifyTimeMillis;
+        lastNotifyTimeMillis = currentTime;
+
+        boolean parseResult = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            parseResult = parseGmapsNotificationByExtras(notification);
+        } else {
+            parseResult = parseGmapsNotificationByReflection(notification);
         }
 
         if (!parseResult) {
@@ -277,7 +274,7 @@ public class NotificationMonitor extends NotificationListenerService {
         }
     }
 
-    private boolean parseNotificationByReflection(Notification notification) {
+    private boolean parseGmapsNotificationByReflection(Notification notification) {
 
         // We have to extract the information from the view
         RemoteViews views = notification.bigContentView;
@@ -410,7 +407,91 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private boolean is_in_navigation = false;
 
-    private boolean parseNotificationByExtras(Notification notification) {
+    private boolean parseOsmandNotificationByExtras(Notification notification) {
+        if (null == notification) {
+            return false;
+        }
+        Bundle extras = notification.extras;
+        String group_name = notification.getGroup();
+
+        if ((null != extras) && (null != group_name) && group_name.equals(OSMAND_NOTIFICATION_GROUP_NAVIGATION)) {
+            Object big = extras.get(Notification.EXTRA_BIG_TEXT);
+//            Object msg = extras.get(Notification.EXTRA_MESSAGES);
+
+            Object titleObj = extras.get(Notification.EXTRA_TITLE);
+            Object textObj = extras.get(Notification.EXTRA_TEXT);
+            Object subTextObj = extras.get(Notification.EXTRA_SUB_TEXT);
+
+            String title = null != titleObj ? titleObj.toString() : null;
+            String text = null != textObj ? textObj.toString() : null;
+            String subText = null != subTextObj ? subTextObj.toString() : null;
+            subText = null == subText ? text : subText;
+
+            // Check if subText is empty (" ·  · ") --> don't parse subText
+            // Occurs for example on NagivationChanged
+            boolean subTextEmpty = true;
+//            if (null != subText) {
+//                String[] split = subText.split("·");
+//                for (int i = 0; i < split.length; i++) {
+//                    String trimString = split[i].trim();
+//                    boolean string_empty = containsOnlyWhitespaces(trimString);
+//                    if (string_empty == false) {
+//                        subTextEmpty = false;
+//                        break;
+//                    }
+//                }
+//            }
+//
+//            final boolean somethingCanParse = null != subText && !subTextEmpty;
+//            if (somethingCanParse) {
+//                parseTimeAndDistanceToDest(subText);
+//
+//                String[] title_str = title.split("–");
+//                title_str = 1 == title_str.length ? title.split("-") : title_str;
+//                String distance = title_str[0].trim();
+//                if (Character.isDigit(distance.charAt(0)))
+//                    parseDistanceToTurn(distance);
+//                else
+//                    distanceNum = "-1";
+//
+//                Icon largeIcon = notification.getLargeIcon();
+//                Icon smallIcon = notification.getSmallIcon();
+//                if (null != largeIcon) {
+//                    Drawable drawableIco = largeIcon.loadDrawable(this);
+//                    Bitmap bitmapImage = drawableToBitmap(drawableIco);
+//
+//                    if (null != bitmapImage) {
+//                        if (STORE_IMG) {
+//                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow0.png");
+//                        }
+//
+//                        ArrowImage arrowImage = new ArrowImage(bitmapImage);
+//
+//                        if (STORE_IMG) {
+//                            storeBitmap(arrowImage.binaryImage, IMAGE_DIR + "binary.png");
+//                        }
+//
+//                        foundArrow = getArrow(arrowImage);
+//                        if (lastFoundArrow != foundArrow && USE_DB && null != dbHelper) {
+//                            dbHelper.insert(null, bitmapImage, arrowImage, foundArrow);
+//                        }
+//                        lastFoundArrow = foundArrow;
+//
+//                    }
+//                }
+//                logParseMessage();
+//                updateGaminHudInformation();
+//                is_in_navigation = true;
+//            } else {
+//                is_in_navigation = false;
+//            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean parseGmapsNotificationByExtras(Notification notification) {
         if (null == notification) {
             return false;
         }
@@ -1024,7 +1105,7 @@ public class NotificationMonitor extends NotificationListenerService {
         logi("onNotificationPosted...");
         logi("have " + mCurrentNotificationsCounts + " active notifications");
         mPostedNotification = sbn;
-        processGoogleMapsNotification(sbn);
+        processNotification(sbn);
     }
 
 

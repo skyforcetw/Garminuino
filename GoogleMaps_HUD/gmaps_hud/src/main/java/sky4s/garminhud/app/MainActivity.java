@@ -246,7 +246,11 @@ public class MainActivity extends AppCompatActivity {
     private String initBluetooth() {
         String bt_status = "";
         if (!IGNORE_BT_DEVICE) {
-            bt = new BluetoothSPP(this);
+            if (null == bt) {
+                bt = new BluetoothSPP(this);
+            } else {
+                bt.disconnect();
+            }
             bt.setBluetoothConnectionListener(btConnectionListener);
             bt.setAutoConnectionListener(btConnectionListener);
             if (!bt.isBluetoothAvailable()) {
@@ -264,30 +268,30 @@ public class MainActivity extends AppCompatActivity {
                 if (!bt.isServiceAvailable()) {
                     bt.setupService();
                     bt.startService(BluetoothState.DEVICE_OTHER);
+                }
 
-                    boolean isBindName = false;
-                    if (null != switchBtBindAddress) {
-                        boolean isBindAddress = switchBtBindAddress.isChecked();
-                        if (isBindAddress) {
-                            String bindAddress = sharedPref.getString(getString(R.string.bt_bind_address_key), null);
-                            if (null != bindAddress) {
-                                bt.connect(bindAddress);
-                            }
-                        } else {
-                            isBindName = true;
-                            ;
+                boolean isBindName = false;
+                if (null != switchBtBindAddress) {
+                    boolean isBindAddress = switchBtBindAddress.isChecked();
+                    if (isBindAddress) {
+                        String bindAddress = sharedPref.getString(getString(R.string.bt_bind_address_key), null);
+                        if (null != bindAddress) {
+                            bt.connect(bindAddress);
                         }
                     } else {
                         isBindName = true;
                     }
+                } else {
+                    isBindName = true;
+                }
 
-                    if (isBindName) {
-                        String bindName = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
-                        if (null != bindName) {
-                            bt.autoConnect(bindName);
-                        }
+                if (isBindName) {
+                    String bindName = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
+                    if (null != bindName) {
+                        bt.autoConnect(bindName);
                     }
                 }
+
             }
 
 
@@ -1071,6 +1075,7 @@ public class MainActivity extends AppCompatActivity {
     private class BluetoothConnectionListener implements BluetoothSPP.BluetoothConnectionListener, BluetoothSPP.AutoConnectionListener {
         @Override
         public void onAutoConnectionStarted() {
+            int a=1;
         }
 
         @Override
