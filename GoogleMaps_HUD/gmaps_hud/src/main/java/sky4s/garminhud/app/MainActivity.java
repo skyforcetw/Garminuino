@@ -47,7 +47,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.media.app.NotificationCompat.MediaStyle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -653,17 +652,17 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.button1:
                 if (null != NotificationMonitor.getStaticInstance()) {
-                    NotificationMonitor.getStaticInstance().processArrow(Arrow.Convergence);
+                    NotificationMonitor.getStaticInstance().updateArrow(Arrow.Convergence);
                 }
                 break;
             case R.id.button2:
                 if (null != NotificationMonitor.getStaticInstance()) {
-                    NotificationMonitor.getStaticInstance().processArrow(Arrow.LeaveRoundaboutSharpRightCC);
+                    NotificationMonitor.getStaticInstance().updateArrow(Arrow.LeaveRoundaboutSharpRightCC);
                 }
                 break;
             case R.id.button3:
                 if (null != NotificationMonitor.getStaticInstance()) {
-                    NotificationMonitor.getStaticInstance().processArrow(Arrow.LeaveRoundaboutSharpRight);
+                    NotificationMonitor.getStaticInstance().updateArrow(Arrow.LeaveRoundaboutSharpRight);
                 }
                 break;
 

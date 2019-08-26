@@ -14,7 +14,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -45,11 +44,8 @@ import sky4s.garminhud.hud.HUDInterface;
 public class NotificationMonitor extends NotificationListenerService {
     private final static boolean STORE_IMG = true;
     private final static String IMAGE_DIR = "/storage/emulated/0/Pictures/";
-    private final static boolean DONT_SEND_SAME = false;
-    private final static boolean USE_DB = false;
 
-
-    public static final String ACTION_NLS_CONTROL = "sky4s.garmin.hud.NLSCONTROL";
+    //    public static final String ACTION_NLS_CONTROL = "sky4s.garmin.hud.NLSCONTROL";
     public final static String GOOGLE_MAPS_PACKAGE_NAME = "com.google.android.apps.maps";
     public final static String GOOGLE_MAPS_NOTIFICATION_GROUP_NAVIGATION = "navigation_status_notification_group";
     public final static String OSMAND_PACKAGE_NAME = "net.osmand";
@@ -58,28 +54,39 @@ public class NotificationMonitor extends NotificationListenerService {
     private static final String TAG = NotificationMonitor.class.getSimpleName();
     private static final int EVENT_UPDATE_CURRENT_NOS = 0;
 
-
     public static List<StatusBarNotification[]> mCurrentNotifications = new ArrayList<StatusBarNotification[]>();
     public static int mCurrentNotificationsCounts = 0;
     public static StatusBarNotification mPostedNotification;
     public static StatusBarNotification mRemovedNotification;
-    private CancelNotificationReceiver mReceiver = new CancelNotificationReceiver();
 
-    //    public static BluetoothSPP bt = null;
+
+//    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action;
+//            if (intent != null && intent.getAction() != null) {
+//
+//                action = intent.getAction();
+//                if (action.equals(ACTION_NLS_CONTROL)) {
+//                    String command = intent.getStringExtra("command");
+//                    if (TextUtils.equals(command, "cancel_last")) {
+//                        if (mCurrentNotifications != null && mCurrentNotificationsCounts >= 1) {
+//                            StatusBarNotification sbnn = getCurrentNotifications()[mCurrentNotificationsCounts - 1];
+//                            cancelNotification(sbnn.getPackageName(), sbnn.getTag(), sbnn.getId());
+//                        }
+//                    } else if (TextUtils.equals(command, "cancel_all")) {
+//                        cancelAllNotifications();
+//                    } else if (TextUtils.equals(command, "toogle")) {
+//                        int a = 1;
+//                    }
+//                }
+//
+//            }
+//        }
+//    };
+
     static HUDInterface hud = null;
-    private RecognizeDBHelper dbHelper = null;
 
-    private void openDB() {
-        if (USE_DB) {
-            dbHelper = new RecognizeDBHelper(this);
-        }
-    }
-
-    private void closeDB() {
-        if (USE_DB) {
-            dbHelper.close();
-        }
-    }
 
     private Handler mMonitorHandler = new Handler() {
         @Override
@@ -165,9 +172,8 @@ public class NotificationMonitor extends NotificationListenerService {
     public void onCreate() {
         super.onCreate();
         logi("onCreate...");
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION_NLS_CONTROL);
-        registerReceiver(mReceiver, filter);
+//        IntentFilter filter = new IntentFilter(ACTION_NLS_CONTROL);
+//        registerReceiver(mReceiver, filter);
         mMonitorHandler.sendMessage(mMonitorHandler.obtainMessage(EVENT_UPDATE_CURRENT_NOS));
 
         //========================================================================================
@@ -191,8 +197,8 @@ public class NotificationMonitor extends NotificationListenerService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mReceiver);
-        closeDB();
+//        unregisterReceiver(mReceiver);
+//        closeDB();
     }
 
     @Override
@@ -203,50 +209,43 @@ public class NotificationMonitor extends NotificationListenerService {
 
 
     private void processNotification(StatusBarNotification sbn) {
-        String packageName = sbn.getPackageName();
-        postman.addBooleanExtra(getString(R.string.notify_catched), true);
-        postman.addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
-        postman.sendIntent2MainActivity();
 
-        if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
-            Notification notification = sbn.getNotification();
-            if (null == notification) {
-                return;
+        Notification notification = sbn.getNotification();
+        if (null != notification) {
+            String packageName = sbn.getPackageName();
+            switch (packageName) {
+                case GOOGLE_MAPS_PACKAGE_NAME:
+                    parseGmapsNotification(notification);
+                    break;
+                case OSMAND_PACKAGE_NAME:
+                    parseOsmandNotification(notification);
+                    break;
             }
-            processGmapsNotification(notification);
-        } else if (packageName.equals(OSMAND_PACKAGE_NAME)) {
-            Notification notification = sbn.getNotification();
-            if (null == notification) {
-                return;
-            }
-            processOsmandNotification(notification);
+        } else {
+            postman.addBooleanExtra(getString(R.string.notify_catched), true);
+            postman.addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
+            postman.sendIntent2MainActivity();
         }
     }
 
 
-    private void processOsmandNotification(Notification notification) {
+    private void parseOsmandNotification(Notification notification) {
         long currentTime = System.currentTimeMillis();
         notifyPeriodTime = currentTime - lastNotifyTimeMillis;
         lastNotifyTimeMillis = currentTime;
 
-        boolean parseResult = false;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            parseResult = parseOsmandNotificationByExtras(notification);
-        } else {
-//            parseResult = parseGmapsNotificationByReflection(notification);
-        }
+        boolean parseResult = parseOsmandNotificationByExtras(notification);
+
     }
 
 
-    private void processGmapsNotification(Notification notification) {
+    private void parseGmapsNotification(Notification notification) {
         long currentTime = System.currentTimeMillis();
         notifyPeriodTime = currentTime - lastNotifyTimeMillis;
         lastNotifyTimeMillis = currentTime;
 
-        boolean parseResult = false;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            parseResult = parseGmapsNotificationByExtras(notification);
-        } else {
+        boolean parseResult = parseGmapsNotificationByExtras(notification);
+        if (!parseResult) { //gmap on android 6.0 need parsing by reflection
             parseResult = parseGmapsNotificationByReflection(notification);
         }
 
@@ -263,7 +262,7 @@ public class NotificationMonitor extends NotificationListenerService {
         }
     }
 
-    private boolean checkmActions(RemoteViews views) {
+    private static boolean checkmActions(RemoteViews views) {
         try {
             Class viewsClass = views.getClass();
             Field fieldActions = viewsClass.getDeclaredField("mActions");
@@ -274,6 +273,10 @@ public class NotificationMonitor extends NotificationListenerService {
         }
     }
 
+    /**
+     * @param notification
+     * @return
+     */
     private boolean parseGmapsNotificationByReflection(Notification notification) {
 
         // We have to extract the information from the view
@@ -491,21 +494,29 @@ public class NotificationMonitor extends NotificationListenerService {
         }
     }
 
+    private static String parseString(Object o) {
+        return null != o ? o.toString() : null;
+    }
+
     private boolean parseGmapsNotificationByExtras(Notification notification) {
         if (null == notification) {
             return false;
         }
         Bundle extras = notification.extras;
         String group_name = notification.getGroup();
+//        Object titleObj0 = extras.get(Notification.EXTRA_TITLE);
+//        Object textObj0 = extras.get(Notification.EXTRA_TEXT);
+//        Object subTextObj0 = extras.get(Notification.EXTRA_SUB_TEXT);
+
         if ((null != extras) && (null != group_name) && group_name.equals(GOOGLE_MAPS_NOTIFICATION_GROUP_NAVIGATION)) {
             //not in navigation(chinese) of title: 參考 Google 地圖行駛
             Object titleObj = extras.get(Notification.EXTRA_TITLE);
             Object textObj = extras.get(Notification.EXTRA_TEXT);
             Object subTextObj = extras.get(Notification.EXTRA_SUB_TEXT);
 
-            String title = null != titleObj ? titleObj.toString() : null;
-            String text = null != textObj ? textObj.toString() : null;
-            String subText = null != subTextObj ? subTextObj.toString() : null;
+            String title = parseString(titleObj);
+            String text = parseString(textObj);
+            String subText = parseString(subTextObj);
             subText = null == subText ? text : subText;
 
             // Check if subText is empty (" ·  · ") --> don't parse subText
@@ -530,13 +541,13 @@ public class NotificationMonitor extends NotificationListenerService {
                 String[] title_str = title.split("–");
                 title_str = 1 == title_str.length ? title.split("-") : title_str;
                 String distance = title_str[0].trim();
-                if (Character.isDigit(distance.charAt(0)))
+                if (Character.isDigit(distance.charAt(0))) {
                     parseDistanceToTurn(distance);
-                else
+                } else {
                     distanceNum = "-1";
+                }
 
                 Icon largeIcon = notification.getLargeIcon();
-                Icon smallIcon = notification.getSmallIcon();
                 if (null != largeIcon) {
                     Drawable drawableIco = largeIcon.loadDrawable(this);
                     Bitmap bitmapImage = drawableToBitmap(drawableIco);
@@ -553,9 +564,6 @@ public class NotificationMonitor extends NotificationListenerService {
                         }
 
                         foundArrow = getArrow(arrowImage);
-                        if (lastFoundArrow != foundArrow && USE_DB && null != dbHelper) {
-                            dbHelper.insert(null, bitmapImage, arrowImage, foundArrow);
-                        }
                         lastFoundArrow = foundArrow;
 
                     }
@@ -563,10 +571,12 @@ public class NotificationMonitor extends NotificationListenerService {
                 logParseMessage();
                 updateGaminHudInformation();
                 is_in_navigation = true;
+                return true;
             } else {
                 is_in_navigation = false;
+                return false;
             }
-            return true;
+
         } else {
             return false;
         }
@@ -703,7 +713,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private Arrow preArrow = Arrow.None;
 
-    void processArrow(Arrow arrow) {
+    void updateArrow(Arrow arrow) {
         if (null == hud) {
             return;
         }
@@ -925,7 +935,7 @@ public class NotificationMonitor extends NotificationListenerService {
         // arrow
         // if same as last arrow, should be process, because GARMIN Hud will erase the arrow without data receive during sometime..
         //===================================================================================
-        processArrow(foundArrow);
+        updateArrow(foundArrow);
         final boolean arrowSendResult = (null != hud) ? hud.getSendResult() : false;
         //===================================================================================
 
@@ -1163,33 +1173,21 @@ public class NotificationMonitor extends NotificationListenerService {
         }
     }
 
-    class CancelNotificationReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action;
-            if (intent != null && intent.getAction() != null) {
-
-                action = intent.getAction();
-                if (action.equals(ACTION_NLS_CONTROL)) {
-                    String command = intent.getStringExtra("command");
-                    if (TextUtils.equals(command, "cancel_last")) {
-                        if (mCurrentNotifications != null && mCurrentNotificationsCounts >= 1) {
-                            StatusBarNotification sbnn = getCurrentNotifications()[mCurrentNotificationsCounts - 1];
-                            cancelNotification(sbnn.getPackageName(), sbnn.getTag(), sbnn.getId());
-                        }
-                    } else if (TextUtils.equals(command, "cancel_all")) {
-                        cancelAllNotifications();
-                    } else if (TextUtils.equals(command, "toogle")) {
-                        int a = 1;
-                    }
-                }
-
-            }
-        }
-
-    }
-
 
 }
 
+interface NotificationParserIF {
+
+}
+
+
+class GmapsNotificaitonParser implements NotificationParserIF {
+
+    public boolean isInNavigation() {
+        return false;
+    }
+
+    public boolean parse(Notification notification) {
+        return false;
+    }
+}
