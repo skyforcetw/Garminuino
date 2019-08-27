@@ -50,6 +50,7 @@ public class NotificationMonitor extends NotificationListenerService {
     public final static String GOOGLE_MAPS_NOTIFICATION_GROUP_NAVIGATION = "navigation_status_notification_group";
     public final static String OSMAND_PACKAGE_NAME = "net.osmand";
     public final static String OSMAND_NOTIFICATION_GROUP_NAVIGATION = "NAVIGATION";
+    public final static String SYGIC_PACKAGE_NAME = "com.sygic.aura";
 
     private static final String TAG = NotificationMonitor.class.getSimpleName();
     private static final int EVENT_UPDATE_CURRENT_NOS = 0;
@@ -220,6 +221,9 @@ public class NotificationMonitor extends NotificationListenerService {
                 case OSMAND_PACKAGE_NAME:
                     parseOsmandNotification(notification);
                     break;
+                case SYGIC_PACKAGE_NAME:
+                    parseSygicNotification(notification);
+                    break;
             }
         } else {
             postman.addBooleanExtra(getString(R.string.notify_catched), true);
@@ -228,6 +232,60 @@ public class NotificationMonitor extends NotificationListenerService {
         }
     }
 
+    private void parseSygicNotification(Notification notification) {
+        long currentTime = System.currentTimeMillis();
+        notifyPeriodTime = currentTime - lastNotifyTimeMillis;
+        lastNotifyTimeMillis = currentTime;
+
+        boolean parseResult = parseSygicNotificationByExtras(notification);
+
+    }
+
+    private boolean parseSygicNotificationByExtras(Notification notification) {
+        if (null == notification) {
+            return false;
+        }
+        Bundle extras = notification.extras;
+//        String group_name = notification.getGroup();
+
+        if ((null != extras)) {
+//            extras.get(Notification.)
+            Object big = extras.get(Notification.EXTRA_BIG_TEXT);
+//            Object msg = extras.get(Notification.EXTRA_MESSAGES);
+
+            Object titleObj = extras.get(Notification.EXTRA_TITLE);
+            Object textObj = extras.get(Notification.EXTRA_TEXT);
+            Object subTextObj = extras.get(Notification.EXTRA_SUB_TEXT);
+
+            String title = null != titleObj ? titleObj.toString() : null;
+            String text = null != textObj ? textObj.toString() : null;
+            String subText = null != subTextObj ? subTextObj.toString() : null;
+            subText = null == subText ? text : subText;
+
+            Icon large = notification.getLargeIcon();
+            Icon small = notification.getSmallIcon();
+            if (null != small) {
+                Drawable drawableIco = small.loadDrawable(this);
+                Bitmap bitmapImage = drawableToBitmap(drawableIco);
+
+                if (null != bitmapImage) {
+                    if (STORE_IMG) {
+                        storeBitmap(bitmapImage, IMAGE_DIR + "arrow0_sygic.png");
+                    }
+                    bitmapImage = removeAlpha(bitmapImage);
+                    if (STORE_IMG) {
+                        storeBitmap(bitmapImage, IMAGE_DIR + "arrow_sygic.png");
+                    }
+                }
+            }
+            // Check if subText is empty (" ·  · ") --> don't parse subText
+            // Occurs for example on NagivationChanged
+            boolean subTextEmpty = true;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     private void parseOsmandNotification(Notification notification) {
         long currentTime = System.currentTimeMillis();
