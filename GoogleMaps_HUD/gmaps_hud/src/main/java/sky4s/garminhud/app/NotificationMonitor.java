@@ -45,9 +45,10 @@ public class NotificationMonitor extends NotificationListenerService {
     private final static boolean STORE_IMG = true;
     private final static String IMAGE_DIR = "/storage/emulated/0/Pictures/";
 
-    //    public static final String ACTION_NLS_CONTROL = "sky4s.garmin.hud.NLSCONTROL";
     public final static String GOOGLE_MAPS_PACKAGE_NAME = "com.google.android.apps.maps";
+    public final static String GOOGLE_MAPS_GO_PACKAGE_NAME = "com.google.android.apps.navlite";
     public final static String GOOGLE_MAPS_NOTIFICATION_GROUP_NAVIGATION = "navigation_status_notification_group";
+
     public final static String OSMAND_PACKAGE_NAME = "net.osmand";
     public final static String OSMAND_NOTIFICATION_GROUP_NAVIGATION = "NAVIGATION";
 
@@ -59,34 +60,7 @@ public class NotificationMonitor extends NotificationListenerService {
     public static StatusBarNotification mPostedNotification;
     public static StatusBarNotification mRemovedNotification;
 
-
-//    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            String action;
-//            if (intent != null && intent.getAction() != null) {
-//
-//                action = intent.getAction();
-//                if (action.equals(ACTION_NLS_CONTROL)) {
-//                    String command = intent.getStringExtra("command");
-//                    if (TextUtils.equals(command, "cancel_last")) {
-//                        if (mCurrentNotifications != null && mCurrentNotificationsCounts >= 1) {
-//                            StatusBarNotification sbnn = getCurrentNotifications()[mCurrentNotificationsCounts - 1];
-//                            cancelNotification(sbnn.getPackageName(), sbnn.getTag(), sbnn.getId());
-//                        }
-//                    } else if (TextUtils.equals(command, "cancel_all")) {
-//                        cancelAllNotifications();
-//                    } else if (TextUtils.equals(command, "toogle")) {
-//                        int a = 1;
-//                    }
-//                }
-//
-//            }
-//        }
-//    };
-
     static HUDInterface hud = null;
-
 
     private Handler mMonitorHandler = new Handler() {
         @Override
@@ -103,7 +77,6 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private long lastNotifyTimeMillis = 0;
     private long notifyPeriodTime = 0;
-
 
     private Arrow foundArrow = Arrow.None;
     private Arrow lastFoundArrow = Arrow.None;
@@ -172,8 +145,6 @@ public class NotificationMonitor extends NotificationListenerService {
     public void onCreate() {
         super.onCreate();
         logi("onCreate...");
-//        IntentFilter filter = new IntentFilter(ACTION_NLS_CONTROL);
-//        registerReceiver(mReceiver, filter);
         mMonitorHandler.sendMessage(mMonitorHandler.obtainMessage(EVENT_UPDATE_CURRENT_NOS));
 
         //========================================================================================
@@ -187,7 +158,6 @@ public class NotificationMonitor extends NotificationListenerService {
 
         //========================================================================================
         staticInstance = this;
-//        openDB();
         postman = new MainActivityPostman(this, getString(R.string.broadcast_sender_notification_monitor));
     }
 
@@ -197,8 +167,6 @@ public class NotificationMonitor extends NotificationListenerService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        unregisterReceiver(mReceiver);
-//        closeDB();
     }
 
     @Override
@@ -216,6 +184,9 @@ public class NotificationMonitor extends NotificationListenerService {
             switch (packageName) {
                 case GOOGLE_MAPS_PACKAGE_NAME:
                     parseGmapsNotification(notification);
+                    break;
+                case GOOGLE_MAPS_GO_PACKAGE_NAME:
+                    parseGmapsGoNotificationByReflection(notification);
                     break;
                 case OSMAND_PACKAGE_NAME:
                     parseOsmandNotification(notification);
@@ -273,12 +244,20 @@ public class NotificationMonitor extends NotificationListenerService {
         }
     }
 
-    /**
-     * @param notification
-     * @return
-     */
-    private boolean parseGmapsNotificationByReflection(Notification notification) {
+    private static Object getObjectProperty(Object object, String propertyName) {
+        try {
+            Field f = object.getClass().getDeclaredField(propertyName);
+            f.setAccessible(true);
+            return f.get(object);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
+    private static RemoteViews getRemoteViews(Notification notification) {
         // We have to extract the information from the view
         RemoteViews views = notification.bigContentView;
         if (!checkmActions(views)) { //check mActions is exist, we use it to parse notification
@@ -288,6 +267,101 @@ public class NotificationMonitor extends NotificationListenerService {
         if (!checkmActions(views)) {//check mActions again
             views = null;
         }
+        return views;
+    }
+
+    private boolean parseGmapsGoNotificationByReflection(Notification notification) {
+        RemoteViews views = getRemoteViews(notification);
+        if (views == null) return false;
+
+        // Use reflection to examine the m_actions member of the given RemoteViews object.
+        // It's not pretty, but it works.
+        try {
+
+            Class viewsClass = views.getClass();
+            Field fieldActions = viewsClass.getDeclaredField("mActions");
+            fieldActions.setAccessible(true);
+
+            @SuppressWarnings("unchecked")
+            ArrayList<Parcelable> actions = (ArrayList<Parcelable>) fieldActions.get(views);
+
+            int indexOfActions = 0;
+            int updateCount = 0;
+            boolean inNavigation = false;
+
+//            Map<Integer, String> text = new HashMap<Integer, String>();
+            // Find the setText() and setTime() reflection actions
+            for (Parcelable action : actions) {
+
+                Object methodName = getObjectProperty(action, "methodName");
+                Object type = getObjectProperty(action, "type");
+                Object value = getObjectProperty(action, "value");
+
+
+                if (methodName == null) continue;
+                    // Save strings
+                else if (methodName.equals("setText")) {
+//                    Integer integerType = type instanceof Integer ? (Integer) type : 0;
+                    if (value instanceof String) {
+                        String str = (String) value;
+                        switch (indexOfActions) {
+                            case 4: //distance
+                                break;
+                            case 6://road
+                                break;
+                            case 9://time
+                                break;
+                        }
+                    }
+                    int a = 1;
+                } else if (methodName.equals("setImageBitmap")) {
+                    Object bitmapId = getObjectProperty(action, "bitmapId");
+                    Object bitmapCache = getObjectProperty(views, "mBitmapCache");
+                    Object bitmapsObject = getObjectProperty(bitmapCache, "mBitmaps");
+
+                    if (bitmapId instanceof Integer && null != bitmapsObject) {
+                        Integer integerBitmapId = (Integer) bitmapId;
+                        ArrayList<Bitmap> bitmapList = (ArrayList<Bitmap>) bitmapsObject;
+
+                        Bitmap bitmapImage = bitmapList.get(integerBitmapId);
+                        if (STORE_IMG) {
+                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow0.png");
+                        }
+                        bitmapImage = removeAlpha(bitmapImage);
+                        if (STORE_IMG) {
+                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow.png");
+                        }
+                        ArrowImage arrowImage = new ArrowImage(bitmapImage);
+                        // Log.i(TAG, "Arrow-Value: "+arrowImage.getArrowValue());
+                        foundArrow = getArrow(arrowImage);
+                        updateCount++;
+                    }
+
+                }
+                indexOfActions++;
+            }
+
+            logParseMessage();
+            //can update to garmin hud
+            if (0 != updateCount && inNavigation) {
+                updateGaminHudInformation();
+            }
+            return true;
+        }
+        // It's not usually good style to do this, but then again, neither is the use of reflection...
+        catch (Exception e) {
+            Log.e(TAG, e.toString());
+            return false;
+        }
+
+    }
+
+    /**
+     * @param notification
+     * @return
+     */
+    private boolean parseGmapsNotificationByReflection(Notification notification) {
+        RemoteViews views = getRemoteViews(notification);
         if (views == null) return false;
 
         // Use reflection to examine the m_actions member of the given RemoteViews object.
@@ -317,6 +391,7 @@ public class NotificationMonitor extends NotificationListenerService {
                 // The tag tells which type of action it is (2 is ReflectionAction, from the source)
                 int tag = parcel.readInt();
                 String simpleClassName = p.getClass().getSimpleName();
+
                 if ((tag != 2 && tag != 12) && (!simpleClassName.equals("ReflectionAction") && !simpleClassName.equals("BitmapReflectionAction")))
                     continue;
 
@@ -337,11 +412,13 @@ public class NotificationMonitor extends NotificationListenerService {
                         case 3://distance to turn
                             parseDistanceToTurn(t);
                             break;
-                        case 5://road
-                            break;
+//                        case 5://road
+//                            break;
                         case 8://time, distance, arrived time
                             parseTimeAndDistanceToDest(t);
                             updateCount++;
+                            break;
+                        default:
                             break;
                     }
                 } else if (methodName.equals("setImageBitmap")) {
@@ -418,17 +495,36 @@ public class NotificationMonitor extends NotificationListenerService {
         String group_name = notification.getGroup();
 
         if ((null != extras) && (null != group_name) && group_name.equals(OSMAND_NOTIFICATION_GROUP_NAVIGATION)) {
-            Object big = extras.get(Notification.EXTRA_BIG_TEXT);
-//            Object msg = extras.get(Notification.EXTRA_MESSAGES);
+            Object reaminTime = extras.get(Notification.EXTRA_BIG_TEXT);
+            Object distance = extras.get(Notification.EXTRA_TITLE);
 
-            Object titleObj = extras.get(Notification.EXTRA_TITLE);
+            Icon largeIcon = notification.getLargeIcon();
+            Icon smallIcon = notification.getSmallIcon();
+
+            Object msg = extras.get(Notification.EXTRA_MESSAGES);
             Object textObj = extras.get(Notification.EXTRA_TEXT);
             Object subTextObj = extras.get(Notification.EXTRA_SUB_TEXT);
 
-            String title = null != titleObj ? titleObj.toString() : null;
-            String text = null != textObj ? textObj.toString() : null;
-            String subText = null != subTextObj ? subTextObj.toString() : null;
-            subText = null == subText ? text : subText;
+
+            if (null != largeIcon) {
+                Drawable drawableIco = largeIcon.loadDrawable(this);
+                Bitmap bitmapImage = drawableToBitmap(drawableIco);
+
+                if (null != bitmapImage) {
+                    if (STORE_IMG) {
+                        storeBitmap(bitmapImage, IMAGE_DIR + "arrow0_osm.png");
+                    }
+                    bitmapImage = removeAlpha(bitmapImage);
+                    if (STORE_IMG) {
+                        storeBitmap(bitmapImage, IMAGE_DIR + "arrow_osm.png");
+                    }
+                }
+            }
+
+//            String title = null != titleObj ? titleObj.toString() : null;
+//            String text = null != textObj ? textObj.toString() : null;
+//            String subText = null != subTextObj ? subTextObj.toString() : null;
+//            subText = null == subText ? text : subText;
 
             // Check if subText is empty (" ·  · ") --> don't parse subText
             // Occurs for example on NagivationChanged
@@ -504,9 +600,6 @@ public class NotificationMonitor extends NotificationListenerService {
         }
         Bundle extras = notification.extras;
         String group_name = notification.getGroup();
-//        Object titleObj0 = extras.get(Notification.EXTRA_TITLE);
-//        Object textObj0 = extras.get(Notification.EXTRA_TEXT);
-//        Object subTextObj0 = extras.get(Notification.EXTRA_SUB_TEXT);
 
         if ((null != extras) && (null != group_name) && group_name.equals(GOOGLE_MAPS_NOTIFICATION_GROUP_NAVIGATION)) {
             //not in navigation(chinese) of title: 參考 Google 地圖行駛
@@ -1127,9 +1220,10 @@ public class NotificationMonitor extends NotificationListenerService {
         mRemovedNotification = sbn;
 
         String packageName = sbn.getPackageName();
-        if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
+        if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)
+//                || packageName.equals(GOOGLE_MAPS_GO_PACKAGE_NAME)
+        ) {
 
-//            sendBooleanExtra2MainActivity(getString(R.string.gmaps_notify_catched), false);
             postman.addBooleanExtra(getString(R.string.gmaps_notify_catched), false);
             postman.addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
             postman.sendIntent2MainActivity();
