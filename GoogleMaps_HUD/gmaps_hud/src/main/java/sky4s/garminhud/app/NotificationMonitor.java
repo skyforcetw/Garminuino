@@ -178,6 +178,8 @@ public class NotificationMonitor extends NotificationListenerService {
 
 
     private void processNotification(StatusBarNotification sbn) {
+        postman.addBooleanExtra(getString(R.string.notify_catched), true);
+        postman.sendIntent2MainActivity();
 
         Notification notification = sbn.getNotification();
         if (null != notification) {
@@ -186,15 +188,17 @@ public class NotificationMonitor extends NotificationListenerService {
                 case GOOGLE_MAPS_PACKAGE_NAME:
                     parseGmapsNotification(notification);
                     break;
-                case GOOGLE_MAPS_GO_PACKAGE_NAME:
-                    parseGmapsGoNotificationByReflection(notification);
-                    break;
-                case OSMAND_PACKAGE_NAME:
-                    parseOsmandNotification(notification);
-                    break;
-                case SYGIC_PACKAGE_NAME:
-                    parseSygicNotification(notification);
-                    break;
+//                case GOOGLE_MAPS_GO_PACKAGE_NAME:
+//                    parseGmapsGoNotificationByReflection(notification);
+//                    break;
+//                case OSMAND_PACKAGE_NAME:
+//                    parseOsmandNotification(notification);
+//                    break;
+//                case SYGIC_PACKAGE_NAME:
+//                    parseSygicNotification(notification);
+//                    break;
+                default:
+
             }
         } else {
             postman.addBooleanExtra(getString(R.string.notify_catched), true);
@@ -280,7 +284,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
         if (!parseResult) {
             postman.addBooleanExtra(getString(R.string.notify_parse_failed), true);
-            postman.addBooleanExtra(getString(R.string.gmaps_notify_catched), false);
+            postman.addBooleanExtra(getString(R.string.gmaps_notify_catched), true);
             postman.addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
             postman.sendIntent2MainActivity();
         } else {
