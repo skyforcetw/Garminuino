@@ -994,7 +994,7 @@ public class MainActivity extends AppCompatActivity {
             if (notify_parse_failed) {
                 //when pass fail
                 if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
-                    switchNotificationCaught.setChecked(false);
+//                    switchNotificationCaught.setChecked(false);
                     switchGmapsNotificationCaught.setChecked(false);
                 }
             } else {
