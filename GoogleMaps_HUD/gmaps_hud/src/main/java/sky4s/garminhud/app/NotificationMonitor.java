@@ -1143,7 +1143,7 @@ public class NotificationMonitor extends NotificationListenerService {
             //======================================================================================
             // remain distance
             //======================================================================================
-            String[] distSplit = distanceToDest.split(" ");
+            String[] distSplit = distanceToDest.split("\\s");
             if (2 != distSplit.length) {
                 distSplit = splitDigitAndNonDigit(distanceToDest);
             }
@@ -1192,8 +1192,14 @@ public class NotificationMonitor extends NotificationListenerService {
                 arrivalTime = arrivalTime.trim();
 
                 String[] split = arrivalTime.split(":");
-                arrivalHour = Integer.parseInt(split[0]);
-                arrivalMinute = Integer.parseInt(split[1]);
+                if (2 == split.length) {
+                    try {
+                        arrivalHour = Integer.parseInt(split[0]);
+                        arrivalMinute = Integer.parseInt(split[1]);
+                    } catch (NumberFormatException ex) {
+                        arrivalHour = arrivalMinute = 0;
+                    }
+                }
             }
             //======================================================================================
 
