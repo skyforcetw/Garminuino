@@ -245,6 +245,8 @@ public class MainActivity extends AppCompatActivity {
                 switchShowETA.setChecked(optionShowEta);
                 switchIdleShowCurrrentTime.setChecked(optionIdleShowTime);
                 switchBtBindAddress.setChecked(optionBtBindAddress);
+                switchDarkModeAuto.setChecked(optionDarkModeAuto);
+                switchDarkModeManual.setChecked(optionDarkModeMan);
             }
         });
 
