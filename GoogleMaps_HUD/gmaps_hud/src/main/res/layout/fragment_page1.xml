@@ -45,6 +45,7 @@
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="2dip"
+                android:paddingTop="@dimen/option_padding_top"
                 android:background="@color/horizontal_line" />
 
             <LinearLayout
@@ -59,6 +60,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:paddingTop="@dimen/option_padding_top"
                     android:text="@string/layout_title_status"
                     android:textSize="@dimen/option_title_size" />
 
@@ -91,6 +93,7 @@
                     android:checked="false"
                     android:clickable="false"
                     android:paddingTop="@dimen/option_padding_top"
+                    android:paddingBottom="@dimen/option_padding_bottom"
                     android:text="@string/layout_element_gmaps_notification_caputre"
                     android:textSize="@dimen/option_text_size" />
             </LinearLayout>
@@ -185,6 +188,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingBottom="@dimen/option_padding_bottom"
                 android:text="@string/layout_element_show_curr_time"
                 android:textSize="@dimen/option_text_size" />
 
@@ -219,6 +223,7 @@
                 android:layout_weight="1"
                 android:checked="false"
                 android:paddingTop="@dimen/option_padding_top"
+                android:paddingBottom="@dimen/option_padding_bottom"
                 android:text="@string/layout_element_yellow_traffic"
                 android:textSize="@dimen/option_text_size" />
 
@@ -243,6 +248,7 @@
                 android:layout_weight="1"
                 android:checked="false"
                 android:paddingTop="@dimen/option_padding_top"
+                android:paddingBottom="@dimen/option_padding_bottom"
                 android:text="@string/layout_element_bind_address"
                 android:textSize="@dimen/option_text_size" />
 
