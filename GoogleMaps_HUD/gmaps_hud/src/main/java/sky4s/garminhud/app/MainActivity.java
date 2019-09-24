@@ -112,6 +112,10 @@ public class MainActivity extends AppCompatActivity {
     //bluetooth
     Switch switchBtBindAddress;
 
+    //app-appearance
+    Switch switchDarkModeAuto;
+    Switch switchDarkModeManual;
+
     private boolean isEnabledNLS = false;
     private boolean showCurrentTime = false;
     private BluetoothSPP bt;
@@ -228,6 +232,8 @@ public class MainActivity extends AppCompatActivity {
         final boolean optionShowEta = sharedPref.getBoolean(getString(R.string.option_show_eta), false);
         final boolean optionIdleShowTime = sharedPref.getBoolean(getString(R.string.option_idle_show_current_time), false);
         final boolean optionBtBindAddress = sharedPref.getBoolean(getString(R.string.option_bt_bind_address), false);
+        final boolean optionDarkModeAuto = sharedPref.getBoolean(getString(R.string.option_dark_mode_auto), false);
+        final boolean optionDarkModeMan = sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false);
 
         runOnUiThread(new Runnable() {
             @Override
@@ -240,6 +246,10 @@ public class MainActivity extends AppCompatActivity {
                 switchBtBindAddress.setChecked(optionBtBindAddress);
             }
         });
+
+        // Need to be after initially setChecked to avoid loop 
+        switchDarkModeAuto.setOnCheckedChangeListener(onCheckedChangedListener);
+        switchDarkModeManual.setOnCheckedChangeListener(onCheckedChangedListener);
     }
 
     private String initBluetooth() {
@@ -322,6 +332,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        final int stateDarkMode = sharedPref.getInt(getString(R.string.state_dark_mode), AppCompatDelegate.MODE_NIGHT_NO);
+        AppCompatDelegate.setDefaultNightMode(stateDarkMode);
+        
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -345,7 +359,6 @@ public class MainActivity extends AppCompatActivity {
 
         startService(new Intent(this, NotificationCollectorMonitorService.class));
 
-        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         //========================================================================================
         // BT related
         //========================================================================================
@@ -579,6 +592,12 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
     }
 
+    private void storeIntOptions(int optionID, int option) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(getString(optionID), option);
+        editor.commit();
+    }
+
     private class OnCheckedChangedListener implements CompoundButton.OnCheckedChangeListener {
 
         @Override
@@ -636,6 +655,32 @@ public class MainActivity extends AppCompatActivity {
                     final boolean isBindAddress = ((Switch) view).isChecked();
                     useBTAddressReconnectThread = isBindAddress;
                     storeOptions(R.string.option_bt_bind_address, isBindAddress);
+                    break;
+
+                case R.id.switchDarkModeAuto:
+                    final boolean isDarkModeAuto = ((Switch) view).isChecked();
+                    switchDarkModeManual.setEnabled(!isDarkModeAuto);
+                    storeOptions(R.string.option_dark_mode_auto, isDarkModeAuto);
+                    if(isDarkModeAuto)
+                        storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                    else {
+                        final boolean isDarkModeManualEnabled = sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false);
+                        if(isDarkModeManualEnabled)
+                            storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_YES);
+                        else
+                            storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_NO);
+                        recreate();
+                    }
+                    break;
+
+                case R.id.switchDarkModeMan:
+                    final boolean isDarkModeManualEnabled = ((Switch) view).isChecked();
+                    storeOptions(R.string.option_dark_mode_man, isDarkModeManualEnabled);
+                    if(isDarkModeManualEnabled)
+                        storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_YES);
+                    else
+                        storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_NO);
+                    recreate();
                     break;
 
                 default:
