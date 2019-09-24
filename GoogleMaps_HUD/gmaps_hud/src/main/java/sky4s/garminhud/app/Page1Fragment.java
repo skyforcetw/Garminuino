@@ -45,6 +45,9 @@ public class Page1Fragment extends Fragment {
 
         ((MainActivity) getActivity()).switchBtBindAddress = (Switch) getView().findViewById(R.id.switchBtBindAddress);
 
+        ((MainActivity) getActivity()).switchDarkModeAuto = (Switch) getView().findViewById(R.id.switchDarkModeAuto);
+        ((MainActivity) getActivity()).switchDarkModeManual = (Switch) getView().findViewById(R.id.switchDarkModeMan);
+
         SharedPreferences sharedPref = ((MainActivity) getActivity()).getPreferences(Context.MODE_PRIVATE);
         boolean showPrompt = sharedPref.getBoolean(getString(R.string.option_show_prompt), true);
         //first lesson for GarminHUD app
