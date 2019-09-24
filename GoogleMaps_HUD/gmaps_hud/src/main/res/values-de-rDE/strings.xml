@@ -58,6 +58,7 @@
     <string name="message_enable_notification_access">Bitte aktivieren Sie den Benachrichtigungszugriff für %1$s.
                         \n\nDie App verwenet die Benachrichtigung um die Navigationsinformationen zu verarbeiten.</string>
     <string name="title_enable_notification_access">Benachrichtigungszugriff</string>
+    <string name="layout_element_hud_success_connected">Verbunden mit \'%1$s\'</string>
     <string name="layout_element_hud_disconnected">Verbindung mit HUD getrennt</string>
     <string name="layout_element_hud_con_failed">Verbindung mit HUD fehlgeschlagen</string>
     <string name="message_enable_location_access">Um die Geschwindigkeit auf dem Garmin HUD anzuzeigen bitte Standort-Bereichtigung zulassen</string>
