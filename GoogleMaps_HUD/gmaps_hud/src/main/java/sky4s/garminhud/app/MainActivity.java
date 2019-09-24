@@ -1141,8 +1141,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceConnected(String name, String address) {
             hudConnected = true;
-            switchHudConnected.setText("'" + name + "' connected");
-            switchHudConnected.setTextColor(Color.BLACK);
+            switchHudConnected.setText(getString(R.string.layout_element_hud_success_connected, name));
+            if(sharedPref.getInt(getString(R.string.state_dark_mode)
+                    , AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
+                switchHudConnected.setTextColor(Color.BLACK);
             switchHudConnected.setChecked(true);
 
             log("onDeviceConnected");
@@ -1162,7 +1164,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            String connectedDeviceName = bt.getConnectedDeviceName();
+            String onconnectedDeviceName = bt.getConnectedDeviceName();
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString(getString(R.string.bt_bind_name_key), connectedDeviceName);
 
