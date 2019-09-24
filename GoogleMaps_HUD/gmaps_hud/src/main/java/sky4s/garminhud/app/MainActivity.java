@@ -60,6 +60,7 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.v7.app.AppCompatDelegate;
 
 import java.io.File;
 import java.util.Calendar;
