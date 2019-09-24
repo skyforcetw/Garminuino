@@ -402,7 +402,9 @@ public class BluetoothSPP {
                     connect(arr_filter_address.get(c));
                 }
             } else { 
-                Toast.makeText(mContext, "Device name mismatch", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, 
+                        mContext.getResources().getString(R.string.message_device_name_mismatch)
+                        , Toast.LENGTH_SHORT).show();
             }
         }
     }
