@@ -77,6 +77,7 @@
     <string name="message_enable_notification_access">Please enable Notification Access for %1$s.
                         \n\nThis app use Notification to parse Navigation Information.</string>
     <string name="title_enable_notification_access">Notification Access</string>
+    <string name="layout_element_hud_success_connected">\'%1$s\' connected</string>
     <string name="layout_element_hud_disconnected">HUD disconnected</string>
     <string name="layout_element_hud_con_failed">HUD connect failed</string>
     <string name="message_enable_location_access">For showing speed to Garmin HUD please enable Location Permission</string>
