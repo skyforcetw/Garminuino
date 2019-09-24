@@ -31,7 +31,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="buttonOnClicked"
-                    android:text="List of Notification"
+                    android:text="@string/layout_button_list_not"
                     android:textSize="@dimen/option_text_size" />
 
                 <TextView
