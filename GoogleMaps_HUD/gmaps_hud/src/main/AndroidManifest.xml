@@ -4,50 +4,44 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!--debug needed it, when store image-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- debug needed it, when store image -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        >
-
-        <!--This meta-data tag is required to use Google Play Services.-->
-        <!--<meta-data-->
-            <!--android:name="com.google.android.gms.version"-->
-            <!--android:value1="@integer/google_play_services_version" />-->
-
-        <!--<meta-data android:name="com.google.android.gms.version"-->
-            <!--android:value1="@integer/google_play_services_version" />-->
+        android:label="@string/app_name">
 
         <activity
-            android:name="sky4s.garminhud.app.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name="app.akexorcist.bluetoothspp.DeviceList" />
 
         <service
-            android:name="sky4s.garminhud.app.NotificationMonitor"
+            android:name=".NotificationMonitor"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
-
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-        <service android:name="sky4s.garminhud.app.NotificationCollectorMonitorService" />
-
-        <service android:name="chutka.bitman.com.speedometersimplified.LocationService"></service>
-
+        <service android:name=".NotificationCollectorMonitorService" />
+        <service android:name="chutka.bitman.com.speedometersimplified.LocationService" />
+        <receiver android:name=".MainActivity.CancelProjectionReceiver" />
     </application>
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true" />
 
 </manifest>

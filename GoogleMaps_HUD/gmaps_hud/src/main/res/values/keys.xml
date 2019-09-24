@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--options-->
+    <string name="bt_bind_name_key" translatable="false">bt_bind_name_key</string>
+    <string name="bt_bind_address_key" translatable="false">bt_bind_address_key</string>
+
+    <string name="option_show_speed" translatable="false">option_show_speed</string>
+    <string name="option_traffic_and_lane_detect" translatable="false">option_traffic_and_lane_detect</string>
+    <string name="option_alert_yellow_traffic" translatable="false">option_alert_yellow_traffic</string>
+    <string name="option_show_eta" translatable="false">option_show_eta</string>
+    <string name="option_idle_show_current_time" translatable="false">option_idle_show_current_time</string>
+    <string name="option_auto_brightness" translatable="false">option_auto_brightness</string>
+    <string name="option_manual_brightness" translatable="false">option_manual_brightness</string>
+    <string name="option_bt_bind_address" translatable="false">option_bt_bind_address</string>
+
+    <string name="option_show_prompt" translatable="false">option_show_prompt</string>
+
+    <!--broadcast receiver-->
+    <string name="broadcast_receiver_main_activity" translatable="false">sky4s.garminhud.app.MainActivity.RECEIVER</string>
+    <string name="broadcast_receiver_notification_monitor" translatable="false">sky4s.garminhud.app.NotificationMonitor.RECEIVER</string>
+    <string name="broadcast_notification_switch" translatable="false">sky4s.garminhud.app.MainActivity.NOTIFY_SWITCH</string>
+
+    <string name="broadcast_notification_switch_speed" translatable="false">sky4s.garminhud.app.MainActivity.SWITCH_SPEED</string>
+    <string name="broadcast_notification_switch_auto_brightness" translatable="false">sky4s.garminhud.app.MainActivity.SWITCH_AUTO_BRIGHTNESS</string>
+    <string name="broadcast_notification_switch_ETA" translatable="false">sky4s.garminhud.app.MainActivity.SWITCH_ETA</string>
+    <string name="broadcast_notification_switch_time" translatable="false">sky4s.garminhud.app.MainActivity.SWITCH_TIME</string>
+    <string name="broadcast_notification_switch_detect" translatable="false">sky4s.garminhud.app.MainActivity.SWITCH_DETECT</string>
+    <string name="broadcast_notification_switch_yellow_alert" translatable="false">sky4s.garminhud.app.MainActivity.SWITCH_YELLOW_ALERT</string>
+
+
+    <!--<string name="broadcast_receiver_location_service" translatable="false">chutka.bitman.com.speedometersimplified.LocationService.RECEIVER</string>-->
+
+    <!--broadcast sender-->
+    <string name="whoami" translatable="false">who_am_i</string>
+    <string name="broadcast_sender_notification_monitor" translatable="false">notification_monitor.SENDER</string>
+    <string name="broadcast_sender_location_service" translatable="false">location_service.SENDER</string>
+    <string name="broadcast_sender_image_detect" translatable="false">image_detect.SENDER</string>
+
+    <!--broadcast keys-->
+    <string name="notify_catched" translatable="false">notify_catched</string>
+    <string name="gmaps_notify_catched" translatable="false">gmaps_notify_catched</string>
+    <string name="notify_parse_failed" translatable="false">notify_parse_failed</string>
+    <string name="notify_msg" translatable="false">notify_msg</string>
+    <string name="is_in_navigation" translatable="false">is_in_navigation</string>
+    <string name="location" translatable="false">location</string>
+    <string name="gps_speed" translatable="false">gps_speed</string>
+    <string name="arrivals_msg" translatable="false">arrivals_msg</string>
+    <string name="busy_traffic" translatable="false">busy_traffic</string>
+    <string name="notify_switch_event" translatable="false">notify_switch_event</string>
+
+    <integer name="notify_id">1</integer>
+
+</resources>

@@ -2,12 +2,13 @@ package sky4s.garminhud;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import sky4s.garminhud.app.MainActivity;
+import sky4s.garminhud.hud.HUDAdapter;
 
 /**
  * Created by skyforce on 2018/8/13.
  */
 
-public class GarminHUD {
+public class GarminHUD extends HUDAdapter {
     //===========================================================================================
     // 不與C++共用的部分
     //===========================================================================================
@@ -50,7 +51,7 @@ public class GarminHUD {
     }
 
     private boolean SendPacket(char[] pBuf, int length_of_data) {
-        if (!isUpdatable()) {
+        if (!isUpdatable() || null == bt) {
             return false;
         }
         updateCount++;
@@ -62,7 +63,9 @@ public class GarminHUD {
             packet[x] = (byte) pBuf[x];
         }
 
-        bt.send(packet, false);
+        if(bt.isServiceAvailable()) { //judge service exist to avoid => app.akexorcist.bluetotohspp.library.BluetoothService.getState()' on a null object reference
+            bt.send(packet, false);
+        }
         return true;
     }
 
@@ -117,24 +120,41 @@ public class GarminHUD {
         sendResult = SendPacket(sendBuf, len);
     }
 
+//    public void SetTime(int nH, int nM, boolean bH, boolean bFlag) {
+//        SetTime(nH, nM, bFlag, false, true, bH);
+//    }
+//
+//    public void SetTime(int nH, int nM, boolean bH) {
+//        SetTime(nH, nM, true, false, true, bH);
+//    }
 
-    public void SetTime(int nH, int nM) {
-        SetTime(nH, nM, false, false, true, false);
-    }
-
-    public void SetTime(int nH, int nM, boolean bH, boolean bFlag) {
-        SetTime(nH, nM, bFlag, false, true, bH);
-    }
-
-    public void SetTime(int nH, int nM, boolean bH) {
-        SetTime(nH, nM, true, false, true, bH);
-    }
 
     public void SetTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
         char arr[] = {(char) 0x05,
                 bTraffic ? (char) 0xff : (char) 0x00,
-                Digit(nH / 10), Digit(nH), bColon ? (char) 0xff : (char) 0x00,
-                Digit(nM / 10), Digit(nM), bH ? (char) 0xff : (char) 0x00,
+                Digit(nH / 10), Digit(nH), // hour
+                bColon ? (char) 0xff : (char) 0x00, // :
+                Digit(nM / 10), Digit(nM), //minute
+                bH ? (char) 0xff : (char) 0x00, // post-fix 'h'
+                bFlag ? (char) 0xff : (char) 0x00};
+        SendHud2(arr);
+    }
+
+    public void SetRemainTime(int nH, int nM, boolean bTraffic) {
+//        final boolean bTraffic = false;
+        final boolean bH = false;
+        final boolean bFlag = true;
+
+        boolean noHour = 0 == nH;
+        boolean minLessThen10 = noHour && nM < 10;
+        char arr[] = {(char) 0x05,
+                bTraffic ? (char) 0xff : (char) 0x00,
+                noHour ? (char) 0 : Digit(nH / 10),// hour n_
+                noHour ? (char) 0 : Digit(nH), // hour _n
+                noHour ? (char) 0 : (char) 0xff, // :
+                minLessThen10 ? (char) 0 : Digit(nM / 10), //minute n_
+                Digit(nM), //minute _n
+                bH ? (char) 0xff : (char) 0x00, // post-fix 'h'
                 bFlag ? (char) 0xff : (char) 0x00};
         SendHud2(arr);
     }
@@ -152,9 +172,9 @@ public class GarminHUD {
     }
 
 
-    public void SetDistance(int nDist, eUnits unit) {
-        SetDistance(nDist, unit, false, false);
-    }
+//    public void SetDistance(int nDist, eUnits unit) {
+//        SetDistance(nDist, unit, false, false);
+//    }
 
     public void SetDistance(int nDist, eUnits unit, boolean bDecimal, boolean bLeadingZero) {
         char arr[] = {(char) 0x03,
@@ -202,9 +222,9 @@ public class GarminHUD {
         SendHud2(arr);
     }
 
-    public void SetDirection(eOutAngle nDir) {
-        SetDirection(nDir, eOutType.Lane, eOutAngle.AsDirection);
-    }
+//    public void SetDirection(eOutAngle nDir) {
+//        SetDirection(nDir, eOutType.Lane, eOutAngle.AsDirection);
+//    }
 
     /*
     eOutType:
@@ -247,22 +267,13 @@ public class GarminHUD {
     byte3:  When not LeftDown/RightDown, 箭頭方向: eOutAngle
 
      */
-//    public void SetDirection(char nDir, char nType, char nRoundaboutOut) {
-//        char arr[] = {(char) 0x01,
-//                (nDir == eOutAngle.LeftDown.value1) ? (char) 0x10 : ((nDir == eOutAngle.RightDown.value1) ? (char) 0x20 : nType), //byte1
-//                ((nType & eOutType.RightRoundabout.value1) != 0 || (nType & eOutType.LeftRoundabout.value1) != 0) ? //byte2
-//                        ((nRoundaboutOut == eOutAngle.AsDirection.value1) ? nDir : nRoundaboutOut) : (char) 0x00,
-//                (nDir == eOutAngle.LeftDown.value1 || nDir == eOutAngle.RightDown.value1) ? (char) 0x00 : nDir}; //byte3
-//        SendHud2(arr);
-//    }
 
     /**
-     *
-     * @param nDir 箭頭
-     * @param nType  圓環方向
+     * @param nDir           箭頭
+     * @param nType          圓環方向
      * @param nRoundaboutOut 圓環out
      */
-    public void SetDirection(eOutAngle nDir, eOutType nType, eOutAngle nRoundaboutOut) {
+    public void SetDirection(final eOutAngle nDir, final eOutType nType, final eOutAngle nRoundaboutOut) {
         char arr[] = {(char) 0x01,
                 (nDir == eOutAngle.LeftDown) ? (char) 0x10 : ((nDir == eOutAngle.RightDown) ? (char) 0x20 : (char) nType.value),
                 (nType == eOutType.RightRoundabout || nType == eOutType.LeftRoundabout) ?
@@ -300,9 +311,9 @@ public class GarminHUD {
         SendHud2(arr);
     }
 
-    public void SetSpeedAndWarning(int nSpeed, int nLimit) {
-        SetSpeedWarning(nSpeed, nLimit, false, true, true);
-    }
+//    public void SetSpeedAndWarning(int nSpeed, int nLimit) {
+//        SetSpeedWarning(nSpeed, nLimit, false, true, true);
+//    }
 
     public void SetSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash) {
         char arr[] = {(char) 0x06,
@@ -321,18 +332,18 @@ public class GarminHUD {
         SendHud2(arr);
     }
 
-    public void ShowCameraIcon() {
-        SetCameraIcon(true);
-    }
+//    public void ShowCameraIcon() {
+//        SetCameraIcon(true);
+//    }
 
     public void SetCameraIcon(boolean visible) {
         char arr[] = {0x04, (char) (visible ? 1 : 0)};
         SendHud2(arr);
     }
 
-    public void ShowGpsLabel() {
-        SetGpsLabel(true);
-    }
+//    public void ShowGpsLabel() {
+//        SetGpsLabel(true);
+//    }
 
     public void SetGpsLabel(boolean visible) {
         char arr[] = {0x07, (char) (visible ? 1 : 0)};
@@ -369,9 +380,9 @@ public class GarminHUD {
         sendResult = SendPacket(sendBuf, sendBuf.length);
     }
 
-    public void clear() {
-        SetCameraIcon(false);
-        SetGpsLabel(false);
-    }
+//    public void clear() {
+//        SetCameraIcon(false);
+//        SetGpsLabel(false);
+//    }
 
 }

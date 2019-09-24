@@ -1,4 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="horizontal_line">#DFDFDF</color>
+
+    <!--common color-->
+    <color name="arrow_color_day">#4285F4</color>
+    <color name="arrow_color_night">#DFF6FF</color>
+    <color name="arrow_color_staitc">#C7C9C9</color>
+    <color name="lane_now_white">#FFFFFF</color>
+
+    <!--version 1-->
+    <color name="road_bg_green_day_v1">#0F9D58</color>
+    <color name="road_bg_green_night_v1">#0D904F</color>
+    <color name="lane_bg_green_day_v1">#0B8043</color>
+    <color name="lane_bg_green_night_v1">#097138</color>
+    <color name="lane_divide_white_v1">#FFFFFF</color>
+
+    <color name="orange_traffic_v1">#FFAB34</color>
+    <color name="red_traffic_v1">#DD191D</color>
+
+    <!--version 2 -->
+    <color name="road_bg_green_v2">#0B8043</color>
+    <color name="lane_bg_green_v2">#0D652D</color>
+    <color name="lane_divide_white_v2">#81C995</color>
+
+    <color name="orange_traffic_day_v2">#FFAB34</color>
+    <color name="orange_traffic_night_v2">#A37137</color>
+    <color name="red_traffic_day_v2">#DD191D</color>
+    <color name="red_traffic_night_v2">#92605C</color>
 </resources>

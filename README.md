@@ -1,12 +1,49 @@
 # Garminuino
-This  is a project use GarminHUD as 
-* a speedometer HUD  (Arduino+GarminHUD)
-* a GoogleMap navigation HUD  (Android App+GarminHUD).  
- [Further Information for Android App.](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/README.md)  
- [Downloading newest release App here.](https://github.com/skyforcetw/Garminuino/releases)
+There has two sub-project use GarminHUD as:
+* an app, Google Map HUD  (Android App+GarminHUD).  
+1. [Downloading newest release App here.](https://github.com/skyforcetw/Garminuino/releases)
+2. [Further Information for Android App.](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/README.md)  
  
-<img src="./P_20190125_225356-02.jpeg" alt="Two Garmin HUD application" width="500"/>
-<img src="./119031.jpg" alt="App layout" width="200"/>
+* a speedometer HUD  (Arduino+GarminHUD, STOP MAINTAIN)
+ 
+
+Two sub-proejct combine: GoogleMap navigation HUD + Speedometer HUD
+
+<img src="./pics/P_20190125_225356-02.jpeg" alt="Two Garmin HUD application" width="500"/>
+
+Android App: Google Map HUD
+
+<img src="./pics/371209.jpg" alt="App layout" width="400"/>
+
+## ToDo List
+1. ~~Add auto-connection function.~~
+2. Auto lanunch google map when HUD connected.
+3. Comment source-code.
+4. ~~Show some usage infomation when navigation is done, don't make it seems hang when navigating done.~~
+5. ~~Figure out auto connection is working well or not.~~
+6. ~~Lets "Show Speed" function working well.~~
+7. Better auto-connection with GarminHUD
+8. Support Sygic & OsmAnd
+
+## GoogleMap navigation HUD App Release History ##
+
+### [2019-08-23 v0.4.7](https://github.com/skyforcetw/Garminuino/releases/download/0.4.7/gmaps_hud-release_v0.4.7.apk)
+Simple controls in Notification.
+
+**NOTE** If your android is below Android 8.0(Oreo), please download [this one](https://github.com/skyforcetw/Garminuino/releases/download/0.4.7/gmaps_hud-release_v0.4.7.android6.0.apk).
+
+### [2019-08-11 v0.4.6](https://github.com/skyforcetw/Garminuino/releases/download/0.4.6/gmaps_hud-release_v0.4.6.apk)
+Lane detection mechanism revision.
+
+### 2019-08-11 v0.4.4
+Lane detection mechanism.(had some bug, need fix)
+
+### [2019-08-06 v0.4.3](https://github.com/skyforcetw/Garminuino/releases/download/0.4.3/gmaps_hud-release_v0.4.3.apk)
+1. Add traffic detect function
+2. Add reset bt function, test it when your bt connection is unable.
+
+### [2019-03-15 v0.4.0s](https://github.com/skyforcetw/Garminuino/releases/download/0.4.0s/gmaps_hud-release.apk)
+Auto/Manual Brightness Setting for Garmin HUD.
 
 ### 2019-02-19 v0.3.1
 Add arrow recognize for roundabout.  
@@ -47,14 +84,6 @@ So navigation part of Garminuino turn into a pure android's app(apk) now!
 ## [GoogleMaps HUD App](https://github.com/skyforcetw/Garminuino/tree/master/GoogleMaps_HUD)
 A pure android app, for project navi-info of google map navigation.
 Works just like garmin streetpilot with Garmin HUD.
-
-## ToDo List
-1. ~~Add auto-connection function.~~
-2. Auto lanunch google map when HUD connected.
-3. Comment source-code.
-4. ~~Show some usage infomation when navigation is done, don't make it seems hang when navigating done.~~
-5. Figure out auto connection is working well or not.
-6. Lets "Show Speed" function working well.
 
 ***
 

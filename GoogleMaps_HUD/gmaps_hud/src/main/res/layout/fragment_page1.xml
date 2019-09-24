@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_below="@+id/tab_layout"
-   >
+    android:layout_below="@+id/tab_layout">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
 
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <LinearLayout
-
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/btnScanBT"
@@ -26,13 +29,30 @@
                     android:layout_weight="1"
                     android:onClick="buttonOnClicked"
                     android:text="Scan Bluetooth"
-                    android:textSize="@dimen/option_text_size"
-                    />
+                    android:textSize="@dimen/option_text_size" />
 
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="2dip"
-                    android:background="@color/horizontal_line" />
+                <Button
+                    android:id="@+id/btnResetBT"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="buttonOnClicked"
+                    android:text="Reset Bluetooth"
+                    android:textSize="@dimen/option_text_size" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dip"
+                android:background="@color/horizontal_line" />
+
+            <LinearLayout
+                android:id="@+id/layoutStatus"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/textView6"
@@ -40,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Status"
-                    android:textSize="@dimen/option_title_size"  />
+                    android:textSize="@dimen/option_title_size" />
 
                 <Switch
                     android:id="@+id/switchHudConnected"
@@ -54,101 +74,179 @@
                     android:textSize="@dimen/option_text_size" />
 
                 <Switch
-                    android:id="@+id/switchNotificationCatched"
+                    android:id="@+id/switchNotificationCaught"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:clickable="false"
                     android:paddingTop="@dimen/option_padding_top"
-                    android:textSize="@dimen/option_text_size"
-                    android:text="Notification Capture" />
+                    android:text="Notification Capture"
+                    android:textSize="@dimen/option_text_size" />
 
                 <Switch
-                    android:id="@+id/switchGmapsNotificationCatched"
+                    android:id="@+id/switchGmapsNotificationCaught"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:checked="false"
                     android:clickable="false"
                     android:paddingTop="@dimen/option_padding_top"
-                    android:textSize="@dimen/option_text_size"
-                    android:text="Gmap's Notification Capture" />
-
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="2dip"
-                    android:background="@color/horizontal_line" />
-
-                <TextView
-                    android:id="@+id/textView5"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/option_title_size"
-                    android:paddingTop="@dimen/option_padding_top"
-                    android:text="When Navigating"
-                    />
-
-                <Switch
-                    android:id="@+id/switchNavShowSpeed"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="buttonOnClicked"
-
-                    android:textSize="@dimen/option_text_size"
-                    android:text="Show Speed" />
-
-                <Switch
-                    android:id="@+id/switchShowETA"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="buttonOnClicked"
-                    android:paddingTop="@dimen/option_padding_top"
-                    android:textSize="@dimen/option_text_size"
-                    android:text="Show ETA" />
-
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="2dip"
-                    android:background="@color/horizontal_line" />
-
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/option_title_size"
-                    android:text="When Navigation Done"
-                    android:paddingTop="@dimen/option_padding_top"
-                    />
-
-                <Switch
-                    android:id="@+id/switchIdleShowSpeed"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="buttonOnClicked"
-                    android:text="Show Speed"
+                    android:text="Gmap's Navigation Capture"
                     android:textSize="@dimen/option_text_size" />
-
-                <Switch
-                    android:id="@+id/switchIdleShowTime"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:paddingTop="@dimen/option_padding_top"
-                    android:textSize="@dimen/option_text_size"
-                    android:onClick="buttonOnClicked"
-                    android:text="Show Current Time" />
-
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="2dip"
-                    android:background="@color/horizontal_line" />
-
             </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dip"
+                android:background="@color/horizontal_line" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="Setting"
+                android:textSize="@dimen/option_title_size" />
+
+            <Switch
+                android:id="@+id/switchShowSpeed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="buttonOnClicked"
+
+                android:text="Show Speed"
+                android:textSize="@dimen/option_text_size" />
+
+            <Switch
+                android:id="@+id/switchAutoBrightness"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:onClick="buttonOnClicked"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="Auto Brightness"
+                android:textSize="@dimen/option_text_size" />
+
+            <SeekBar
+                android:id="@+id/seekBarBrightness"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+
+                android:max="10"
+                android:onClick="buttonOnClicked"
+                android:paddingRight="80dp"
+                android:progress="0"
+                android:textSize="@dimen/option_text_size" />
+
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="When Navigating"
+                android:textSize="@dimen/option_title_size" />
+
+            <Switch
+                android:id="@+id/switchNavShowSpeed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Show Speed"
+                android:textSize="@dimen/option_text_size"
+                android:visibility="gone" />
+
+            <Switch
+                android:id="@+id/switchShowETA"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Show ETA"
+                android:textSize="@dimen/option_text_size" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="When Navigation Done"
+                android:textSize="@dimen/option_title_size" />
+
+
+            <Switch
+                android:id="@+id/switchIdleShowCurrentTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Show Current Time"
+                android:textSize="@dimen/option_text_size" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dip"
+                android:background="@color/horizontal_line" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="Traffic"
+                android:textSize="@dimen/option_title_size" />
+
+            <Switch
+                android:id="@+id/switchTrafficAndLane"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="Traffic &amp; Lane Detect(Need Screenshot)"
+                android:textSize="@dimen/option_text_size" />
+
+            <Switch
+                android:id="@+id/switchAlertYellowTraffic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="Alert Yellow Traffic"
+                android:textSize="@dimen/option_text_size" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dip"
+                android:background="@color/horizontal_line" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="Bluetooth"
+                android:textSize="@dimen/option_title_size" />
+
+            <Switch
+                android:id="@+id/switchBtBindAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="Bind Address(Experiment)"
+                android:textSize="@dimen/option_text_size" />
+
+        </LinearLayout>
 
     </ScrollView>
 

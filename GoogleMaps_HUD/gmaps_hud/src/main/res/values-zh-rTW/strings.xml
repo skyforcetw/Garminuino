@@ -15,5 +15,10 @@
     <string name="km">公里</string>
     <string name="meter">公尺</string>
 
-
+    <!--Prompt-->
+    <string name="prompt_switch_hud_connected" >顯示GARMIN HUD是否連上.</string>
+    <string name="prompt_btn_scan_bt" >如果GARMIN HUD 沒連上, 按下這個按鈕連結GARMIN HUD.</string>
+    <string name="prompt_switch_notification_catched" >顯示是否能抓到 通知.</string>
+    <string name="prompt_switch_gmaps_navigation_catched">顯示GoogleMaps在 導航 模式.</string>
+    <string name="prompt_layout_status" >這三個開關都要亮起, GARMIN HUD才能正確的收到導航資訊.</string>
 </resources>

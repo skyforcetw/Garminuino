@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="road_roi_width_tol">118</integer>
+    <integer name="lane_roi_width_tol">10</integer>
+    <integer name="detect_update_interval">1500</integer>
+    <integer name="lane_detect_x_offset">100</integer>
+
+    <integer name="bt_reconnect_interval">2000</integer>
+</resources>

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--<string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>-->
-    <!--<string name="banner_ad_app_id">"ca-app-pub-3940256099942544~3347511713"</string>-->
-
-    <!--<string name="default_notification_channel_id" translatable="false">google_maps_hud_channel</string>-->
-
-    <string name="app_name"   translatable="false">GoogleMaps HUD</string>
-    <string name="action_settings">Settings</string>
-
-    <string name="active_notification_count_zero">No active notification</string>
     <plurals name="active_notification_count_nonzero">
         <item quantity="one">%d active notification:</item>
         <item quantity="other">%d active notifications:</item>
     </plurals>
+    <!--    <string name="open_app" >Open app</string>-->
+    <string name="app_name" translatable="false">GoogleMaps HUD</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="notify_switch_detect">Detect</string>
+    <string name="notify_switch_speed">Speed</string>
+    <string name="notify_switch_ETA">ETA</string>
+
+    <string name="active_notification_count_zero">No active notification</string>
 
     <!--gmaps' navigation string-->
     <string name="exit_navigation">EXIT NAVIGATION</string>
@@ -30,23 +30,20 @@
     <string name="feet">ft</string>
     <string name="miles">mi</string>
 
-    <string name="chinese_after"   translatable="false">後</string>
+    <string name="chinese_after" translatable="false">後</string>
 
-    <!--options-->
-    <string name="bt_bind_name_key" translatable="false">bt_bind_name_key</string>
-    <string name="option_show_eta" translatable="false">option_show_eta</string>
-    <string name="option_navigating_show_speed" translatable="false">option_navigating_show_speed</string>
-    <string name="option_idle_show_speed" translatable="false">option_idle_show_speed</string>
-    <string name="option_idle_show_time" translatable="false">option_idle_show_time</string>
+    <!--Prompt-->
+    <string name="prompt_switch_hud_connected">This indicates the connection status of GARMIN HUD.</string>
+    <string name="prompt_btn_scan_bt">If GARMIN HUD is disconnected, you should connect to GARMIN HUD with this button.</string>
+    <string name="prompt_switch_notification_catched">This indicates the app can capture Notification.</string>
+    <string name="prompt_switch_gmaps_navigation_catched">This indicates the GoogleMaps on Navigating Mode.</string>
+    <string name="prompt_layout_status">All of this indicates should be ON, then GARMIN HUD will receive Navigation information.</string>
 
-    <!--broadcast receiver-->
-    <string name="broadcast_receiver_main_activity" translatable="false">sky4s.garminhud.app.MainActivity.RECEIVER</string>
-    <string name="broadcast_receiver_notification_monitor" translatable="false">sky4s.garminhud.app.NotificationMonitor.RECEIVER</string>
-    <string name="broadcast_receiver_localtion_service" translatable="false">chutka.bitman.com.speedometersimplified.LocationService.RECEIVER</string>
-    <!--broadcast keys-->
-    <string name="notify_catched" translatable="false">notify_catched</string>
-    <string name="gmaps_notify_catched" translatable="false">gmaps_notify_catched</string>
-    <string name="notify_parse_failed" translatable="false">notify_parse_failed</string>
-    <string name="notify_msg" translatable="false">notify_msg</string>
-    <string name="is_on_navigating" translatable="false">is_on_navigating</string>
+    <!--    <string name="title_activity_main2">MainActivity2</string>-->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title" translatable="false">Googles Map HUD</string>
+    <string name="nav_header_subtitle" translatable="false">skyforce@gmail.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+
 </resources>

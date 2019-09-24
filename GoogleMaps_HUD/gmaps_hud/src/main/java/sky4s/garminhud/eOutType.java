@@ -11,6 +11,7 @@ public enum eOutType {
     LeftRoundabout(0x04),
     RightRoundabout(0x08),
 
+//    Roundabout(0x04+0x08),
 
     RightFlag(0x40), //with  eOutAngle: Straight,Right,Left
     ArrowOnly(0x80);
