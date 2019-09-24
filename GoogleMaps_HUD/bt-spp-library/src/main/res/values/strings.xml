@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="button_scan_for_devices">Scan for Devices</string>
+    <string name="message_device_name_mismatch">Device name mismatch</string>
+    <string name="title_bluetooth_devices">Bluetooth Devices</string>
+    <string name="message_no_devices_found">No devices found</string>
+    <string name="message_scanning_for_devices">Scanning for devices...</string>
+    <string name="message_select_a_device">Select a device to connect</string>
+
+</resources>
