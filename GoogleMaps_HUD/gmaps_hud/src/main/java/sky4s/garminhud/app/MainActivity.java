@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            switchAutoBrightness.setText("Brightness " + (progress * 10) + "%");
+            switchAutoBrightness.setText(getString(R.string.layout_seekbar_brightness) + " " + (progress * 10) + "%");
             if (null != hud) {
                 int brightness = getGammaBrightness();
                 hud.SetBrightness(brightness);
@@ -735,7 +735,8 @@ public class MainActivity extends AppCompatActivity {
                 final boolean autoBrightness = theAutoBrightness.isChecked();
 
                 final int progress = seekBarBrightness.getProgress();
-                theAutoBrightness.setText(autoBrightness ? "Auto Brightness" : "Brightness " + (progress * 10) + "%");
+                theAutoBrightness.setText(autoBrightness ? getString(R.string.layout_element_auto_brightness)
+                        : getString(R.string.layout_seekbar_brightness) + " " + (progress * 10) + "%");
 
                 seekBarBrightness.setEnabled(!autoBrightness);
                 seekBarBrightness.setOnSeekBarChangeListener(seekbarChangeListener);
@@ -793,7 +794,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (!bt.isBluetoothAvailable()) {
             Toast.makeText(getApplicationContext()
-                    , "Bluetooth is not available"
+                    , getString(R.string.message_bt_not_avialable)
                     , Toast.LENGTH_SHORT).show();
         } else {
             bt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
@@ -883,10 +884,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showConfirmDialog() {
+        final String app_name = getString(R.string.app_name);
         new AlertDialog.Builder(this)
-                .setMessage("Please enable Notification Access for " + getString(R.string.app_name)
-                        + ".\n\nThis app use Notification to parse Navigation Information.")
-                .setTitle("Notification Access")
+                .setMessage(getString(R.string.message_enable_notification_access, app_name))
+                .setTitle(getString(R.string.title_enable_notification_access))
                 .setIconAttribute(android.R.attr.alertDialogIcon)
                 .setCancelable(true)
                 .setPositiveButton(android.R.string.ok,
@@ -1171,7 +1172,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceDisconnected() {
             hudConnected = false;
-            switchHudConnected.setText("HUD disconnected");
+            switchHudConnected.setText(getString(R.string.layout_element_hud_disconnected));
             switchHudConnected.setTextColor(Color.RED);
             switchHudConnected.setChecked(false);
 
@@ -1182,7 +1183,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceConnectionFailed() {
             hudConnected = false;
-            switchHudConnected.setText("HUD connect failed");
+            switchHudConnected.setText(getString(R.string.layout_element_hud_con_failed));
             switchHudConnected.setTextColor(Color.RED);
             switchHudConnected.setChecked(false);
 
