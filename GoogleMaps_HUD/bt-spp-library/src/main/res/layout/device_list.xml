@@ -37,6 +37,6 @@
 	    android:layout_alignParentBottom="true"
 	    android:layout_alignParentLeft="true"
 	    android:layout_alignParentRight="true"
-	    android:text="SCAN FOR DEVICES" />
+	    android:text="@string/button_scan_for_devices" />
 		
 </RelativeLayout>
