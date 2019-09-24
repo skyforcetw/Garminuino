@@ -72,4 +72,16 @@
     <string name="layout_button_list_not">List of Notification</string>
     <string name="layout_button">Button</string>
 
+    <!-- Messages and variable UI text -->
+    <string name="layout_seekbar_brightness">Brightness</string>
+    <string name="message_enable_notification_access">Please enable Notification Access for %1$s.
+                        \n\nThis app use Notification to parse Navigation Information.</string>
+    <string name="title_enable_notification_access">Notification Access</string>
+    <string name="layout_element_hud_disconnected">HUD disconnected</string>
+    <string name="layout_element_hud_con_failed">HUD connect failed</string>
+    <string name="message_enable_location_access">For showing speed to Garmin HUD please enable Location Permission</string>
+    <string name="title_enable_location_access">Location Permission</string>
+    <string name="message_bt_not_avialable">Bluetooth is not available</string>
+    <string name="message_bt_not_enabled">Bluetooth was not enabled.</string>
+
 </resources>
