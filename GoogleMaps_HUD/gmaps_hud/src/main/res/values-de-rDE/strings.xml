@@ -45,11 +45,23 @@
     <string name="layout_element_traffic_lane_det">Verkehr- &amp; Spur-Erfassung (Benötigt Screenshot)</string>
     <string name="layout_element_yellow_traffic">Stockenden Verkehr anzeigen</string>
     <string name="layout_title_bluetooth">Bluetooth</string>
-    <string name="layout_element_bind_address">Bind Address(Experimentell)</string>
+    <string name="layout_element_bind_address">Bind Address (Experimentell)</string>
     <string name="layout_title_design">Design</string>
     <string name="layout_element_darkmode_auto">Dunklen Modus über Systemeinstellungen</string>
     <string name="layout_element_darkmode_man">Dunklen Modus manuell aktiveren</string>
     <string name="layout_tab_debug">Debugging</string>
     <string name="layout_button_list_not">Liste der Benachrichtigungen</string>
     <string name="layout_button">Button</string>
+
+    <!-- Messages and variable UI text -->
+    <string name="layout_seekbar_brightness">Helligkeit</string>
+    <string name="message_enable_notification_access">Bitte aktivieren Sie den Benachrichtigungszugriff für %1$s.
+                        \n\nDie App verwenet die Benachrichtigung um die Navigationsinformationen zu verarbeiten.</string>
+    <string name="title_enable_notification_access">Benachrichtigungszugriff</string>
+    <string name="layout_element_hud_disconnected">Verbindung mit HUD getrennt</string>
+    <string name="layout_element_hud_con_failed">Verbindung mit HUD fehlgeschlagen</string>
+    <string name="message_enable_location_access">Um die Geschwindigkeit auf dem Garmin HUD anzuzeigen bitte Standort-Bereichtigung zulassen</string>
+    <string name="title_enable_location_access">Standort Berechtigung</string>
+    <string name="message_bt_not_avialable">Bluetooth ist nicht verfügbar</string>
+    <string name="message_bt_not_enabled">Bluetooth wurde nicht aktiviert.</string>
 </resources>
