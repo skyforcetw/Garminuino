@@ -246,6 +246,40 @@
                 android:text="Bind Address(Experiment)"
                 android:textSize="@dimen/option_text_size" />
 
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dip"
+                android:background="@color/horizontal_line" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="Design"
+                android:textSize="@dimen/option_title_size" />
+
+            <Switch
+                android:id="@+id/switchDarkModeAuto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="DarkMode by Systemsettings"
+                android:textSize="@dimen/option_text_size" />
+
+            <Switch
+                android:id="@+id/switchDarkModeMan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="Enable DarkMode manual"
+                android:textSize="@dimen/option_text_size" />
+
         </LinearLayout>
 
     </ScrollView>
