@@ -26,7 +26,7 @@ Android App: Google Map HUD
 
 ## GoogleMap navigation HUD App Release History ##
 
-### [2019-09-26 v0.4.8](https://github.com/skyforcetw/Garminuino/releases/download/0.4.9/gmaps_hud-release_v0.4.9.apk)
+### [2019-09-26 v0.4.9](https://github.com/skyforcetw/Garminuino/releases/download/0.4.9/gmaps_hud-release_v0.4.9.apk)
 Polish Support & New Dark Mode.
 
 ### [2019-08-23 v0.4.7](https://github.com/skyforcetw/Garminuino/releases/download/0.4.7/gmaps_hud-release_v0.4.7.apk)
