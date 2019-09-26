@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="button_scan_for_devices">Nach Geräten suchen</string>
+    <string name="message_device_name_mismatch">Gerätname stimmt nicht überein</string>
+    <string name="title_bluetooth_devices">Bluetooth Geräte</string>
+    <string name="message_no_devices_found">Keine Geräte gefunden</string>
+    <string name="message_scanning_for_devices">Suche nach Geräten...</string>
+    <string name="message_select_a_device">Gerät zum Verbinden wählen</string>
+
+</resources>

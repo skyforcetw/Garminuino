@@ -60,6 +60,7 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.v7.app.AppCompatDelegate;
 
 import java.io.File;
 import java.util.Calendar;
@@ -112,6 +113,10 @@ public class MainActivity extends AppCompatActivity {
     //bluetooth
     Switch switchBtBindAddress;
 
+    //app-appearance
+    Switch switchDarkModeAuto;
+    Switch switchDarkModeManual;
+
     private boolean isEnabledNLS = false;
     private boolean showCurrentTime = false;
     private BluetoothSPP bt;
@@ -143,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            switchAutoBrightness.setText("Brightness " + (progress * 10) + "%");
+            switchAutoBrightness.setText(getString(R.string.layout_seekbar_brightness) + " " + (progress * 10) + "%");
             if (null != hud) {
                 int brightness = getGammaBrightness();
                 hud.SetBrightness(brightness);
@@ -228,6 +233,8 @@ public class MainActivity extends AppCompatActivity {
         final boolean optionShowEta = sharedPref.getBoolean(getString(R.string.option_show_eta), false);
         final boolean optionIdleShowTime = sharedPref.getBoolean(getString(R.string.option_idle_show_current_time), false);
         final boolean optionBtBindAddress = sharedPref.getBoolean(getString(R.string.option_bt_bind_address), false);
+        final boolean optionDarkModeAuto = sharedPref.getBoolean(getString(R.string.option_dark_mode_auto), false);
+        final boolean optionDarkModeMan = sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false);
 
         runOnUiThread(new Runnable() {
             @Override
@@ -238,8 +245,14 @@ public class MainActivity extends AppCompatActivity {
                 switchShowETA.setChecked(optionShowEta);
                 switchIdleShowCurrrentTime.setChecked(optionIdleShowTime);
                 switchBtBindAddress.setChecked(optionBtBindAddress);
+                switchDarkModeAuto.setChecked(optionDarkModeAuto);
+                switchDarkModeManual.setChecked(optionDarkModeMan);
             }
         });
+
+        // Need to be after initially setChecked to avoid loop 
+        switchDarkModeAuto.setOnCheckedChangeListener(onCheckedChangedListener);
+        switchDarkModeManual.setOnCheckedChangeListener(onCheckedChangedListener);
     }
 
     private String initBluetooth() {
@@ -322,6 +335,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        final int stateDarkMode = sharedPref.getInt(getString(R.string.state_dark_mode), AppCompatDelegate.MODE_NIGHT_NO);
+        AppCompatDelegate.setDefaultNightMode(stateDarkMode);
+        
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -345,7 +362,6 @@ public class MainActivity extends AppCompatActivity {
 
         startService(new Intent(this, NotificationCollectorMonitorService.class));
 
-        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         //========================================================================================
         // BT related
         //========================================================================================
@@ -579,6 +595,12 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
     }
 
+    private void storeIntOptions(int optionID, int option) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(getString(optionID), option);
+        editor.commit();
+    }
+
     private class OnCheckedChangedListener implements CompoundButton.OnCheckedChangeListener {
 
         @Override
@@ -638,6 +660,32 @@ public class MainActivity extends AppCompatActivity {
                     storeOptions(R.string.option_bt_bind_address, isBindAddress);
                     break;
 
+                case R.id.switchDarkModeAuto:
+                    final boolean isDarkModeAuto = ((Switch) view).isChecked();
+                    switchDarkModeManual.setEnabled(!isDarkModeAuto);
+                    storeOptions(R.string.option_dark_mode_auto, isDarkModeAuto);
+                    if(isDarkModeAuto)
+                        storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                    else {
+                        final boolean isDarkModeManualEnabled = sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false);
+                        if(isDarkModeManualEnabled)
+                            storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_YES);
+                        else
+                            storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_NO);
+                        recreate();
+                    }
+                    break;
+
+                case R.id.switchDarkModeMan:
+                    final boolean isDarkModeManualEnabled = ((Switch) view).isChecked();
+                    storeOptions(R.string.option_dark_mode_man, isDarkModeManualEnabled);
+                    if(isDarkModeManualEnabled)
+                        storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_YES);
+                    else
+                        storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_NO);
+                    recreate();
+                    break;
+
                 default:
                     break;
             }
@@ -690,7 +738,8 @@ public class MainActivity extends AppCompatActivity {
                 final boolean autoBrightness = theAutoBrightness.isChecked();
 
                 final int progress = seekBarBrightness.getProgress();
-                theAutoBrightness.setText(autoBrightness ? "Auto Brightness" : "Brightness " + (progress * 10) + "%");
+                theAutoBrightness.setText(autoBrightness ? getString(R.string.layout_element_auto_brightness)
+                        : getString(R.string.layout_seekbar_brightness) + " " + (progress * 10) + "%");
 
                 seekBarBrightness.setEnabled(!autoBrightness);
                 seekBarBrightness.setOnSeekBarChangeListener(seekbarChangeListener);
@@ -748,7 +797,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (!bt.isBluetoothAvailable()) {
             Toast.makeText(getApplicationContext()
-                    , "Bluetooth is not available"
+                    , getString(R.string.message_bt_not_avialable)
                     , Toast.LENGTH_SHORT).show();
         } else {
             bt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
@@ -838,10 +887,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showConfirmDialog() {
+        final String app_name = getString(R.string.app_name);
         new AlertDialog.Builder(this)
-                .setMessage("Please enable Notification Access for " + getString(R.string.app_name)
-                        + ".\n\nThis app use Notification to parse Navigation Information.")
-                .setTitle("Notification Access")
+                .setMessage(getString(R.string.message_enable_notification_access, app_name))
+                .setTitle(getString(R.string.title_enable_notification_access))
                 .setIconAttribute(android.R.attr.alertDialogIcon)
                 .setCancelable(true)
                 .setPositiveButton(android.R.string.ok,
@@ -1092,8 +1141,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceConnected(String name, String address) {
             hudConnected = true;
-            switchHudConnected.setText("'" + name + "' connected");
-            switchHudConnected.setTextColor(Color.BLACK);
+            switchHudConnected.setText(getString(R.string.layout_element_hud_success_connected, name));
+            if(sharedPref.getInt(getString(R.string.state_dark_mode)
+                    , AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
+                switchHudConnected.setTextColor(Color.BLACK);
             switchHudConnected.setChecked(true);
 
             log("onDeviceConnected");
@@ -1113,7 +1164,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            String connectedDeviceName = bt.getConnectedDeviceName();
+            String onconnectedDeviceName = bt.getConnectedDeviceName();
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString(getString(R.string.bt_bind_name_key), connectedDeviceName);
 
@@ -1126,7 +1177,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceDisconnected() {
             hudConnected = false;
-            switchHudConnected.setText("HUD disconnected");
+            switchHudConnected.setText(getString(R.string.layout_element_hud_disconnected));
             switchHudConnected.setTextColor(Color.RED);
             switchHudConnected.setChecked(false);
 
@@ -1137,7 +1188,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceConnectionFailed() {
             hudConnected = false;
-            switchHudConnected.setText("HUD connect failed");
+            switchHudConnected.setText(getString(R.string.layout_element_hud_con_failed));
             switchHudConnected.setTextColor(Color.RED);
             switchHudConnected.setChecked(false);
 

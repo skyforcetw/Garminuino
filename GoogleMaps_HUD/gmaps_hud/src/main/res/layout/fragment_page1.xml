@@ -18,26 +18,26 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/btnScanBT"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:onClick="buttonOnClicked"
-                    android:text="Scan Bluetooth"
+                    android:text="@string/layout_button_scan_bt"
                     android:textSize="@dimen/option_text_size" />
 
                 <Button
                     android:id="@+id/btnResetBT"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:onClick="buttonOnClicked"
-                    android:text="Reset Bluetooth"
+                    android:text="@string/layout_button_reset_bt"
                     android:textSize="@dimen/option_text_size" />
 
             </LinearLayout>
@@ -45,6 +45,7 @@
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="2dip"
+                android:paddingTop="@dimen/option_padding_top"
                 android:background="@color/horizontal_line" />
 
             <LinearLayout
@@ -59,7 +60,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Status"
+                    android:paddingTop="@dimen/option_padding_top"
+                    android:text="@string/layout_title_status"
                     android:textSize="@dimen/option_title_size" />
 
                 <Switch
@@ -69,7 +71,7 @@
                     android:layout_weight="1"
                     android:checked="false"
                     android:clickable="false"
-                    android:text="HUD Connected"
+                    android:text="@string/layout_element_hud_connected"
 
                     android:textSize="@dimen/option_text_size" />
 
@@ -80,7 +82,7 @@
                     android:layout_weight="1"
                     android:clickable="false"
                     android:paddingTop="@dimen/option_padding_top"
-                    android:text="Notification Capture"
+                    android:text="@string/layout_element_notification_caputre"
                     android:textSize="@dimen/option_text_size" />
 
                 <Switch
@@ -91,7 +93,8 @@
                     android:checked="false"
                     android:clickable="false"
                     android:paddingTop="@dimen/option_padding_top"
-                    android:text="Gmap's Navigation Capture"
+                    android:paddingBottom="@dimen/option_padding_bottom"
+                    android:text="@string/layout_element_gmaps_notification_caputre"
                     android:textSize="@dimen/option_text_size" />
             </LinearLayout>
 
@@ -106,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:paddingTop="@dimen/option_padding_top"
-                android:text="Setting"
+                android:text="@string/layout_title_settings"
                 android:textSize="@dimen/option_title_size" />
 
             <Switch
@@ -116,7 +119,7 @@
                 android:layout_weight="1"
                 android:onClick="buttonOnClicked"
 
-                android:text="Show Speed"
+                android:text="@string/layout_element_show_speed"
                 android:textSize="@dimen/option_text_size" />
 
             <Switch
@@ -127,7 +130,7 @@
                 android:checked="true"
                 android:onClick="buttonOnClicked"
                 android:paddingTop="@dimen/option_padding_top"
-                android:text="Auto Brightness"
+                android:text="@string/layout_element_auto_brightness"
                 android:textSize="@dimen/option_text_size" />
 
             <SeekBar
@@ -150,7 +153,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:paddingTop="@dimen/option_padding_top"
-                android:text="When Navigating"
+                android:text="@string/layout_title_when_navigating"
                 android:textSize="@dimen/option_title_size" />
 
             <Switch
@@ -167,7 +170,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Show ETA"
+                android:text="@string/layout_element_show_eta"
                 android:textSize="@dimen/option_text_size" />
 
             <TextView
@@ -176,7 +179,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:paddingTop="@dimen/option_padding_top"
-                android:text="When Navigation Done"
+                android:text="@string/layout_title_when_nav_done"
                 android:textSize="@dimen/option_title_size" />
 
 
@@ -185,7 +188,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Show Current Time"
+                android:paddingBottom="@dimen/option_padding_bottom"
+                android:text="@string/layout_element_show_curr_time"
                 android:textSize="@dimen/option_text_size" />
 
             <View
@@ -199,7 +203,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:paddingTop="@dimen/option_padding_top"
-                android:text="Traffic"
+                android:text="@string/layout_title_traffic"
                 android:textSize="@dimen/option_title_size" />
 
             <Switch
@@ -209,7 +213,7 @@
                 android:layout_weight="1"
                 android:checked="false"
                 android:paddingTop="@dimen/option_padding_top"
-                android:text="Traffic &amp; Lane Detect(Need Screenshot)"
+                android:text="@string/layout_element_traffic_lane_det"
                 android:textSize="@dimen/option_text_size" />
 
             <Switch
@@ -219,7 +223,8 @@
                 android:layout_weight="1"
                 android:checked="false"
                 android:paddingTop="@dimen/option_padding_top"
-                android:text="Alert Yellow Traffic"
+                android:paddingBottom="@dimen/option_padding_bottom"
+                android:text="@string/layout_element_yellow_traffic"
                 android:textSize="@dimen/option_text_size" />
 
             <View
@@ -233,7 +238,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:paddingTop="@dimen/option_padding_top"
-                android:text="Bluetooth"
+                android:text="@string/layout_title_bluetooth"
                 android:textSize="@dimen/option_title_size" />
 
             <Switch
@@ -243,7 +248,42 @@
                 android:layout_weight="1"
                 android:checked="false"
                 android:paddingTop="@dimen/option_padding_top"
-                android:text="Bind Address(Experiment)"
+                android:paddingBottom="@dimen/option_padding_bottom"
+                android:text="@string/layout_element_bind_address"
+                android:textSize="@dimen/option_text_size" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dip"
+                android:background="@color/horizontal_line" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="@string/layout_title_design"
+                android:textSize="@dimen/option_title_size" />
+
+            <Switch
+                android:id="@+id/switchDarkModeAuto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="@string/layout_element_darkmode_auto"
+                android:textSize="@dimen/option_text_size" />
+
+            <Switch
+                android:id="@+id/switchDarkModeMan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="@string/layout_element_darkmode_man"
                 android:textSize="@dimen/option_text_size" />
 
         </LinearLayout>

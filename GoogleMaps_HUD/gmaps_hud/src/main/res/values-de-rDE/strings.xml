@@ -12,4 +12,57 @@
     <string name="meter">m</string>
     <string name="feet">ft</string>
     <string name="miles">mi</string>
+
+    <!--Prompt-->
+    <string name="prompt_switch_hud_connected">Zeigt den Verbindungsstatus mit dem GARMIN HUD.</string>
+    <string name="prompt_btn_scan_bt">Wenn GARMIN HUD nicht verbunden ist, kann man es hier verbinden.</string>
+    <string name="prompt_switch_notification_catched">Dies zeigt an, ob die App die Benachrichtigunen erfassen kann.</string>
+    <string name="prompt_switch_gmaps_navigation_catched">Dies zeigt an, ob die GoogleMaps Navigations-Benachrichtigung erfasst wird.</string>
+    <string name="prompt_layout_status">Alle dieser Anzeigen müssen auf AN stehen, damit GARMIN HUD die Navigationsinformationen empangen kann.</string>
+
+    <!--    <string name="title_activity_main2">MainActivity2</string>-->
+    <string name="navigation_drawer_open">Seitenleiste öffnen</string>
+    <string name="navigation_drawer_close">Seitenleiste schließen</string>
+    <string name="nav_header_title" translatable="false">Googles Map HUD</string>
+    <string name="nav_header_subtitle" translatable="false">skyforce@gmail.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+
+    <string name="layout_tab_setup">Einstellungen</string>
+    <string name="layout_button_scan_bt">Gerät suchen</string>
+    <string name="layout_button_reset_bt">Bluetooth zurücksetzen</string>
+    <string name="layout_title_status">Status</string>
+    <string name="layout_element_hud_connected">HUD verbunden</string>
+    <string name="layout_element_notification_caputre">Benachrichtigungen erfasst</string>
+    <string name="layout_element_gmaps_notification_caputre">Gmap Navigation erfasst</string>
+    <string name="layout_title_settings">Einstellungen</string>
+    <string name="layout_element_show_speed">Zeige Geschwindigkeit</string>
+    <string name="layout_element_auto_brightness">Automatische Helligkeit</string>
+    <string name="layout_title_when_navigating">When Navigating</string>
+    <string name="layout_element_show_eta">Zeige Ankunftszeit</string>
+    <string name="layout_title_when_nav_done">When Navigation Done</string>
+    <string name="layout_element_show_curr_time">Zeige Uhrzeit</string>
+    <string name="layout_title_traffic">Verkehr</string>
+    <string name="layout_element_traffic_lane_det">Verkehr- &amp; Spur-Erfassung (Benötigt Screenshot)</string>
+    <string name="layout_element_yellow_traffic">Stockenden Verkehr anzeigen</string>
+    <string name="layout_title_bluetooth">Bluetooth</string>
+    <string name="layout_element_bind_address">Bind Address (Experimentell)</string>
+    <string name="layout_title_design">Design</string>
+    <string name="layout_element_darkmode_auto">Dunklen Modus über Systemeinstellungen</string>
+    <string name="layout_element_darkmode_man">Dunklen Modus manuell aktiveren</string>
+    <string name="layout_tab_debug">Debugging</string>
+    <string name="layout_button_list_not">Liste der Benachrichtigungen</string>
+    <string name="layout_button">Button</string>
+
+    <!-- Messages and variable UI text -->
+    <string name="layout_seekbar_brightness">Helligkeit</string>
+    <string name="message_enable_notification_access">Bitte aktivieren Sie den Benachrichtigungszugriff für %1$s.
+                        \n\nDie App verwenet die Benachrichtigung um die Navigationsinformationen zu verarbeiten.</string>
+    <string name="title_enable_notification_access">Benachrichtigungszugriff</string>
+    <string name="layout_element_hud_success_connected">Verbunden mit \'%1$s\'</string>
+    <string name="layout_element_hud_disconnected">Verbindung mit HUD getrennt</string>
+    <string name="layout_element_hud_con_failed">Verbindung mit HUD fehlgeschlagen</string>
+    <string name="message_enable_location_access">Um die Geschwindigkeit auf dem Garmin HUD anzuzeigen bitte Standort-Bereichtigung zulassen</string>
+    <string name="title_enable_location_access">Standort Berechtigung</string>
+    <string name="message_bt_not_avialable">Bluetooth ist nicht verfügbar</string>
+    <string name="message_bt_not_enabled">Bluetooth wurde nicht aktiviert.</string>
 </resources>
