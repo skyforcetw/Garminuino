@@ -7,8 +7,7 @@ There has two sub-project use GarminHUD as:
 * a speedometer HUD  (Arduino+GarminHUD, STOP MAINTAIN)
  
 
-Two sub-proejct combine: GoogleMap navigation HUD + Speedometer HUD
-
+Belows are two sub-proejct put together: GoogleMap navigation HUD + Speedometer HUD
 <img src="./pics/P_20190125_225356-02.jpeg" alt="Two Garmin HUD application" width="500"/>
 
 Android App: Google Map HUD
