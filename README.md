@@ -8,11 +8,11 @@ There has two sub-project use GarminHUD as:
  
 
 Belows are two sub-proejct put together: GoogleMap navigation HUD（Left） + Speedometer HUD（Right）
-<img src="./pics/451627.jpg" alt="Two Garmin HUD application" width="500"/>
+<img src="./pics/P_20190125_225356-02.jpeg" alt="Two Garmin HUD application" width="500"/>
 
 Android App: Google Map HUD
 
-<img src="./pics/371209.jpg" alt="App layout" width="400"/>
+<img src="./pics/451627.jpg" alt="App layout" width="400"/>
 
 ## ToDo List
 1. ~~Add auto-connection function.~~
