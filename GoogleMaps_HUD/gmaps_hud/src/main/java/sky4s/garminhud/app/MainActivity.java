@@ -332,9 +332,11 @@ public class MainActivity extends AppCompatActivity {
                     (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         }
     }
-
+    private MyCrashHandler myCrashHandler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        myCrashHandler = MyCrashHandler.instance();
+
         sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         final int stateDarkMode = sharedPref.getInt(getString(R.string.state_dark_mode), AppCompatDelegate.MODE_NIGHT_NO);
         AppCompatDelegate.setDefaultNightMode(stateDarkMode);
