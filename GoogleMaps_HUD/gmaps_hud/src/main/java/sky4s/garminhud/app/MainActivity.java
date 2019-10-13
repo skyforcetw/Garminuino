@@ -1164,7 +1164,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            String onconnectedDeviceName = bt.getConnectedDeviceName();
+            String connectedDeviceName = bt.getConnectedDeviceName();
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString(getString(R.string.bt_bind_name_key), connectedDeviceName);
 
