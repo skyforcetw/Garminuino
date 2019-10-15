@@ -332,9 +332,11 @@ public class MainActivity extends AppCompatActivity {
                     (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         }
     }
-
+    private MyCrashHandler myCrashHandler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        myCrashHandler = MyCrashHandler.instance();
+
         sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         final int stateDarkMode = sharedPref.getInt(getString(R.string.state_dark_mode), AppCompatDelegate.MODE_NIGHT_NO);
         AppCompatDelegate.setDefaultNightMode(stateDarkMode);
@@ -1164,9 +1166,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            String onConnectedDeviceName = bt.getConnectedDeviceName();
+            String connectedDeviceName = bt.getConnectedDeviceName();
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString(getString(R.string.bt_bind_name_key), onConnectedDeviceName);
+            editor.putString(getString(R.string.bt_bind_name_key), connectedDeviceName);
 
             String connectedDeviceAddress = bt.getConnectedDeviceAddress();
             editor.putString(getString(R.string.bt_bind_address_key), connectedDeviceAddress);

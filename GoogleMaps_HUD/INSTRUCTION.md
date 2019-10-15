@@ -41,6 +41,6 @@ The app will show a short guide for easy using.
 <img src="/pics/pic%20(3).png" alt="App layout" width="300"/>
 <img src="/pics/pic%20(2).png" alt="App layout" width="300"/>
 
-Please insure all "Status" 3 switch is turning on, then Gamrmin HUD will recieve corrected info for navigation.
+Please insure all THREE "Status" switch is turning on, then Gamrmin HUD will recieve corrected info for navigation.
 
 ## Debug
