@@ -13,15 +13,16 @@ public class GarminHUD extends HUDAdapter {
     // 不與C++共用的部分
     //===========================================================================================
     private static int maxUpdatePerSecond = 6;
+    private final boolean FINAL_FLAG_FALSE = false;
     private int updateCount = 0;
     private long lastUpdateClearTime = System.currentTimeMillis();
     private BluetoothSPP bt;
     private boolean sendResult = false;
+    //===========================================================================================
 
     public GarminHUD(BluetoothSPP bt) {
         this.bt = bt;
     }
-    //===========================================================================================
 
     public final void setMaxUpdatePerSecond(int max) {
         maxUpdatePerSecond = max;
@@ -73,8 +74,6 @@ public class GarminHUD extends HUDAdapter {
         return sendResult;
     }
 
-    private final boolean FINAL_FLAG_FALSE = false;
-
     private void SendHud2(char[] pBuf) {
         int nLen = pBuf.length;
 
@@ -120,15 +119,6 @@ public class GarminHUD extends HUDAdapter {
         sendResult = SendPacket(sendBuf, len);
     }
 
-//    public void SetTime(int nH, int nM, boolean bH, boolean bFlag) {
-//        SetTime(nH, nM, bFlag, false, true, bH);
-//    }
-//
-//    public void SetTime(int nH, int nM, boolean bH) {
-//        SetTime(nH, nM, true, false, true, bH);
-//    }
-
-
     public void SetTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
         char arr[] = {(char) 0x05,
                 bTraffic ? (char) 0xff : (char) 0x00,
@@ -170,11 +160,6 @@ public class GarminHUD extends HUDAdapter {
         };
         SendHud2(arr);
     }
-
-
-//    public void SetDistance(int nDist, eUnits unit) {
-//        SetDistance(nDist, unit, false, false);
-//    }
 
     public void SetDistance(int nDist, eUnits unit, boolean bDecimal, boolean bLeadingZero) {
         char arr[] = {(char) 0x03,
@@ -221,10 +206,6 @@ public class GarminHUD extends HUDAdapter {
         }
         SendHud2(arr);
     }
-
-//    public void SetDirection(eOutAngle nDir) {
-//        SetDirection(nDir, eOutType.Lane, eOutAngle.AsDirection);
-//    }
 
     /*
     eOutType:
@@ -311,10 +292,6 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
-//    public void SetSpeedAndWarning(int nSpeed, int nLimit) {
-//        SetSpeedWarning(nSpeed, nLimit, false, true, true);
-//    }
-
     public void SetSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash) {
         char arr[] = {(char) 0x06,
                 (char) ((nSpeed / 100) % 10), Digit(nSpeed / 10), Digit(nSpeed), bSlash ? (char) 0xff : (char) 0x00,
@@ -332,18 +309,10 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
-//    public void ShowCameraIcon() {
-//        SetCameraIcon(true);
-//    }
-
     public void SetCameraIcon(boolean visible) {
         char arr[] = {0x04, (char) (visible ? 1 : 0)};
         SendHud2(arr);
     }
-
-//    public void ShowGpsLabel() {
-//        SetGpsLabel(true);
-//    }
 
     public void SetGpsLabel(boolean visible) {
         char arr[] = {0x07, (char) (visible ? 1 : 0)};
@@ -379,10 +348,5 @@ public class GarminHUD extends HUDAdapter {
 
         sendResult = SendPacket(sendBuf, sendBuf.length);
     }
-
-//    public void clear() {
-//        SetCameraIcon(false);
-//        SetGpsLabel(false);
-//    }
 
 }
