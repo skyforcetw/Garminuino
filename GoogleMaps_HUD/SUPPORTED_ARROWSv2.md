@@ -1,4 +1,4 @@
-# Supported Arrows
+# Supported Arrows v2
 All arrows we can recognize is compare with a simplified method. [Please reference here.](https://github.com/skyforcetw/Garminuino/issues/13#issuecomment-464131785)
 
 ## Arrivals
