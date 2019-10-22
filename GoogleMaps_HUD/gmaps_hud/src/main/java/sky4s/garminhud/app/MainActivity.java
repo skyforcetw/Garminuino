@@ -40,13 +40,14 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -60,7 +61,6 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v7.app.AppCompatDelegate;
 
 import java.io.File;
 import java.util.Calendar;
@@ -108,10 +108,15 @@ public class MainActivity extends AppCompatActivity {
 
     //traffic
     Switch switchTrafficAndLane;
+    Switch switchAlertAnytime;
+    SeekBar seekBarAlertSpeed;
     Switch switchAlertYellowTraffic;
 
     //bluetooth
     Switch switchBtBindAddress;
+
+    //arrow
+    Switch switchArrowType;
 
     //app-appearance
     Switch switchDarkModeAuto;
@@ -144,7 +149,8 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPref;
     //    private DrawerLayout mDrawerLayout;
     private BluetoothConnectionListener btConnectionListener = new BluetoothConnectionListener();
-    private SeekBar.OnSeekBarChangeListener seekbarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+
+    private SeekBar.OnSeekBarChangeListener seekbarBrightnessChangeListener = new SeekBar.OnSeekBarChangeListener() {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -165,7 +171,32 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+    private SeekBar.OnSeekBarChangeListener seekbarAlertSpeedChangeListener = new SeekBar.OnSeekBarChangeListener() {
 
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            final boolean alertAnytime = switchAlertAnytime.isChecked();
+            if (!alertAnytime) {
+                switchAlertAnytime.setText(getString(R.string.layout_element_alert_speed_exceeds) + " " + (progress * 10) + "kph");
+                storeIntOptions(R.string.option_alert_speed, progress);
+            }
+//            switchAutoBrightness.setText(getString(R.string.layout_seekbar_brightness) + " " + (progress * 10) + "%");
+//            if (null != hud) {
+//                int brightness = getGammaBrightness();
+//                hud.SetBrightness(brightness);
+//            }
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    };
     //===============================================================================================
     // location
     //===============================================================================================
@@ -208,45 +239,53 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    private void clearSpeed() {
-//        if (null != hud) {
-//            if (is_in_navigation) {
-//                hud.ClearSpeedandWarning();
-//            } else {
-//                hud.ClearDistance();
-//            }
-//        }
-//    }
 
     void loadOptions() {
 
         switchShowSpeed.setOnCheckedChangeListener(onCheckedChangedListener);
+
         switchTrafficAndLane.setOnCheckedChangeListener(onCheckedChangedListener);
+        switchAlertAnytime.setOnCheckedChangeListener(onCheckedChangedListener);
         switchAlertYellowTraffic.setOnCheckedChangeListener(onCheckedChangedListener);
+
+        switchAutoBrightness.setOnCheckedChangeListener(onCheckedChangedListener);
         switchShowETA.setOnCheckedChangeListener(onCheckedChangedListener);
         switchIdleShowCurrentTime.setOnCheckedChangeListener(onCheckedChangedListener);
         switchBtBindAddress.setOnCheckedChangeListener(onCheckedChangedListener);
+        switchArrowType.setOnCheckedChangeListener(onCheckedChangedListener);
 
         final boolean optionShowSpeed = sharedPref.getBoolean(getString(R.string.option_show_speed), false);
+
         final boolean optionTrafficAndLaneDetect = sharedPref.getBoolean(getString(R.string.option_traffic_and_lane_detect), false);
+        final boolean optionAlertAnytime = sharedPref.getBoolean(getString(R.string.option_alert_anytime), true);
+        final int optionAlertSpeed = sharedPref.getInt(getString(R.string.option_alert_speed), 10);
         final boolean optionAlertYellowTraffic = sharedPref.getBoolean(getString(R.string.option_alert_yellow_traffic), false);
+
         final boolean optionShowEta = sharedPref.getBoolean(getString(R.string.option_show_eta), false);
         final boolean optionIdleShowTime = sharedPref.getBoolean(getString(R.string.option_idle_show_current_time), false);
         final boolean optionBtBindAddress = sharedPref.getBoolean(getString(R.string.option_bt_bind_address), false);
         final boolean optionDarkModeAuto = sharedPref.getBoolean(getString(R.string.option_dark_mode_auto), false);
         final boolean optionDarkModeMan = sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false);
 
+        final boolean optionArrowType = sharedPref.getBoolean(getString(R.string.option_arrow_type), false);
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 switchShowSpeed.setChecked(optionShowSpeed);
+
                 switchTrafficAndLane.setChecked(optionTrafficAndLaneDetect);
+                switchAlertAnytime.setChecked(optionAlertAnytime);
+                seekBarAlertSpeed.setProgress(optionAlertSpeed);
                 switchAlertYellowTraffic.setChecked(optionAlertYellowTraffic);
+
                 switchShowETA.setChecked(optionShowEta);
                 switchIdleShowCurrentTime.setChecked(optionIdleShowTime);
                 switchBtBindAddress.setChecked(optionBtBindAddress);
                 switchDarkModeAuto.setChecked(optionDarkModeAuto);
                 switchDarkModeManual.setChecked(optionDarkModeMan);
+
+                switchArrowType.setChecked(optionArrowType);
             }
         });
 
@@ -332,7 +371,9 @@ public class MainActivity extends AppCompatActivity {
                     (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         }
     }
+
     private MyCrashHandler myCrashHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         myCrashHandler = MyCrashHandler.instance();
@@ -340,7 +381,7 @@ public class MainActivity extends AppCompatActivity {
         sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         final int stateDarkMode = sharedPref.getInt(getString(R.string.state_dark_mode), AppCompatDelegate.MODE_NIGHT_NO);
         AppCompatDelegate.setDefaultNightMode(stateDarkMode);
-        
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -608,6 +649,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onCheckedChanged(CompoundButton view, boolean b) {
             switch (view.getId()) {
+                case R.id.switchArrowType:
+                    final boolean arrowType2 = ((Switch) view).isChecked();
+                    sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
+                            getString(R.string.option_arrow_type), arrowType2);
+                    storeOptions(R.string.option_arrow_type, arrowType2);
+                    view.setText(arrowType2 ? R.string.layout_element_arrow_type_v2 : R.string.layout_element_arrow_type_v1);
+                    break;
+
                 case R.id.switchShowSpeed:
                     final boolean canShowSpeed = showSpeed(((Switch) view).isChecked());
                     if (!canShowSpeed) {
@@ -624,6 +673,20 @@ public class MainActivity extends AppCompatActivity {
                     }
                     storeOptions(R.string.option_traffic_and_lane_detect, ((Switch) view).isChecked());
                     break;
+
+                case R.id.switchAlertAnytime: {
+                    Switch switchAlertAnytime = (Switch) view;
+                    final boolean alertAnytime = switchAlertAnytime.isChecked();
+
+                    final int progress = seekBarAlertSpeed.getProgress();
+                    switchAlertAnytime.setText(alertAnytime ? getString(R.string.layout_element_alert_anytime)
+                            : getString(R.string.layout_element_alert_speed_exceeds) + " " + (progress * 10) + "kph");
+
+                    seekBarAlertSpeed.setEnabled(!alertAnytime);
+                    seekBarAlertSpeed.setOnSeekBarChangeListener(seekbarAlertSpeedChangeListener);
+                    storeOptions(R.string.option_alert_anytime, alertAnytime);
+                }
+                break;
 
                 case R.id.switchAlertYellowTraffic:
                     alertYellowTraffic = ((Switch) view).isChecked();
@@ -666,11 +729,11 @@ public class MainActivity extends AppCompatActivity {
                     final boolean isDarkModeAuto = ((Switch) view).isChecked();
                     switchDarkModeManual.setEnabled(!isDarkModeAuto);
                     storeOptions(R.string.option_dark_mode_auto, isDarkModeAuto);
-                    if(isDarkModeAuto)
+                    if (isDarkModeAuto)
                         storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
                     else {
                         final boolean isDarkModeManualEnabled = sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false);
-                        if(isDarkModeManualEnabled)
+                        if (isDarkModeManualEnabled)
                             storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_YES);
                         else
                             storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_NO);
@@ -681,12 +744,34 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.switchDarkModeMan:
                     final boolean isDarkModeManualEnabled = ((Switch) view).isChecked();
                     storeOptions(R.string.option_dark_mode_man, isDarkModeManualEnabled);
-                    if(isDarkModeManualEnabled)
+                    if (isDarkModeManualEnabled)
                         storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_YES);
                     else
                         storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_NO);
                     recreate();
                     break;
+
+                case R.id.switchAutoBrightness: {
+                    Switch theAutoBrightness = (Switch) view;
+                    final boolean autoBrightness = theAutoBrightness.isChecked();
+
+                    final int progress = seekBarBrightness.getProgress();
+                    theAutoBrightness.setText(autoBrightness ? getString(R.string.layout_element_auto_brightness)
+                            : getString(R.string.layout_seekbar_brightness) + " " + (progress * 10) + "%");
+
+                    seekBarBrightness.setEnabled(!autoBrightness);
+                    seekBarBrightness.setOnSeekBarChangeListener(seekbarBrightnessChangeListener);
+
+                    if (null != hud) {
+                        if (autoBrightness) {
+                            hud.SetAutoBrightness();
+                        } else {
+                            final int brightness = getGammaBrightness();
+                            hud.SetBrightness(brightness);
+                        }
+                    }
+                }
+                break;
 
                 default:
                     break;
@@ -694,8 +779,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * OnCheckedChangedListener and  buttonOnClicked have similar function for UI response.
+     * We recommend use "button click" with buttonOnClicked.
+     * Other UI use OnCheckedChangedListener.
+     */
     private OnCheckedChangedListener onCheckedChangedListener = new OnCheckedChangedListener();
-
 
     public void buttonOnClicked(View view) {
         switch (view.getId()) {
@@ -735,26 +824,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
 
-            case R.id.switchAutoBrightness:
-                Switch theAutoBrightness = (Switch) view;
-                final boolean autoBrightness = theAutoBrightness.isChecked();
 
-                final int progress = seekBarBrightness.getProgress();
-                theAutoBrightness.setText(autoBrightness ? getString(R.string.layout_element_auto_brightness)
-                        : getString(R.string.layout_seekbar_brightness) + " " + (progress * 10) + "%");
-
-                seekBarBrightness.setEnabled(!autoBrightness);
-                seekBarBrightness.setOnSeekBarChangeListener(seekbarChangeListener);
-
-                if (null != hud) {
-                    if (autoBrightness) {
-                        hud.SetAutoBrightness();
-                    } else {
-                        final int brightness = getGammaBrightness();
-                        hud.SetBrightness(brightness);
-                    }
-                }
-                break;
             default:
                 break;
         }
@@ -1087,6 +1157,7 @@ public class MainActivity extends AppCompatActivity {
     //========================================================================================
     // Titles of the individual pages (displayed in tabs)
     private final String[] PAGE_TITLES = new String[]{
+            "Main",
             "Setup",
             "Debug"
     };
@@ -1126,7 +1197,7 @@ public class MainActivity extends AppCompatActivity {
     private class BluetoothConnectionListener implements BluetoothSPP.BluetoothConnectionListener, BluetoothSPP.AutoConnectionListener {
         @Override
         public void onAutoConnectionStarted() {
-            int a=1;
+            int a = 1;
         }
 
         @Override
@@ -1145,7 +1216,7 @@ public class MainActivity extends AppCompatActivity {
         public void onDeviceConnected(String name, String address) {
             hudConnected = true;
             switchHudConnected.setText(getString(R.string.layout_element_hud_success_connected, name));
-            if(sharedPref.getInt(getString(R.string.state_dark_mode)
+            if (sharedPref.getInt(getString(R.string.state_dark_mode)
                     , AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
                 switchHudConnected.setTextColor(Color.BLACK);
             switchHudConnected.setChecked(true);

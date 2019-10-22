@@ -115,15 +115,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
-/* Fragment used as page 2 */
+/* Fragment used as page 3 */
 public class Page3Fragment extends Fragment {
     private TextView textViewDebug;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_page2, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_page3, container, false);
 
         return rootView;
     }
@@ -131,8 +133,21 @@ public class Page3Fragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        TextView textView = (TextView) getView().findViewById(R.id.textViewDebug);
-        ((MainActivity)getActivity()).textViewDebug = textView;
+
+        ((MainActivity) getActivity()) .switchArrowType =  (Switch) getView().findViewById(R.id.switchArrowType);;
+
+        ((MainActivity) getActivity()).switchAlertAnytime =  (Switch) getView().findViewById(R.id.switchAlertAnytime);;
+        SeekBar seekBarAlertSpeed= (SeekBar) getView().findViewById(R.id.seekBarAlertSpeed);
+        seekBarAlertSpeed.setEnabled(false);
+        ((MainActivity) getActivity()).seekBarAlertSpeed=seekBarAlertSpeed;
+        ((MainActivity) getActivity()).switchAlertYellowTraffic = (Switch) getView().findViewById(R.id.switchAlertYellowTraffic);
+
+        ((MainActivity) getActivity()).switchBtBindAddress = (Switch) getView().findViewById(R.id.switchBtBindAddress);
+
+        ((MainActivity) getActivity()).switchDarkModeAuto = (Switch) getView().findViewById(R.id.switchDarkModeAuto);
+        ((MainActivity) getActivity()).switchDarkModeManual = (Switch) getView().findViewById(R.id.switchDarkModeMan);
+
+        ((MainActivity) getActivity()).loadOptions();
 
     }
 }

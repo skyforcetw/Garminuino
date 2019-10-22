@@ -82,6 +82,8 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private Arrow foundArrow = Arrow.None;
     private Arrow lastFoundArrow = Arrow.None;
+    private ArrowV2 foundArrowV2 = ArrowV2.None;
+    private ArrowV2 lastFoundArrowV2 = ArrowV2.None;
 
     private String distanceNum = null;
     private static String distanceUnit = null;
@@ -133,6 +135,7 @@ public class NotificationMonitor extends NotificationListenerService {
             showETA = intent.getBooleanExtra(getString(R.string.option_show_eta), showETA);
             lastArrivalMinute = -1; // Force to switch to ETA after several toggles
             busyTraffic = intent.getBooleanExtra(getString(R.string.busy_traffic), busyTraffic);
+            arrowTypeV2 = intent.getBooleanExtra(getString(R.string.option_arrow_type), busyTraffic);
         }
     }
 
@@ -395,7 +398,6 @@ public class NotificationMonitor extends NotificationListenerService {
                             storeBitmap(bitmapImage, IMAGE_DIR + "arrow.png");
                         }
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
-                        // Log.i(TAG, "Arrow-Value: "+arrowImage.getArrowValue());
                         foundArrow = getArrow(arrowImage);
                         updateCount++;
                     }
@@ -506,7 +508,6 @@ public class NotificationMonitor extends NotificationListenerService {
                             storeBitmap(bitmapImage, IMAGE_DIR + "arrow.png");
                         }
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
-                        // Log.i(TAG, "Arrow-Value: "+arrowImage.getArrowValue());
                         foundArrow = getArrow(arrowImage);
                         updateCount++;
                     }
@@ -531,8 +532,15 @@ public class NotificationMonitor extends NotificationListenerService {
         }
     }
 
+    private boolean isArrivals() {
+        final boolean arrivals = arrowTypeV2 ? ArrowV2.ArrivalsLeft == foundArrowV2 || ArrowV2.ArrivalsRight == foundArrowV2 :
+                Arrow.Arrivals == foundArrow || Arrow.ArrivalsLeft == foundArrow || Arrow.ArrivalsRight == foundArrow;
+        return arrivals;
+    }
+
     private void logParseMessage() {
-        String notifyMessage = foundArrow.toString() + " " + distanceNum + distanceUnit +
+        String arrowString = arrowTypeV2 ? foundArrowV2.toString() : foundArrow.toString();
+        String notifyMessage = arrowString + " " + distanceNum + distanceUnit +
                 " " + (null == remainHour ? 00 : remainHour) + ":" + remainMinute + " " + remainDistance + remainDistanceUnit + " " + arrivalHour + ":" + arrivalMinute
                 + " (period: " + notifyPeriodTime + ")";
         logi(notifyMessage);
@@ -540,7 +548,8 @@ public class NotificationMonitor extends NotificationListenerService {
         boolean output_parse_message_to_ui = true;
         if (output_parse_message_to_ui) {
             postman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
-            if (Arrow.Arrivals == foundArrow || Arrow.ArrivalsLeft == foundArrow || Arrow.ArrivalsRight == foundArrow) {
+
+            if (isArrivals()) {
                 postman.addBooleanExtra(getString(R.string.arrivals_msg), true);
             }
             postman.addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
@@ -584,69 +593,6 @@ public class NotificationMonitor extends NotificationListenerService {
                 }
             }
 
-//            String title = null != titleObj ? titleObj.toString() : null;
-//            String text = null != textObj ? textObj.toString() : null;
-//            String subText = null != subTextObj ? subTextObj.toString() : null;
-//            subText = null == subText ? text : subText;
-
-            // Check if subText is empty (" ·  · ") --> don't parse subText
-            // Occurs for example on NagivationChanged
-            boolean subTextEmpty = true;
-//            if (null != subText) {
-//                String[] split = subText.split("·");
-//                for (int i = 0; i < split.length; i++) {
-//                    String trimString = split[i].trim();
-//                    boolean string_empty = containsOnlyWhitespaces(trimString);
-//                    if (string_empty == false) {
-//                        subTextEmpty = false;
-//                        break;
-//                    }
-//                }
-//            }
-//
-//            final boolean somethingCanParse = null != subText && !subTextEmpty;
-//            if (somethingCanParse) {
-//                parseTimeAndDistanceToDest(subText);
-//
-//                String[] title_str = title.split("–");
-//                title_str = 1 == title_str.length ? title.split("-") : title_str;
-//                String distance = title_str[0].trim();
-//                if (Character.isDigit(distance.charAt(0)))
-//                    parseDistanceToTurn(distance);
-//                else
-//                    distanceNum = "-1";
-//
-//                Icon largeIcon = notification.getLargeIcon();
-//                Icon smallIcon = notification.getSmallIcon();
-//                if (null != largeIcon) {
-//                    Drawable drawableIco = largeIcon.loadDrawable(this);
-//                    Bitmap bitmapImage = drawableToBitmap(drawableIco);
-//
-//                    if (null != bitmapImage) {
-//                        if (STORE_IMG) {
-//                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow0.png");
-//                        }
-//
-//                        ArrowImage arrowImage = new ArrowImage(bitmapImage);
-//
-//                        if (STORE_IMG) {
-//                            storeBitmap(arrowImage.binaryImage, IMAGE_DIR + "binary.png");
-//                        }
-//
-//                        foundArrow = getArrow(arrowImage);
-//                        if (lastFoundArrow != foundArrow && USE_DB && null != dbHelper) {
-//                            dbHelper.insert(null, bitmapImage, arrowImage, foundArrow);
-//                        }
-//                        lastFoundArrow = foundArrow;
-//
-//                    }
-//                }
-//                logParseMessage();
-//                updateGaminHudInformation();
-//                is_in_navigation = true;
-//            } else {
-//                is_in_navigation = false;
-//            }
             return true;
         } else {
             return false;
@@ -719,8 +665,13 @@ public class NotificationMonitor extends NotificationListenerService {
                             storeBitmap(arrowImage.binaryImage, IMAGE_DIR + "binary.png");
                         }
 
-                        foundArrow = getArrow(arrowImage);
-                        lastFoundArrow = foundArrow;
+                        if (arrowTypeV2) {
+                            foundArrowV2 = getArrowV2(arrowImage);
+                            lastFoundArrowV2 = foundArrowV2;
+                        } else {
+                            foundArrow = getArrow(arrowImage);
+                            lastFoundArrow = foundArrow;
+                        }
 
                     }
                 }
@@ -1046,9 +997,9 @@ public class NotificationMonitor extends NotificationListenerService {
             preArrowV2 = arrow;
         }
         switch (arrow) {
-            case Arrivals:
-                hud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
-                break;
+//            case Arrivals:
+//                hud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
+//                break;
             case ArrivalsLeft:
                 hud.SetDirection(eOutAngle.Left, eOutType.RightFlag, eOutAngle.AsDirection);
                 break;
@@ -1144,9 +1095,9 @@ public class NotificationMonitor extends NotificationListenerService {
             case LeftDown:
                 hud.SetDirection(eOutAngle.LeftDown);
                 break;
-            case LeftToLeave:
-                hud.SetDirection(eOutAngle.EasyLeft, eOutType.LongerLane, eOutAngle.AsDirection);
-                break;
+//            case LeftToLeave:
+//                hud.SetDirection(eOutAngle.EasyLeft, eOutType.LongerLane, eOutAngle.AsDirection);
+//                break;
 
             case Right:
                 hud.SetDirection(eOutAngle.Right);
@@ -1154,9 +1105,9 @@ public class NotificationMonitor extends NotificationListenerService {
             case RightDown:
                 hud.SetDirection(eOutAngle.RightDown);
                 break;
-            case RightToLeave:
-                hud.SetDirection(eOutAngle.EasyRight, eOutType.LongerLane, eOutAngle.AsDirection);
-                break;
+//            case RightToLeave:
+//                hud.SetDirection(eOutAngle.EasyRight, eOutType.LongerLane, eOutAngle.AsDirection);
+//                break;
             case SharpLeft:
                 hud.SetDirection(eOutAngle.SharpLeft);
                 break;
@@ -1177,6 +1128,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private String lastRemainHour = null, lastRemainMinute = null;
     private boolean busyTraffic = false;
+    private boolean arrowTypeV2 = false;
 
     private void updateGaminHudInformation() {
         Log.i(TAG, "hud: " + hud);
@@ -1258,7 +1210,11 @@ public class NotificationMonitor extends NotificationListenerService {
         // arrow
         // if same as last arrow, should be process, because GARMIN Hud will erase the arrow without data receive during sometime..
         //===================================================================================
-        updateArrow(foundArrow);
+        if (arrowTypeV2) {
+            updateArrow(foundArrowV2);
+        } else {
+            updateArrow(foundArrow);
+        }
         final boolean arrowSendResult = (null != hud) ? hud.getSendResult() : false;
         //===================================================================================
 
@@ -1471,7 +1427,10 @@ public class NotificationMonitor extends NotificationListenerService {
             // Check if arrival is possible (don't know if mm==0 work always)
             if (hh == 0 && mm <= 5 && mm != -1) {
                 // Arrived: Delete Distance to turn
-                if ((lastFoundArrow != Arrow.Arrivals) && (lastFoundArrow != Arrow.ArrivalsLeft) && (lastFoundArrow != Arrow.ArrivalsRight)) {
+                final boolean notArrivals = arrowTypeV2 ? (lastFoundArrowV2 != ArrowV2.ArrivalsLeft) && (lastFoundArrowV2 != ArrowV2.ArrivalsRight) :
+                        (lastFoundArrow != Arrow.Arrivals) && (lastFoundArrow != Arrow.ArrivalsLeft) && (lastFoundArrow != Arrow.ArrivalsRight);
+
+                if (notArrivals) {
                     if (hud != null) {
                         hud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
                         hud.ClearDistance();

@@ -46,13 +46,17 @@
     <string name="nav_header_subtitle" translatable="false">skyforce@gmail.com</string>
     <string name="nav_header_desc">Navigation header</string>
 
+    <string name="layout_tab_main">Main</string>
+
     <string name="layout_tab_setup">Setup</string>
     <string name="layout_button_scan_bt">Scan Bluetooth</string>
     <string name="layout_button_reset_bt">Reset Bluetooth</string>
+
     <string name="layout_title_status">Status</string>
     <string name="layout_element_hud_connected">HUD Connected</string>
     <string name="layout_element_notification_caputre">Notification Capture</string>
     <string name="layout_element_gmaps_notification_caputre">Gmap Navigation Capture</string>
+
     <string name="layout_title_settings">Settings</string>
     <string name="layout_element_show_speed">Show Speed</string>
     <string name="layout_element_auto_brightness">Auto Brightness</string>
@@ -60,14 +64,24 @@
     <string name="layout_element_show_eta">Show ETA</string>
     <string name="layout_title_when_nav_done">When Navigation Done</string>
     <string name="layout_element_show_curr_time">Show Current Time</string>
+
     <string name="layout_title_traffic">Traffic</string>
     <string name="layout_element_traffic_lane_det">Traffic &amp; Lane Detect (Need Screenshot)</string>
-    <string name="layout_element_yellow_traffic">Allert Yellow Traffic</string>
+    <string name="layout_element_alert_anytime">Alert anytime</string>
+    <string name="layout_element_alert_speed_exceeds">Alert when speed exceeds</string>
+    <string name="layout_element_yellow_traffic">Alert Yellow Traffic</string>
+
     <string name="layout_title_bluetooth">Bluetooth</string>
     <string name="layout_element_bind_address">Bind Address(Experiment)</string>
+
     <string name="layout_title_design">Design</string>
     <string name="layout_element_darkmode_auto">DarkMode by Systemsettings</string>
     <string name="layout_element_darkmode_man">Enable DarkMode manual</string>
+
+    <string name="layout_title_arrow_type">Arrow Type</string>
+    <string name="layout_element_arrow_type_v1">Arrow V1</string>
+    <string name="layout_element_arrow_type_v2">Arrow V2</string>
+
     <string name="layout_tab_debug">Debug</string>
     <string name="layout_button_list_not">List of Notification</string>
     <string name="layout_button">Button</string>
