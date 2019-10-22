@@ -2,14 +2,14 @@
 All arrows we can recognize is compare with a simplified method. [Please reference here.](https://github.com/skyforcetw/Garminuino/issues/13#issuecomment-464131785)
 
 ## Arrivals
-<img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/Arrivals.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/ArrivalsLeft.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/ArrivalsRight.png">
+ <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/ArrivalsLeft.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/ArrivalsRight.png">
 
 ## Simple Direction
 <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/EasyLeft.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/EasyRight.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/GoTo.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/KeepLeft.png">
 
-<img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/KeepRight.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/Left.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/LeftDown.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/LeftToLeave.png">
+<img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/KeepRight.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/Left.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/LeftDown.png"> 
 
-<img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/Right.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/RightDown.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/RightToLeave.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/SharpLeft.png">
+<img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/Right.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/RightDown.png">  <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/SharpLeft.png">
 
 <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/SharpRight.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/Straight.png">
 
