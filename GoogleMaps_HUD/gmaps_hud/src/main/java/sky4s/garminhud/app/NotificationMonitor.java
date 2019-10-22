@@ -35,6 +35,7 @@ import java.util.List;
 
 import sky4s.garminhud.Arrow;
 import sky4s.garminhud.ArrowImage;
+import sky4s.garminhud.ArrowV2;
 import sky4s.garminhud.eOutAngle;
 import sky4s.garminhud.eOutType;
 import sky4s.garminhud.eUnits;
@@ -866,16 +867,183 @@ public class NotificationMonitor extends NotificationListenerService {
         return minSadArrow;
     }
 
-    private Arrow preArrow = Arrow.None;
+    private static ArrowV2 getArrowV2(ArrowImage image) {
+        long minSad = Integer.MAX_VALUE;
+        ArrowV2 minSadArrow = ArrowV2.None;
+
+        int totalArrowCount = ArrowV2.values().length;
+        long sadArray[] = new long[totalArrowCount];
+        int index = 0;
+
+        for (ArrowV2 a : ArrowV2.values()) {
+            long sad = image.getSAD(a.valueLeft);
+            sadArray[index++] = sad;
+            if (sad < minSad) {
+                minSad = sad;
+                minSadArrow = a;
+            }
+            if (0 == sad) {
+                String integerString = Long.toString(a.valueLeft);
+                Log.d(TAG, "Recognize " + a.name() + " " + integerString);
+                return a;
+
+            }
+        }
+        Log.d(TAG, "No Recognize, minSad: " + minSad + " arrow:" + minSadArrow);
+        return minSadArrow;
+    }
+
+    private Arrow preArrowV1 = Arrow.None;
 
     void updateArrow(Arrow arrow) {
         if (null == hud) {
             return;
         }
-        if (preArrow == arrow) {
+        if (preArrowV1 == arrow) {
 
         } else {
-            preArrow = arrow;
+            preArrowV1 = arrow;
+        }
+        switch (arrow) {
+            case Arrivals:
+                hud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
+                break;
+            case ArrivalsLeft:
+                hud.SetDirection(eOutAngle.Left, eOutType.RightFlag, eOutAngle.AsDirection);
+                break;
+            case ArrivalsRight:
+                hud.SetDirection(eOutAngle.Right, eOutType.RightFlag, eOutAngle.AsDirection);
+                break;
+
+            case EasyLeft:
+            case KeepLeft:
+                hud.SetDirection(eOutAngle.EasyLeft);
+                break;
+
+            case EasyRight:
+            case KeepRight:
+                hud.SetDirection(eOutAngle.EasyRight);
+                break;
+            case GoTo:
+                hud.SetDirection(eOutAngle.Straight);
+                break;
+
+            case LeaveRoundabout://1 checked
+                hud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
+                break;
+
+            case LeaveRoundaboutAsUTurn:
+                hud.SetDirection(eOutAngle.Down, eOutType.LeftRoundabout, eOutAngle.Down);
+                break;
+
+
+            case LeaveRoundaboutAsUTurnCC:
+                hud.SetDirection(eOutAngle.Down, eOutType.RightRoundabout, eOutAngle.Down);
+                break;
+
+
+            case LeaveRoundaboutEasyLeft://4 checked
+                hud.SetDirection(eOutAngle.EasyLeft, eOutType.LeftRoundabout, eOutAngle.EasyLeft);
+                break;
+
+            case LeaveRoundaboutEasyLeftCC://5 checked
+                hud.SetDirection(eOutAngle.EasyLeft, eOutType.RightRoundabout, eOutAngle.EasyLeft);
+                break;
+
+            case LeaveRoundaboutEasyRight://6 checked
+                hud.SetDirection(eOutAngle.EasyRight, eOutType.LeftRoundabout, eOutAngle.EasyRight);
+                break;
+            case LeaveRoundaboutEasyRightCC://7 checked
+                hud.SetDirection(eOutAngle.EasyRight, eOutType.RightRoundabout, eOutAngle.EasyRight);
+                break;
+
+            case LeaveRoundaboutCC://8 checked
+                hud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
+                break;
+
+            case LeaveRoundaboutLeft://9 checked
+                hud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
+                break;
+            case LeaveRoundaboutLeftCC://10 checked
+                hud.SetDirection(eOutAngle.Left, eOutType.RightRoundabout, eOutAngle.Left);
+                break;
+            case LeaveRoundaboutRight://11 checked
+                hud.SetDirection(eOutAngle.Right, eOutType.LeftRoundabout, eOutAngle.Right);
+                break;
+            case LeaveRoundaboutRightCC://12 checked
+                hud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
+                break;
+
+            case LeaveRoundaboutSharpLeft://13 checked
+                hud.SetDirection(eOutAngle.SharpLeft, eOutType.LeftRoundabout, eOutAngle.SharpLeft);
+                break;
+            case LeaveRoundaboutSharpLeftCC://14 checked
+                hud.SetDirection(eOutAngle.SharpLeft, eOutType.RightRoundabout, eOutAngle.SharpLeft);
+                break;
+
+            case LeaveRoundaboutSharpRight://15 checked
+                hud.SetDirection(eOutAngle.SharpRight, eOutType.LeftRoundabout, eOutAngle.SharpRight);
+                break;
+            case LeaveRoundaboutSharpRightCC://16
+                hud.SetDirection(eOutAngle.SharpRight, eOutType.RightRoundabout, eOutAngle.SharpRight);
+                break;
+
+            case LeaveRoundaboutStraight://
+                hud.SetDirection(eOutAngle.Straight, eOutType.LeftRoundabout, eOutAngle.Straight);
+                break;
+
+            case LeaveRoundaboutStraightCC://
+                hud.SetDirection(eOutAngle.Straight, eOutType.RightRoundabout, eOutAngle.Straight);
+                break;
+
+            case Left:
+                hud.SetDirection(eOutAngle.Left);
+                break;
+
+            case LeftDown:
+                hud.SetDirection(eOutAngle.LeftDown);
+                break;
+            case LeftToLeave:
+                hud.SetDirection(eOutAngle.EasyLeft, eOutType.LongerLane, eOutAngle.AsDirection);
+                break;
+
+            case Right:
+                hud.SetDirection(eOutAngle.Right);
+                break;
+            case RightDown:
+                hud.SetDirection(eOutAngle.RightDown);
+                break;
+            case RightToLeave:
+                hud.SetDirection(eOutAngle.EasyRight, eOutType.LongerLane, eOutAngle.AsDirection);
+                break;
+            case SharpLeft:
+                hud.SetDirection(eOutAngle.SharpLeft);
+                break;
+            case SharpRight:
+                hud.SetDirection(eOutAngle.SharpRight);
+                break;
+            case Straight:
+                hud.SetDirection(eOutAngle.Straight);
+                break;
+
+            case Convergence:
+            case None:
+            default:
+                hud.SetDirection(eOutAngle.AsDirection);
+                break;
+        }
+    }
+
+    private ArrowV2 preArrowV2 = ArrowV2.None;
+
+    void updateArrow(ArrowV2 arrow) {
+        if (null == hud) {
+            return;
+        }
+        if (preArrowV2 == arrow) {
+
+        } else {
+            preArrowV2 = arrow;
         }
         switch (arrow) {
             case Arrivals:

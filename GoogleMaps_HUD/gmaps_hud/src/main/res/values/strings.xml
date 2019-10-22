@@ -85,4 +85,7 @@
     <string name="message_bt_not_avialable">Bluetooth is not available</string>
     <string name="message_bt_not_enabled">Bluetooth was not enabled.</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

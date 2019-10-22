@@ -193,12 +193,12 @@ cv::Mat to_cv_image(Image image) {
 }
 
 
-int recognize()
+int recognize(std::string dir)
 {
 	using namespace cv;
 	using namespace std;
 	vector<Mat> image_vec;
-	string dir = "./Google_Arrow2/";
+	//string dir = "./Google_Arrow2/";
 
 	vector<Image> image_vector;
 	//int bit_of_image = IMAGE_LENGTH * IMAGE_LENGTH;
@@ -240,11 +240,13 @@ int recognize()
 
 int main() {
 
+	const std::string dir = "./Google_Arrow3 - remove alpha/";
+
 	if (false) {
 		using namespace cv;
 		using namespace std;
 		vector<Mat> image_vec;
-		string dir = "./Google_Arrow2/";
+		//string dir = "./Google_Arrow2/";
 
 
 		Size size(IMAGE_LENGTH, IMAGE_LENGTH);
@@ -260,6 +262,6 @@ int main() {
 	}
 
 	if (true) {
-		recognize();
+		recognize(dir);
 	}
 }

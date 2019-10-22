@@ -38,7 +38,7 @@ public class Page1Fragment extends Fragment {
         ((MainActivity) getActivity()).seekBarBrightness = seekBarBrightness;
 
         ((MainActivity) getActivity()).switchShowETA = (Switch) getView().findViewById(R.id.switchShowETA);
-        ((MainActivity) getActivity()).switchIdleShowCurrrentTime = (Switch) getView().findViewById(R.id.switchIdleShowCurrentTime);
+        ((MainActivity) getActivity()).switchIdleShowCurrentTime = (Switch) getView().findViewById(R.id.switchIdleShowCurrentTime);
 
         ((MainActivity) getActivity()).switchTrafficAndLane = (Switch) getView().findViewById(R.id.switchTrafficAndLane);
         ((MainActivity) getActivity()).switchAlertYellowTraffic = (Switch) getView().findViewById(R.id.switchAlertYellowTraffic);

@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
     SeekBar seekBarBrightness;
 
     Switch switchShowETA;
-    Switch switchIdleShowCurrrentTime;
+    Switch switchIdleShowCurrentTime;
 
     //traffic
     Switch switchTrafficAndLane;
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
         switchTrafficAndLane.setOnCheckedChangeListener(onCheckedChangedListener);
         switchAlertYellowTraffic.setOnCheckedChangeListener(onCheckedChangedListener);
         switchShowETA.setOnCheckedChangeListener(onCheckedChangedListener);
-        switchIdleShowCurrrentTime.setOnCheckedChangeListener(onCheckedChangedListener);
+        switchIdleShowCurrentTime.setOnCheckedChangeListener(onCheckedChangedListener);
         switchBtBindAddress.setOnCheckedChangeListener(onCheckedChangedListener);
 
         final boolean optionShowSpeed = sharedPref.getBoolean(getString(R.string.option_show_speed), false);
@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
                 switchTrafficAndLane.setChecked(optionTrafficAndLaneDetect);
                 switchAlertYellowTraffic.setChecked(optionAlertYellowTraffic);
                 switchShowETA.setChecked(optionShowEta);
-                switchIdleShowCurrrentTime.setChecked(optionIdleShowTime);
+                switchIdleShowCurrentTime.setChecked(optionIdleShowTime);
                 switchBtBindAddress.setChecked(optionBtBindAddress);
                 switchDarkModeAuto.setChecked(optionDarkModeAuto);
                 switchDarkModeManual.setChecked(optionDarkModeMan);
@@ -1093,6 +1093,7 @@ public class MainActivity extends AppCompatActivity {
     // The fragments that are used as the individual pages
     private final Fragment[] PAGES = new Fragment[]{
             new Page1Fragment(),
+            new Page3Fragment(),
             new Page2Fragment()
     };
 
@@ -1295,8 +1296,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
                 case 4: {
-                    final boolean now = !switchIdleShowCurrrentTime.isChecked();
-                    switchIdleShowCurrrentTime.setChecked(now);
+                    final boolean now = !switchIdleShowCurrentTime.isChecked();
+                    switchIdleShowCurrentTime.setChecked(now);
                     notification = getNormalNotification("Show Current Time: "
                             + (now ? "On" : "Off"));
                     mNotificationManager.notify(R.integer.notify_id, notification);
