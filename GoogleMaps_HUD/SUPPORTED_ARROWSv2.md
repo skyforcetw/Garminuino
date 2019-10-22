@@ -24,4 +24,4 @@ All arrows we can recognize is compare with a simplified method. [Please referen
 <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/LeaveRoundaboutSharpLeft.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/LeaveRoundaboutSharpLeftCC.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/LeaveRoundaboutSharpRight.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/LeaveRoundaboutSharpRightCC.png"> 
 
 ## Others
-<img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/Convergence.png"> <img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/GoTo.png">
+<img width="88" src="/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3 - remove alpha/Convergence.png"> >
