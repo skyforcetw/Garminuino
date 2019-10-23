@@ -180,11 +180,6 @@ public class MainActivity extends AppCompatActivity {
                 switchAlertAnytime.setText(getString(R.string.layout_element_alert_speed_exceeds) + " " + (progress * 10) + "kph");
                 storeIntOptions(R.string.option_alert_speed, progress);
             }
-//            switchAutoBrightness.setText(getString(R.string.layout_seekbar_brightness) + " " + (progress * 10) + "%");
-//            if (null != hud) {
-//                int brightness = getGammaBrightness();
-//                hud.SetBrightness(brightness);
-//            }
         }
 
         @Override
@@ -254,10 +249,13 @@ public class MainActivity extends AppCompatActivity {
         switchBtBindAddress.setOnCheckedChangeListener(onCheckedChangedListener);
         switchArrowType.setOnCheckedChangeListener(onCheckedChangedListener);
 
+        //======================================
+        // default settings
+        //======================================
         final boolean optionShowSpeed = sharedPref.getBoolean(getString(R.string.option_show_speed), false);
 
         final boolean optionTrafficAndLaneDetect = sharedPref.getBoolean(getString(R.string.option_traffic_and_lane_detect), false);
-        final boolean optionAlertAnytime = sharedPref.getBoolean(getString(R.string.option_alert_anytime), true);
+        final boolean optionAlertAnytime = sharedPref.getBoolean(getString(R.string.option_alert_anytime), false);
         final int optionAlertSpeed = sharedPref.getInt(getString(R.string.option_alert_speed), 8);
         final boolean optionAlertYellowTraffic = sharedPref.getBoolean(getString(R.string.option_alert_yellow_traffic), false);
 
@@ -267,7 +265,8 @@ public class MainActivity extends AppCompatActivity {
         final boolean optionDarkModeAuto = sharedPref.getBoolean(getString(R.string.option_dark_mode_auto), false);
         final boolean optionDarkModeMan = sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false);
 
-        final boolean optionArrowType = sharedPref.getBoolean(getString(R.string.option_arrow_type), false);
+        final boolean optionArrowType = sharedPref.getBoolean(getString(R.string.option_arrow_type), true);
+        //======================================
 
         runOnUiThread(new Runnable() {
             @Override
