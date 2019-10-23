@@ -6,6 +6,8 @@ Simple instruction for the app:
 
 [Install.](./INSTALL.md)
 
+[First Use.](./FIRST_USE.md)
+
 [Instruction.](./INSTRUCTION.md)
 
 ## Supported Arrows
