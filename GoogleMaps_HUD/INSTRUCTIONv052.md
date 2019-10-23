@@ -61,4 +61,6 @@ This can switch on alert when driving on the highway only.
 ## Debug
 This page include tools for debug using.
 
+<img src="/pics/v0.5.2_screenshot/490197.jpg"   width="300"/>
 
+<img src="/pics/v0.5.2_screenshot/490198.jpg"   width="300"/>
