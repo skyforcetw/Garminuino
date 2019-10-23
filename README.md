@@ -8,7 +8,7 @@ There has two sub-project use GarminHUD as:
  
 
 Belows are two sub-proejct put together: GoogleMap navigation HUD(Left)+ Speedometer HUD(Center)
-<img src="./pics/P_20190125_225356-02.jpeg" alt="Two Garmin HUD application" width="500"/>
+<img src="./pics/489897.jpg" alt="Two Garmin HUD application" width="500"/>
 
 Android App: Google Map HUD
 
