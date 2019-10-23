@@ -14,17 +14,14 @@ Android App: Google Map HUD
 
 <img src="./pics/451627.jpg" alt="App layout" width="400"/>
 
-## ToDo List
-1. ~~Add auto-connection function.~~
-2. Auto lanunch google map when HUD connected.
-3. Comment source-code.
-4. ~~Show some usage infomation when navigation is done, don't make it seems hang when navigating done.~~
-5. ~~Figure out auto connection is working well or not.~~
-6. ~~Lets "Show Speed" function working well.~~
-7. Better auto-connection with GarminHUD
-8. Support Sygic & OsmAnd
-
 ## GoogleMap navigation HUD App Release History ##
+
+
+### [2019-09-26 v0.5.1](https://github.com/skyforcetw/Garminuino/releases/download/0.5.1/gmaps_hud-release_v0.5.1.apk)
+Support Arrow Style v2
+Arrow v1 style/Arrow v2 style:
+
+![v1](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/Right.png?raw=true)![v2](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3%20-%20remove%20alpha/Right.png?raw=true)
 
 ### [2019-09-26 v0.4.9](https://github.com/skyforcetw/Garminuino/releases/download/0.4.9/gmaps_hud-release_v0.4.9.apk)
 Polish Support & New Dark Mode.
@@ -87,6 +84,18 @@ So navigation part of Garminuino turn into a pure android's app(apk) now!
 ## [GoogleMaps HUD App](https://github.com/skyforcetw/Garminuino/tree/master/GoogleMaps_HUD)
 A pure android app, for project navi-info of google map navigation.
 Works just like garmin streetpilot with Garmin HUD.
+
+***
+
+## ToDo List
+1. ~~Add auto-connection function.~~
+2. Auto lanunch google map when HUD connected.
+3. Comment source-code.
+4. ~~Show some usage infomation when navigation is done, don't make it seems hang when navigating done.~~
+5. ~~Figure out auto connection is working well or not.~~
+6. ~~Lets "Show Speed" function working well.~~
+7. Better auto-connection with GarminHUD
+8. Support Sygic & OsmAnd
 
 ***
 
