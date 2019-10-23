@@ -21,6 +21,12 @@ Show current time when no navigation.
 Detect red and yellow traffic, and show it on the GarminHUD.
 Detect lane instruction, and show it on the GarminHUD.
 
+## Notification
+This icons maps to Main page's switches.
+
+<img src="/pics/v0.5.2_screenshot/490188.jpg"   width="300"/>
+Show Speed, Auto Brightness, Show ETA, Show Current Time, Traffic&Lane Detect
+
 
 ## Setup
 This page include switches for function fine-tune.
@@ -42,7 +48,4 @@ This page include switches for function fine-tune.
 ## Debug
 This page include tools for debug using.
 
-## Notification
-This icons maps to Main page's switches.
 
-<img src="/pics/v0.5.2_screenshot/490188.jpg"   width="300"/>
