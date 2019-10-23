@@ -29,7 +29,7 @@ This icons maps to Main page's switches.
 * Auto Brightness
 * Show ETA
 * Show Current Time
-* Traffic&Lane Detect
+*Traffic&Lane Detect
 
 
 ## Setup
