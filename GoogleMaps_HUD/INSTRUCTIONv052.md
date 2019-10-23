@@ -10,17 +10,17 @@ When you open the app, it will check the Notification Access, please enable the 
 ## Short Guide
 The app will show a short guide for easy using.
 
-<img src="/pics/490181.jpg" alt="App layout" width="300"/>
-<img src="/pics/490182.jpg" alt="App layout" width="300"/>
-<img src="/pics/490183.jpg" alt="App layout" width="300"/>
-<img src="/pics/490184.jpg" alt="App layout" width="300"/>
-<img src="/pics/490185.jpg" alt="App layout" width="300"/>
+<img src="/pics/v0.5.2_screenshot/490181.jpg" alt="App layout" width="300"/>
+<img src="/pics/v0.5.2_screenshot/490182.jpg" alt="App layout" width="300"/>
+<img src="/pics/v0.5.2_screenshot/490183.jpg" alt="App layout" width="300"/>
+<img src="/pics/v0.5.2_screenshot/490184.jpg" alt="App layout" width="300"/>
+<img src="/pics/v0.5.2_screenshot/490185.jpg" alt="App layout" width="300"/>
 
 Please insure all THREE "Status" switch is turning on, then Gamrmin HUD will recieve corrected info for navigation.
 
 ## Main
 This page include switch for main function.
-<img src="/pics/490186.jpg" alt="App layout" width="300"/>
+<img src="/pics/v0.5.2_screenshot/490186.jpg" alt="App layout" width="300"/>
 #Show Speed
 Fetch gps speed from smartphone, and maps it to the GarminHUD
 #Auto Brightness
@@ -36,11 +36,11 @@ Detect lane instruction, and show it on the GarminHUD.
 
 ## Setup
 This page include switch for function fine-tune.
-<img src="/pics/490187.jpg" alt="App layout" width="300"/>
+<img src="/pics/v0.5.2_screenshot/490187.jpg" alt="App layout" width="300"/>
 
 ## Debug
 This page include tools for debug using.
 
 ## Notification
 This icon maps to Main page's switchs.
-<img src="/pics/490188.jpg" alt="App layout" width="300"/>
+<img src="/pics/v0.5.2_screenshot/490188.jpg" alt="App layout" width="300"/>
