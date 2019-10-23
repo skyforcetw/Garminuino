@@ -17,7 +17,7 @@ Android App: Google Map HUD
 ## GoogleMap navigation HUD App Release History ##
 
 
-### [2019-09-26 v0.5.1](https://github.com/skyforcetw/Garminuino/releases/download/0.5.1/gmaps_hud-release_v0.5.1.apk)
+### [2019-10-23 v0.5.1](https://github.com/skyforcetw/Garminuino/releases/download/0.5.1/gmaps_hud-release_v0.5.1.apk)
 Support Arrow Style v2
 Arrow v1 style/Arrow v2 style:
 
