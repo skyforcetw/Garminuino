@@ -21,6 +21,7 @@ Please insure all THREE "Status" switch is turning on, then Gamrmin HUD will rec
 ## Main
 This page include switch for main function.
 <img src="/pics/v0.5.2_screenshot/490186.jpg" alt="App layout" width="300"/>
+
 #Show Speed
 Fetch gps speed from smartphone, and maps it to the GarminHUD
 #Auto Brightness
