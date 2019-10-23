@@ -40,7 +40,9 @@ This page include switches for function fine-tune.
 
 ### Arrow Type
 There two types of google navagation's arrow, you can select current type you use.
+
 Arrow v1/v2 style:
+
 ![v1](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/Right.png?raw=true)![v2](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3%20-%20remove%20alpha/Right.png?raw=true)
 
 ### Traffic/Alert when speed exceeds kph
