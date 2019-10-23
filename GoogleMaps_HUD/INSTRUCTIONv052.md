@@ -25,11 +25,12 @@ Detect lane instruction, and show it on the GarminHUD.
 This icons maps to Main page's switches.
 
 <img src="/pics/v0.5.2_screenshot/490188.jpg"   width="300"/>
+
 * Show Speed
 * Auto Brightness
 * Show ETA
 * Show Current Time
-*Traffic&Lane Detect
+* Traffic&Lane Detect
 
 
 ## Setup
