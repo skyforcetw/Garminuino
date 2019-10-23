@@ -540,7 +540,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private void logParseMessage() {
         String arrowString = arrowTypeV2 ? foundArrowV2.toString() : foundArrow.toString();
-        String notifyMessage = arrowString + " " + distanceNum + distanceUnit +
+        String notifyMessage = arrowString + "(" + arrowMinSad + ") " + distanceNum + distanceUnit +
                 " " + (null == remainHour ? 00 : remainHour) + ":" + remainMinute + " " + remainDistance + remainDistanceUnit + " " + arrivalHour + ":" + arrivalMinute
                 + " (period: " + notifyPeriodTime + ")";
         logi(notifyMessage);
@@ -793,18 +793,18 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     private static Arrow getArrow(ArrowImage image) {
-        long minSad = Integer.MAX_VALUE;
+        arrowMinSad = Integer.MAX_VALUE;
         Arrow minSadArrow = Arrow.None;
 
         int totalArrowCount = Arrow.values().length;
-        long sadArray[] = new long[totalArrowCount];
+        int sadArray[] = new int[totalArrowCount];
         int index = 0;
 
         for (Arrow a : Arrow.values()) {
-            long sad = image.getSAD(a.valueLeft);
+            int sad = image.getSAD(a.valueLeft);
             sadArray[index++] = sad;
-            if (sad < minSad) {
-                minSad = sad;
+            if (sad < arrowMinSad) {
+                arrowMinSad = sad;
                 minSadArrow = a;
             }
             if (0 == sad) {
@@ -814,23 +814,25 @@ public class NotificationMonitor extends NotificationListenerService {
 
             }
         }
-        Log.d(TAG, "No Recognize, minSad: " + minSad + " arrow:" + minSadArrow);
+        Log.d(TAG, "No Recognize, minSad: " + arrowMinSad + " arrow:" + minSadArrow);
         return minSadArrow;
     }
 
+    static int arrowMinSad = 0;
+
     private static ArrowV2 getArrowV2(ArrowImage image) {
-        long minSad = Integer.MAX_VALUE;
+        arrowMinSad = Integer.MAX_VALUE;
         ArrowV2 minSadArrow = ArrowV2.None;
 
         int totalArrowCount = ArrowV2.values().length;
-        long sadArray[] = new long[totalArrowCount];
+        int sadArray[] = new int[totalArrowCount];
         int index = 0;
 
         for (ArrowV2 a : ArrowV2.values()) {
-            long sad = image.getSAD(a.valueLeft);
+            int sad = image.getSAD(a.valueLeft);
             sadArray[index++] = sad;
-            if (sad < minSad) {
-                minSad = sad;
+            if (sad < arrowMinSad) {
+                arrowMinSad = sad;
                 minSadArrow = a;
             }
             if (0 == sad) {
@@ -840,7 +842,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
             }
         }
-        Log.d(TAG, "No Recognize, minSad: " + minSad + " arrow:" + minSadArrow);
+        Log.d(TAG, "No Recognize, minSad: " + arrowMinSad + " arrow:" + minSadArrow);
         return minSadArrow;
     }
 

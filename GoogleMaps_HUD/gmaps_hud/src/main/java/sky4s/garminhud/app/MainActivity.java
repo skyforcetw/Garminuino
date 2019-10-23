@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
 
         final boolean optionTrafficAndLaneDetect = sharedPref.getBoolean(getString(R.string.option_traffic_and_lane_detect), false);
         final boolean optionAlertAnytime = sharedPref.getBoolean(getString(R.string.option_alert_anytime), true);
-        final int optionAlertSpeed = sharedPref.getInt(getString(R.string.option_alert_speed), 10);
+        final int optionAlertSpeed = sharedPref.getInt(getString(R.string.option_alert_speed), 8);
         final boolean optionAlertYellowTraffic = sharedPref.getBoolean(getString(R.string.option_alert_yellow_traffic), false);
 
         final boolean optionShowEta = sharedPref.getBoolean(getString(R.string.option_show_eta), false);
@@ -679,8 +679,10 @@ public class MainActivity extends AppCompatActivity {
                     final boolean alertAnytime = switchAlertAnytime.isChecked();
 
                     final int progress = seekBarAlertSpeed.getProgress();
+                    final int kph = progress * 10;
+                    alertSpeedExceeds = alertAnytime ? 0 : kph;
                     switchAlertAnytime.setText(alertAnytime ? getString(R.string.layout_element_alert_anytime)
-                            : getString(R.string.layout_element_alert_speed_exceeds) + " " + (progress * 10) + "kph");
+                            : getString(R.string.layout_element_alert_speed_exceeds) + " " + kph + "kph");
 
                     seekBarAlertSpeed.setEnabled(!alertAnytime);
                     seekBarAlertSpeed.setOnSeekBarChangeListener(seekbarAlertSpeedChangeListener);
@@ -782,7 +784,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * OnCheckedChangedListener and  buttonOnClicked have similar function for UI response.
      * We recommend use "button click" with buttonOnClicked.
-     * Other UI use OnCheckedChangedListener.
+     * Other UI (like switch) use OnCheckedChangedListener.
      */
     private OnCheckedChangedListener onCheckedChangedListener = new OnCheckedChangedListener();
 
@@ -1101,6 +1103,7 @@ public class MainActivity extends AppCompatActivity {
             if (has_gps_speed) {
                 double speed = intent.getDoubleExtra(getString(R.string.gps_speed), 0);
                 int int_speed = (int) Math.round(speed);
+                gpsSpeed = int_speed;
                 setSpeed(int_speed, true);
 
                 CharSequence orignal_text = textViewDebug.getText();
@@ -1285,6 +1288,8 @@ public class MainActivity extends AppCompatActivity {
     int mHeight;
     private int mRotation;
     private OrientationChangeCallback mOrientationChangeCallback;
+    int alertSpeedExceeds = 0;
+    int gpsSpeed = 0;
     boolean alertYellowTraffic = false;
 
     private static final int SCREENCAP_REQUEST_CODE = 100;
@@ -1548,6 +1553,9 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 
+/**
+ * For other class can send message to Main Activity
+ */
 class MainActivityPostman {
     private String whoami;
     private Context context;

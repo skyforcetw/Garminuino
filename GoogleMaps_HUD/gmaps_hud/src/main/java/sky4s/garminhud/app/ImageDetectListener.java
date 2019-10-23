@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.Image;
 import android.media.ImageReader;
-import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
@@ -49,12 +48,11 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
         DayV1, NightV1, V2, Unknow
     }
 
-    ;
-
     private MainActivity activity;
     private MainActivityPostman postman;
     private static final String TAG = ImageDetectListener.class.getSimpleName();
     private HUDInterface hud;
+
 
     public ImageDetectListener(MainActivity activity) {
         this.activity = activity;
@@ -69,54 +67,57 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
             }
         }
         postman = new MainActivityPostman(activity, activity.getString(R.string.broadcast_sender_image_detect));
+
     }
 
-    public final String PreImage = "myscreen_pre.png";
-    public final String NowImage = "myscreen_now.png";
-    public final String GmapImage = "gmap.png";
-    public final String MapImage = "map.png";
-    public final String LaneImage = "lane.png";
 
-    public final int ArrowColor_Day = Color.rgb(66, 133, 244);
-    public final int ArrowColor_Night = Color.rgb(223, 246, 255);
-    public final int ArrowColor_Static = Color.rgb(199, 201, 201);
-    public final int LaneNowWhite = Color.rgb(255, 255, 255);
+    public final static String PreImage = "myscreen_pre.png";
+    public final static String NowImage = "myscreen_now.png";
+    public final static String GmapImage = "gmap.png";
+    public final static String MapImage = "map.png";
+    public final static String LaneImage = "lane.png";
 
-    public final int RoadBgGreen_Day = Color.rgb(15, 157, 88);
-    public final int RoadBgGreen_Night = Color.rgb(13, 144, 79);
+    public final static int ArrowColor_Day = Color.rgb(66, 133, 244);
+    public final static int ArrowColor_Night = Color.rgb(223, 246, 255);
+    public final static int ArrowColor_Static = Color.rgb(199, 201, 201);
+    public final static int LaneNowWhite = Color.rgb(255, 255, 255);
 
-    public final int LaneBgGreen_DayV1 = Color.rgb(11, 128, 67);
-    public final int LaneBgGreen_NightV1 = Color.rgb(9, 113, 56);
-    public final int LaneDivideWhiteV1 = Color.rgb(255, 255, 255);
+    public final static int RoadBgGreen_Day = Color.rgb(15, 157, 88);
+    public final static int RoadBgGreen_Night = Color.rgb(13, 144, 79);
 
-    public final int RoadBgGreen_V2 = Color.rgb(11, 128, 67);
-    public final int LaneBgGreen_V2 = Color.rgb(13, 101, 45);
-    public final int LaneDivideWhiteV2 = Color.rgb(129, 201, 149);
+    public final static int LaneBgGreen_DayV1 = Color.rgb(11, 128, 67);
+    public final static int LaneBgGreen_NightV1 = Color.rgb(9, 113, 56);
+    public final static int LaneDivideWhiteV1 = Color.rgb(255, 255, 255);
+
+    public final static int RoadBgGreen_V2 = Color.rgb(11, 128, 67);
+    public final static int LaneBgGreen_V2 = Color.rgb(13, 101, 45);
+    public final static int LaneDivideWhiteV2 = Color.rgb(129, 201, 149);
 
 
-    public final int OrangeTraffic_V1 = Color.rgb(255, 171, 52);
-    public final int OrangeTraffic_DayV2 = Color.rgb(255, 171, 52);
-    public final int OrangeTraffic_NightV2 = Color.rgb(163, 113, 55);
-    public final int RedTraffic_V1 = Color.rgb(221, 25, 29);
-    public final int RedTraffic_DayV2 = Color.rgb(221, 25, 29);
-    public final int RedTraffic_NightV2 = Color.rgb(146, 96, 92);
+    public final static int OrangeTraffic_V1 = Color.rgb(255, 171, 52);
+    public final static int OrangeTraffic_DayV2 = Color.rgb(255, 171, 52);
+    public final static int OrangeTraffic_NightV2 = Color.rgb(163, 113, 55);
+    public final static int RedTraffic_V1 = Color.rgb(221, 25, 29);
+    public final static int RedTraffic_DayV2 = Color.rgb(221, 25, 29);
+    public final static int RedTraffic_NightV2 = Color.rgb(146, 96, 92);
     private int[] pixelsInFindColor;
 
 
-    private boolean busyTrafficDetect(Bitmap map, boolean alertYellowTraffic, Theme theme) {
+    private boolean busyTrafficDetect(Bitmap map, boolean alertYellowTraffic, int alertSpeedExceeds, int gpsSpeed, Theme theme) {
         final boolean isV1 = Theme.DayV1 == theme || Theme.NightV1 == theme;
 
         Rect orange_roi = isV1 ? getRoi(map, OrangeTraffic_V1) : getRoi(map, OrangeTraffic_DayV2, OrangeTraffic_NightV2);
         Rect roi_red = isV1 ? getRoi(map, RedTraffic_V1) : getRoi(map, RedTraffic_DayV2, RedTraffic_NightV2);
         Log.i(TAG, "busyTrafficDetect: " + "Orange" + orange_roi + " Red" + roi_red);
 
-        boolean yellowTraffic = -1 != orange_roi.x;
-        boolean redTraffic = -1 != roi_red.x;
+        final boolean yellowTraffic = -1 != orange_roi.x;
+        final boolean redTraffic = -1 != roi_red.x;
 
-        boolean busyTraffic = alertYellowTraffic ? yellowTraffic || redTraffic : redTraffic;
-        return busyTraffic;
+        final boolean busyTraffic = alertYellowTraffic ? yellowTraffic || redTraffic : redTraffic;
+        final boolean overAlertSpeed = gpsSpeed >= alertSpeedExceeds;
+
+        return busyTraffic && overAlertSpeed;
     }
-
 
     private int ROAD_ROI_WIDTH_TOL = 118;
     private int LANE_ROI_WIDTH_TOL = 10;
@@ -228,7 +229,7 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
             //=====================================
             if (road_detect_result && arrow_detect_result) {
                 if (arrow_detect_result) {
-                    busyTraffic = busyTrafficDetect(map_roi_image, activity.alertYellowTraffic, theme);
+                    busyTraffic = busyTrafficDetect(map_roi_image, activity.alertYellowTraffic, activity.alertSpeedExceeds, activity.gpsSpeed, theme);
                 } else {
                     busyTraffic = false;
                 }

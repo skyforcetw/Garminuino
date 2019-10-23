@@ -116,28 +116,26 @@ public class LocationService extends Service implements
         }
     }
 
-    private void sendLocationExtraByBroadcast(String key, Location location) {
-        Intent intent = new Intent(getString(R.string.broadcast_receiver_main_activity));
-        intent.putExtra(getString(R.string.whoami), getString(R.string.broadcast_sender_location_service));
-        intent.putExtra(key, location);
-        sendBroadcast(intent);
-    }
+//    private void sendLocationExtraByBroadcast(String key, Location location) {
+//        Intent intent = new Intent(getString(R.string.broadcast_receiver_main_activity));
+//        intent.putExtra(getString(R.string.whoami), getString(R.string.broadcast_sender_location_service));
+//        intent.putExtra(key, location);
+//        sendBroadcast(intent);
+//    }
 
     private void sendSpeedExtraByBroadcast(double speed) {
         Intent intent = new Intent(getString(R.string.broadcast_receiver_main_activity));
         intent.putExtra(getString(R.string.whoami), getString(R.string.broadcast_sender_location_service));
         intent.putExtra(getString(R.string.gps_speed), speed);
         sendBroadcast(intent);
+
+        //update speed to image detect
+//        intent.setAction(getString(R.string.broadcast_receiver_image_detect));
+//        sendBroadcast(intent);
     }
 
     @Override
     public void onLocationChanged(Location location) {
-//        mCurrentLocation = location;
-//        if (lStart == null) {
-//            lStart = mCurrentLocation;
-//            lEnd = mCurrentLocation;
-//        } else
-//            lEnd = mCurrentLocation;
 
         //calculating the speed with getSpeed method it returns speed in m/s so we are converting it into kmph
         if (eUnits.Kilometres == NotificationMonitor.getCurrentUnit() || eUnits.None == NotificationMonitor.getCurrentUnit()) {
