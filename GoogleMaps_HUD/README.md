@@ -4,11 +4,9 @@ Garminuino Android App: GoogleMaps HUD, parses the navigation information from G
 ## Instruction
 Simple instruction for the app:
 
-[Install.](./INSTALL.md)
-
-[First Use.](./FIRST_USE.md)
-
-[Instruction.](./INSTRUCTION.md)
+* [Install.](./INSTALL.md)
+* [First Use.](./FIRST_USE.md)
+* [Instruction.](./INSTRUCTION.md)
 
 ## Supported Arrows
 The app just can recongnized the arrow we supported: [v1](./SUPPORTED_ARROWS.md) and [v2](./SUPPORTED_ARROWSv2.md)  
