@@ -46,6 +46,8 @@ Arrow v1/v2 style:
 ![v1](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/Right.png?raw=true)![v2](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3%20-%20remove%20alpha/Right.png?raw=true)
 
 ### Traffic/Alert when speed exceeds kph
+Alert Traffic when speed exceeds your setting or alert anytime.
+This can switch on alert when driving on the highway only.
 
 ### Traffic/Alert Yellow Traffic
 
