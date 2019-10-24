@@ -47,8 +47,7 @@ Arrow v1/v2 style:
 
 ### Traffic/Alert when speed exceeds kph
 Alert Traffic when speed exceeds your setting or alert anytime.
-
-This can switch on alert when driving on the highway only.
+This can alert when driving on the highway only, if you set the speed over 80kph or higher.
 
 ### Traffic/Alert Yellow Traffic
 
