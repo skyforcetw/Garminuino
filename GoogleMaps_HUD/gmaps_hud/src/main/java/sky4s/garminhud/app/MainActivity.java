@@ -266,6 +266,8 @@ public class MainActivity extends AppCompatActivity {
         final boolean optionDarkModeMan = sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false);
 
         final boolean optionArrowType = sharedPref.getBoolean(getString(R.string.option_arrow_type), true);
+        sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
+                getString(R.string.option_arrow_type), optionArrowType);
         //======================================
 
         runOnUiThread(new Runnable() {

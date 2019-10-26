@@ -135,7 +135,7 @@ public class NotificationMonitor extends NotificationListenerService {
             showETA = intent.getBooleanExtra(getString(R.string.option_show_eta), showETA);
             lastArrivalMinute = -1; // Force to switch to ETA after several toggles
             busyTraffic = intent.getBooleanExtra(getString(R.string.busy_traffic), busyTraffic);
-            arrowTypeV2 = intent.getBooleanExtra(getString(R.string.option_arrow_type), busyTraffic);
+            arrowTypeV2 = intent.getBooleanExtra(getString(R.string.option_arrow_type), arrowTypeV2);
         }
     }
 
@@ -540,7 +540,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private void logParseMessage() {
         String arrowString = arrowTypeV2 ? foundArrowV2.toString() : foundArrow.toString();
-        String notifyMessage = arrowString + "(" + arrowMinSad + ") " + distanceNum + distanceUnit +
+        String notifyMessage = arrowString + "(" + (arrowTypeV2 ? "v2:" : "v1:") + arrowMinSad + ") " + distanceNum + distanceUnit +
                 " " + (null == remainHour ? 00 : remainHour) + ":" + remainMinute + " " + remainDistance + remainDistanceUnit + " " + arrivalHour + ":" + arrivalMinute
                 + " (period: " + notifyPeriodTime + ")";
         logi(notifyMessage);
