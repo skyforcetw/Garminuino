@@ -91,8 +91,8 @@ public class ArrowImage {
     }
 
 
-    public long getSAD(final long magicNumber) {
-        long sad = 0;
+    public int getSAD(final long magicNumber) {
+        int sad = 0;
         int length = 8 == IMAGE_LEN ? CONTENT_LEN - 1 : CONTENT_LEN; //when 8x8, just check 63bit, skip sign bit
         for (int x = 0; x < length; x++) {
             final boolean bit = 1 == ((magicNumber >> x) & 1);

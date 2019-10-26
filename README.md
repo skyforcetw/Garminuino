@@ -8,23 +8,23 @@ There has two sub-project use GarminHUD as:
  
 
 Belows are two sub-proejct put together: GoogleMap navigation HUD(Left)+ Speedometer HUD(Center)
-<img src="./pics/P_20190125_225356-02.jpeg" alt="Two Garmin HUD application" width="500"/>
+<img src="./pics/489897.jpg" alt="Two Garmin HUD application" width="500"/>
 
 Android App: Google Map HUD
 
 <img src="./pics/451627.jpg" alt="App layout" width="400"/>
 
-## ToDo List
-1. ~~Add auto-connection function.~~
-2. Auto lanunch google map when HUD connected.
-3. Comment source-code.
-4. ~~Show some usage infomation when navigation is done, don't make it seems hang when navigating done.~~
-5. ~~Figure out auto connection is working well or not.~~
-6. ~~Lets "Show Speed" function working well.~~
-7. Better auto-connection with GarminHUD
-8. Support Sygic & OsmAnd
-
 ## GoogleMap navigation HUD App Release History ##
+
+
+### [2019-10-23 v0.5.2](https://github.com/skyforcetw/Garminuino/releases/download/0.5.2/gmaps_hud-release_v0.5.2.apk)
+Support Arrow Style v2 / Traffic alert speed is adjustable
+
+Arrow v1 style/Arrow v2 style:
+
+![v1](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow2/Right.png)![v2](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMap_Arrow_Recognize/PatternRecognize/workdir/Google_Arrow3%20-%20remove%20alpha/Right.png)
+
+[New instruction for v0.5.2.](./GoogleMaps_HUD/INSTRUCTIONv052.md)
 
 ### [2019-09-26 v0.4.9](https://github.com/skyforcetw/Garminuino/releases/download/0.4.9/gmaps_hud-release_v0.4.9.apk)
 Polish Support & New Dark Mode.
@@ -87,6 +87,18 @@ So navigation part of Garminuino turn into a pure android's app(apk) now!
 ## [GoogleMaps HUD App](https://github.com/skyforcetw/Garminuino/tree/master/GoogleMaps_HUD)
 A pure android app, for project navi-info of google map navigation.
 Works just like garmin streetpilot with Garmin HUD.
+
+***
+
+## ToDo List
+1. ~~Add auto-connection function.~~
+2. Auto lanunch google map when HUD connected.
+3. Comment source-code.
+4. ~~Show some usage infomation when navigation is done, don't make it seems hang when navigating done.~~
+5. ~~Figure out auto connection is working well or not.~~
+6. ~~Lets "Show Speed" function working well.~~
+7. Better auto-connection with GarminHUD
+8. Support Sygic & OsmAnd
 
 ***
 

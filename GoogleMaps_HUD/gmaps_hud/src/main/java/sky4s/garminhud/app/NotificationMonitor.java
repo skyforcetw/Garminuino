@@ -35,6 +35,7 @@ import java.util.List;
 
 import sky4s.garminhud.Arrow;
 import sky4s.garminhud.ArrowImage;
+import sky4s.garminhud.ArrowV2;
 import sky4s.garminhud.eOutAngle;
 import sky4s.garminhud.eOutType;
 import sky4s.garminhud.eUnits;
@@ -81,6 +82,8 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private Arrow foundArrow = Arrow.None;
     private Arrow lastFoundArrow = Arrow.None;
+    private ArrowV2 foundArrowV2 = ArrowV2.None;
+    private ArrowV2 lastFoundArrowV2 = ArrowV2.None;
 
     private String distanceNum = null;
     private static String distanceUnit = null;
@@ -132,6 +135,7 @@ public class NotificationMonitor extends NotificationListenerService {
             showETA = intent.getBooleanExtra(getString(R.string.option_show_eta), showETA);
             lastArrivalMinute = -1; // Force to switch to ETA after several toggles
             busyTraffic = intent.getBooleanExtra(getString(R.string.busy_traffic), busyTraffic);
+            arrowTypeV2 = intent.getBooleanExtra(getString(R.string.option_arrow_type), busyTraffic);
         }
     }
 
@@ -394,7 +398,6 @@ public class NotificationMonitor extends NotificationListenerService {
                             storeBitmap(bitmapImage, IMAGE_DIR + "arrow.png");
                         }
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
-                        // Log.i(TAG, "Arrow-Value: "+arrowImage.getArrowValue());
                         foundArrow = getArrow(arrowImage);
                         updateCount++;
                     }
@@ -505,7 +508,6 @@ public class NotificationMonitor extends NotificationListenerService {
                             storeBitmap(bitmapImage, IMAGE_DIR + "arrow.png");
                         }
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
-                        // Log.i(TAG, "Arrow-Value: "+arrowImage.getArrowValue());
                         foundArrow = getArrow(arrowImage);
                         updateCount++;
                     }
@@ -530,8 +532,15 @@ public class NotificationMonitor extends NotificationListenerService {
         }
     }
 
+    private boolean isArrivals() {
+        final boolean arrivals = arrowTypeV2 ? ArrowV2.ArrivalsLeft == foundArrowV2 || ArrowV2.ArrivalsRight == foundArrowV2 :
+                Arrow.Arrivals == foundArrow || Arrow.ArrivalsLeft == foundArrow || Arrow.ArrivalsRight == foundArrow;
+        return arrivals;
+    }
+
     private void logParseMessage() {
-        String notifyMessage = foundArrow.toString() + " " + distanceNum + distanceUnit +
+        String arrowString = arrowTypeV2 ? foundArrowV2.toString() : foundArrow.toString();
+        String notifyMessage = arrowString + "(" + arrowMinSad + ") " + distanceNum + distanceUnit +
                 " " + (null == remainHour ? 00 : remainHour) + ":" + remainMinute + " " + remainDistance + remainDistanceUnit + " " + arrivalHour + ":" + arrivalMinute
                 + " (period: " + notifyPeriodTime + ")";
         logi(notifyMessage);
@@ -539,7 +548,8 @@ public class NotificationMonitor extends NotificationListenerService {
         boolean output_parse_message_to_ui = true;
         if (output_parse_message_to_ui) {
             postman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
-            if (Arrow.Arrivals == foundArrow || Arrow.ArrivalsLeft == foundArrow || Arrow.ArrivalsRight == foundArrow) {
+
+            if (isArrivals()) {
                 postman.addBooleanExtra(getString(R.string.arrivals_msg), true);
             }
             postman.addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
@@ -583,69 +593,6 @@ public class NotificationMonitor extends NotificationListenerService {
                 }
             }
 
-//            String title = null != titleObj ? titleObj.toString() : null;
-//            String text = null != textObj ? textObj.toString() : null;
-//            String subText = null != subTextObj ? subTextObj.toString() : null;
-//            subText = null == subText ? text : subText;
-
-            // Check if subText is empty (" ·  · ") --> don't parse subText
-            // Occurs for example on NagivationChanged
-            boolean subTextEmpty = true;
-//            if (null != subText) {
-//                String[] split = subText.split("·");
-//                for (int i = 0; i < split.length; i++) {
-//                    String trimString = split[i].trim();
-//                    boolean string_empty = containsOnlyWhitespaces(trimString);
-//                    if (string_empty == false) {
-//                        subTextEmpty = false;
-//                        break;
-//                    }
-//                }
-//            }
-//
-//            final boolean somethingCanParse = null != subText && !subTextEmpty;
-//            if (somethingCanParse) {
-//                parseTimeAndDistanceToDest(subText);
-//
-//                String[] title_str = title.split("–");
-//                title_str = 1 == title_str.length ? title.split("-") : title_str;
-//                String distance = title_str[0].trim();
-//                if (Character.isDigit(distance.charAt(0)))
-//                    parseDistanceToTurn(distance);
-//                else
-//                    distanceNum = "-1";
-//
-//                Icon largeIcon = notification.getLargeIcon();
-//                Icon smallIcon = notification.getSmallIcon();
-//                if (null != largeIcon) {
-//                    Drawable drawableIco = largeIcon.loadDrawable(this);
-//                    Bitmap bitmapImage = drawableToBitmap(drawableIco);
-//
-//                    if (null != bitmapImage) {
-//                        if (STORE_IMG) {
-//                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow0.png");
-//                        }
-//
-//                        ArrowImage arrowImage = new ArrowImage(bitmapImage);
-//
-//                        if (STORE_IMG) {
-//                            storeBitmap(arrowImage.binaryImage, IMAGE_DIR + "binary.png");
-//                        }
-//
-//                        foundArrow = getArrow(arrowImage);
-//                        if (lastFoundArrow != foundArrow && USE_DB && null != dbHelper) {
-//                            dbHelper.insert(null, bitmapImage, arrowImage, foundArrow);
-//                        }
-//                        lastFoundArrow = foundArrow;
-//
-//                    }
-//                }
-//                logParseMessage();
-//                updateGaminHudInformation();
-//                is_in_navigation = true;
-//            } else {
-//                is_in_navigation = false;
-//            }
             return true;
         } else {
             return false;
@@ -718,8 +665,13 @@ public class NotificationMonitor extends NotificationListenerService {
                             storeBitmap(arrowImage.binaryImage, IMAGE_DIR + "binary.png");
                         }
 
-                        foundArrow = getArrow(arrowImage);
-                        lastFoundArrow = foundArrow;
+                        if (arrowTypeV2) {
+                            foundArrowV2 = getArrowV2(arrowImage);
+                            lastFoundArrowV2 = foundArrowV2;
+                        } else {
+                            foundArrow = getArrow(arrowImage);
+                            lastFoundArrow = foundArrow;
+                        }
 
                     }
                 }
@@ -841,18 +793,18 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     private static Arrow getArrow(ArrowImage image) {
-        long minSad = Integer.MAX_VALUE;
+        arrowMinSad = Integer.MAX_VALUE;
         Arrow minSadArrow = Arrow.None;
 
         int totalArrowCount = Arrow.values().length;
-        long sadArray[] = new long[totalArrowCount];
+        int sadArray[] = new int[totalArrowCount];
         int index = 0;
 
         for (Arrow a : Arrow.values()) {
-            long sad = image.getSAD(a.valueLeft);
+            int sad = image.getSAD(a.valueLeft);
             sadArray[index++] = sad;
-            if (sad < minSad) {
-                minSad = sad;
+            if (sad < arrowMinSad) {
+                arrowMinSad = sad;
                 minSadArrow = a;
             }
             if (0 == sad) {
@@ -862,20 +814,48 @@ public class NotificationMonitor extends NotificationListenerService {
 
             }
         }
-        Log.d(TAG, "No Recognize, minSad: " + minSad + " arrow:" + minSadArrow);
+        Log.d(TAG, "No Recognize, minSad: " + arrowMinSad + " arrow:" + minSadArrow);
         return minSadArrow;
     }
 
-    private Arrow preArrow = Arrow.None;
+    static int arrowMinSad = 0;
+
+    private static ArrowV2 getArrowV2(ArrowImage image) {
+        arrowMinSad = Integer.MAX_VALUE;
+        ArrowV2 minSadArrow = ArrowV2.None;
+
+        int totalArrowCount = ArrowV2.values().length;
+        int sadArray[] = new int[totalArrowCount];
+        int index = 0;
+
+        for (ArrowV2 a : ArrowV2.values()) {
+            int sad = image.getSAD(a.valueLeft);
+            sadArray[index++] = sad;
+            if (sad < arrowMinSad) {
+                arrowMinSad = sad;
+                minSadArrow = a;
+            }
+            if (0 == sad) {
+                String integerString = Long.toString(a.valueLeft);
+                Log.d(TAG, "Recognize " + a.name() + " " + integerString);
+                return a;
+
+            }
+        }
+        Log.d(TAG, "No Recognize, minSad: " + arrowMinSad + " arrow:" + minSadArrow);
+        return minSadArrow;
+    }
+
+    private Arrow preArrowV1 = Arrow.None;
 
     void updateArrow(Arrow arrow) {
         if (null == hud) {
             return;
         }
-        if (preArrow == arrow) {
+        if (preArrowV1 == arrow) {
 
         } else {
-            preArrow = arrow;
+            preArrowV1 = arrow;
         }
         switch (arrow) {
             case Arrivals:
@@ -1007,8 +987,150 @@ public class NotificationMonitor extends NotificationListenerService {
         }
     }
 
+    private ArrowV2 preArrowV2 = ArrowV2.None;
+
+    void updateArrow(ArrowV2 arrow) {
+        if (null == hud) {
+            return;
+        }
+        if (preArrowV2 == arrow) {
+
+        } else {
+            preArrowV2 = arrow;
+        }
+        switch (arrow) {
+//            case Arrivals:
+//                hud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
+//                break;
+            case ArrivalsLeft:
+                hud.SetDirection(eOutAngle.Left, eOutType.RightFlag, eOutAngle.AsDirection);
+                break;
+            case ArrivalsRight:
+                hud.SetDirection(eOutAngle.Right, eOutType.RightFlag, eOutAngle.AsDirection);
+                break;
+
+            case EasyLeft:
+            case KeepLeft:
+                hud.SetDirection(eOutAngle.EasyLeft);
+                break;
+
+            case EasyRight:
+            case KeepRight:
+                hud.SetDirection(eOutAngle.EasyRight);
+                break;
+            case GoTo:
+                hud.SetDirection(eOutAngle.Straight);
+                break;
+
+            case LeaveRoundabout://1 checked
+                hud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
+                break;
+
+            case LeaveRoundaboutAsUTurn:
+                hud.SetDirection(eOutAngle.Down, eOutType.LeftRoundabout, eOutAngle.Down);
+                break;
+
+
+            case LeaveRoundaboutAsUTurnCC:
+                hud.SetDirection(eOutAngle.Down, eOutType.RightRoundabout, eOutAngle.Down);
+                break;
+
+
+            case LeaveRoundaboutEasyLeft://4 checked
+                hud.SetDirection(eOutAngle.EasyLeft, eOutType.LeftRoundabout, eOutAngle.EasyLeft);
+                break;
+
+            case LeaveRoundaboutEasyLeftCC://5 checked
+                hud.SetDirection(eOutAngle.EasyLeft, eOutType.RightRoundabout, eOutAngle.EasyLeft);
+                break;
+
+            case LeaveRoundaboutEasyRight://6 checked
+                hud.SetDirection(eOutAngle.EasyRight, eOutType.LeftRoundabout, eOutAngle.EasyRight);
+                break;
+            case LeaveRoundaboutEasyRightCC://7 checked
+                hud.SetDirection(eOutAngle.EasyRight, eOutType.RightRoundabout, eOutAngle.EasyRight);
+                break;
+
+            case LeaveRoundaboutCC://8 checked
+                hud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
+                break;
+
+            case LeaveRoundaboutLeft://9 checked
+                hud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
+                break;
+            case LeaveRoundaboutLeftCC://10 checked
+                hud.SetDirection(eOutAngle.Left, eOutType.RightRoundabout, eOutAngle.Left);
+                break;
+            case LeaveRoundaboutRight://11 checked
+                hud.SetDirection(eOutAngle.Right, eOutType.LeftRoundabout, eOutAngle.Right);
+                break;
+            case LeaveRoundaboutRightCC://12 checked
+                hud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
+                break;
+
+            case LeaveRoundaboutSharpLeft://13 checked
+                hud.SetDirection(eOutAngle.SharpLeft, eOutType.LeftRoundabout, eOutAngle.SharpLeft);
+                break;
+            case LeaveRoundaboutSharpLeftCC://14 checked
+                hud.SetDirection(eOutAngle.SharpLeft, eOutType.RightRoundabout, eOutAngle.SharpLeft);
+                break;
+
+            case LeaveRoundaboutSharpRight://15 checked
+                hud.SetDirection(eOutAngle.SharpRight, eOutType.LeftRoundabout, eOutAngle.SharpRight);
+                break;
+            case LeaveRoundaboutSharpRightCC://16
+                hud.SetDirection(eOutAngle.SharpRight, eOutType.RightRoundabout, eOutAngle.SharpRight);
+                break;
+
+            case LeaveRoundaboutStraight://
+                hud.SetDirection(eOutAngle.Straight, eOutType.LeftRoundabout, eOutAngle.Straight);
+                break;
+
+            case LeaveRoundaboutStraightCC://
+                hud.SetDirection(eOutAngle.Straight, eOutType.RightRoundabout, eOutAngle.Straight);
+                break;
+
+            case Left:
+                hud.SetDirection(eOutAngle.Left);
+                break;
+
+            case LeftDown:
+                hud.SetDirection(eOutAngle.LeftDown);
+                break;
+//            case LeftToLeave:
+//                hud.SetDirection(eOutAngle.EasyLeft, eOutType.LongerLane, eOutAngle.AsDirection);
+//                break;
+
+            case Right:
+                hud.SetDirection(eOutAngle.Right);
+                break;
+            case RightDown:
+                hud.SetDirection(eOutAngle.RightDown);
+                break;
+//            case RightToLeave:
+//                hud.SetDirection(eOutAngle.EasyRight, eOutType.LongerLane, eOutAngle.AsDirection);
+//                break;
+            case SharpLeft:
+                hud.SetDirection(eOutAngle.SharpLeft);
+                break;
+            case SharpRight:
+                hud.SetDirection(eOutAngle.SharpRight);
+                break;
+            case Straight:
+                hud.SetDirection(eOutAngle.Straight);
+                break;
+
+            case Convergence:
+            case None:
+            default:
+                hud.SetDirection(eOutAngle.AsDirection);
+                break;
+        }
+    }
+
     private String lastRemainHour = null, lastRemainMinute = null;
     private boolean busyTraffic = false;
+    private boolean arrowTypeV2 = false;
 
     private void updateGaminHudInformation() {
         Log.i(TAG, "hud: " + hud);
@@ -1090,7 +1212,11 @@ public class NotificationMonitor extends NotificationListenerService {
         // arrow
         // if same as last arrow, should be process, because GARMIN Hud will erase the arrow without data receive during sometime..
         //===================================================================================
-        updateArrow(foundArrow);
+        if (arrowTypeV2) {
+            updateArrow(foundArrowV2);
+        } else {
+            updateArrow(foundArrow);
+        }
         final boolean arrowSendResult = (null != hud) ? hud.getSendResult() : false;
         //===================================================================================
 
@@ -1303,7 +1429,10 @@ public class NotificationMonitor extends NotificationListenerService {
             // Check if arrival is possible (don't know if mm==0 work always)
             if (hh == 0 && mm <= 5 && mm != -1) {
                 // Arrived: Delete Distance to turn
-                if ((lastFoundArrow != Arrow.Arrivals) && (lastFoundArrow != Arrow.ArrivalsLeft) && (lastFoundArrow != Arrow.ArrivalsRight)) {
+                final boolean notArrivals = arrowTypeV2 ? (lastFoundArrowV2 != ArrowV2.ArrivalsLeft) && (lastFoundArrowV2 != ArrowV2.ArrivalsRight) :
+                        (lastFoundArrow != Arrow.Arrivals) && (lastFoundArrow != Arrow.ArrivalsLeft) && (lastFoundArrow != Arrow.ArrivalsRight);
+
+                if (notArrivals) {
                     if (hud != null) {
                         hud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
                         hud.ClearDistance();

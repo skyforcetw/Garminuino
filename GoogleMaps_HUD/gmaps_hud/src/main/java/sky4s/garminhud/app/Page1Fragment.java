@@ -38,15 +38,15 @@ public class Page1Fragment extends Fragment {
         ((MainActivity) getActivity()).seekBarBrightness = seekBarBrightness;
 
         ((MainActivity) getActivity()).switchShowETA = (Switch) getView().findViewById(R.id.switchShowETA);
-        ((MainActivity) getActivity()).switchIdleShowCurrrentTime = (Switch) getView().findViewById(R.id.switchIdleShowCurrentTime);
+        ((MainActivity) getActivity()).switchIdleShowCurrentTime = (Switch) getView().findViewById(R.id.switchIdleShowCurrentTime);
 
         ((MainActivity) getActivity()).switchTrafficAndLane = (Switch) getView().findViewById(R.id.switchTrafficAndLane);
-        ((MainActivity) getActivity()).switchAlertYellowTraffic = (Switch) getView().findViewById(R.id.switchAlertYellowTraffic);
+//        ((MainActivity) getActivity()).switchAlertYellowTraffic = (Switch) getView().findViewById(R.id.switchAlertYellowTraffic);
 
-        ((MainActivity) getActivity()).switchBtBindAddress = (Switch) getView().findViewById(R.id.switchBtBindAddress);
-
-        ((MainActivity) getActivity()).switchDarkModeAuto = (Switch) getView().findViewById(R.id.switchDarkModeAuto);
-        ((MainActivity) getActivity()).switchDarkModeManual = (Switch) getView().findViewById(R.id.switchDarkModeMan);
+//        ((MainActivity) getActivity()).switchBtBindAddress = (Switch) getView().findViewById(R.id.switchBtBindAddress);
+//
+//        ((MainActivity) getActivity()).switchDarkModeAuto = (Switch) getView().findViewById(R.id.switchDarkModeAuto);
+//        ((MainActivity) getActivity()).switchDarkModeManual = (Switch) getView().findViewById(R.id.switchDarkModeMan);
 
         SharedPreferences sharedPref = ((MainActivity) getActivity()).getPreferences(Context.MODE_PRIVATE);
         boolean showPrompt = sharedPref.getBoolean(getString(R.string.option_show_prompt), true);
@@ -65,7 +65,7 @@ public class Page1Fragment extends Fragment {
         editor.putBoolean(getString(R.string.option_show_prompt), false);
         editor.commit();
 
-        ((MainActivity) getActivity()).loadOptions();
+//        ((MainActivity) getActivity()).loadOptions();
     }
 
     private MaterialTapTargetSequence prompt(MaterialTapTargetSequence sequence, final int target, String text) {
