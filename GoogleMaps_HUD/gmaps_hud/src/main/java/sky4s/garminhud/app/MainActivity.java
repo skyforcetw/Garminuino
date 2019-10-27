@@ -63,6 +63,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -1345,62 +1346,68 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(final Context context, final Intent intent) {
-            final int event = intent.getIntExtra(getString(R.string.notify_switch_event), 0);
-            switch (event) {
+//            final int event = intent.getIntExtra(getString(R.string.notify_switch_event), 0);
+            final Serializable s = intent.getSerializableExtra(getString(R.string.notify_switch_event));
+            final boolean canGo = s instanceof SwitchEvent;
+            if (canGo) {
+                SwitchEvent event = (SwitchEvent) s;
+                switch (event) {
 
-                case 1: {
-                    final boolean now = !switchShowSpeed.isChecked();
-                    switchShowSpeed.setChecked(now);
-                    notification = getNormalNotification("Show Speed: "
-                            + (now ? "On" : "Off"));
-                    mNotificationManager.notify(R.integer.notify_id, notification);
+                    case Speed: {
+                        final boolean now = !switchShowSpeed.isChecked();
+                        switchShowSpeed.setChecked(now);
+                        notification = getNormalNotification("Show Speed: "
+                                + (now ? "On" : "Off"));
+                        mNotificationManager.notify(R.integer.notify_id, notification);
+                    }
+                    break;
+                    case AutoBrightness: {
+                        final boolean now = !switchAutoBrightness.isChecked();
+                        switchAutoBrightness.setChecked(now);
+                        notification = getNormalNotification("Auto Brightness: "
+                                + (now ? "On" : "Off"));
+                        mNotificationManager.notify(R.integer.notify_id, notification);
+                    }
+                    break;
+                    case ETA: {
+                        final boolean now = !switchShowETA.isChecked();
+                        switchShowETA.setChecked(now);
+                        notification = getNormalNotification("Show ETA: "
+                                + (now ? "On" : "Off"));
+                        mNotificationManager.notify(R.integer.notify_id, notification);
+                    }
+                    break;
+                    case Time: {
+                        final boolean now = !switchIdleShowCurrentTime.isChecked();
+                        switchIdleShowCurrentTime.setChecked(now);
+                        notification = getNormalNotification("Show Current Time: "
+                                + (now ? "On" : "Off"));
+                        mNotificationManager.notify(R.integer.notify_id, notification);
+                    }
+                    break;
+                    case LaneTrafficDetect: {
+                        final boolean now = !switchTrafficAndLane.isChecked();
+                        switchTrafficAndLane.setChecked(now);
+                        notification = getNormalNotification("Traffic & Lane Detection: "
+                                + (now ? "On" : "Off"));
+                        mNotificationManager.notify(R.integer.notify_id, notification);
+                    }
+                    break;
                 }
-                break;
-                case 2: {
-                    final boolean now = !switchAutoBrightness.isChecked();
-                    switchAutoBrightness.setChecked(now);
-                    notification = getNormalNotification("Auto Brightness: "
-                            + (now ? "On" : "Off"));
-                    mNotificationManager.notify(R.integer.notify_id, notification);
-                }
-                break;
-                case 3: {
-                    final boolean now = !switchShowETA.isChecked();
-                    switchShowETA.setChecked(now);
-                    notification = getNormalNotification("Show ETA: "
-                            + (now ? "On" : "Off"));
-                    mNotificationManager.notify(R.integer.notify_id, notification);
-                }
-                break;
-                case 4: {
-                    final boolean now = !switchIdleShowCurrentTime.isChecked();
-                    switchIdleShowCurrentTime.setChecked(now);
-                    notification = getNormalNotification("Show Current Time: "
-                            + (now ? "On" : "Off"));
-                    mNotificationManager.notify(R.integer.notify_id, notification);
-                }
-                break;
-                case 5: {
-                    final boolean now = !switchTrafficAndLane.isChecked();
-                    switchTrafficAndLane.setChecked(now);
-                    notification = getNormalNotification("Traffic & Lane Detection: "
-                            + (now ? "On" : "Off"));
-                    mNotificationManager.notify(R.integer.notify_id, notification);
-                }
-                break;
+
             }
-
         }
     }
 
     private NotificationSwitchReceiver notificationSwitchReceiver = new NotificationSwitchReceiver();
 
-    private PendingIntent getPendingIntentForNotify(String action, int switchEvent) {
+    private PendingIntent getPendingIntentForNotify(String action, SwitchEvent switchEvent) {
         Intent intent = new Intent(action);
         intent.putExtra(getString(R.string.notify_switch_event), switchEvent);
         final PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         return pendingIntent;
     }
+
 
     private Notification getNormalNotification(String contentText) {
         final Intent mainIntent = getIntent(); // 目前Activity的Intent
@@ -1408,11 +1415,11 @@ public class MainActivity extends AppCompatActivity {
         final PendingIntent pendingMainIntent = PendingIntent.getActivity(getApplicationContext(), 0, mainIntent, flags); // 取得PendingIntent
 
 
-        final PendingIntent switchSpeedPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_speed), 1);
-        final PendingIntent switchAutoBrightnessPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_auto_brightness), 2);
-        final PendingIntent switchETAPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_ETA), 3);
-        final PendingIntent switchTimePendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_time), 4);
-        final PendingIntent switchDetectPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_detect), 5);
+        final PendingIntent switchSpeedPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_speed), SwitchEvent.Speed);
+        final PendingIntent switchAutoBrightnessPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_auto_brightness), SwitchEvent.AutoBrightness);
+        final PendingIntent switchETAPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_ETA), SwitchEvent.ETA);
+        final PendingIntent switchTimePendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_time), SwitchEvent.Time);
+        final PendingIntent switchDetectPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_detect), SwitchEvent.LaneTrafficDetect);
 
 
         final String channelID = "id";
@@ -1597,4 +1604,6 @@ class MainActivityPostman {
 }
 
 
-
+enum SwitchEvent {
+    Speed, AutoBrightness, ETA, Time, LaneTrafficDetect
+};
