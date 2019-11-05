@@ -1051,10 +1051,10 @@ public class MainActivity extends AppCompatActivity {
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
-
+                String message = getString(R.string.message_enable_location_access);
                 new AlertDialog.Builder(this)
                         .setTitle("Location Permission")
-                        .setMessage("For showing speed to Garmin HUD please enable Location Permission")
+                        .setMessage(message)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
