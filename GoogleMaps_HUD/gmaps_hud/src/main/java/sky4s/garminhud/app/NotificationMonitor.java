@@ -206,7 +206,7 @@ public class NotificationMonitor extends NotificationListenerService {
             }
         } else {
             postman.addBooleanExtra(getString(R.string.notify_catched), true);
-            postman.addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
+            postman.addBooleanExtra(getString(R.string.is_in_navigation), false);
             postman.sendIntent2MainActivity();
         }
     }
@@ -289,7 +289,7 @@ public class NotificationMonitor extends NotificationListenerService {
         if (!parseResult) {
             postman.addBooleanExtra(getString(R.string.notify_parse_failed), true);
             postman.addBooleanExtra(getString(R.string.gmaps_notify_catched), true);
-            postman.addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
+            postman.addBooleanExtra(getString(R.string.is_in_navigation), false);
             postman.sendIntent2MainActivity();
         } else {
             postman.addBooleanExtra(getString(R.string.notify_parse_failed), false);
@@ -540,7 +540,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private void logParseMessage() {
         String arrowString = arrowTypeV2 ? foundArrowV2.toString() : foundArrow.toString();
-        String notifyMessage = arrowString + "(" + (arrowTypeV2 ? "v2:" : "v1:") + arrowMinSad + ") " + distanceNum + distanceUnit +
+        String notifyMessage = arrowString + "(" + (arrowTypeV2 ? "v2:" : "v1:") + arrowMinSad + ") " + distanceNum + "/"+distanceUnit +
                 " " + (null == remainHour ? 00 : remainHour) + ":" + remainMinute + " " + remainDistance + remainDistanceUnit + " " + arrivalHour + ":" + arrivalMinute
                 + " (period: " + notifyPeriodTime + ")";
         logi(notifyMessage);

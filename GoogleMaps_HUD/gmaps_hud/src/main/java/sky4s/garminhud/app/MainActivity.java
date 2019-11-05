@@ -679,6 +679,9 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.switchAlertAnytime: {
                     Switch switchAlertAnytime = (Switch) view;
                     final boolean alertAnytime = switchAlertAnytime.isChecked();
+                    if (!alertAnytime) { //if need speed info, must check gps status
+                        showSpeed(true);
+                    }
 
                     final int progress = seekBarAlertSpeed.getProgress();
                     final int kph = progress * 10;
@@ -1106,7 +1109,11 @@ public class MainActivity extends AppCompatActivity {
                 double speed = intent.getDoubleExtra(getString(R.string.gps_speed), 0);
                 int int_speed = (int) Math.round(speed);
                 gpsSpeed = int_speed;
-                setSpeed(int_speed, true);
+
+                final boolean show_speed = switchShowSpeed.isChecked();
+                if (show_speed) {
+                    setSpeed(int_speed, true);
+                }
 
                 CharSequence orignal_text = textViewDebug.getText();
                 textViewDebug.setText("speed: " + int_speed + "\n\n" + orignal_text);
@@ -1123,6 +1130,7 @@ public class MainActivity extends AppCompatActivity {
 //                    switchNotificationCaught.setChecked(false);
                     switchGmapsNotificationCaught.setChecked(false);
                 }
+                is_in_navigation = false;
             } else {
                 //pass success
                 final boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched),
@@ -1131,7 +1139,7 @@ public class MainActivity extends AppCompatActivity {
                         null != switchGmapsNotificationCaught ? switchGmapsNotificationCaught.isChecked() : false);
 
 
-                final boolean is_in_navigation_now = intent.getBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
+                final boolean is_in_navigation_in_intent = intent.getBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
 
                 if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
                     if (!notify_catched) { //no notify catched
@@ -1139,7 +1147,7 @@ public class MainActivity extends AppCompatActivity {
                         switchGmapsNotificationCaught.setChecked(false);
                     } else {
                         switchNotificationCaught.setChecked(notify_catched);
-                        final boolean is_really_in_navigation = gmaps_notify_catched && is_in_navigation_now;
+                        final boolean is_really_in_navigation = gmaps_notify_catched && is_in_navigation_in_intent;
                         switchGmapsNotificationCaught.setChecked(is_really_in_navigation);
 
                         if (lastReallyInNavigation != is_really_in_navigation &&
@@ -1153,6 +1161,17 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+
+            if (null != switchTrafficAndLane && switchTrafficAndLane.isChecked()) {
+                if (is_in_navigation) {
+                    if (!projecting) {
+                        startProjection();
+                    }
+                } else {
+                    stopProjection();
+                }
+            }
+
 
         }
     }
@@ -1488,13 +1507,19 @@ public class MainActivity extends AppCompatActivity {
 
 
     /****************************************** UI Widget Callbacks *******************************/
+    boolean projecting = false;
+
     private void startProjection() {
-        startActivityForResult(mProjectionManager.createScreenCaptureIntent(), SCREENCAP_REQUEST_CODE);
+        if (is_in_navigation) {
+            startActivityForResult(mProjectionManager.createScreenCaptureIntent(), SCREENCAP_REQUEST_CODE);
+            projecting = true;
+        }
 //        startNotification();
 
     }
 
     private void stopProjection() {
+        projecting = false;
         mProjectionHandler.post(new Runnable() {
             @Override
             public void run() {

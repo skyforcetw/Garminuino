@@ -1,10 +1,7 @@
 package chutka.bitman.com.speedometersimplified;
 
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Binder;
 import android.os.Bundle;
@@ -20,7 +17,6 @@ import com.google.android.gms.location.LocationServices;
 import sky4s.garminhud.app.NotificationMonitor;
 import sky4s.garminhud.app.R;
 import sky4s.garminhud.eUnits;
-import sky4s.garminhud.hud.HUDInterface;
 
 /**
  * Created by vipul on 12/13/2015.
@@ -116,12 +112,6 @@ public class LocationService extends Service implements
         }
     }
 
-//    private void sendLocationExtraByBroadcast(String key, Location location) {
-//        Intent intent = new Intent(getString(R.string.broadcast_receiver_main_activity));
-//        intent.putExtra(getString(R.string.whoami), getString(R.string.broadcast_sender_location_service));
-//        intent.putExtra(key, location);
-//        sendBroadcast(intent);
-//    }
 
     private void sendSpeedExtraByBroadcast(double speed) {
         Intent intent = new Intent(getString(R.string.broadcast_receiver_main_activity));
@@ -169,79 +159,15 @@ public class LocationService extends Service implements
 
     }
 
-    //The live feed of Distance and Speed are being set in the method below .
-//    private void updateHUD() {
-//        if (null == hud)
-//            return;
-//        if (speed >= 0.0) {
-//            setSpeed((int) speed, true);
-//        } else {
-//            clearSpeed();
-//        }
-
-//        lStart = lEnd;
-//    }
-
-
-    private void setSpeed(int nSpeed, boolean bIcon) {
-//        if (null != hud) {
-//            if (isInNavigating) {
-//                hud.SetSpeed(nSpeed, bIcon);
-//            } else {
-//                hud.SetDistance(nSpeed, eUnits.None);
-//            }
-//        }
-    }
-
-    private void clearSpeed() {
-//        if (null != hud) {
-//            if (isInNavigating) {
-//                hud.ClearSpeedandWarning();
-//            } else {
-//                hud.ClearDistance();
-//            }
-//        }
-    }
 
     @Override
     public boolean onUnbind(Intent intent) {
         stopLocationUpdates();
         if (mGoogleApiClient.isConnected())
             mGoogleApiClient.disconnect();
-//        lStart = null;
-//        lEnd = null;
-//        distance = 0;
+
         return super.onUnbind(intent);
     }
 
-//    private MsgReceiver msgReceiver;
-//    private boolean isInNavigating = false;
-//    private boolean navigatingConfirmed = false;
-
-//    private class MsgReceiver extends BroadcastReceiver {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            boolean has_in_navigation = intent.hasExtra(getString(R.string.is_in_navigation));
-//            boolean prevIsInNavigating = isInNavigating;
-//            isInNavigating = intent.getBooleanExtra(getString(R.string.is_in_navigation), isInNavigating);
-//
-//            //works only after navigation confirmed
-//            if (has_in_navigation && prevIsInNavigating != isInNavigating) {
-//                // Delete Speed in last line, when showing speed in distance line (when navigation finished)
-////                if (null != hud) {
-////                    /**
-////                     * original is "not logic", different with others, curious!
-////                     * change to no not logic to try.
-////                     */
-////                    //if (!isInNavigating) { //original
-////                    if (isInNavigating) { // from no navigating to navigating
-////                        hud.ClearDistance();
-////                    } else { // from  navigating to no navigating
-////                        hud.ClearSpeedandWarning();
-////                    }
-////                }
-//            }
-//        }
-//    }
 }
 
