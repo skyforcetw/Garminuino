@@ -7,8 +7,8 @@ public class ArrowImage {
     public static final int CONTENT_LEN = IMAGE_LEN * IMAGE_LEN;
 
     public boolean[] content = new boolean[CONTENT_LEN];
-    public long value1;
-    public long value2;
+    public long leftValue;
+    public long rightValue;
     public Bitmap binaryImage;
 
     private int getGreenAlpha(int pixel) {
@@ -21,6 +21,7 @@ public class ArrowImage {
     private static final int TREAT_AS_WHITE = 200;
     private static final int ALPHA_AS_WHITE = 254;
     private static final int STANDARD_IMG_SIZE = 132;
+//    private static final int STANDARD_IMG_SIZE = 136; //make it Divisible with IMAGE_LEN(8)
 
     private void toBinaryImage(Bitmap bitmap) {
         for (int h = 0; h < bitmap.getHeight(); h++) {
@@ -40,7 +41,6 @@ public class ArrowImage {
         if (bitmap.getWidth() != bitmap.getHeight()) {
             return null;
         }
-//        return Bitmap.createScaledBitmap(bitmap, newLength, newLength, false);
 
         int orgLength = bitmap.getHeight();
         Bitmap resized = Bitmap.createBitmap(newLength, newLength, bitmap.getConfig());
@@ -71,7 +71,7 @@ public class ArrowImage {
 
         final int interval = resized.getWidth() / IMAGE_LEN;
         int index = 0;
-        value1 = 0;
+        leftValue = 0;
 
         for (int h0 = 0; h0 < IMAGE_LEN; h0++) {
             final int h = h0 * interval;
@@ -83,7 +83,7 @@ public class ArrowImage {
 
                 content[h0 * IMAGE_LEN + w0] = bit;
                 long shift_value = ((bit ? 1L : 0L) << index);
-                value1 = value1 | shift_value;
+                leftValue = leftValue | shift_value;
                 index++;
             }
         }
@@ -104,6 +104,6 @@ public class ArrowImage {
     // Returns the bitcode of the ArrowImage. The image will be divided into IMAGE_LEN x IMAGE_LEN Pixels (8x8)
     // Return-Value can be used for Arrow.java
     public long getArrowValue() {
-        return value1;
+        return leftValue;
     }
 }

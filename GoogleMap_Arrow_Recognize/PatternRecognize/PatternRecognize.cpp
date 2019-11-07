@@ -55,8 +55,8 @@ std::vector<std::string> getAllImageFileNamesWithinFolder(std::string folder)
 #define IMAGE_LENGTH 8 //比5小, 這個方法就分不出來了
 class Image {
 public:
-	bool left_up_content[IMAGE_LENGTH*IMAGE_LENGTH];
-	bool right_dw_content[IMAGE_LENGTH*IMAGE_LENGTH];
+	bool left_up_content[IMAGE_LENGTH * IMAGE_LENGTH];
+	bool right_dw_content[IMAGE_LENGTH * IMAGE_LENGTH];
 	unsigned long long  left_up_mask = 0;
 	unsigned long long  right_dw_mask = 0;
 	cv::Mat binary_image;
@@ -68,9 +68,14 @@ public:
 
 unsigned long get_SAD(Image img0, Image img1) {
 	unsigned long sad = 0;
-	for (int x = 0; x < IMAGE_LENGTH*IMAGE_LENGTH; x++) {
+	for (int x = 0; x < IMAGE_LENGTH * IMAGE_LENGTH; x++) {
 		sad += (img0.left_up_content[x] != img1.left_up_content[x]) ? 1 : 0;
 	}
+
+	for (int x = 0; x < IMAGE_LENGTH * IMAGE_LENGTH; x++) {
+		sad += (img0.right_dw_content[x] != img1.right_dw_content[x]) ? 1 : 0;
+	}
+
 	return sad;
 }
 
@@ -99,7 +104,7 @@ cv::Mat resizeWithNN(cv::Mat source, cv::Size new_size) {
 		return source;
 	}
 	cv::Mat resized(new_size, CV_8UC3);
-	float ratio = source.rows / (new_size.height*1.0f);
+	float ratio = source.rows / (new_size.height * 1.0f);
 
 	for (int h = 0; h < resized.rows; h++) {
 		int h0 = (int)round(h * ratio);
@@ -107,8 +112,8 @@ cv::Mat resizeWithNN(cv::Mat source, cv::Size new_size) {
 		for (int w = 0; w < resized.cols; w++) {
 			int w0 = (int)round(w * ratio);
 			w0 = (w0 >= source.cols) ? source.cols - 1 : w0;
-			auto &resized_pixel = resized.at<cv::Vec3b>(h, w);
-			auto &source_pixel = source.at<cv::Vec3b>(h0, w0);
+			auto& resized_pixel = resized.at<cv::Vec3b>(h, w);
+			auto& source_pixel = source.at<cv::Vec3b>(h0, w0);
 			for (int ch = 0; ch < 3; ch++) {
 				resized_pixel[ch] = source_pixel[ch];
 			}
@@ -123,7 +128,7 @@ Image to_Image(cv::Mat cv_image) {
 	if (cv_image.rows != cv_image.cols) {
 		return image;
 	}
-	
+
 	//1. to binary image
 	to_binary_image(cv_image);
 
@@ -147,18 +152,18 @@ Image to_Image(cv::Mat cv_image) {
 			const int w_lu = w0 * interval;
 			const int w_rd = img_size - 1 - w_lu;
 
-			auto&  pixel_lu = resized_image.at<cv::Vec3b>(h_lu, w_lu);
+			auto& pixel_lu = resized_image.at<cv::Vec3b>(h_lu, w_lu);
 			const bool bool_lu = 255 == pixel_lu[1];
-			image.left_up_content[h0*IMAGE_LENGTH + w0] = bool_lu;
+			image.left_up_content[h0 * IMAGE_LENGTH + w0] = bool_lu;
 			unsigned long long shift_lu = ((unsigned long long)(bool_lu ? 1L : 0L)) << index;
 			if ((index + 1) == total_length) {
 				shift_lu = 0;
 			}
 			mask_lu += shift_lu;
 
-			auto&  pixel_rd = resized_image.at<cv::Vec3b>(h_rd, w_rd);
+			auto& pixel_rd = resized_image.at<cv::Vec3b>(h_rd, w_rd);
 			const bool bool_rd = 255 == pixel_rd[1];
-			image.right_dw_content[h0*IMAGE_LENGTH + w0] = bool_rd;
+			image.right_dw_content[h0 * IMAGE_LENGTH + w0] = bool_rd;
 			unsigned long long shift_rd = ((unsigned long long)(bool_rd ? 1L : 0L)) << index;
 			if ((index + 1) == total_length) {
 				shift_rd = 0;
@@ -189,7 +194,7 @@ cv::Mat to_cv_image(Image image) {
 			pixel[2] = pixel[1] = pixel[0] = (b ? 255 : 0);
 		}
 	}
-		return cv_image;
+	return cv_image;
 }
 
 
@@ -240,21 +245,20 @@ int recognize(std::string dir)
 
 int main() {
 
-	const std::string dir = "./Google_Arrow3 - remove alpha/";
+	const std::string ref_dir = "./Google_Arrow3 - remove alpha/";
+	//const std::string dir = "./";
 
 	if (false) {
 		using namespace cv;
 		using namespace std;
 		vector<Mat> image_vec;
-		//string dir = "./Google_Arrow2/";
-
 
 		Size size(IMAGE_LENGTH, IMAGE_LENGTH);
-		Image img1 = to_Image(cv::imread(dir + "LeaveRoundaboutAsUturnCC.png"));
+		auto filename = "./arrow0.png";
+		Image img1 = to_Image(cv::imread(filename));
 
-		for (auto& filename : getAllImageFileNamesWithinFolder(dir)) {
-			//cout << filename << endl;
-			auto& cv_img = cv::imread(dir + filename);
+		for (auto& filename : getAllImageFileNamesWithinFolder(ref_dir)) {
+			auto& cv_img = cv::imread(ref_dir + filename);
 			Image img2 = to_Image(cv_img);
 			unsigned long sad = get_SAD(img1, img2);
 			cout << filename << " sad: " << sad << endl;
@@ -262,6 +266,37 @@ int main() {
 	}
 
 	if (true) {
-		recognize(dir);
+		using namespace cv;
+		using namespace std;
+		vector<Mat> image_vec;
+		string compare_dir = "./Google_Arrow_compare/";
+
+		for (auto img1_filename : getAllImageFileNamesWithinFolder(compare_dir)) {
+			Image img1 = to_Image(cv::imread(compare_dir + img1_filename));
+			cout << endl;
+			cout << img1_filename << endl;
+			int min_sad = 9999;
+			int min_index = 0;
+			int last_sad = 0;
+			int index = 0;
+
+			for (auto img2_filename : getAllImageFileNamesWithinFolder(ref_dir)) {
+				auto& cv_img = cv::imread(ref_dir + img2_filename);
+				Image img2 = to_Image(cv_img);
+				unsigned long sad = get_SAD(img1, img2);
+				cout << img2_filename << " sad: " << sad << endl;
+				if (sad < min_sad) {
+					last_sad = min_sad;
+					min_sad = sad;
+					min_index = index;
+				}
+				index++;
+			}
+			cout << "min index: " << min_index << " sad: " << min_sad << " last_sad: " << last_sad << endl;
+		}
+	}
+
+	if (false) {
+		recognize(ref_dir);
 	}
 }

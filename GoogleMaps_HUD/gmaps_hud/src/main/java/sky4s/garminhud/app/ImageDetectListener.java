@@ -153,17 +153,17 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
             // road
             //=====================================
             Bitmap half_screen_img = Bitmap.createBitmap(screen, 0, 0, screen.getWidth(), screen_height >> 1);
-            storeToPNG(half_screen_img, MainActivity.STORE_DIRECTORY + "half.png");
+            storeToPNG(half_screen_img, MainActivity.STORE_DIRECTORY + "half_up.png");
 
             Rect road_roi = getRoi(2, half_screen_img, RoadBgGreen_Day);
             theme = Theme.DayV1;
-
-            if (!road_roi.valid() || Math.abs(road_roi.width - screen_width) > ROAD_ROI_WIDTH_TOL) {
+            boolean is_road_roi_valid = false;
+            if (!(is_road_roi_valid = road_roi.valid()) || Math.abs(road_roi.width - screen_width) > ROAD_ROI_WIDTH_TOL) {
                 road_roi = getRoi(2, half_screen_img, RoadBgGreen_Night);
                 theme = Theme.NightV1;
             }
 
-            if (!road_roi.valid() || Math.abs(road_roi.width - screen_width) > ROAD_ROI_WIDTH_TOL) {
+            if (!(is_road_roi_valid = road_roi.valid()) || Math.abs(road_roi.width - screen_width) > ROAD_ROI_WIDTH_TOL) {
                 road_roi = getRoi(2, half_screen_img, RoadBgGreen_V2);
                 theme = Theme.V2;
             }
@@ -412,6 +412,20 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
                 Color.blue(color1) == Color.blue(color2);
     }
 
+
+    private boolean isSameRGB(int color1, int color2, int tolerance) {
+        boolean same = Color.red(color1) == Color.red(color2) &&
+                Color.green(color1) == Color.green(color2) &&
+                Color.blue(color1) == Color.blue(color2);
+
+        int deltaR = Color.red(color1) - Color.red(color2);
+        int deltaG = Color.green(color1) - Color.green(color2);
+        int deltaB = Color.blue(color1) - Color.blue(color2);
+        boolean similarColor = deltaR <= tolerance && deltaG <= tolerance && deltaB <= tolerance;
+
+        return same || similarColor;
+    }
+
     private int findColor(Bitmap image, int color, boolean vertical, boolean up, boolean left, boolean printDetail, int findWidth) {
         int width = image.getWidth();
         int height = image.getHeight();
@@ -452,7 +466,8 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
                         int hh = vertical ? h : h + x;
                         int ww = vertical ? w + x : w;
                         int pixel = pixelsInFindColor[ww + hh * width];
-                        allSameColor = allSameColor && isSameRGB(pixel, color);
+                        final int tolerance = 0;
+                        allSameColor = allSameColor && isSameRGB(pixel, color, tolerance);
                     }
 
                     boolean sameColor = allSameColor;

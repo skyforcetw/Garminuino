@@ -525,6 +525,7 @@ public class MainActivity extends AppCompatActivity {
                 String state = Environment.getExternalStorageState();
 
                 if ("mounted".equals(state)) {
+                    // real path in android:    /sdcard/Android/data/sky4s.garminhud.app/cache/screenshots
                     String sdcardPath = getApplicationContext().getExternalCacheDir().getAbsolutePath();
                     STORE_DIRECTORY = sdcardPath + "/screenshots/";
 

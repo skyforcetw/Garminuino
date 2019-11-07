@@ -44,7 +44,9 @@ import sky4s.garminhud.hud.HUDInterface;
 
 public class NotificationMonitor extends NotificationListenerService {
     private final static boolean STORE_IMG = true;
-    private final static String IMAGE_DIR = "/storage/emulated/0/Pictures/";
+
+    //    private final static String IMAGE_DIR = "/storage/emulated/0/Pictures/";
+    private  static String IMAGE_DIR = MainActivity.STORE_DIRECTORY;
 
     public final static String GOOGLE_MAPS_PACKAGE_NAME = "com.google.android.apps.maps";
     public final static String GOOGLE_MAPS_GO_PACKAGE_NAME = "com.google.android.apps.navlite";
@@ -540,8 +542,9 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private void logParseMessage() {
         String arrowString = arrowTypeV2 ? foundArrowV2.toString() : foundArrow.toString();
-        String notifyMessage = arrowString + "(" + (arrowTypeV2 ? "v2:" : "v1:") + arrowMinSad + ") " + distanceNum + "/"+distanceUnit +
+        String notifyMessage = arrowString + "(" + (arrowTypeV2 ? "v2:" : "v1:") + arrowMinSad + ") " + distanceNum + "/" + distanceUnit +
                 " " + (null == remainHour ? 00 : remainHour) + ":" + remainMinute + " " + remainDistance + remainDistanceUnit + " " + arrivalHour + ":" + arrivalMinute
+                + " busy" + (busyTraffic ? "1" : "0")
                 + " (period: " + notifyPeriodTime + ")";
         logi(notifyMessage);
 
@@ -1224,7 +1227,9 @@ public class NotificationMonitor extends NotificationListenerService {
                 + " time: " + (timeSendResult ? '1' : '0')
                 + " arrow: " + (arrowSendResult ? '1' : '0');
         logi(sendResultInfo);
-
+        if (null == IMAGE_DIR) {
+            IMAGE_DIR = MainActivity.STORE_DIRECTORY;
+        }
     }
 
     private void parseTimeAndDistanceToDest(String timeDistanceStirng) {
@@ -1287,11 +1292,11 @@ public class NotificationMonitor extends NotificationListenerService {
             final int indexOfETA = timeToArrived.indexOf(ETA);
             String[] arrivedSplit = null;
             final boolean etaAtFirst = 0 == indexOfETA;
-            // Separate EAT-String from value1
-            if (etaAtFirst) { // ETA-String first, then value1 (chinese)
+            // Separate EAT-String from leftValue
+            if (etaAtFirst) { // ETA-String first, then leftValue (chinese)
                 arrivedSplit = timeToArrived.split(ETA);
                 arrivalTime = 2 == arrivedSplit.length ? arrivedSplit[1] : null;
-            } else { // ETA-value1 first, then string (english)
+            } else { // ETA-leftValue first, then string (english)
                 arrivedSplit = timeToArrived.split(ETA);
                 arrivalTime = arrivedSplit[0];
             }
