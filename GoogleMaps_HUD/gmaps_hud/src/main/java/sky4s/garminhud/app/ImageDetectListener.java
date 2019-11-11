@@ -66,8 +66,8 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
                 UPDATE_INTERVAL = resource.getInteger(R.integer.detect_update_interval);
             }
         }
-        postman = new MainActivityPostman(activity, activity.getString(R.string.broadcast_sender_image_detect));
-
+//        postman = new MainActivityPostman(activity, activity.getString(R.string.broadcast_sender_image_detect));
+        postman = MainActivityPostman.toMainActivityInstance(activity, activity.getString(R.string.broadcast_sender_image_detect));
     }
 
 
@@ -123,6 +123,7 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
     private int LANE_ROI_WIDTH_TOL = 10;
     private int LANE_DETECT_X_OFFSET = 100;
     private int ARROW_SIZE_TOL = 200;
+    private Theme theme = Theme.Unknow;
 
     /**
      * detect procedure:
@@ -140,7 +141,8 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
         boolean traffic_detect_result = false;
 
         boolean busyTraffic = false;
-        Theme theme = Theme.Unknow;
+        theme = Theme.Unknow;
+        final boolean bypassThemeV1 = false;
 
         try {
             if (null == screen) {
@@ -156,17 +158,24 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
             storeToPNG(half_screen_img, MainActivity.STORE_DIRECTORY + "half_up.png");
 
             Rect road_roi = getRoi(2, half_screen_img, RoadBgGreen_Day);
-            theme = Theme.DayV1;
-            boolean is_road_roi_valid = false;
-            if (!(is_road_roi_valid = road_roi.valid()) || Math.abs(road_roi.width - screen_width) > ROAD_ROI_WIDTH_TOL) {
-                road_roi = getRoi(2, half_screen_img, RoadBgGreen_Night);
-                theme = Theme.NightV1;
-            }
 
-            if (!(is_road_roi_valid = road_roi.valid()) || Math.abs(road_roi.width - screen_width) > ROAD_ROI_WIDTH_TOL) {
+            if (bypassThemeV1) {
                 road_roi = getRoi(2, half_screen_img, RoadBgGreen_V2);
                 theme = Theme.V2;
+            } else {
+                theme = Theme.DayV1;
+                boolean is_road_roi_valid = false;
+                if (!(is_road_roi_valid = road_roi.valid()) || Math.abs(road_roi.width - screen_width) > ROAD_ROI_WIDTH_TOL) {
+                    road_roi = getRoi(2, half_screen_img, RoadBgGreen_Night);
+                    theme = Theme.NightV1;
+                }
+
+                if (!(is_road_roi_valid = road_roi.valid()) || Math.abs(road_roi.width - screen_width) > ROAD_ROI_WIDTH_TOL) {
+                    road_roi = getRoi(2, half_screen_img, RoadBgGreen_V2);
+                    theme = Theme.V2;
+                }
             }
+
 
             Log.i(TAG, "Road roi: " + road_roi.toString());
             if (!road_roi.valid()) {
@@ -230,6 +239,11 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
             if (road_detect_result && arrow_detect_result) {
                 if (arrow_detect_result) {
                     busyTraffic = busyTrafficDetect(map_roi_image, activity.alertYellowTraffic, activity.alertSpeedExceeds, activity.gpsSpeed, theme);
+                    String msg = "busy:" + busyTraffic + " theme" + theme;
+                    postman.addStringExtra(activity.getString(R.string.notify_msg), msg);
+                    postman.sendIntent2MainActivity();
+                    Log.i(TAG, msg);
+
                 } else {
                     busyTraffic = false;
                 }
@@ -418,9 +432,9 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
                 Color.green(color1) == Color.green(color2) &&
                 Color.blue(color1) == Color.blue(color2);
 
-        int deltaR = Color.red(color1) - Color.red(color2);
-        int deltaG = Color.green(color1) - Color.green(color2);
-        int deltaB = Color.blue(color1) - Color.blue(color2);
+        int deltaR = Math.abs(Color.red(color1) - Color.red(color2));
+        int deltaG = Math.abs(Color.green(color1) - Color.green(color2));
+        int deltaB = Math.abs(Color.blue(color1) - Color.blue(color2));
         boolean similarColor = deltaR <= tolerance && deltaG <= tolerance && deltaB <= tolerance;
 
         return same || similarColor;
@@ -466,7 +480,7 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
                         int hh = vertical ? h : h + x;
                         int ww = vertical ? w + x : w;
                         int pixel = pixelsInFindColor[ww + hh * width];
-                        final int tolerance = 0;
+                        final int tolerance = 1;
                         allSameColor = allSameColor && isSameRGB(pixel, color, tolerance);
                     }
 

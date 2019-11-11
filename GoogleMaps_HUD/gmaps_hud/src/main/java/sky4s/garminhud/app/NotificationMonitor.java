@@ -46,7 +46,7 @@ public class NotificationMonitor extends NotificationListenerService {
     private final static boolean STORE_IMG = true;
 
     //    private final static String IMAGE_DIR = "/storage/emulated/0/Pictures/";
-    private  static String IMAGE_DIR = MainActivity.STORE_DIRECTORY;
+    private static String IMAGE_DIR = MainActivity.STORE_DIRECTORY;
 
     public final static String GOOGLE_MAPS_PACKAGE_NAME = "com.google.android.apps.maps";
     public final static String GOOGLE_MAPS_GO_PACKAGE_NAME = "com.google.android.apps.navlite";
@@ -165,7 +165,8 @@ public class NotificationMonitor extends NotificationListenerService {
 
         //========================================================================================
         staticInstance = this;
-        postman = new MainActivityPostman(this, getString(R.string.broadcast_sender_notification_monitor));
+//        postman = new MainActivityPostman(this, getString(R.string.broadcast_sender_notification_monitor));
+        postman = MainActivityPostman.toMainActivityInstance(this, getString(R.string.broadcast_sender_notification_monitor));
     }
 
     private MainActivityPostman postman;
@@ -251,11 +252,11 @@ public class NotificationMonitor extends NotificationListenerService {
 
                 if (null != bitmapImage) {
                     if (STORE_IMG) {
-                        storeBitmap(bitmapImage, IMAGE_DIR + "arrow0_sygic.png");
+                        storeBitmap(bitmapImage, IMAGE_DIR, "arrow0_sygic.png");
                     }
                     bitmapImage = removeAlpha(bitmapImage);
                     if (STORE_IMG) {
-                        storeBitmap(bitmapImage, IMAGE_DIR + "arrow_sygic.png");
+                        storeBitmap(bitmapImage, IMAGE_DIR, "arrow_sygic.png");
                     }
                 }
             }
@@ -393,11 +394,11 @@ public class NotificationMonitor extends NotificationListenerService {
 
                         Bitmap bitmapImage = bitmapList.get(integerBitmapId);
                         if (STORE_IMG) {
-                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow0.png");
+                            storeBitmap(bitmapImage, IMAGE_DIR, "arrow0.png");
                         }
                         bitmapImage = removeAlpha(bitmapImage);
                         if (STORE_IMG) {
-                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow.png");
+                            storeBitmap(bitmapImage, IMAGE_DIR, "arrow.png");
                         }
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
                         foundArrow = getArrow(arrowImage);
@@ -503,11 +504,11 @@ public class NotificationMonitor extends NotificationListenerService {
                         ArrayList<Bitmap> bitmapList = (ArrayList<Bitmap>) bitmapsObject;
                         Bitmap bitmapImage = bitmapList.get(bitmapId);
                         if (STORE_IMG) {
-                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow0.png");
+                            storeBitmap(bitmapImage, IMAGE_DIR, "arrow0.png");
                         }
                         bitmapImage = removeAlpha(bitmapImage);
                         if (STORE_IMG) {
-                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow.png");
+                            storeBitmap(bitmapImage, IMAGE_DIR, "arrow.png");
                         }
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
                         foundArrow = getArrow(arrowImage);
@@ -587,11 +588,11 @@ public class NotificationMonitor extends NotificationListenerService {
 
                 if (null != bitmapImage) {
                     if (STORE_IMG) {
-                        storeBitmap(bitmapImage, IMAGE_DIR + "arrow0_osm.png");
+                        storeBitmap(bitmapImage, IMAGE_DIR, "arrow0_osm.png");
                     }
                     bitmapImage = removeAlpha(bitmapImage);
                     if (STORE_IMG) {
-                        storeBitmap(bitmapImage, IMAGE_DIR + "arrow_osm.png");
+                        storeBitmap(bitmapImage, IMAGE_DIR, "arrow_osm.png");
                     }
                 }
             }
@@ -659,13 +660,13 @@ public class NotificationMonitor extends NotificationListenerService {
 
                     if (null != bitmapImage) {
                         if (STORE_IMG) {
-                            storeBitmap(bitmapImage, IMAGE_DIR + "arrow0.png");
+                            storeBitmap(bitmapImage, IMAGE_DIR, "arrow0.png");
                         }
 
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
 
                         if (STORE_IMG) {
-                            storeBitmap(arrowImage.binaryImage, IMAGE_DIR + "binary.png");
+                            storeBitmap(arrowImage.binaryImage, IMAGE_DIR, "binary.png");
                         }
 
                         if (arrowTypeV2) {
@@ -717,8 +718,12 @@ public class NotificationMonitor extends NotificationListenerService {
         return bitmap;
     }
 
-    private void storeBitmap(Bitmap bmp, String filename) {
+    private void storeBitmap(Bitmap bmp, String dirname, String filename) {
 
+        if (null == dirname) {
+            IMAGE_DIR = MainActivity.STORE_DIRECTORY;
+            return;
+        }
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
@@ -727,7 +732,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
         FileOutputStream out = null;
         try {
-            out = new FileOutputStream(filename);
+            out = new FileOutputStream(dirname + "/" + filename);
             bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
             // PNG is a lossless format, the compression factor (100) is ignored
         } catch (Exception e) {

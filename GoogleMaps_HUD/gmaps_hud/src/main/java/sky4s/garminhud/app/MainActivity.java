@@ -378,6 +378,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String sdcardPath = getApplicationContext().getExternalCacheDir().getAbsolutePath();
+        STORE_DIRECTORY = sdcardPath + "/screenshots/";
+
         myCrashHandler = MyCrashHandler.instance();
 
         sharedPref = this.getPreferences(Context.MODE_PRIVATE);
@@ -526,8 +529,8 @@ public class MainActivity extends AppCompatActivity {
 
                 if ("mounted".equals(state)) {
                     // real path in android:    /sdcard/Android/data/sky4s.garminhud.app/cache/screenshots
-                    String sdcardPath = getApplicationContext().getExternalCacheDir().getAbsolutePath();
-                    STORE_DIRECTORY = sdcardPath + "/screenshots/";
+//                    String sdcardPath = getApplicationContext().getExternalCacheDir().getAbsolutePath();
+//                    STORE_DIRECTORY = sdcardPath + "/screenshots/";
 
                     File storeDirectory = new File(STORE_DIRECTORY);
                     if (!storeDirectory.exists()) {
@@ -1163,13 +1166,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            if (null != switchTrafficAndLane && switchTrafficAndLane.isChecked()) {
-                if (is_in_navigation) {
-                    if (!projecting) {
-                        startProjection();
+            //no recommend use this feature, because of it bring app to front when projecting
+            final boolean do_auto_project_by_navigation = false;
+            if (do_auto_project_by_navigation) {
+                if (null != switchTrafficAndLane && switchTrafficAndLane.isChecked()) {
+                    if (is_in_navigation) {
+                        if (!projecting) {
+                            startProjection();
+                        }
+                    } else {
+                        stopProjection();
                     }
-                } else {
-                    stopProjection();
                 }
             }
 
@@ -1511,12 +1518,10 @@ public class MainActivity extends AppCompatActivity {
     boolean projecting = false;
 
     private void startProjection() {
-        if (is_in_navigation) {
-            startActivityForResult(mProjectionManager.createScreenCaptureIntent(), SCREENCAP_REQUEST_CODE);
-            projecting = true;
-        }
-//        startNotification();
-
+//        if (is_in_navigation) {
+        startActivityForResult(mProjectionManager.createScreenCaptureIntent(), SCREENCAP_REQUEST_CODE);
+        projecting = true;
+//        }
     }
 
     private void stopProjection() {
@@ -1529,7 +1534,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-//        stopNotification();
     }
 
     /****************************************** Factoring Virtual Display creation ****************/
@@ -1592,18 +1596,33 @@ public class MainActivity extends AppCompatActivity {
  */
 class MainActivityPostman {
     private String whoami;
+    private String toWho;
     private Context context;
 
-    public MainActivityPostman(Context context, String whoami) {
+    public final static MainActivityPostman toMainActivityInstance(Context context, String whoami) {
+        MainActivityPostman postman =
+                new MainActivityPostman(context, whoami, context.getString(R.string.broadcast_receiver_main_activity));
+        return postman;
+    }
+
+    public final static MainActivityPostman getInstance(Context context, String whoami, String toWho) {
+        MainActivityPostman postman =
+                new MainActivityPostman(context, whoami, toWho);
+        return postman;
+    }
+
+    private MainActivityPostman(Context context, String whoami, String toWho) {
         this.context = context;
         this.whoami = whoami;
+        this.toWho = toWho;
     }
 
     private Intent intent2Main = null;
 
     private void checkIntentForExtra() {
         if (null == intent2Main) {
-            intent2Main = new Intent(context.getString(R.string.broadcast_receiver_main_activity));
+//            intent2Main = new Intent(context.getString(R.string.broadcast_receiver_main_activity));
+            intent2Main = new Intent(toWho);
         }
     }
 
@@ -1620,7 +1639,6 @@ class MainActivityPostman {
     public void sendIntent2MainActivity() {
         if (null != intent2Main) {
             addStringExtra(context.getString(R.string.whoami), whoami);
-//            addBooleanExtra(context.getString(R.string.is_in_navigation), is_in_navigation);
             context.sendBroadcast(intent2Main);
             intent2Main = null;
         }
