@@ -378,6 +378,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //STORE_DIRECTORY =     ///sdcard/Android/data/sky4s.garminhud.app/cache/screenshots
         String sdcardPath = getApplicationContext().getExternalCacheDir().getAbsolutePath();
         STORE_DIRECTORY = sdcardPath + "/screenshots/";
 
@@ -524,14 +525,8 @@ public class MainActivity extends AppCompatActivity {
             sMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
 
             if (sMediaProjection != null) {
-
                 String state = Environment.getExternalStorageState();
-
                 if ("mounted".equals(state)) {
-                    // real path in android:    /sdcard/Android/data/sky4s.garminhud.app/cache/screenshots
-//                    String sdcardPath = getApplicationContext().getExternalCacheDir().getAbsolutePath();
-//                    STORE_DIRECTORY = sdcardPath + "/screenshots/";
-
                     File storeDirectory = new File(STORE_DIRECTORY);
                     if (!storeDirectory.exists()) {
                         boolean success = storeDirectory.mkdirs();
@@ -1324,6 +1319,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int SCREENCAP_REQUEST_CODE = 100;
     private static final String SCREENCAP_NAME = "screencap";
     private static final int VIRTUAL_DISPLAY_FLAGS = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
+    ///sdcard/Android/data/sky4s.garminhud.app/cache/screenshots
     static String STORE_DIRECTORY;
     private static MediaProjection sMediaProjection;
 

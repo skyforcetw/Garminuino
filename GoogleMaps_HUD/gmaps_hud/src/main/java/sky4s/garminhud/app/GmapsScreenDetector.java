@@ -2,10 +2,7 @@ package sky4s.garminhud.app;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.media.Image;
-import android.media.ImageReader;
 import android.util.Log;
 
 import java.io.File;
@@ -14,60 +11,43 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import sky4s.garminhud.eLane;
 import sky4s.garminhud.hud.HUDInterface;
 
-public class ImageDetectListener implements ImageReader.OnImageAvailableListener {
-    private static class Rect {
-        public int x;
-        public int y;
-        public int width;
-        public int height;
+enum Theme {
+    DayV1, NightV1, V2, Unknow
+}
 
-        public Rect(int x, int y, int width, int height) {
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-        }
+class Rect {
+    public int x;
+    public int y;
+    public int width;
+    public int height;
 
-        @Override
-        public final String toString() {
-            return Integer.toString(x) + "," + Integer.toString(y) + " " + Integer.toString(width) + "/" + Integer.toString(height);
-        }
-
-        public boolean valid() {
-            return -1 != x && -1 != y && -1 != width && -1 != height;
-        }
+    public Rect(int x, int y, int width, int height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
     }
 
-    private enum Theme {
-        DayV1, NightV1, V2, Unknow
+    @Override
+    public final String toString() {
+        return Integer.toString(x) + "," + Integer.toString(y) + " " + Integer.toString(width) + "/" + Integer.toString(height);
     }
 
+    public boolean valid() {
+        return -1 != x && -1 != y && -1 != width && -1 != height;
+    }
+}
+
+public class GmapsScreenDetector {
     private MainActivity activity;
     private MainActivityPostman postman;
-    private static final String TAG = ImageDetectListener.class.getSimpleName();
+    private static final String TAG = GmapsScreenDetector.class.getSimpleName();
     private HUDInterface hud;
-
-
-    public ImageDetectListener(MainActivity activity) {
-        this.activity = activity;
-        this.hud = activity.hud;
-        if (null != activity) {
-            Resources resource = activity.getResources();
-            if (null != resource) {
-                ROAD_ROI_WIDTH_TOL = resource.getInteger(R.integer.road_roi_width_tol);
-                LANE_ROI_WIDTH_TOL = resource.getInteger(R.integer.lane_roi_width_tol);
-                LANE_DETECT_X_OFFSET = resource.getInteger(R.integer.lane_detect_x_offset);
-                UPDATE_INTERVAL = resource.getInteger(R.integer.detect_update_interval);
-            }
-        }
-        postman = MainActivityPostman.toMainActivityInstance(activity, activity.getString(R.string.broadcast_sender_image_detect));
-    }
 
 
     public final static String PreImage = "myscreen_pre.png";
@@ -101,28 +81,31 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
     public final static int RedTraffic_NightV2 = Color.rgb(146, 96, 92);
     private int[] pixelsInFindColor;
 
-
-    private boolean busyTrafficDetect(Bitmap map, boolean alertYellowTraffic, int alertSpeedExceeds, int gpsSpeed, Theme theme) {
-        final boolean isV1 = Theme.DayV1 == theme || Theme.NightV1 == theme;
-
-        Rect orange_roi = isV1 ? getRoi(map, OrangeTraffic_V1) : getRoi(map, OrangeTraffic_DayV2, OrangeTraffic_NightV2);
-        Rect roi_red = isV1 ? getRoi(map, RedTraffic_V1) : getRoi(map, RedTraffic_DayV2, RedTraffic_NightV2);
-        Log.i(TAG, "busyTrafficDetect: " + "Orange" + orange_roi + " Red" + roi_red);
-
-        final boolean yellowTraffic = -1 != orange_roi.x;
-        final boolean redTraffic = -1 != roi_red.x;
-
-        final boolean busyTraffic = alertYellowTraffic ? yellowTraffic || redTraffic : redTraffic;
-        final boolean overAlertSpeed = gpsSpeed >= alertSpeedExceeds;
-
-        return busyTraffic && overAlertSpeed;
-    }
-
     private int ROAD_ROI_WIDTH_TOL = 118;
     private int LANE_ROI_WIDTH_TOL = 10;
     private int LANE_DETECT_X_OFFSET = 100;
     private int ARROW_SIZE_TOL = 200;
     private Theme theme = Theme.Unknow;
+
+    private static long lastUpdateTime = 0;
+    private long UPDATE_INTERVAL = 1500;
+
+    GmapsScreenDetector(MainActivity activity) {
+        this.activity = activity;
+        this.hud = activity.hud;
+        if (null != activity) {
+            Resources resource = activity.getResources();
+            if (null != resource) {
+                ROAD_ROI_WIDTH_TOL = resource.getInteger(R.integer.road_roi_width_tol);
+                LANE_ROI_WIDTH_TOL = resource.getInteger(R.integer.lane_roi_width_tol);
+                LANE_DETECT_X_OFFSET = resource.getInteger(R.integer.lane_detect_x_offset);
+                UPDATE_INTERVAL = resource.getInteger(R.integer.detect_update_interval);
+            }
+        }
+        postman = MainActivityPostman.toMainActivityInstance(activity, activity.getString(R.string.broadcast_sender_image_detect));
+
+
+    }
 
     /**
      * detect procedure:
@@ -133,7 +116,7 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
      *
      * @param screen
      */
-    private void screenDetection(Bitmap screen) {
+    void screenDetection(Bitmap screen) {
         boolean road_detect_result = false;
         boolean arrow_detect_result = false;
         boolean lane_detect_result = false;
@@ -294,6 +277,32 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
         }
     }
 
+    private boolean storeToPNG(Bitmap image, String filename) {
+        try (FileOutputStream fos = new FileOutputStream(filename)) {
+            image.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (IOException ex) {
+            Log.e(TAG, ex.toString());
+            return false;
+        }
+        return true;
+    }
+
+    private boolean busyTrafficDetect(Bitmap map, boolean alertYellowTraffic, int alertSpeedExceeds, int gpsSpeed, Theme theme) {
+        final boolean isV1 = Theme.DayV1 == theme || Theme.NightV1 == theme;
+
+        Rect orange_roi = isV1 ? getRoi(map, OrangeTraffic_V1) : getRoi(map, OrangeTraffic_DayV2, OrangeTraffic_NightV2);
+        Rect roi_red = isV1 ? getRoi(map, RedTraffic_V1) : getRoi(map, RedTraffic_DayV2, RedTraffic_NightV2);
+        Log.i(TAG, "busyTrafficDetect: " + "Orange" + orange_roi + " Red" + roi_red);
+
+        final boolean yellowTraffic = -1 != orange_roi.x;
+        final boolean redTraffic = -1 != roi_red.x;
+
+        final boolean busyTraffic = alertYellowTraffic ? yellowTraffic || redTraffic : redTraffic;
+        final boolean overAlertSpeed = gpsSpeed >= alertSpeedExceeds;
+
+        return busyTraffic && overAlertSpeed;
+    }
+
 
     private ArrayList<Boolean> laneDetect(Bitmap lane, int bgColor, int laneColor) {
         final int height = lane.getHeight() - 1;
@@ -336,76 +345,6 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
         return result;
     }
 
-
-    private static long lastUpdateTime = 0;
-    private long UPDATE_INTERVAL = 1500;
-
-    @Override
-    public void onImageAvailable(ImageReader reader) {
-        Image image = null;
-        FileOutputStream fos = null;
-        Bitmap bitmap = null;
-
-
-        try {
-            image = reader.acquireLatestImage();
-            if (image != null) {
-                long currentTime = System.currentTimeMillis();
-                long deltaTime = currentTime - lastUpdateTime;
-                boolean do_detection = deltaTime > UPDATE_INTERVAL;//&& int_speed>40;
-
-                if (do_detection) {
-                    lastUpdateTime = currentTime;
-                    Image.Plane[] planes = image.getPlanes();
-                    ByteBuffer buffer = planes[0].getBuffer();
-                    int pixelStride = planes[0].getPixelStride();
-                    int rowStride = planes[0].getRowStride();
-                    int rowPadding = rowStride - pixelStride * activity.mWidth;
-
-                    // create bitmap
-                    bitmap = Bitmap.createBitmap(activity.mWidth + rowPadding / pixelStride, activity.mHeight, Bitmap.Config.ARGB_8888);
-                    bitmap.copyPixelsFromBuffer(buffer);
-
-                    File nowImage = new File(MainActivity.STORE_DIRECTORY + NowImage);
-                    if (nowImage.exists()) {
-                        File preImage = new File(MainActivity.STORE_DIRECTORY + PreImage);
-                        copy(nowImage, preImage);
-                    }
-
-                    // write bitmap to a file
-                    storeToPNG(bitmap, MainActivity.STORE_DIRECTORY + NowImage);
-
-                    final boolean loadBitmapFromFile = false;
-                    if (loadBitmapFromFile) {
-                        bitmap = BitmapFactory.decodeFile(MainActivity.STORE_DIRECTORY + "q.png");
-                    }
-                    if (!activity.is_in_navigation) {
-                        return;
-                    }
-                    screenDetection(bitmap);
-                }
-            }
-
-        } catch (Exception e) {
-            Log.e(TAG, e.toString());
-        } finally {
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                }
-            }
-
-            if (bitmap != null) {
-                bitmap.recycle();
-            }
-
-            if (image != null) {
-                image.close();
-            }
-        }
-    }
 
     private boolean isSameRGB(int color1, int color2) {
         return Color.red(color1) == Color.red(color2) &&
@@ -514,18 +453,6 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
         return new Rect(left, top, right - left, bottom - top);
     }
 
-
-    private boolean storeToPNG(Bitmap image, String filename) {
-        try (FileOutputStream fos = new FileOutputStream(filename)) {
-            image.compress(Bitmap.CompressFormat.PNG, 100, fos);
-        } catch (IOException ex) {
-            Log.e(TAG, ex.toString());
-            return false;
-        }
-        return true;
-    }
-
-
     private boolean landDetectToHUD(ArrayList<Boolean> laneDetectResult) {
         final int lanes = laneDetectResult.size();
 
@@ -618,7 +545,6 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
         return -1;
     }
 
-
     private int getFirstHorizontal(Bitmap lane, int x0, int x1, int y0, int color,
                                    boolean notLogic, boolean inverse_scan) {
         int end = inverse_scan ? x0 : x1;
@@ -644,6 +570,5 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
             }
         }
     }
-
 
 }
