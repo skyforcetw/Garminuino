@@ -74,6 +74,8 @@ import app.akexorcist.bluetotohspp.library.DeviceList;
 import chutka.bitman.com.speedometersimplified.LocationService;
 import sky4s.garminhud.Arrow;
 import sky4s.garminhud.GarminHUD;
+import sky4s.garminhud.ImageUtils;
+import sky4s.garminhud.app.detect.ImageDetectListener;
 import sky4s.garminhud.eOutAngle;
 import sky4s.garminhud.eUnits;
 import sky4s.garminhud.hud.DummyHUD;
@@ -123,14 +125,15 @@ public class MainActivity extends AppCompatActivity {
     Switch switchDarkModeAuto;
     Switch switchDarkModeManual;
 
+    public HUDInterface hud = new DummyHUD();
+    public boolean is_in_navigation = false;
+
     private boolean isEnabledNLS = false;
     private boolean showCurrentTime = false;
     private BluetoothSPP bt;
-    HUDInterface hud = new DummyHUD();
     private NotificationManager notifyManager;
     private MsgReceiver msgReceiver;
     private boolean lastReallyInNavigation = false;
-    boolean is_in_navigation = false;
     private BroadcastReceiver screenReceiver;
     private Timer timer = new Timer(true);
     private TimerTask currentTimeTask;
@@ -219,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
         return switchGmapsNotificationCaught.isChecked();
     }
 
-    void sendBooleanExtraByBroadcast(String receiver, String key, boolean b) {
+    public void sendBooleanExtraByBroadcast(String receiver, String key, boolean b) {
         Intent intent = new Intent(receiver);
         intent.putExtra(key, b);
         sendBroadcast(intent);
@@ -378,9 +381,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //STORE_DIRECTORY =     ///sdcard/Android/data/sky4s.garminhud.app/cache/screenshots
-        String sdcardPath = getApplicationContext().getExternalCacheDir().getAbsolutePath();
-        STORE_DIRECTORY = sdcardPath + "/screenshots/";
+        //SCREENCAP_STORE_DIRECTORY =     ///sdcard/Android/data/sky4s.garminhud.app/cache/screenshots
+        String sdcardCachePath = getApplicationContext().getExternalCacheDir().getAbsolutePath();
+        SCREENCAP_STORE_DIRECTORY = sdcardCachePath + "/screenshots/";
+        String sdcardDocPath = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
+        OCR_STORE_DIRECTORY = sdcardDocPath;
+        ImageUtils.context = this;
 
         myCrashHandler = MyCrashHandler.instance();
 
@@ -497,7 +503,6 @@ public class MainActivity extends AppCompatActivity {
         //========================================================================================
 
         //experiment:
-//        createNotification(this);
         startNotification();
     }
 
@@ -527,7 +532,7 @@ public class MainActivity extends AppCompatActivity {
             if (sMediaProjection != null) {
                 String state = Environment.getExternalStorageState();
                 if ("mounted".equals(state)) {
-                    File storeDirectory = new File(STORE_DIRECTORY);
+                    File storeDirectory = new File(SCREENCAP_STORE_DIRECTORY);
                     if (!storeDirectory.exists()) {
                         boolean success = storeDirectory.mkdirs();
                         if (!success) {
@@ -1289,9 +1294,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceConnectionFailed() {
             hudConnected = false;
-            switchHudConnected.setText(getString(R.string.layout_element_hud_con_failed));
-            switchHudConnected.setTextColor(Color.RED);
-            switchHudConnected.setChecked(false);
+            String text = getString(R.string.layout_element_hud_con_failed);
+            if (null != switchHudConnected) {
+                switchHudConnected.setText(text);
+                switchHudConnected.setTextColor(Color.RED);
+                switchHudConnected.setChecked(false);
+            }
 
             log("onDeviceConnectionFailed");
             resetBT();
@@ -1308,19 +1316,20 @@ public class MainActivity extends AppCompatActivity {
     private Display mDisplay;
     private VirtualDisplay mVirtualDisplay;
     private int mDensity;
-    int mWidth;
-    int mHeight;
+    public int mWidth;
+    public int mHeight;
     private int mRotation;
     private OrientationChangeCallback mOrientationChangeCallback;
-    int alertSpeedExceeds = 0;
-    int gpsSpeed = 0;
-    boolean alertYellowTraffic = false;
+    public int alertSpeedExceeds = 0;
+    public int gpsSpeed = 0;
+    public boolean alertYellowTraffic = false;
 
     private static final int SCREENCAP_REQUEST_CODE = 100;
     private static final String SCREENCAP_NAME = "screencap";
     private static final int VIRTUAL_DISPLAY_FLAGS = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
     ///sdcard/Android/data/sky4s.garminhud.app/cache/screenshots
-    static String STORE_DIRECTORY;
+    public static String SCREENCAP_STORE_DIRECTORY;
+    public static String OCR_STORE_DIRECTORY;
     private static MediaProjection sMediaProjection;
 
     private class OrientationChangeCallback extends OrientationEventListener {
@@ -1585,62 +1594,6 @@ public class MainActivity extends AppCompatActivity {
             btReconnectThread.start();
         }
     }
-}
-
-/**
- * For other class can send message to Main Activity
- */
-class MainActivityPostman {
-    private String whoami;
-    private String toWho;
-    private Context context;
-
-    public final static MainActivityPostman toMainActivityInstance(Context context, String whoami) {
-        MainActivityPostman postman =
-                new MainActivityPostman(context, whoami, context.getString(R.string.broadcast_receiver_main_activity));
-        return postman;
-    }
-
-    public final static MainActivityPostman getInstance(Context context, String whoami, String toWho) {
-        MainActivityPostman postman =
-                new MainActivityPostman(context, whoami, toWho);
-        return postman;
-    }
-
-    private MainActivityPostman(Context context, String whoami, String toWho) {
-        this.context = context;
-        this.whoami = whoami;
-        this.toWho = toWho;
-    }
-
-    private Intent intent2Main = null;
-
-    private void checkIntentForExtra() {
-        if (null == intent2Main) {
-//            intent2Main = new Intent(context.getString(R.string.broadcast_receiver_main_activity));
-            intent2Main = new Intent(toWho);
-        }
-    }
-
-    public void addBooleanExtra(String key, boolean b) {
-        checkIntentForExtra();
-        intent2Main.putExtra(key, b);
-    }
-
-    public void addStringExtra(String key, String string) {
-        checkIntentForExtra();
-        intent2Main.putExtra(key, string);
-    }
-
-    public void sendIntent2MainActivity() {
-        if (null != intent2Main) {
-            addStringExtra(context.getString(R.string.whoami), whoami);
-            context.sendBroadcast(intent2Main);
-            intent2Main = null;
-        }
-
-    }
-
 }
 
 

@@ -1,16 +1,11 @@
 package sky4s.garminhud.app;
 
-import android.Manifest;
 import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.location.Location;
@@ -22,13 +17,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +28,7 @@ import java.util.List;
 import sky4s.garminhud.Arrow;
 import sky4s.garminhud.ArrowImage;
 import sky4s.garminhud.ArrowV2;
+import sky4s.garminhud.ImageUtils;
 import sky4s.garminhud.eOutAngle;
 import sky4s.garminhud.eOutType;
 import sky4s.garminhud.eUnits;
@@ -46,7 +39,7 @@ public class NotificationMonitor extends NotificationListenerService {
     private final static boolean STORE_IMG = true;
 
     //    private final static String IMAGE_DIR = "/storage/emulated/0/Pictures/";
-    private static String IMAGE_DIR = MainActivity.STORE_DIRECTORY;
+    private static String IMAGE_DIR = MainActivity.SCREENCAP_STORE_DIRECTORY;
 
     public final static String GOOGLE_MAPS_PACKAGE_NAME = "com.google.android.apps.maps";
     public final static String GOOGLE_MAPS_GO_PACKAGE_NAME = "com.google.android.apps.navlite";
@@ -99,18 +92,6 @@ public class NotificationMonitor extends NotificationListenerService {
     private int lastArrivalHour = -1;
     private int lastArrivalMinute = -1;
 
-    private static Bitmap removeAlpha(Bitmap originalBitmap) {
-        // lets create a new empty bitmap
-        Bitmap newBitmap = Bitmap.createBitmap(originalBitmap.getWidth(), originalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        // create a canvas where we can draw on
-        Canvas canvas = new Canvas(newBitmap);
-        // create a paint instance with alpha
-        Paint alphaPaint = new Paint();
-        alphaPaint.setAlpha(255);
-        // now lets draw using alphaPaint instance
-        canvas.drawBitmap(originalBitmap, 0, 0, alphaPaint);
-        return newBitmap;
-    }
 
     private static void logi(String msg) {
         Log.i(TAG, msg);
@@ -248,15 +229,15 @@ public class NotificationMonitor extends NotificationListenerService {
             Icon small = notification.getSmallIcon();
             if (null != small) {
                 Drawable drawableIco = small.loadDrawable(this);
-                Bitmap bitmapImage = drawableToBitmap(drawableIco);
+                Bitmap bitmapImage = ImageUtils.drawableToBitmap(drawableIco);
 
                 if (null != bitmapImage) {
                     if (STORE_IMG) {
-                        storeBitmap(bitmapImage, IMAGE_DIR, "arrow0_sygic.png");
+                        ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow0_sygic.png");
                     }
-                    bitmapImage = removeAlpha(bitmapImage);
+                    bitmapImage = ImageUtils.removeAlpha(bitmapImage);
                     if (STORE_IMG) {
-                        storeBitmap(bitmapImage, IMAGE_DIR, "arrow_sygic.png");
+                        ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow_sygic.png");
                     }
                 }
             }
@@ -394,11 +375,11 @@ public class NotificationMonitor extends NotificationListenerService {
 
                         Bitmap bitmapImage = bitmapList.get(integerBitmapId);
                         if (STORE_IMG) {
-                            storeBitmap(bitmapImage, IMAGE_DIR, "arrow0.png");
+                            ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow0.png");
                         }
-                        bitmapImage = removeAlpha(bitmapImage);
+                        bitmapImage = ImageUtils.removeAlpha(bitmapImage);
                         if (STORE_IMG) {
-                            storeBitmap(bitmapImage, IMAGE_DIR, "arrow.png");
+                            ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow.png");
                         }
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
                         foundArrow = getArrow(arrowImage);
@@ -504,11 +485,11 @@ public class NotificationMonitor extends NotificationListenerService {
                         ArrayList<Bitmap> bitmapList = (ArrayList<Bitmap>) bitmapsObject;
                         Bitmap bitmapImage = bitmapList.get(bitmapId);
                         if (STORE_IMG) {
-                            storeBitmap(bitmapImage, IMAGE_DIR, "arrow0.png");
+                            ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow0.png");
                         }
-                        bitmapImage = removeAlpha(bitmapImage);
+                        bitmapImage = ImageUtils.removeAlpha(bitmapImage);
                         if (STORE_IMG) {
-                            storeBitmap(bitmapImage, IMAGE_DIR, "arrow.png");
+                            ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow.png");
                         }
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
                         foundArrow = getArrow(arrowImage);
@@ -584,15 +565,15 @@ public class NotificationMonitor extends NotificationListenerService {
 
             if (null != largeIcon) {
                 Drawable drawableIco = largeIcon.loadDrawable(this);
-                Bitmap bitmapImage = drawableToBitmap(drawableIco);
+                Bitmap bitmapImage = ImageUtils.drawableToBitmap(drawableIco);
 
                 if (null != bitmapImage) {
                     if (STORE_IMG) {
-                        storeBitmap(bitmapImage, IMAGE_DIR, "arrow0_osm.png");
+                        ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow0_osm.png");
                     }
-                    bitmapImage = removeAlpha(bitmapImage);
+                    bitmapImage = ImageUtils.removeAlpha(bitmapImage);
                     if (STORE_IMG) {
-                        storeBitmap(bitmapImage, IMAGE_DIR, "arrow_osm.png");
+                        ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow_osm.png");
                     }
                 }
             }
@@ -656,17 +637,17 @@ public class NotificationMonitor extends NotificationListenerService {
                 Icon largeIcon = notification.getLargeIcon();
                 if (null != largeIcon) {
                     Drawable drawableIco = largeIcon.loadDrawable(this);
-                    Bitmap bitmapImage = drawableToBitmap(drawableIco);
+                    Bitmap bitmapImage = ImageUtils.drawableToBitmap(drawableIco);
 
                     if (null != bitmapImage) {
                         if (STORE_IMG) {
-                            storeBitmap(bitmapImage, IMAGE_DIR, "arrow0.png");
+                            ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow0.png");
                         }
 
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
 
                         if (STORE_IMG) {
-                            storeBitmap(arrowImage.binaryImage, IMAGE_DIR, "binary.png");
+                            ImageUtils.storeBitmap(arrowImage.binaryImage, IMAGE_DIR, "binary.png");
                         }
 
                         if (arrowTypeV2) {
@@ -690,61 +671,6 @@ public class NotificationMonitor extends NotificationListenerService {
 
         } else {
             return false;
-        }
-    }
-
-    private static Bitmap drawableToBitmap(Drawable drawable) {
-        if (null == drawable) {
-            return null;
-        }
-        Bitmap bitmap = null;
-
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if (bitmapDrawable.getBitmap() != null) {
-                return bitmapDrawable.getBitmap();
-            }
-        }
-
-        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
-        } else {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        }
-
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
-    }
-
-    private void storeBitmap(Bitmap bmp, String dirname, String filename) {
-
-        if (null == dirname) {
-            IMAGE_DIR = MainActivity.STORE_DIRECTORY;
-            return;
-        }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            return;
-        }
-
-        FileOutputStream out = null;
-        try {
-            out = new FileOutputStream(dirname + "/" + filename);
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-            // PNG is a lossless format, the compression factor (100) is ignored
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -1233,7 +1159,7 @@ public class NotificationMonitor extends NotificationListenerService {
                 + " arrow: " + (arrowSendResult ? '1' : '0');
         logi(sendResultInfo);
         if (null == IMAGE_DIR) {
-            IMAGE_DIR = MainActivity.STORE_DIRECTORY;
+            IMAGE_DIR = MainActivity.SCREENCAP_STORE_DIRECTORY;
         }
     }
 

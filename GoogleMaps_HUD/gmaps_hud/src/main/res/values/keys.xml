@@ -29,7 +29,7 @@
     <!--broadcast receiver-->
     <string name="broadcast_receiver_main_activity" translatable="false">sky4s.garminhud.app.MainActivity.RECEIVER</string>
     <string name="broadcast_receiver_notification_monitor" translatable="false">sky4s.garminhud.app.NotificationMonitor.RECEIVER</string>
-<!--    <string name="broadcast_receiver_image_detect" translatable="false">sky4s.garminhud.app.ImageDetectListener.RECEIVER</string>-->
+<!--    <string name="broadcast_receiver_image_detect" translatable="false">sky4s.garminhud.app.detect.ImageDetectListener.RECEIVER</string>-->
 
     <string name="broadcast_notification_switch" translatable="false">sky4s.garminhud.app.MainActivity.NOTIFY_SWITCH</string>
 

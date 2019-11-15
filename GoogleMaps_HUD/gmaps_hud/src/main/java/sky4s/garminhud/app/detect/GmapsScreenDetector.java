@@ -1,57 +1,29 @@
-package sky4s.garminhud.app;
+package sky4s.garminhud.app.detect;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 
+import sky4s.garminhud.ImageUtils;
+import sky4s.garminhud.app.MainActivity;
+import sky4s.garminhud.app.R;
+//import sky4s.garminhud.app.Rect;
 import sky4s.garminhud.eLane;
-import sky4s.garminhud.hud.HUDInterface;
 
-enum Theme {
+enum GmapsTheme {
     DayV1, NightV1, V2, Unknow
 }
 
-class Rect {
-    public int x;
-    public int y;
-    public int width;
-    public int height;
 
-    public Rect(int x, int y, int width, int height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-    }
-
-    @Override
-    public final String toString() {
-        return Integer.toString(x) + "," + Integer.toString(y) + " " + Integer.toString(width) + "/" + Integer.toString(height);
-    }
-
-    public boolean valid() {
-        return -1 != x && -1 != y && -1 != width && -1 != height;
-    }
-}
-
-public class GmapsScreenDetector {
-    private MainActivity activity;
-    private MainActivityPostman postman;
+public class GmapsScreenDetector extends ScreenDetector {
+    //    private MainActivity activity;
+//    private MainActivityPostman postman;
     private static final String TAG = GmapsScreenDetector.class.getSimpleName();
-    private HUDInterface hud;
+//    private HUDInterface hud;
 
-
-    public final static String PreImage = "myscreen_pre.png";
-    public final static String NowImage = "myscreen_now.png";
     public final static String GmapImage = "gmap.png";
     public final static String MapImage = "map.png";
     public final static String LaneImage = "lane.png";
@@ -85,24 +57,22 @@ public class GmapsScreenDetector {
     private int LANE_ROI_WIDTH_TOL = 10;
     private int LANE_DETECT_X_OFFSET = 100;
     private int ARROW_SIZE_TOL = 200;
-    private Theme theme = Theme.Unknow;
-
-    private static long lastUpdateTime = 0;
-    private long UPDATE_INTERVAL = 1500;
+    private GmapsTheme theme = GmapsTheme.Unknow;
 
     GmapsScreenDetector(MainActivity activity) {
-        this.activity = activity;
-        this.hud = activity.hud;
+        super(activity);
+//        this.activity = activity;
+//        this.hud = activity.hud;
         if (null != activity) {
             Resources resource = activity.getResources();
             if (null != resource) {
                 ROAD_ROI_WIDTH_TOL = resource.getInteger(R.integer.road_roi_width_tol);
                 LANE_ROI_WIDTH_TOL = resource.getInteger(R.integer.lane_roi_width_tol);
                 LANE_DETECT_X_OFFSET = resource.getInteger(R.integer.lane_detect_x_offset);
-                UPDATE_INTERVAL = resource.getInteger(R.integer.detect_update_interval);
+//                UPDATE_INTERVAL = resource.getInteger(R.integer.detect_update_interval);
             }
         }
-        postman = MainActivityPostman.toMainActivityInstance(activity, activity.getString(R.string.broadcast_sender_image_detect));
+//        postman = MainActivityPostman.toMainActivityInstance(activity, activity.getString(R.string.broadcast_sender_image_detect));
 
 
     }
@@ -123,7 +93,7 @@ public class GmapsScreenDetector {
         boolean traffic_detect_result = false;
 
         boolean busyTraffic = false;
-        theme = Theme.Unknow;
+        theme = GmapsTheme.Unknow;
         final boolean bypassThemeV1 = false;
 
         try {
@@ -137,24 +107,24 @@ public class GmapsScreenDetector {
             // road
             //=====================================
             Bitmap half_screen_img = Bitmap.createBitmap(screen, 0, 0, screen.getWidth(), screen_height >> 1);
-            storeToPNG(half_screen_img, MainActivity.STORE_DIRECTORY + "half_up.png");
+            ImageUtils.storeBitmap(half_screen_img, MainActivity.SCREENCAP_STORE_DIRECTORY + "half_up.png");
 
             Rect road_roi = getRoi(2, half_screen_img, RoadBgGreen_Day);
 
             if (bypassThemeV1) {
                 road_roi = getRoi(2, half_screen_img, RoadBgGreen_V2);
-                theme = Theme.V2;
+                theme = GmapsTheme.V2;
             } else {
-                theme = Theme.DayV1;
+                theme = GmapsTheme.DayV1;
                 boolean is_road_roi_valid = false;
                 if (!(is_road_roi_valid = road_roi.valid()) || Math.abs(road_roi.width - screen_width) > ROAD_ROI_WIDTH_TOL) {
                     road_roi = getRoi(2, half_screen_img, RoadBgGreen_Night);
-                    theme = Theme.NightV1;
+                    theme = GmapsTheme.NightV1;
                 }
 
                 if (!(is_road_roi_valid = road_roi.valid()) || Math.abs(road_roi.width - screen_width) > ROAD_ROI_WIDTH_TOL) {
                     road_roi = getRoi(2, half_screen_img, RoadBgGreen_V2);
-                    theme = Theme.V2;
+                    theme = GmapsTheme.V2;
                 }
             }
 
@@ -163,7 +133,7 @@ public class GmapsScreenDetector {
             if (!road_roi.valid()) {
                 return;
             }
-            storeToPNG(Bitmap.createBitmap(half_screen_img, road_roi.x, road_roi.y, road_roi.width, road_roi.height), MainActivity.STORE_DIRECTORY + "road.png");
+            ImageUtils.storeBitmap(Bitmap.createBitmap(half_screen_img, road_roi.x, road_roi.y, road_roi.width, road_roi.height), MainActivity.SCREENCAP_STORE_DIRECTORY + "road.png");
 
             final int gmapHeight = screen_height - road_roi.y;
             if (gmapHeight < 0) {
@@ -172,19 +142,19 @@ public class GmapsScreenDetector {
             Bitmap gmapScreen = Bitmap.createBitmap(screen, road_roi.x, road_roi.y, road_roi.width, gmapHeight);
 
             // write bitmap to a file
-            storeToPNG(gmapScreen, MainActivity.STORE_DIRECTORY + GmapImage);
+            ImageUtils.storeBitmap(gmapScreen, MainActivity.SCREENCAP_STORE_DIRECTORY + GmapImage);
 
             road_detect_result = true;
             //=====================================
             // arrow
             //=====================================
             Bitmap gmapScreenHalfDown = Bitmap.createBitmap(gmapScreen, 0, gmapScreen.getHeight() >> 1, gmapScreen.getWidth(), gmapScreen.getHeight() >> 1);
-            storeToPNG(gmapScreenHalfDown, MainActivity.STORE_DIRECTORY + "gmap_half_dw.png");
+            ImageUtils.storeBitmap(gmapScreenHalfDown, MainActivity.SCREENCAP_STORE_DIRECTORY + "gmap_half_dw.png");
 
             final boolean approveArrowStatic = false;
             Rect arrow_roi = null;
-            if (Theme.DayV1 == theme || Theme.NightV1 == theme) {
-                int ArrowColor = theme == Theme.DayV1 ? ArrowColor_Day : ArrowColor_Night;
+            if (GmapsTheme.DayV1 == theme || GmapsTheme.NightV1 == theme) {
+                int ArrowColor = theme == GmapsTheme.DayV1 ? ArrowColor_Day : ArrowColor_Night;
                 arrow_roi = approveArrowStatic ? getRoi(2, gmapScreenHalfDown, ArrowColor, ArrowColor_Static) :
                         getRoi(2, gmapScreenHalfDown, ArrowColor);
             } else {
@@ -212,7 +182,7 @@ public class GmapsScreenDetector {
                 if (width > 0 && height > 0) {
                     map_roi_image = Bitmap.createBitmap(gmapScreen, x, y, width, height);
                     // write bitmap to a file
-                    storeToPNG(map_roi_image, MainActivity.STORE_DIRECTORY + MapImage);
+                    ImageUtils.storeBitmap(map_roi_image, MainActivity.SCREENCAP_STORE_DIRECTORY + MapImage);
                 }
             }
             //=====================================
@@ -235,29 +205,29 @@ public class GmapsScreenDetector {
             //=====================================
             // lane
             //=====================================
-            final int lane_bg_color = theme == Theme.DayV1 ? LaneBgGreen_DayV1 :
-                    theme == Theme.NightV1 ? LaneBgGreen_NightV1 :
-                            theme == Theme.V2 ? LaneBgGreen_V2 : 0;
+            final int lane_bg_color = theme == GmapsTheme.DayV1 ? LaneBgGreen_DayV1 :
+                    theme == GmapsTheme.NightV1 ? LaneBgGreen_NightV1 :
+                            theme == GmapsTheme.V2 ? LaneBgGreen_V2 : 0;
             Rect lane_roi = getRoi(2, map_roi_image, lane_bg_color);
 
             final boolean lane_roi_exist = lane_roi.valid() && Math.abs(lane_roi.width - road_roi.width) < LANE_ROI_WIDTH_TOL;
             if (lane_roi_exist) {
                 Bitmap lane_roi_image = Bitmap.createBitmap(map_roi_image, lane_roi.x, lane_roi.y, lane_roi.width, lane_roi.height);
-                storeToPNG(lane_roi_image, MainActivity.STORE_DIRECTORY + LaneImage);
+                ImageUtils.storeBitmap(lane_roi_image, MainActivity.SCREENCAP_STORE_DIRECTORY + LaneImage);
 
-                final int lane_color = theme == Theme.DayV1 || theme == Theme.NightV1 ? LaneDivideWhiteV1 :
-                        theme == Theme.V2 ? LaneDivideWhiteV2 : 0;
+                final int lane_color = theme == GmapsTheme.DayV1 || theme == GmapsTheme.NightV1 ? LaneDivideWhiteV1 :
+                        theme == GmapsTheme.V2 ? LaneDivideWhiteV2 : 0;
                 ArrayList<Boolean> laneDetectResult = laneDetect(lane_roi_image, lane_bg_color, lane_color);
                 if (laneDetectResult.size() != 0) {
                     if (landDetectToHUD(laneDetectResult)) {
 
                     } else {
                         hud.SetLanes((char) 0, (char) 0);
-                        storeToPNG(lane_roi_image, MainActivity.STORE_DIRECTORY + "NG_lane.png");
+                        ImageUtils.storeBitmap(lane_roi_image, MainActivity.SCREENCAP_STORE_DIRECTORY + "NG_lane.png");
                     }
                 } else {
                     hud.SetLanes((char) 0, (char) 0);
-                    storeToPNG(lane_roi_image, MainActivity.STORE_DIRECTORY + "NG_lane.png");
+                    ImageUtils.storeBitmap(lane_roi_image, MainActivity.SCREENCAP_STORE_DIRECTORY + "NG_lane.png");
                 }
             } else {
                 hud.SetLanes((char) 0, (char) 0);
@@ -277,18 +247,8 @@ public class GmapsScreenDetector {
         }
     }
 
-    private boolean storeToPNG(Bitmap image, String filename) {
-        try (FileOutputStream fos = new FileOutputStream(filename)) {
-            image.compress(Bitmap.CompressFormat.PNG, 100, fos);
-        } catch (IOException ex) {
-            Log.e(TAG, ex.toString());
-            return false;
-        }
-        return true;
-    }
-
-    private boolean busyTrafficDetect(Bitmap map, boolean alertYellowTraffic, int alertSpeedExceeds, int gpsSpeed, Theme theme) {
-        final boolean isV1 = Theme.DayV1 == theme || Theme.NightV1 == theme;
+    private boolean busyTrafficDetect(Bitmap map, boolean alertYellowTraffic, int alertSpeedExceeds, int gpsSpeed, GmapsTheme theme) {
+        final boolean isV1 = GmapsTheme.DayV1 == theme || GmapsTheme.NightV1 == theme;
 
         Rect orange_roi = isV1 ? getRoi(map, OrangeTraffic_V1) : getRoi(map, OrangeTraffic_DayV2, OrangeTraffic_NightV2);
         Rect roi_red = isV1 ? getRoi(map, RedTraffic_V1) : getRoi(map, RedTraffic_DayV2, RedTraffic_NightV2);
@@ -345,113 +305,113 @@ public class GmapsScreenDetector {
         return result;
     }
 
-
-    private boolean isSameRGB(int color1, int color2) {
-        return Color.red(color1) == Color.red(color2) &&
-                Color.green(color1) == Color.green(color2) &&
-                Color.blue(color1) == Color.blue(color2);
-    }
-
-
-    private boolean isSameRGB(int color1, int color2, int tolerance) {
-        boolean same = Color.red(color1) == Color.red(color2) &&
-                Color.green(color1) == Color.green(color2) &&
-                Color.blue(color1) == Color.blue(color2);
-
-        int deltaR = Math.abs(Color.red(color1) - Color.red(color2));
-        int deltaG = Math.abs(Color.green(color1) - Color.green(color2));
-        int deltaB = Math.abs(Color.blue(color1) - Color.blue(color2));
-        boolean similarColor = deltaR <= tolerance && deltaG <= tolerance && deltaB <= tolerance;
-
-        return same || similarColor;
-    }
-
-    private int findColor(Bitmap image, int color, boolean vertical, boolean up, boolean left, boolean printDetail, int findWidth) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-        int totalSize = width * height;
-        if (null == pixelsInFindColor || totalSize != pixelsInFindColor.length) {
-            pixelsInFindColor = null;
-            pixelsInFindColor = new int[width * height];
-        }
-
-        image.getPixels(pixelsInFindColor, 0, width, 0, 0, width, height);
-
-        int inc = 1;
-
-        int h_start = vertical ? (up ? 0 : height - findWidth) : 0;
-        int h_inc = (vertical ? up ? 1 : -1 : 1) * inc;
-        int h_end = vertical ? (up ? height - findWidth : 0) : height - 1;
-
-        int w_start = vertical ? 0 : left ? 0 : width - findWidth;
-        int w_inc = (vertical ? 1 : left ? 1 : -1) * inc;
-        int w_end = vertical ? width - findWidth : left ? width - 1 : 0 + findWidth;
-
-        int w0_end = vertical ? w_start + w_inc : w_end;
-        int w1_end = vertical ? w_end : w_start + w_inc;
-
-        /**
-         *  w0
-         *     h
-         *        w1
-         */
-
-        for (int w0 = w_start; w0 != w0_end; w0 += w_inc) {
-            for (int h = h_start; h != h_end; h += h_inc) {
-                for (int w1 = w_start; w1 != w1_end; w1 += w_inc) {
-                    int w = vertical ? w1 : w0;
-
-                    boolean allSameColor = true;
-                    for (int x = 0; x < findWidth; x++) {
-                        int hh = vertical ? h : h + x;
-                        int ww = vertical ? w + x : w;
-                        int pixel = pixelsInFindColor[ww + hh * width];
-                        final int tolerance = 1;
-                        allSameColor = allSameColor && isSameRGB(pixel, color, tolerance);
-                    }
-
-                    boolean sameColor = allSameColor;
-
-                    if (sameColor) {
-                        if (vertical) {
-                            if (printDetail)
-                                Log.i(TAG, "vertical: " + h + "," + w);
-                            return h;
-                        } else {
-                            if (printDetail)
-                                Log.i(TAG, "horizontal: " + h + "," + w);
-                            return w;
-                        }
-                    }
-                }
-            }
-        }
-        return -1;
-    }
-
-    private Rect getRoi(Bitmap image, int... colors) {
-        return getRoi(1, image, colors);
-    }
-
-    private Rect getRoi(int findWidth, Bitmap image, int... colors) {
-        for (int x = 0; x < colors.length; x++) {
-            int color = colors[x];
-            Rect rect = getRoi(findWidth, image, color, false);
-            if (-1 != rect.x) {
-                return rect;
-            }
-        }
-        return new Rect(-1, -1, 0, 0);
-    }
-
-
-    private Rect getRoi(int findWidth, Bitmap image, int color, boolean printDetail) {
-        int top = findColor(image, color, true, true, false, printDetail, findWidth);
-        int bottom = findColor(image, color, true, false, false, printDetail, findWidth);
-        int left = findColor(image, color, false, true, true, printDetail, findWidth);
-        int right = findColor(image, color, false, true, false, printDetail, findWidth);
-        return new Rect(left, top, right - left, bottom - top);
-    }
+//
+//    private boolean isSameRGB(int color1, int color2) {
+//        return Color.red(color1) == Color.red(color2) &&
+//                Color.green(color1) == Color.green(color2) &&
+//                Color.blue(color1) == Color.blue(color2);
+//    }
+//
+//
+//    private boolean isSameRGB(int color1, int color2, int tolerance) {
+//        boolean same = Color.red(color1) == Color.red(color2) &&
+//                Color.green(color1) == Color.green(color2) &&
+//                Color.blue(color1) == Color.blue(color2);
+//
+//        int deltaR = Math.abs(Color.red(color1) - Color.red(color2));
+//        int deltaG = Math.abs(Color.green(color1) - Color.green(color2));
+//        int deltaB = Math.abs(Color.blue(color1) - Color.blue(color2));
+//        boolean similarColor = deltaR <= tolerance && deltaG <= tolerance && deltaB <= tolerance;
+//
+//        return same || similarColor;
+//    }
+//
+//    private int findColor(Bitmap image, int color, boolean vertical, boolean up, boolean left, boolean printDetail, int findWidth) {
+//        int width = image.getWidth();
+//        int height = image.getHeight();
+//        int totalSize = width * height;
+//        if (null == pixelsInFindColor || totalSize != pixelsInFindColor.length) {
+//            pixelsInFindColor = null;
+//            pixelsInFindColor = new int[width * height];
+//        }
+//
+//        image.getPixels(pixelsInFindColor, 0, width, 0, 0, width, height);
+//
+//        int inc = 1;
+//
+//        int h_start = vertical ? (up ? 0 : height - findWidth) : 0;
+//        int h_inc = (vertical ? up ? 1 : -1 : 1) * inc;
+//        int h_end = vertical ? (up ? height - findWidth : 0) : height - 1;
+//
+//        int w_start = vertical ? 0 : left ? 0 : width - findWidth;
+//        int w_inc = (vertical ? 1 : left ? 1 : -1) * inc;
+//        int w_end = vertical ? width - findWidth : left ? width - 1 : 0 + findWidth;
+//
+//        int w0_end = vertical ? w_start + w_inc : w_end;
+//        int w1_end = vertical ? w_end : w_start + w_inc;
+//
+//        /**
+//         *  w0
+//         *     h
+//         *        w1
+//         */
+//
+//        for (int w0 = w_start; w0 != w0_end; w0 += w_inc) {
+//            for (int h = h_start; h != h_end; h += h_inc) {
+//                for (int w1 = w_start; w1 != w1_end; w1 += w_inc) {
+//                    int w = vertical ? w1 : w0;
+//
+//                    boolean allSameColor = true;
+//                    for (int x = 0; x < findWidth; x++) {
+//                        int hh = vertical ? h : h + x;
+//                        int ww = vertical ? w + x : w;
+//                        int pixel = pixelsInFindColor[ww + hh * width];
+//                        final int tolerance = 1;
+//                        allSameColor = allSameColor && isSameRGB(pixel, color, tolerance);
+//                    }
+//
+//                    boolean sameColor = allSameColor;
+//
+//                    if (sameColor) {
+//                        if (vertical) {
+//                            if (printDetail)
+//                                Log.i(TAG, "vertical: " + h + "," + w);
+//                            return h;
+//                        } else {
+//                            if (printDetail)
+//                                Log.i(TAG, "horizontal: " + h + "," + w);
+//                            return w;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return -1;
+//    }
+//
+//    private Rect getRoi(Bitmap image, int... colors) {
+//        return getRoi(1, image, colors);
+//    }
+//
+//    private Rect getRoi(int findWidth, Bitmap image, int... colors) {
+//        for (int x = 0; x < colors.length; x++) {
+//            int color = colors[x];
+//            Rect rect = getRoi(findWidth, image, color, false);
+//            if (-1 != rect.x) {
+//                return rect;
+//            }
+//        }
+//        return new Rect(-1, -1, 0, 0);
+//    }
+//
+//
+//    private Rect getRoi(int findWidth, Bitmap image, int color, boolean printDetail) {
+//        int top = findColor(image, color, true, true, false, printDetail, findWidth);
+//        int bottom = findColor(image, color, true, false, false, printDetail, findWidth);
+//        int left = findColor(image, color, false, true, true, printDetail, findWidth);
+//        int right = findColor(image, color, false, true, false, printDetail, findWidth);
+//        return new Rect(left, top, right - left, bottom - top);
+//    }
 
     private boolean landDetectToHUD(ArrayList<Boolean> laneDetectResult) {
         final int lanes = laneDetectResult.size();
@@ -556,19 +516,6 @@ public class GmapsScreenDetector {
             }
         }
         return -1;
-    }
-
-    private static void copy(File src, File dst) throws IOException {
-        try (InputStream in = new FileInputStream(src)) {
-            try (OutputStream out = new FileOutputStream(dst)) {
-                // Transfer bytes from in to out
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-            }
-        }
     }
 
 }
