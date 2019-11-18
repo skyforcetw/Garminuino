@@ -192,6 +192,10 @@ public class NotificationMonitor extends NotificationListenerService {
             postman.addBooleanExtra(getString(R.string.notify_catched), true);
             postman.addBooleanExtra(getString(R.string.is_in_navigation), false);
             postman.sendIntent2MainActivity();
+
+            String notifyMessage = "No notification found!?!?";
+            postman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
+            postman.sendIntent2MainActivity();
         }
     }
 
@@ -275,10 +279,15 @@ public class NotificationMonitor extends NotificationListenerService {
             postman.addBooleanExtra(getString(R.string.gmaps_notify_catched), true);
             postman.addBooleanExtra(getString(R.string.is_in_navigation), false);
             postman.sendIntent2MainActivity();
+
+            String notifyMessage = "Notify parsing failed.";
+            postman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
+            postman.sendIntent2MainActivity();
         } else {
             postman.addBooleanExtra(getString(R.string.notify_parse_failed), false);
             postman.addBooleanExtra(getString(R.string.gmaps_notify_catched), true);
             postman.addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
+            postman.addBooleanExtra(getString(R.string.option_arrow_type), arrowTypeV2);
             postman.sendIntent2MainActivity();
         }
     }
@@ -533,10 +542,11 @@ public class NotificationMonitor extends NotificationListenerService {
         boolean output_parse_message_to_ui = true;
         if (output_parse_message_to_ui) {
             postman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
+            postman.sendIntent2MainActivity();
 
-            if (isArrivals()) {
-                postman.addBooleanExtra(getString(R.string.arrivals_msg), true);
-            }
+//            if (isArrivals()) {
+//                postman.addBooleanExtra(getString(R.string.arrivals_msg), true);
+//            }
             postman.addBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
             postman.sendIntent2MainActivity();
         }

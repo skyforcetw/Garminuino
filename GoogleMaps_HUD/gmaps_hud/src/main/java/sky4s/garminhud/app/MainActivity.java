@@ -1093,13 +1093,14 @@ public class MainActivity extends AppCompatActivity {
     private class MsgReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String whoami = intent.getStringExtra(getString(R.string.whoami)); //for debug
+            //for debug
+            String whoami = intent.getStringExtra(getString(R.string.whoami));
 
             //=======================================================================
             // for debug message
             //=======================================================================
             boolean has_notify_msg = intent.hasExtra(getString(R.string.notify_msg));
-            if (has_notify_msg) {
+            if (has_notify_msg) { //if recv notify message,  display it then return (jump out)
                 String notify_msg = intent.getStringExtra(getString(R.string.notify_msg));
                 if (null != textViewDebug) {
                     updateTextViewDebug(notify_msg);
@@ -1107,6 +1108,8 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
+            //=======================================================================
+            // gps speed
             //=======================================================================
             boolean has_gps_speed = intent.hasExtra(getString(R.string.gps_speed));
             if (has_gps_speed) {
@@ -1124,14 +1127,13 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             //=======================================================================
-            // for UI usage
+            // for UI usage, parse notify_parse_failed first
             //=======================================================================
             boolean notify_parse_failed = intent.getBooleanExtra(getString(R.string.notify_parse_failed), false);
 
             if (notify_parse_failed) {
                 //when pass fail
                 if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
-//                    switchNotificationCaught.setChecked(false);
                     switchGmapsNotificationCaught.setChecked(false);
                 }
                 is_in_navigation = false;
@@ -1151,6 +1153,7 @@ public class MainActivity extends AppCompatActivity {
                         switchGmapsNotificationCaught.setChecked(false);
                     } else {
                         switchNotificationCaught.setChecked(notify_catched);
+                        // we need two condition to confirm in navagating:   1. gmaps's notify  2. in_navigation from notify monitor
                         final boolean is_really_in_navigation = gmaps_notify_catched && is_in_navigation_in_intent;
                         switchGmapsNotificationCaught.setChecked(is_really_in_navigation);
 
@@ -1165,22 +1168,32 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+            //=======================================================================
 
             //no recommend use this feature, because of it bring app to front when projecting
-            final boolean do_auto_project_by_navigation = false;
-            if (do_auto_project_by_navigation) {
-                if (null != switchTrafficAndLane && switchTrafficAndLane.isChecked()) {
-                    if (is_in_navigation) {
-                        if (!projecting) {
-                            startProjection();
-                        }
-                    } else {
-                        stopProjection();
-                    }
+//            final boolean do_auto_project_by_navigation = false;
+//            if (do_auto_project_by_navigation) {
+//                if (null != switchTrafficAndLane && switchTrafficAndLane.isChecked()) {
+//                    if (is_in_navigation) {
+//                        if (!projecting) {
+//                            startProjection();
+//                        }
+//                    } else {
+//                        stopProjection();
+//                    }
+//                }
+//            }
+//=======================================================================
+            if (intent.hasExtra(getString(R.string.option_arrow_type))) { //re-sync arrow type between ui & notify monitor
+                boolean arrowTypeV2_in_ui = switchArrowType.isChecked();
+                boolean arrowTypeV2_in_notify_monitor = intent.getBooleanExtra((getString(R.string.option_arrow_type)), arrowTypeV2_in_ui);
+
+                if (arrowTypeV2_in_notify_monitor != arrowTypeV2_in_ui) {
+                    sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
+                            getString(R.string.option_arrow_type), arrowTypeV2_in_ui);
                 }
+
             }
-
-
         }
     }
 
