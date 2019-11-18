@@ -186,7 +186,9 @@ public class NotificationMonitor extends NotificationListenerService {
 //                    parseSygicNotification(notification);
 //                    break;
                 default:
-
+                    String notifyMessage = "No gmaps' notification found!?!?";
+                    postman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
+                    postman.sendIntent2MainActivity();
             }
         } else {
             postman.addBooleanExtra(getString(R.string.notify_catched), true);

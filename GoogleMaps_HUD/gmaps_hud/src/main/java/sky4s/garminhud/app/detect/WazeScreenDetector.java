@@ -3,10 +3,10 @@ package sky4s.garminhud.app.detect;
 import android.graphics.Bitmap;
 import android.view.Window;
 
-import com.googlecode.tesseract.android.TessBaseAPI;
-
 import sky4s.garminhud.ImageUtils;
 import sky4s.garminhud.app.MainActivity;
+
+//import com.googlecode.tesseract.android.TessBaseAPI;
 
 public class WazeScreenDetector extends ScreenDetector {
 
@@ -19,9 +19,7 @@ public class WazeScreenDetector extends ScreenDetector {
         Window window = activity.getWindow();
         window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
         int statusBarHeight = rectangle.top;
-//        int contentViewTop =
-//                window.findViewById(Window.ID_ANDROID_CONTENT).getTop();
-//        int titleBarHeight= contentViewTop - statusBarHeight;
+
         return statusBarHeight;//titleBarHeight;
     }
 
@@ -53,31 +51,33 @@ public class WazeScreenDetector extends ScreenDetector {
     static final String CHINESE_LANGUAGE = "chi_tra";
 
     private String ocrWithChinese(Bitmap bitmap) {
-        final TessBaseAPI ocrApi = new TessBaseAPI();
-
-        ocrApi.init(TESSBASE_PATH, CHINESE_LANGUAGE);
-        ocrApi.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SINGLE_LINE);
-
-        ocrApi.setImage(bitmap);
-        String resString = ocrApi.getUTF8Text();
-
-        ocrApi.clear();
-        ocrApi.end();
-        return resString;
+//        final TessBaseAPI ocrApi = new TessBaseAPI();
+//
+//        ocrApi.init(TESSBASE_PATH, CHINESE_LANGUAGE);
+//        ocrApi.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SINGLE_LINE);
+//
+//        ocrApi.setImage(bitmap);
+//        String resString = ocrApi.getUTF8Text();
+//
+//        ocrApi.clear();
+//        ocrApi.end();
+//        return resString;
+        return "";
     }
 
     private String ocr(Bitmap bitmap, String language) {
-        final TessBaseAPI ocrApi = new TessBaseAPI();
-
-        ocrApi.init(TESSBASE_PATH, language);
-        ocrApi.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SINGLE_LINE);
-
-        ocrApi.setImage(bitmap);
-        String resString = ocrApi.getUTF8Text();
-
-        ocrApi.clear();
-        ocrApi.end();
-        return resString;
+//        final TessBaseAPI ocrApi = new TessBaseAPI();
+//
+//        ocrApi.init(TESSBASE_PATH, language);
+//        ocrApi.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SINGLE_LINE);
+//
+//        ocrApi.setImage(bitmap);
+//        String resString = ocrApi.getUTF8Text();
+//
+//        ocrApi.clear();
+//        ocrApi.end();
+//        return resString;
+        return "";
     }
 
 
@@ -116,7 +116,7 @@ public class WazeScreenDetector extends ScreenDetector {
             Bitmap eta_image = preProcessImage(time_images[0]);
             Bitmap time_image = preProcessImage(time_images[1]);
 
-            String eta = ocr(eta_image,DEFAULT_LANGUAGE);
+            String eta = ocr(eta_image, DEFAULT_LANGUAGE);
             String time = ocrWithChinese(time_image);
 
             ImageUtils.storeBitmap(distance_image, MainActivity.SCREENCAP_STORE_DIRECTORY + "distance.png");
