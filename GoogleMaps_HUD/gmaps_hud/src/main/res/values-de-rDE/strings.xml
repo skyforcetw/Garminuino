@@ -41,9 +41,9 @@
     <string name="layout_title_settings">Einstellungen</string>
     <string name="layout_element_show_speed">Zeige Geschwindigkeit</string>
     <string name="layout_element_auto_brightness">Automatische Helligkeit</string>
-    <string name="layout_title_when_navigating">When Navigating</string>
+    <string name="layout_title_when_navigating">Wähnrend des Navigierens</string>
     <string name="layout_element_show_eta">Zeige Ankunftszeit</string>
-    <string name="layout_title_when_nav_done">When Navigation Done</string>
+    <string name="layout_title_when_nav_done">Wenn angekommen</string>
     <string name="layout_element_show_curr_time">Zeige Uhrzeit</string>
 
     <string name="layout_title_traffic">Verkehr</string>
