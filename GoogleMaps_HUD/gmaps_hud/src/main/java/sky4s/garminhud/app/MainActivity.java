@@ -40,13 +40,14 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -60,9 +61,9 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v7.app.AppCompatDelegate;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -73,6 +74,8 @@ import app.akexorcist.bluetotohspp.library.DeviceList;
 import chutka.bitman.com.speedometersimplified.LocationService;
 import sky4s.garminhud.Arrow;
 import sky4s.garminhud.GarminHUD;
+import sky4s.garminhud.ImageUtils;
+import sky4s.garminhud.app.detect.ImageDetectListener;
 import sky4s.garminhud.eOutAngle;
 import sky4s.garminhud.eUnits;
 import sky4s.garminhud.hud.DummyHUD;
@@ -104,27 +107,33 @@ public class MainActivity extends AppCompatActivity {
     SeekBar seekBarBrightness;
 
     Switch switchShowETA;
-    Switch switchIdleShowCurrrentTime;
+    Switch switchIdleShowCurrentTime;
 
     //traffic
     Switch switchTrafficAndLane;
+    Switch switchAlertAnytime;
+    SeekBar seekBarAlertSpeed;
     Switch switchAlertYellowTraffic;
 
     //bluetooth
     Switch switchBtBindAddress;
 
+    //arrow
+    Switch switchArrowType;
+
     //app-appearance
     Switch switchDarkModeAuto;
     Switch switchDarkModeManual;
 
+    public HUDInterface hud = new DummyHUD();
+    public boolean is_in_navigation = false;
+
     private boolean isEnabledNLS = false;
     private boolean showCurrentTime = false;
     private BluetoothSPP bt;
-    HUDInterface hud = new DummyHUD();
     private NotificationManager notifyManager;
     private MsgReceiver msgReceiver;
     private boolean lastReallyInNavigation = false;
-    boolean is_in_navigation = false;
     private BroadcastReceiver screenReceiver;
     private Timer timer = new Timer(true);
     private TimerTask currentTimeTask;
@@ -144,7 +153,8 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPref;
     //    private DrawerLayout mDrawerLayout;
     private BluetoothConnectionListener btConnectionListener = new BluetoothConnectionListener();
-    private SeekBar.OnSeekBarChangeListener seekbarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+
+    private SeekBar.OnSeekBarChangeListener seekbarBrightnessChangeListener = new SeekBar.OnSeekBarChangeListener() {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -165,7 +175,27 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+    private SeekBar.OnSeekBarChangeListener seekbarAlertSpeedChangeListener = new SeekBar.OnSeekBarChangeListener() {
 
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            final boolean alertAnytime = switchAlertAnytime.isChecked();
+            if (!alertAnytime) {
+                switchAlertAnytime.setText(getString(R.string.layout_element_alert_speed_exceeds) + " " + (progress * 10) + "kph");
+                storeIntOptions(R.string.option_alert_speed, progress);
+            }
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    };
     //===============================================================================================
     // location
     //===============================================================================================
@@ -192,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
         return switchGmapsNotificationCaught.isChecked();
     }
 
-    void sendBooleanExtraByBroadcast(String receiver, String key, boolean b) {
+    public void sendBooleanExtraByBroadcast(String receiver, String key, boolean b) {
         Intent intent = new Intent(receiver);
         intent.putExtra(key, b);
         sendBroadcast(intent);
@@ -208,45 +238,59 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    private void clearSpeed() {
-//        if (null != hud) {
-//            if (is_in_navigation) {
-//                hud.ClearSpeedandWarning();
-//            } else {
-//                hud.ClearDistance();
-//            }
-//        }
-//    }
 
     void loadOptions() {
 
         switchShowSpeed.setOnCheckedChangeListener(onCheckedChangedListener);
-        switchTrafficAndLane.setOnCheckedChangeListener(onCheckedChangedListener);
-        switchAlertYellowTraffic.setOnCheckedChangeListener(onCheckedChangedListener);
-        switchShowETA.setOnCheckedChangeListener(onCheckedChangedListener);
-        switchIdleShowCurrrentTime.setOnCheckedChangeListener(onCheckedChangedListener);
-        switchBtBindAddress.setOnCheckedChangeListener(onCheckedChangedListener);
 
+        switchTrafficAndLane.setOnCheckedChangeListener(onCheckedChangedListener);
+        switchAlertAnytime.setOnCheckedChangeListener(onCheckedChangedListener);
+        switchAlertYellowTraffic.setOnCheckedChangeListener(onCheckedChangedListener);
+
+        switchAutoBrightness.setOnCheckedChangeListener(onCheckedChangedListener);
+        switchShowETA.setOnCheckedChangeListener(onCheckedChangedListener);
+        switchIdleShowCurrentTime.setOnCheckedChangeListener(onCheckedChangedListener);
+        switchBtBindAddress.setOnCheckedChangeListener(onCheckedChangedListener);
+        switchArrowType.setOnCheckedChangeListener(onCheckedChangedListener);
+
+        //======================================
+        // default settings
+        //======================================
         final boolean optionShowSpeed = sharedPref.getBoolean(getString(R.string.option_show_speed), false);
+
         final boolean optionTrafficAndLaneDetect = sharedPref.getBoolean(getString(R.string.option_traffic_and_lane_detect), false);
+        final boolean optionAlertAnytime = sharedPref.getBoolean(getString(R.string.option_alert_anytime), false);
+        final int optionAlertSpeed = sharedPref.getInt(getString(R.string.option_alert_speed), 8);
         final boolean optionAlertYellowTraffic = sharedPref.getBoolean(getString(R.string.option_alert_yellow_traffic), false);
+
         final boolean optionShowEta = sharedPref.getBoolean(getString(R.string.option_show_eta), false);
         final boolean optionIdleShowTime = sharedPref.getBoolean(getString(R.string.option_idle_show_current_time), false);
         final boolean optionBtBindAddress = sharedPref.getBoolean(getString(R.string.option_bt_bind_address), false);
         final boolean optionDarkModeAuto = sharedPref.getBoolean(getString(R.string.option_dark_mode_auto), false);
         final boolean optionDarkModeMan = sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false);
 
+        final boolean optionArrowType = sharedPref.getBoolean(getString(R.string.option_arrow_type), true);
+        sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
+                getString(R.string.option_arrow_type), optionArrowType);
+        //======================================
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 switchShowSpeed.setChecked(optionShowSpeed);
+
                 switchTrafficAndLane.setChecked(optionTrafficAndLaneDetect);
+                switchAlertAnytime.setChecked(optionAlertAnytime);
+                seekBarAlertSpeed.setProgress(optionAlertSpeed);
                 switchAlertYellowTraffic.setChecked(optionAlertYellowTraffic);
+
                 switchShowETA.setChecked(optionShowEta);
-                switchIdleShowCurrrentTime.setChecked(optionIdleShowTime);
+                switchIdleShowCurrentTime.setChecked(optionIdleShowTime);
                 switchBtBindAddress.setChecked(optionBtBindAddress);
                 switchDarkModeAuto.setChecked(optionDarkModeAuto);
                 switchDarkModeManual.setChecked(optionDarkModeMan);
+
+                switchArrowType.setChecked(optionArrowType);
             }
         });
 
@@ -333,12 +377,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private MyCrashHandler myCrashHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //SCREENCAP_STORE_DIRECTORY =     ///sdcard/Android/data/sky4s.garminhud.app/cache/screenshots
+        String sdcardCachePath = getApplicationContext().getExternalCacheDir().getAbsolutePath();
+        SCREENCAP_STORE_DIRECTORY = sdcardCachePath + "/screenshots/";
+        String sdcardDocPath = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
+        OCR_STORE_DIRECTORY = sdcardDocPath;
+        ImageUtils.context = this;
+
+        myCrashHandler = MyCrashHandler.instance();
+
         sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         final int stateDarkMode = sharedPref.getInt(getString(R.string.state_dark_mode), AppCompatDelegate.MODE_NIGHT_NO);
         AppCompatDelegate.setDefaultNightMode(stateDarkMode);
-        
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -448,7 +503,6 @@ public class MainActivity extends AppCompatActivity {
         //========================================================================================
 
         //experiment:
-//        createNotification(this);
         startNotification();
     }
 
@@ -476,14 +530,9 @@ public class MainActivity extends AppCompatActivity {
             sMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
 
             if (sMediaProjection != null) {
-
                 String state = Environment.getExternalStorageState();
-
                 if ("mounted".equals(state)) {
-                    String sdcardPath = getApplicationContext().getExternalCacheDir().getAbsolutePath();
-                    STORE_DIRECTORY = sdcardPath + "/screenshots/";
-
-                    File storeDirectory = new File(STORE_DIRECTORY);
+                    File storeDirectory = new File(SCREENCAP_STORE_DIRECTORY);
                     if (!storeDirectory.exists()) {
                         boolean success = storeDirectory.mkdirs();
                         if (!success) {
@@ -606,6 +655,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onCheckedChanged(CompoundButton view, boolean b) {
             switch (view.getId()) {
+                case R.id.switchArrowType:
+                    final boolean arrowType2 = ((Switch) view).isChecked();
+                    sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
+                            getString(R.string.option_arrow_type), arrowType2);
+                    storeOptions(R.string.option_arrow_type, arrowType2);
+                    view.setText(arrowType2 ? R.string.layout_element_arrow_type_v2 : R.string.layout_element_arrow_type_v1);
+                    break;
+
                 case R.id.switchShowSpeed:
                     final boolean canShowSpeed = showSpeed(((Switch) view).isChecked());
                     if (!canShowSpeed) {
@@ -622,6 +679,25 @@ public class MainActivity extends AppCompatActivity {
                     }
                     storeOptions(R.string.option_traffic_and_lane_detect, ((Switch) view).isChecked());
                     break;
+
+                case R.id.switchAlertAnytime: {
+                    Switch switchAlertAnytime = (Switch) view;
+                    final boolean alertAnytime = switchAlertAnytime.isChecked();
+                    if (!alertAnytime) { //if need speed info, must check gps status
+                        showSpeed(true);
+                    }
+
+                    final int progress = seekBarAlertSpeed.getProgress();
+                    final int kph = progress * 10;
+                    alertSpeedExceeds = alertAnytime ? 0 : kph;
+                    switchAlertAnytime.setText(alertAnytime ? getString(R.string.layout_element_alert_anytime)
+                            : getString(R.string.layout_element_alert_speed_exceeds) + " " + kph + "kph");
+
+                    seekBarAlertSpeed.setEnabled(!alertAnytime);
+                    seekBarAlertSpeed.setOnSeekBarChangeListener(seekbarAlertSpeedChangeListener);
+                    storeOptions(R.string.option_alert_anytime, alertAnytime);
+                }
+                break;
 
                 case R.id.switchAlertYellowTraffic:
                     alertYellowTraffic = ((Switch) view).isChecked();
@@ -664,11 +740,11 @@ public class MainActivity extends AppCompatActivity {
                     final boolean isDarkModeAuto = ((Switch) view).isChecked();
                     switchDarkModeManual.setEnabled(!isDarkModeAuto);
                     storeOptions(R.string.option_dark_mode_auto, isDarkModeAuto);
-                    if(isDarkModeAuto)
+                    if (isDarkModeAuto)
                         storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
                     else {
                         final boolean isDarkModeManualEnabled = sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false);
-                        if(isDarkModeManualEnabled)
+                        if (isDarkModeManualEnabled)
                             storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_YES);
                         else
                             storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_NO);
@@ -679,12 +755,34 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.switchDarkModeMan:
                     final boolean isDarkModeManualEnabled = ((Switch) view).isChecked();
                     storeOptions(R.string.option_dark_mode_man, isDarkModeManualEnabled);
-                    if(isDarkModeManualEnabled)
+                    if (isDarkModeManualEnabled)
                         storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_YES);
                     else
                         storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_NO);
                     recreate();
                     break;
+
+                case R.id.switchAutoBrightness: {
+                    Switch theAutoBrightness = (Switch) view;
+                    final boolean autoBrightness = theAutoBrightness.isChecked();
+
+                    final int progress = seekBarBrightness.getProgress();
+                    theAutoBrightness.setText(autoBrightness ? getString(R.string.layout_element_auto_brightness)
+                            : getString(R.string.layout_seekbar_brightness) + " " + (progress * 10) + "%");
+
+                    seekBarBrightness.setEnabled(!autoBrightness);
+                    seekBarBrightness.setOnSeekBarChangeListener(seekbarBrightnessChangeListener);
+
+                    if (null != hud) {
+                        if (autoBrightness) {
+                            hud.SetAutoBrightness();
+                        } else {
+                            final int brightness = getGammaBrightness();
+                            hud.SetBrightness(brightness);
+                        }
+                    }
+                }
+                break;
 
                 default:
                     break;
@@ -692,8 +790,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * OnCheckedChangedListener and  buttonOnClicked have similar function for UI response.
+     * We recommend use "button click" with buttonOnClicked.
+     * Other UI (like switch) use OnCheckedChangedListener.
+     */
     private OnCheckedChangedListener onCheckedChangedListener = new OnCheckedChangedListener();
-
 
     public void buttonOnClicked(View view) {
         switch (view.getId()) {
@@ -733,26 +835,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
 
-            case R.id.switchAutoBrightness:
-                Switch theAutoBrightness = (Switch) view;
-                final boolean autoBrightness = theAutoBrightness.isChecked();
 
-                final int progress = seekBarBrightness.getProgress();
-                theAutoBrightness.setText(autoBrightness ? getString(R.string.layout_element_auto_brightness)
-                        : getString(R.string.layout_seekbar_brightness) + " " + (progress * 10) + "%");
-
-                seekBarBrightness.setEnabled(!autoBrightness);
-                seekBarBrightness.setOnSeekBarChangeListener(seekbarChangeListener);
-
-                if (null != hud) {
-                    if (autoBrightness) {
-                        hud.SetAutoBrightness();
-                    } else {
-                        final int brightness = getGammaBrightness();
-                        hud.SetBrightness(brightness);
-                    }
-                }
-                break;
             default:
                 break;
         }
@@ -972,10 +1055,10 @@ public class MainActivity extends AppCompatActivity {
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
-
+                String message = getString(R.string.message_enable_location_access);
                 new AlertDialog.Builder(this)
                         .setTitle("Location Permission")
-                        .setMessage("For showing speed to Garmin HUD please enable Location Permission")
+                        .setMessage(message)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -1010,13 +1093,14 @@ public class MainActivity extends AppCompatActivity {
     private class MsgReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String whoami = intent.getStringExtra(getString(R.string.whoami)); //for debug
+            //for debug
+            String whoami = intent.getStringExtra(getString(R.string.whoami));
 
             //=======================================================================
             // for debug message
             //=======================================================================
             boolean has_notify_msg = intent.hasExtra(getString(R.string.notify_msg));
-            if (has_notify_msg) {
+            if (has_notify_msg) { //if recv notify message,  display it then return (jump out)
                 String notify_msg = intent.getStringExtra(getString(R.string.notify_msg));
                 if (null != textViewDebug) {
                     updateTextViewDebug(notify_msg);
@@ -1025,27 +1109,34 @@ public class MainActivity extends AppCompatActivity {
             }
 
             //=======================================================================
+            // gps speed
+            //=======================================================================
             boolean has_gps_speed = intent.hasExtra(getString(R.string.gps_speed));
             if (has_gps_speed) {
                 double speed = intent.getDoubleExtra(getString(R.string.gps_speed), 0);
                 int int_speed = (int) Math.round(speed);
-                setSpeed(int_speed, true);
+                gpsSpeed = int_speed;
+
+                final boolean show_speed = switchShowSpeed.isChecked();
+                if (show_speed) {
+                    setSpeed(int_speed, true);
+                }
 
                 CharSequence orignal_text = textViewDebug.getText();
                 textViewDebug.setText("speed: " + int_speed + "\n\n" + orignal_text);
                 return;
             }
             //=======================================================================
-            // for UI usage
+            // for UI usage, parse notify_parse_failed first
             //=======================================================================
             boolean notify_parse_failed = intent.getBooleanExtra(getString(R.string.notify_parse_failed), false);
 
             if (notify_parse_failed) {
                 //when pass fail
                 if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
-//                    switchNotificationCaught.setChecked(false);
                     switchGmapsNotificationCaught.setChecked(false);
                 }
+                is_in_navigation = false;
             } else {
                 //pass success
                 final boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched),
@@ -1054,7 +1145,7 @@ public class MainActivity extends AppCompatActivity {
                         null != switchGmapsNotificationCaught ? switchGmapsNotificationCaught.isChecked() : false);
 
 
-                final boolean is_in_navigation_now = intent.getBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
+                final boolean is_in_navigation_in_intent = intent.getBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
 
                 if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
                     if (!notify_catched) { //no notify catched
@@ -1062,7 +1153,8 @@ public class MainActivity extends AppCompatActivity {
                         switchGmapsNotificationCaught.setChecked(false);
                     } else {
                         switchNotificationCaught.setChecked(notify_catched);
-                        final boolean is_really_in_navigation = gmaps_notify_catched && is_in_navigation_now;
+                        // we need two condition to confirm in navagating:   1. gmaps's notify  2. in_navigation from notify monitor
+                        final boolean is_really_in_navigation = gmaps_notify_catched && is_in_navigation_in_intent;
                         switchGmapsNotificationCaught.setChecked(is_really_in_navigation);
 
                         if (lastReallyInNavigation != is_really_in_navigation &&
@@ -1076,7 +1168,32 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+            //=======================================================================
 
+            //no recommend use this feature, because of it bring app to front when projecting
+//            final boolean do_auto_project_by_navigation = false;
+//            if (do_auto_project_by_navigation) {
+//                if (null != switchTrafficAndLane && switchTrafficAndLane.isChecked()) {
+//                    if (is_in_navigation) {
+//                        if (!projecting) {
+//                            startProjection();
+//                        }
+//                    } else {
+//                        stopProjection();
+//                    }
+//                }
+//            }
+//=======================================================================
+            if (intent.hasExtra(getString(R.string.option_arrow_type))) { //re-sync arrow type between ui & notify monitor
+                boolean arrowTypeV2_in_ui = switchArrowType.isChecked();
+                boolean arrowTypeV2_in_notify_monitor = intent.getBooleanExtra((getString(R.string.option_arrow_type)), arrowTypeV2_in_ui);
+
+                if (arrowTypeV2_in_notify_monitor != arrowTypeV2_in_ui) {
+                    sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
+                            getString(R.string.option_arrow_type), arrowTypeV2_in_ui);
+                }
+
+            }
         }
     }
 
@@ -1085,12 +1202,14 @@ public class MainActivity extends AppCompatActivity {
     //========================================================================================
     // Titles of the individual pages (displayed in tabs)
     private final String[] PAGE_TITLES = new String[]{
+            "Main",
             "Setup",
             "Debug"
     };
     // The fragments that are used as the individual pages
     private final Fragment[] PAGES = new Fragment[]{
             new Page1Fragment(),
+            new Page3Fragment(),
             new Page2Fragment()
     };
 
@@ -1123,7 +1242,7 @@ public class MainActivity extends AppCompatActivity {
     private class BluetoothConnectionListener implements BluetoothSPP.BluetoothConnectionListener, BluetoothSPP.AutoConnectionListener {
         @Override
         public void onAutoConnectionStarted() {
-            int a=1;
+            int a = 1;
         }
 
         @Override
@@ -1142,7 +1261,7 @@ public class MainActivity extends AppCompatActivity {
         public void onDeviceConnected(String name, String address) {
             hudConnected = true;
             switchHudConnected.setText(getString(R.string.layout_element_hud_success_connected, name));
-            if(sharedPref.getInt(getString(R.string.state_dark_mode)
+            if (sharedPref.getInt(getString(R.string.state_dark_mode)
                     , AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
                 switchHudConnected.setTextColor(Color.BLACK);
             switchHudConnected.setChecked(true);
@@ -1164,7 +1283,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            String onconnectedDeviceName = bt.getConnectedDeviceName();
+            String connectedDeviceName = bt.getConnectedDeviceName();
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString(getString(R.string.bt_bind_name_key), connectedDeviceName);
 
@@ -1188,9 +1307,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceConnectionFailed() {
             hudConnected = false;
-            switchHudConnected.setText(getString(R.string.layout_element_hud_con_failed));
-            switchHudConnected.setTextColor(Color.RED);
-            switchHudConnected.setChecked(false);
+            String text = getString(R.string.layout_element_hud_con_failed);
+            if (null != switchHudConnected) {
+                switchHudConnected.setText(text);
+                switchHudConnected.setTextColor(Color.RED);
+                switchHudConnected.setChecked(false);
+            }
 
             log("onDeviceConnectionFailed");
             resetBT();
@@ -1207,16 +1329,20 @@ public class MainActivity extends AppCompatActivity {
     private Display mDisplay;
     private VirtualDisplay mVirtualDisplay;
     private int mDensity;
-    int mWidth;
-    int mHeight;
+    public int mWidth;
+    public int mHeight;
     private int mRotation;
     private OrientationChangeCallback mOrientationChangeCallback;
-    boolean alertYellowTraffic = false;
+    public int alertSpeedExceeds = 0;
+    public int gpsSpeed = 0;
+    public boolean alertYellowTraffic = false;
 
     private static final int SCREENCAP_REQUEST_CODE = 100;
     private static final String SCREENCAP_NAME = "screencap";
     private static final int VIRTUAL_DISPLAY_FLAGS = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
-    static String STORE_DIRECTORY;
+    ///sdcard/Android/data/sky4s.garminhud.app/cache/screenshots
+    public static String SCREENCAP_STORE_DIRECTORY;
+    public static String OCR_STORE_DIRECTORY;
     private static MediaProjection sMediaProjection;
 
     private class OrientationChangeCallback extends OrientationEventListener {
@@ -1265,62 +1391,68 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(final Context context, final Intent intent) {
-            final int event = intent.getIntExtra(getString(R.string.notify_switch_event), 0);
-            switch (event) {
+//            final int event = intent.getIntExtra(getString(R.string.notify_switch_event), 0);
+            final Serializable s = intent.getSerializableExtra(getString(R.string.notify_switch_event));
+            final boolean canGo = s instanceof SwitchEvent;
+            if (canGo) {
+                SwitchEvent event = (SwitchEvent) s;
+                switch (event) {
 
-                case 1: {
-                    final boolean now = !switchShowSpeed.isChecked();
-                    switchShowSpeed.setChecked(now);
-                    notification = getNormalNotification("Show Speed: "
-                            + (now ? "On" : "Off"));
-                    mNotificationManager.notify(R.integer.notify_id, notification);
+                    case Speed: {
+                        final boolean now = !switchShowSpeed.isChecked();
+                        switchShowSpeed.setChecked(now);
+                        notification = getNormalNotification("Show Speed: "
+                                + (now ? "On" : "Off"));
+                        mNotificationManager.notify(R.integer.notify_id, notification);
+                    }
+                    break;
+                    case AutoBrightness: {
+                        final boolean now = !switchAutoBrightness.isChecked();
+                        switchAutoBrightness.setChecked(now);
+                        notification = getNormalNotification("Auto Brightness: "
+                                + (now ? "On" : "Off"));
+                        mNotificationManager.notify(R.integer.notify_id, notification);
+                    }
+                    break;
+                    case ETA: {
+                        final boolean now = !switchShowETA.isChecked();
+                        switchShowETA.setChecked(now);
+                        notification = getNormalNotification("Show ETA: "
+                                + (now ? "On" : "Off"));
+                        mNotificationManager.notify(R.integer.notify_id, notification);
+                    }
+                    break;
+                    case Time: {
+                        final boolean now = !switchIdleShowCurrentTime.isChecked();
+                        switchIdleShowCurrentTime.setChecked(now);
+                        notification = getNormalNotification("Show Current Time: "
+                                + (now ? "On" : "Off"));
+                        mNotificationManager.notify(R.integer.notify_id, notification);
+                    }
+                    break;
+                    case LaneTrafficDetect: {
+                        final boolean now = !switchTrafficAndLane.isChecked();
+                        switchTrafficAndLane.setChecked(now);
+                        notification = getNormalNotification("Traffic & Lane Detection: "
+                                + (now ? "On" : "Off"));
+                        mNotificationManager.notify(R.integer.notify_id, notification);
+                    }
+                    break;
                 }
-                break;
-                case 2: {
-                    final boolean now = !switchAutoBrightness.isChecked();
-                    switchAutoBrightness.setChecked(now);
-                    notification = getNormalNotification("Auto Brightness: "
-                            + (now ? "On" : "Off"));
-                    mNotificationManager.notify(R.integer.notify_id, notification);
-                }
-                break;
-                case 3: {
-                    final boolean now = !switchShowETA.isChecked();
-                    switchShowETA.setChecked(now);
-                    notification = getNormalNotification("Show ETA: "
-                            + (now ? "On" : "Off"));
-                    mNotificationManager.notify(R.integer.notify_id, notification);
-                }
-                break;
-                case 4: {
-                    final boolean now = !switchIdleShowCurrrentTime.isChecked();
-                    switchIdleShowCurrrentTime.setChecked(now);
-                    notification = getNormalNotification("Show Current Time: "
-                            + (now ? "On" : "Off"));
-                    mNotificationManager.notify(R.integer.notify_id, notification);
-                }
-                break;
-                case 5: {
-                    final boolean now = !switchTrafficAndLane.isChecked();
-                    switchTrafficAndLane.setChecked(now);
-                    notification = getNormalNotification("Traffic & Lane Detection: "
-                            + (now ? "On" : "Off"));
-                    mNotificationManager.notify(R.integer.notify_id, notification);
-                }
-                break;
+
             }
-
         }
     }
 
     private NotificationSwitchReceiver notificationSwitchReceiver = new NotificationSwitchReceiver();
 
-    private PendingIntent getPendingIntentForNotify(String action, int switchEvent) {
+    private PendingIntent getPendingIntentForNotify(String action, SwitchEvent switchEvent) {
         Intent intent = new Intent(action);
         intent.putExtra(getString(R.string.notify_switch_event), switchEvent);
         final PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         return pendingIntent;
     }
+
 
     private Notification getNormalNotification(String contentText) {
         final Intent mainIntent = getIntent(); // 目前Activity的Intent
@@ -1328,11 +1460,11 @@ public class MainActivity extends AppCompatActivity {
         final PendingIntent pendingMainIntent = PendingIntent.getActivity(getApplicationContext(), 0, mainIntent, flags); // 取得PendingIntent
 
 
-        final PendingIntent switchSpeedPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_speed), 1);
-        final PendingIntent switchAutoBrightnessPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_auto_brightness), 2);
-        final PendingIntent switchETAPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_ETA), 3);
-        final PendingIntent switchTimePendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_time), 4);
-        final PendingIntent switchDetectPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_detect), 5);
+        final PendingIntent switchSpeedPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_speed), SwitchEvent.Speed);
+        final PendingIntent switchAutoBrightnessPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_auto_brightness), SwitchEvent.AutoBrightness);
+        final PendingIntent switchETAPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_ETA), SwitchEvent.ETA);
+        final PendingIntent switchTimePendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_time), SwitchEvent.Time);
+        final PendingIntent switchDetectPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_detect), SwitchEvent.LaneTrafficDetect);
 
 
         final String channelID = "id";
@@ -1401,13 +1533,17 @@ public class MainActivity extends AppCompatActivity {
 
 
     /****************************************** UI Widget Callbacks *******************************/
-    private void startProjection() {
-        startActivityForResult(mProjectionManager.createScreenCaptureIntent(), SCREENCAP_REQUEST_CODE);
-//        startNotification();
+    boolean projecting = false;
 
+    private void startProjection() {
+//        if (is_in_navigation) {
+        startActivityForResult(mProjectionManager.createScreenCaptureIntent(), SCREENCAP_REQUEST_CODE);
+        projecting = true;
+//        }
     }
 
     private void stopProjection() {
+        projecting = false;
         mProjectionHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -1416,7 +1552,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-//        stopNotification();
     }
 
     /****************************************** Factoring Virtual Display creation ****************/
@@ -1474,44 +1609,7 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 
-class MainActivityPostman {
-    private String whoami;
-    private Context context;
 
-    public MainActivityPostman(Context context, String whoami) {
-        this.context = context;
-        this.whoami = whoami;
-    }
-
-    private Intent intent2Main = null;
-
-    private void checkIntentForExtra() {
-        if (null == intent2Main) {
-            intent2Main = new Intent(context.getString(R.string.broadcast_receiver_main_activity));
-        }
-    }
-
-    public void addBooleanExtra(String key, boolean b) {
-        checkIntentForExtra();
-        intent2Main.putExtra(key, b);
-    }
-
-    public void addStringExtra(String key, String string) {
-        checkIntentForExtra();
-        intent2Main.putExtra(key, string);
-    }
-
-    public void sendIntent2MainActivity() {
-        if (null != intent2Main) {
-            addStringExtra(context.getString(R.string.whoami), whoami);
-//            addBooleanExtra(context.getString(R.string.is_in_navigation), is_in_navigation);
-            context.sendBroadcast(intent2Main);
-            intent2Main = null;
-        }
-
-    }
-
-}
-
-
-
+enum SwitchEvent {
+    Speed, AutoBrightness, ETA, Time, LaneTrafficDetect
+};

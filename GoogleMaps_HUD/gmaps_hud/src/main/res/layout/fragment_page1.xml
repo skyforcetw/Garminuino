@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -128,7 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:onClick="buttonOnClicked"
+
                 android:paddingTop="@dimen/option_padding_top"
                 android:text="@string/layout_element_auto_brightness"
                 android:textSize="@dimen/option_text_size" />
@@ -141,7 +140,7 @@
                 android:layout_weight="1"
 
                 android:max="10"
-                android:onClick="buttonOnClicked"
+
                 android:paddingRight="80dp"
                 android:progress="0"
                 android:textSize="@dimen/option_text_size" />
@@ -216,75 +215,24 @@
                 android:text="@string/layout_element_traffic_lane_det"
                 android:textSize="@dimen/option_text_size" />
 
-            <Switch
-                android:id="@+id/switchAlertYellowTraffic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="false"
-                android:paddingTop="@dimen/option_padding_top"
-                android:paddingBottom="@dimen/option_padding_bottom"
-                android:text="@string/layout_element_yellow_traffic"
-                android:textSize="@dimen/option_text_size" />
+<!--            <Switch-->
+<!--                android:id="@+id/switchAlertYellowTraffic"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:checked="false"-->
+<!--                android:paddingTop="@dimen/option_padding_top"-->
+<!--                android:paddingBottom="@dimen/option_padding_bottom"-->
+<!--                android:text="@string/layout_element_yellow_traffic"-->
+<!--                android:textSize="@dimen/option_text_size" />-->
 
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="2dip"
                 android:background="@color/horizontal_line" />
 
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingTop="@dimen/option_padding_top"
-                android:text="@string/layout_title_bluetooth"
-                android:textSize="@dimen/option_title_size" />
 
-            <Switch
-                android:id="@+id/switchBtBindAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="false"
-                android:paddingTop="@dimen/option_padding_top"
-                android:paddingBottom="@dimen/option_padding_bottom"
-                android:text="@string/layout_element_bind_address"
-                android:textSize="@dimen/option_text_size" />
 
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dip"
-                android:background="@color/horizontal_line" />
-
-            <TextView
-                android:id="@+id/textView7"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingTop="@dimen/option_padding_top"
-                android:text="@string/layout_title_design"
-                android:textSize="@dimen/option_title_size" />
-
-            <Switch
-                android:id="@+id/switchDarkModeAuto"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="false"
-                android:paddingTop="@dimen/option_padding_top"
-                android:text="@string/layout_element_darkmode_auto"
-                android:textSize="@dimen/option_text_size" />
-
-            <Switch
-                android:id="@+id/switchDarkModeMan"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="false"
-                android:paddingTop="@dimen/option_padding_top"
-                android:text="@string/layout_element_darkmode_man"
-                android:textSize="@dimen/option_text_size" />
 
         </LinearLayout>
 

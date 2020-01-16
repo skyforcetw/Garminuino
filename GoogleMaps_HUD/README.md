@@ -2,10 +2,14 @@
 Garminuino Android App: GoogleMaps HUD, parses the navigation information from Google Maps App and displays it on the Garmin HUD
 
 ## Instruction
-Simple instruction for the app. [Please read here.](./INSTRUCTION.md)
+Simple instruction for the app:
+
+* [Install.](./INSTALL.md)
+* [First Use.](./FIRST_USE.md)
+* [Instruction.](./INSTRUCTIONv052.md)
 
 ## Supported Arrows
-The app just can recongnized the arrow we supported. [Please read here.](./SUPPORTED_ARROWS.md)  
+The app just can recongnized the arrow we supported: [v1](./SUPPORTED_ARROWS.md) and [v2](./SUPPORTED_ARROWSv2.md)  
 If find some arrow recognize failed, please call a new issue, and provide the arrow image in any form, let us add to supported list.
 
 ## How it works

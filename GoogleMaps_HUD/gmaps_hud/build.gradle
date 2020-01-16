@@ -99,6 +99,8 @@ dependencies {
     implementation 'uk.co.samuelwall:material-tap-target-prompt:2.14.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
+    //ocr
+//    implementation 'com.rmtheis:tess-two:6.0.0'
 }
 
 //apply plugin: 'com.google.gms.google-services'

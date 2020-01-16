@@ -6,8 +6,12 @@
     <string name="bt_bind_address_key" translatable="false">bt_bind_address_key</string>
 
     <string name="option_show_speed" translatable="false">option_show_speed</string>
+
     <string name="option_traffic_and_lane_detect" translatable="false">option_traffic_and_lane_detect</string>
+    <string name="option_alert_anytime" translatable="false">option_alert_anytime</string>
+    <string name="option_alert_speed" translatable="false">option_alert_speed</string>
     <string name="option_alert_yellow_traffic" translatable="false">option_alert_yellow_traffic</string>
+
     <string name="option_show_eta" translatable="false">option_show_eta</string>
     <string name="option_idle_show_current_time" translatable="false">option_idle_show_current_time</string>
     <string name="option_auto_brightness" translatable="false">option_auto_brightness</string>
@@ -18,11 +22,15 @@
 
     <string name="state_dark_mode" translatable="false">state_dark_mode</string>
 
+    <string name="option_arrow_type" translatable="false">option_arrow_type</string>
+
     <string name="option_show_prompt" translatable="false">option_show_prompt</string>
 
     <!--broadcast receiver-->
     <string name="broadcast_receiver_main_activity" translatable="false">sky4s.garminhud.app.MainActivity.RECEIVER</string>
     <string name="broadcast_receiver_notification_monitor" translatable="false">sky4s.garminhud.app.NotificationMonitor.RECEIVER</string>
+<!--    <string name="broadcast_receiver_image_detect" translatable="false">sky4s.garminhud.app.detect.ImageDetectListener.RECEIVER</string>-->
+
     <string name="broadcast_notification_switch" translatable="false">sky4s.garminhud.app.MainActivity.NOTIFY_SWITCH</string>
 
     <string name="broadcast_notification_switch_speed" translatable="false">sky4s.garminhud.app.MainActivity.SWITCH_SPEED</string>
