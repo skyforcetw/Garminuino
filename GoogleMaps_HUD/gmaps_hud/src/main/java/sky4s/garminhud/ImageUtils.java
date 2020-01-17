@@ -75,13 +75,6 @@ public class ImageUtils {
 
     public static boolean storeBitmap(Bitmap image, String filename) {
         return storeBitmap(image, null, filename);
-//        try (FileOutputStream fos = new FileOutputStream(filename)) {
-//            image.compress(Bitmap.CompressFormat.PNG, 100, fos);
-//        } catch (IOException ex) {
-////            Log.e(TAG, ex.toString());
-//            return false;
-//        }
-//        return true;
     }
 
 
@@ -91,7 +84,7 @@ public class ImageUtils {
 //            IMAGE_DIR = MainActivity.SCREENCAP_STORE_DIRECTORY;
 //            return;
 //        }
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (null == context || ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
             return false;
