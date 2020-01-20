@@ -20,6 +20,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.hardware.display.DisplayManager;
@@ -63,6 +64,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Timer;
@@ -504,6 +506,8 @@ public class MainActivity extends AppCompatActivity {
 
         //experiment:
         startNotification();
+
+
     }
 
 

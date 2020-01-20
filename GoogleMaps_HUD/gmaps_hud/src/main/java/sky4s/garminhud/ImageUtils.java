@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -110,4 +111,22 @@ public class ImageUtils {
         }
     }
 
+
+    public static Bitmap getScaleBitmap(Bitmap bitmap, int newWidth,
+                                        int newHeight) {
+        int w = bitmap.getWidth();
+        int h = bitmap.getHeight();
+        Matrix matrix = new Matrix();
+        float scaleW = (float) newWidth / w;
+        float scaleH = (float) newHeight / h;
+        // scale = scale < scale2 ? scale : scale2;
+        matrix.postScale(scaleW, scaleH);
+        Bitmap bmp = Bitmap.createBitmap(bitmap, 0, 0, w, h, matrix, true);
+        if (bitmap != null && !bitmap.equals(bmp) && !bitmap.isRecycled()) {
+            bitmap.recycle();
+            bitmap = null;
+        }
+        return bmp;// Bitmap.createBitmap(bitmap, 0, 0, w, h, matrix, true);
+
+    }
 }

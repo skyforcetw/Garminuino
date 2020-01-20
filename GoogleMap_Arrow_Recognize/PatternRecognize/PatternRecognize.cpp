@@ -1,10 +1,15 @@
 // PatternRecognize.cpp : 定義主控台應用程式的進入點。
 //
 #include "stdafx.h"
+
+#ifndef NOMINMAX                      
+#define NOMINMAX
+#endif
+#include <limits>
 #include <bitset>
 #include <windows.h>
 #include <iostream>
-#include <limits>
+
 
 std::vector<std::string>  getAllFilesNamesWithinFolder(std::string folder)
 {
@@ -198,7 +203,7 @@ cv::Mat to_cv_image(Image image) {
 }
 
 
-int recognize(std::string dir)
+int image_recognize(std::string dir)
 {
 	using namespace cv;
 	using namespace std;
@@ -224,33 +229,44 @@ int recognize(std::string dir)
 	}
 	cout << endl;
 
-	for (auto img1 : image_vector) {
-		int sad_zero_count = 0;
-		for (auto img2 : image_vector) {
-			unsigned long sad = get_SAD(img1, img2);
-			cout << std::hex << sad << " ";
-			if (0 == sad) {
-				sad_zero_count++;
-			}
+for (auto img1 : image_vector) {
+	int sad_zero_count = 0;
+	for (auto img2 : image_vector) {
+		unsigned long sad = get_SAD(img1, img2);
+		cout << std::hex << sad << " ";
+		if (0 == sad) {
+			sad_zero_count++;
 		}
-		if (sad_zero_count != 1) {
-			cout << "*";
-		}
-		cout << endl;
 	}
-
-	return 0;
+	if (sad_zero_count != 1) {
+		cout << "*";
+	}
+	cout << endl;
 }
 
+return 0;
+}
+
+int get_sad_in_green(cv::Mat image1, cv::Mat image2) {
+	int sad = 0;
+	for (int h = 0; h < image1.rows; h++) {
+		for (int w = 0; w < image1.cols; w++) {
+			auto pixel1 = image1.at<cv::Vec3b>(w, h);
+			auto pixel2 = image2.at<cv::Vec3b>(w, h);
+			sad += abs(pixel1[0] - pixel2[0]);
+		}
+	}
+	return sad;
+}
 
 int main() {
 
-	const std::string ref_dir = "./Google_Arrow3 - remove alpha/";
+	const std::string ref_dir = "./Google_Arrow3 - remove alpha - same size/";
 	//const std::string dir = "./";
+	using namespace cv;
+	using namespace std;
+	if (false) {//跟其他箭頭比
 
-	if (false) {
-		using namespace cv;
-		using namespace std;
 		vector<Mat> image_vec;
 
 		Size size(IMAGE_LENGTH, IMAGE_LENGTH);
@@ -265,9 +281,7 @@ int main() {
 		}
 	}
 
-	if (true) {
-		using namespace cv;
-		using namespace std;
+	if (false) { //箭頭image間互比
 		vector<Mat> image_vec;
 		string compare_dir = "./Google_Arrow_compare/";
 
@@ -296,7 +310,38 @@ int main() {
 		}
 	}
 
-	if (false) {
-		recognize(ref_dir);
+	if (false) { //image間互比
+		image_recognize(ref_dir);
 	}
+
+	if (true) { //直接用原圖比
+		string target_filename = "arrow0.png";
+		auto& target_image = cv::imread(target_filename);
+		auto target_size = target_image.size();
+
+		cv::Mat scale_image;
+		int min_index = -1;
+		int min_sad = std::numeric_limits<int>::max();
+		int index = 0;
+
+		for (auto& filename : getAllImageFileNamesWithinFolder(ref_dir)) {
+			auto& arrow_img = cv::imread(ref_dir + filename);
+			auto size = arrow_img.size();
+
+			if (0 == scale_image.rows) {
+				cv::resize(target_image, scale_image, size);
+			}
+
+ 
+			int sad = get_sad_in_green(arrow_img, scale_image);
+			if (sad < min_sad) {
+				min_index = index;
+				min_sad = sad;
+			}
+			cout << index << " " << sad << " " << filename << endl;
+			index++;
+		}
+		int a = 1;
+	}
+
 }

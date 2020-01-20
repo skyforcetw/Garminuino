@@ -5,7 +5,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.location.Location;
@@ -21,6 +24,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -148,10 +153,36 @@ public class NotificationMonitor extends NotificationListenerService {
         staticInstance = this;
 //        postman = new MainActivityPostman(this, getString(R.string.broadcast_sender_notification_monitor));
         postman = MainActivityPostman.toMainActivityInstance(this, getString(R.string.broadcast_sender_notification_monitor));
+
+        //========================================================================================
+        assetManager = getApplicationContext().getAssets();
+        loadArrowImagesInAssets();
+
+
     }
 
+    private AssetManager assetManager;
+    private Bitmap[] arrowBitmaps;
     private MainActivityPostman postman;
 
+    private void loadArrowImagesInAssets() {
+        final String dir = "arrow3";
+
+        try {
+            String[] filePathList = assetManager.list(dir);
+            arrowBitmaps = new Bitmap[filePathList.length];
+
+            for (int i = 0; i < filePathList.length; i++) {
+                InputStream is = assetManager.open(dir + "/" + filePathList[i]);
+                arrowBitmaps[i] = BitmapFactory.decodeStream(is);
+                is.close();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @Override
     public void onDestroy() {
@@ -655,17 +686,17 @@ public class NotificationMonitor extends NotificationListenerService {
                         if (STORE_IMG) {
                             ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow0.png");
                         }
-
-                        ArrowImage arrowImage = new ArrowImage(bitmapImage);
-
-                        if (STORE_IMG) {
-                            ImageUtils.storeBitmap(arrowImage.binaryImage, IMAGE_DIR, "binary.png");
-                        }
+//                        ArrowImage arrowImage = new ArrowImage(bitmapImage);
+//
+//                        if (STORE_IMG) {
+//                            ImageUtils.storeBitmap(arrowImage.binaryImage, IMAGE_DIR, "binary.png");
+//                        }
 
                         if (arrowTypeV2) {
-                            foundArrowV2 = getArrowV2(arrowImage);
+                            foundArrowV2 = getArrowV2(bitmapImage);
                             lastFoundArrowV2 = foundArrowV2;
                         } else {
+                            ArrowImage arrowImage = new ArrowImage(bitmapImage);
                             foundArrow = getArrow(arrowImage);
                             lastFoundArrow = foundArrow;
                         }
@@ -765,6 +796,62 @@ public class NotificationMonitor extends NotificationListenerService {
     }
 
     static int arrowMinSad = 0;
+
+    private static int getGreenSAD(Bitmap image1, Bitmap image2) {
+        if (null == image1 || null == image2) {
+            return -1;
+        }
+        if (image1.getWidth() != image2.getWidth() || image1.getHeight() != image2.getHeight()) {
+            return -1;
+        }
+        final int height = image1.getHeight();
+        final int width = image1.getWidth();
+        int sad = 0;
+        for (int h = 0; h < height; h++) {
+            for (int w = 0; w < width; w++) {
+                int pixel1 = image1.getPixel(w, h);
+                int pixel2 = image2.getPixel(w, h);
+                int green1 = Color.green(pixel1);
+                int green2 = Color.green(pixel2);
+                sad += Math.abs(green1 - green2);
+            }
+        }
+        return sad;
+    }
+
+    private ArrowV2 getArrowV2(Bitmap image) {
+        if (null == arrowBitmaps) {
+            return null;
+        }
+        final ArrowV2[] arrows = ArrowV2.values();
+        if (arrowBitmaps.length + 1 != arrows.length) {
+            return null;
+        }
+
+        final int targetWidth = arrowBitmaps[0].getWidth();
+        final int targetHeight = arrowBitmaps[0].getHeight();
+        Bitmap scaleImage = ImageUtils.getScaleBitmap(image, targetWidth, targetHeight);
+        scaleImage = ImageUtils.removeAlpha(scaleImage);
+        final int length = arrowBitmaps.length;
+
+        arrowMinSad = Integer.MAX_VALUE;
+        int minSADIndex = -1;
+        for (int x = 0; x < length; x++) {
+            int sad = getGreenSAD(scaleImage, arrowBitmaps[x]);
+            if (-1 != sad && sad < arrowMinSad) {
+                arrowMinSad = sad;
+                minSADIndex = x;
+            }
+        }
+
+        ArrowV2 arrow = arrows[minSADIndex];
+        if (0 == arrowMinSad) {
+            Log.d(TAG, "Recognize " + arrow.name());
+        } else {
+            Log.d(TAG, "No Recognize, minSad: " + arrowMinSad + " arrow:" + arrow);
+        }
+        return arrow;
+    }
 
     private static ArrowV2 getArrowV2(ArrowImage image) {
         arrowMinSad = Integer.MAX_VALUE;
