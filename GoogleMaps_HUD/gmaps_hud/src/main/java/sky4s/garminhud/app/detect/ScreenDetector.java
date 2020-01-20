@@ -117,13 +117,15 @@ public abstract class ScreenDetector {
 
                     if (sameColor) {
                         if (vertical) {
-                            if (printDetail)
+                            if (printDetail) {
 //                                Log.i(TAG, "vertical: " + h + "," + w);
-                                return h;
+                            }
+                            return h;
                         } else {
-                            if (printDetail)
+                            if (printDetail) {
 //                                Log.i(TAG, "horizontal: " + h + "," + w);
-                                return w;
+                            }
+                            return w;
                         }
                     }
                 }
