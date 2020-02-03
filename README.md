@@ -10,9 +10,7 @@ There has two sub-project use GarminHUD as:
 Belows are two sub-proejct put together: GoogleMap navigation HUD(Left)+ Speedometer HUD(Center)
 <img src="./pics/124220.jpg" alt="Two Garmin HUD application" width="500"/>
 
-Belows are two sub-proejct & Android Auto put together: 
-
-GoogleMap navigation HUD(Left1)+ Speedometer HUD(Left2) + Android auto(Right1)
+Belows are two sub-proejct & Android Auto put together: <br>GoogleMap navigation HUD(Left1)+ Speedometer HUD(Left2) + Android auto(Right1)
 
 <img src="./pics/163633.jpg" alt="Two Garmin HUD application + Android Auto" width="500"/>
 
