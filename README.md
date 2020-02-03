@@ -3,7 +3,7 @@ There has two sub-project use GarminHUD as:
 1. an app, Google Map HUD  (Android App+GarminHUD).  
  * [Downloading newest release App here.](https://github.com/skyforcetw/Garminuino/releases)
  * [Further Information for Android App.](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/README.md)  
- * [install.](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/INSTALL.md)  
+ * [Install.](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/INSTALL.md)  
  * [First Use.](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/FIRST_USE.md)  
  * [Instruction.](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/INSTRUCTIONv052.md)  
  
