@@ -259,6 +259,24 @@ int get_sad_in_green(cv::Mat image1, cv::Mat image2) {
 	return sad;
 }
 
+int get_sad_in_not_white_count(cv::Mat image1, cv::Mat image2) {
+	int sad = 0;
+	for (int h = 0; h < image1.rows; h++) {
+		for (int w = 0; w < image1.cols; w++) {
+			auto pixel1 = image1.at<cv::Vec3b>(w, h);
+			auto pixel2 = image2.at<cv::Vec3b>(w, h);
+			//sad += abs(pixel1[0] - pixel2[0]);
+			if (pixel1[1] == pixel2[1] &&  pixel1[1]>=250) {
+
+			}
+			else {
+				sad++;
+			}
+		}
+	}
+	return sad;
+}
+
 int main() {
 
 	const std::string ref_dir = "./Google_Arrow3 - remove alpha - same size/";
@@ -360,7 +378,8 @@ int main() {
 			int target_index = 0;
 			for (auto& target_filename : getAllImageFileNamesWithinFolder(ref_dir)) {
 				auto& target_arrow_img = cv::imread(ref_dir + target_filename);
-				int sad = get_sad_in_green(scale_image, target_arrow_img);
+				//int sad = get_sad_in_green(scale_image, target_arrow_img);
+				int sad = get_sad_in_not_white_count(scale_image, target_arrow_img);
 				if (sad < min_sad) {
 					min_index = target_index;
 					min_sad = sad;

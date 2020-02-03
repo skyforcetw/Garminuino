@@ -81,10 +81,7 @@ public class ImageUtils {
 
     public static boolean storeBitmap(Bitmap bmp, String dirname, String filename) {
 
-//        if (null == dirname) {
-//            IMAGE_DIR = MainActivity.SCREENCAP_STORE_DIRECTORY;
-//            return;
-//        }
+
         if (null == context || ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted

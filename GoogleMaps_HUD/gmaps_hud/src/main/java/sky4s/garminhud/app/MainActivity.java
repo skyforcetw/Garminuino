@@ -303,7 +303,7 @@ public class MainActivity extends AppCompatActivity {
         switchDarkModeAuto.setOnCheckedChangeListener(onCheckedChangedListener);
         switchDarkModeManual.setOnCheckedChangeListener(onCheckedChangedListener);
 
-        if(optionShowNotify) {
+        if (optionShowNotify) {
             startNotification();
         }
     }
@@ -393,6 +393,11 @@ public class MainActivity extends AppCompatActivity {
         //SCREENCAP_STORE_DIRECTORY =     ///sdcard/Android/data/sky4s.garminhud.app/cache/screenshots
         String sdcardCachePath = getApplicationContext().getExternalCacheDir().getAbsolutePath();
         SCREENCAP_STORE_DIRECTORY = sdcardCachePath + "/screenshots/";
+        File screenshotDir = new File(SCREENCAP_STORE_DIRECTORY);
+        if (!screenshotDir.exists()) {
+            screenshotDir.mkdir();
+        }
+
         String sdcardDocPath = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
         OCR_STORE_DIRECTORY = sdcardDocPath;
         ImageUtils.context = this;
@@ -846,7 +851,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 
 
     public void buttonOnClicked(View view) {
