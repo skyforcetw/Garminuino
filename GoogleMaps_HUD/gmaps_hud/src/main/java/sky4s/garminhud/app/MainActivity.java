@@ -20,7 +20,6 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.hardware.display.DisplayManager;
@@ -54,6 +53,7 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.OrientationEventListener;
 import android.view.View;
@@ -64,7 +64,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Timer;
@@ -110,19 +109,20 @@ public class MainActivity extends AppCompatActivity {
 
     Switch switchShowETA;
     Switch switchIdleShowCurrentTime;
-
-    //traffic
     Switch switchTrafficAndLane;
+    //========================================
+    // UI for Page3Fragment
+    //========================================
+    //arrow
+    Switch switchArrowType;
+    //traffic
     Switch switchAlertAnytime;
     SeekBar seekBarAlertSpeed;
     Switch switchAlertYellowTraffic;
-
     //bluetooth
     Switch switchBtBindAddress;
-
-    //arrow
-    Switch switchArrowType;
-
+    //notification
+    Switch switchShowNotify;
     //app-appearance
     Switch switchDarkModeAuto;
     Switch switchDarkModeManual;
@@ -253,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
         switchShowETA.setOnCheckedChangeListener(onCheckedChangedListener);
         switchIdleShowCurrentTime.setOnCheckedChangeListener(onCheckedChangedListener);
         switchBtBindAddress.setOnCheckedChangeListener(onCheckedChangedListener);
+        switchShowNotify.setOnCheckedChangeListener(onCheckedChangedListener);
         switchArrowType.setOnCheckedChangeListener(onCheckedChangedListener);
 
         //======================================
@@ -268,6 +269,7 @@ public class MainActivity extends AppCompatActivity {
         final boolean optionShowEta = sharedPref.getBoolean(getString(R.string.option_show_eta), false);
         final boolean optionIdleShowTime = sharedPref.getBoolean(getString(R.string.option_idle_show_current_time), false);
         final boolean optionBtBindAddress = sharedPref.getBoolean(getString(R.string.option_bt_bind_address), false);
+        final boolean optionShowNotify = sharedPref.getBoolean(getString(R.string.option_show_notify), false);
         final boolean optionDarkModeAuto = sharedPref.getBoolean(getString(R.string.option_dark_mode_auto), false);
         final boolean optionDarkModeMan = sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false);
 
@@ -289,6 +291,7 @@ public class MainActivity extends AppCompatActivity {
                 switchShowETA.setChecked(optionShowEta);
                 switchIdleShowCurrentTime.setChecked(optionIdleShowTime);
                 switchBtBindAddress.setChecked(optionBtBindAddress);
+                switchShowNotify.setChecked(optionShowNotify);
                 switchDarkModeAuto.setChecked(optionDarkModeAuto);
                 switchDarkModeManual.setChecked(optionDarkModeMan);
 
@@ -299,6 +302,10 @@ public class MainActivity extends AppCompatActivity {
         // Need to be after initially setChecked to avoid loop 
         switchDarkModeAuto.setOnCheckedChangeListener(onCheckedChangedListener);
         switchDarkModeManual.setOnCheckedChangeListener(onCheckedChangedListener);
+
+        if(optionShowNotify) {
+            startNotification();
+        }
     }
 
     private String initBluetooth() {
@@ -505,9 +512,37 @@ public class MainActivity extends AppCompatActivity {
         //========================================================================================
 
         //experiment:
-        startNotification();
+//        startNotification();
 
 
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {//捕捉返回鍵
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            ConfirmExit();//按返回鍵，則執行退出確認
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    public void ConfirmExit() {//退出確認
+        AlertDialog.Builder ad = new AlertDialog.Builder(MainActivity.this);
+        ad.setTitle("Exit");
+        ad.setMessage("Leave GoogleMaps HUD app?");
+        ad.setPositiveButton("Yes", new DialogInterface.OnClickListener() {//退出按鈕
+            public void onClick(DialogInterface dialog, int i) {
+                // TODO Auto-generated method stub
+                MainActivity.this.finish();//關閉activity
+            }
+        });
+        ad.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int i) {
+                //不退出不用執行任何操作
+            }
+        });
+        ad.show();//顯示對話框
     }
 
 
@@ -654,6 +689,13 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
     }
 
+    /**
+     * OnCheckedChangedListener and  buttonOnClicked have similar function for UI response.
+     * We recommend use "button click" with buttonOnClicked.
+     * Other UI (like switch) use OnCheckedChangedListener.
+     */
+    private OnCheckedChangedListener onCheckedChangedListener = new OnCheckedChangedListener();
+
     private class OnCheckedChangedListener implements CompoundButton.OnCheckedChangeListener {
 
         @Override
@@ -740,6 +782,17 @@ public class MainActivity extends AppCompatActivity {
                     storeOptions(R.string.option_bt_bind_address, isBindAddress);
                     break;
 
+                case R.id.switchShowNotify:
+                    final boolean isShowNotify = ((Switch) view).isChecked();
+//                    useBTAddressReconnectThread = isBindAddress;
+                    storeOptions(R.string.option_show_notify, isShowNotify);
+                    if (isShowNotify) {
+                        startNotification();
+                    } else {
+                        stopNotification();
+                    }
+                    break;
+
                 case R.id.switchDarkModeAuto:
                     final boolean isDarkModeAuto = ((Switch) view).isChecked();
                     switchDarkModeManual.setEnabled(!isDarkModeAuto);
@@ -794,12 +847,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * OnCheckedChangedListener and  buttonOnClicked have similar function for UI response.
-     * We recommend use "button click" with buttonOnClicked.
-     * Other UI (like switch) use OnCheckedChangedListener.
-     */
-    private OnCheckedChangedListener onCheckedChangedListener = new OnCheckedChangedListener();
+
 
     public void buttonOnClicked(View view) {
         switch (view.getId()) {

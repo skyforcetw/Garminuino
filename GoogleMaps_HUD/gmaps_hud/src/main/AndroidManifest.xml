@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- debug needed it, when store image -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.VIBRATE" />
+<!--    <uses-permission android:name="android.permission.VIBRATE" />-->
 
     <application
         android:allowBackup="true"
@@ -33,8 +33,10 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+
         <service android:name=".NotificationCollectorMonitorService" />
         <service android:name="chutka.bitman.com.speedometersimplified.LocationService" />
+
         <receiver android:name=".MainActivity.CancelProjectionReceiver" />
     </application>
 

@@ -74,7 +74,8 @@ android {
 
 dependencies {
     //location service needed
-    implementation 'com.google.android.gms:play-services:12.0.1'
+//    implementation 'com.google.android.gms:play-services:12.0.1'
+    implementation 'com.google.android.gms:play-services-location:12.0.1'
 
 
     //android UI needed

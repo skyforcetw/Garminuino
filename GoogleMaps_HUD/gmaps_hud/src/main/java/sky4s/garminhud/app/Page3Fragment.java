@@ -143,6 +143,7 @@ public class Page3Fragment extends Fragment {
         ((MainActivity) getActivity()).switchAlertYellowTraffic = (Switch) getView().findViewById(R.id.switchAlertYellowTraffic);
 
         ((MainActivity) getActivity()).switchBtBindAddress = (Switch) getView().findViewById(R.id.switchBtBindAddress);
+        ((MainActivity) getActivity()).switchShowNotify = (Switch) getView().findViewById(R.id.switchShowNotify);
 
         ((MainActivity) getActivity()).switchDarkModeAuto = (Switch) getView().findViewById(R.id.switchDarkModeAuto);
         ((MainActivity) getActivity()).switchDarkModeManual = (Switch) getView().findViewById(R.id.switchDarkModeMan);

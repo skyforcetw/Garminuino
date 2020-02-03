@@ -127,6 +127,9 @@ public class LocationService extends Service implements
     @Override
     public void onLocationChanged(Location location) {
 
+        if (!location.hasSpeed()) {
+            return;
+        }
         //calculating the speed with getSpeed method it returns speed in m/s so we are converting it into kmph
         if (eUnits.Kilometres == NotificationMonitor.getCurrentUnit() || eUnits.None == NotificationMonitor.getCurrentUnit()) {
             speed = location.getSpeed() * 18 / 5;

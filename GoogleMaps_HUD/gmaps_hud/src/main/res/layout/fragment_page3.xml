@@ -112,6 +112,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="false"
+                android:enabled="false"
                 android:paddingTop="@dimen/option_padding_top"
                 android:paddingBottom="@dimen/option_padding_bottom"
                 android:text="@string/layout_element_bind_address"
@@ -122,6 +123,33 @@
                 android:layout_height="2dip"
                 android:background="@color/horizontal_line" />
 
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="@string/layout_title_notify"
+                android:textSize="@dimen/option_title_size" />
+
+            <Switch
+                android:id="@+id/switchShowNotify"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:enabled="true"
+                android:paddingTop="@dimen/option_padding_top"
+                android:paddingBottom="@dimen/option_padding_bottom"
+                android:text="@string/layout_element_notify"
+                android:textSize="@dimen/option_text_size" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="2dip"
+                android:background="@color/horizontal_line" />
 
             <TextView
                 android:id="@+id/textView7"

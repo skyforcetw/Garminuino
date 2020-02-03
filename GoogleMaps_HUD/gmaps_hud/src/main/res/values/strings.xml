@@ -98,6 +98,8 @@
     <string name="title_enable_location_access">Location Permission</string>
     <string name="message_bt_not_avialable">Bluetooth is not available</string>
     <string name="message_bt_not_enabled">Bluetooth was not enabled.</string>
+    <string name="layout_title_notify">Notification</string>
+    <string name="layout_element_notify">Show Notification</string>
 
 
 </resources>

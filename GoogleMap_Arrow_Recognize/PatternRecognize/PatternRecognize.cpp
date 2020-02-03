@@ -229,22 +229,22 @@ int image_recognize(std::string dir)
 	}
 	cout << endl;
 
-for (auto img1 : image_vector) {
-	int sad_zero_count = 0;
-	for (auto img2 : image_vector) {
-		unsigned long sad = get_SAD(img1, img2);
-		cout << std::hex << sad << " ";
-		if (0 == sad) {
-			sad_zero_count++;
+	for (auto img1 : image_vector) {
+		int sad_zero_count = 0;
+		for (auto img2 : image_vector) {
+			unsigned long sad = get_SAD(img1, img2);
+			cout << std::hex << sad << " ";
+			if (0 == sad) {
+				sad_zero_count++;
+			}
 		}
+		if (sad_zero_count != 1) {
+			cout << "*";
+		}
+		cout << endl;
 	}
-	if (sad_zero_count != 1) {
-		cout << "*";
-	}
-	cout << endl;
-}
 
-return 0;
+	return 0;
 }
 
 int get_sad_in_green(cv::Mat image1, cv::Mat image2) {
@@ -314,7 +314,7 @@ int main() {
 		image_recognize(ref_dir);
 	}
 
-	if (true) { //直接用原圖比
+	if (false) { //直接用原圖比
 		string target_filename = "arrow0.png";
 		auto& target_image = cv::imread(target_filename);
 		auto target_size = target_image.size();
@@ -332,7 +332,7 @@ int main() {
 				cv::resize(target_image, scale_image, size);
 			}
 
- 
+
 			int sad = get_sad_in_green(arrow_img, scale_image);
 			if (sad < min_sad) {
 				min_index = index;
@@ -343,5 +343,39 @@ int main() {
 		}
 		int a = 1;
 	}
+	if (true) ////直接用原圖比 & scan 
+	{
 
+		int index = 0;
+
+		for (auto& filename : getAllImageFileNamesWithinFolder(ref_dir)) {
+			auto& arrow_img = cv::imread(ref_dir + filename);
+
+			cv::Mat scale_image;
+			cv::resize(arrow_img, scale_image, Size(), 0.5f, 0.5f, INTER_NEAREST);
+			cv::resize(scale_image, scale_image, Size(95, 95), 0, 0, INTER_NEAREST);
+
+			int min_index = -1;
+			int min_sad = std::numeric_limits<int>::max();
+			int target_index = 0;
+			for (auto& target_filename : getAllImageFileNamesWithinFolder(ref_dir)) {
+				auto& target_arrow_img = cv::imread(ref_dir + target_filename);
+				int sad = get_sad_in_green(scale_image, target_arrow_img);
+				if (sad < min_sad) {
+					min_index = target_index;
+					min_sad = sad;
+				}
+				target_index++;
+			}
+
+
+			cout << index << " " << filename << " " << min_index << "(" << min_sad << ")";
+			if (min_index != index) {
+				cout << " *";
+			}
+			cout << endl;
+			index++;
+		}
+		int a = 1;
+	}
 }
