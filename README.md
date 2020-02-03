@@ -16,6 +16,9 @@ Android App: Google Map HUD
 
 ## GoogleMap navigation HUD App Release History ##
 
+### [2020-01-20 v0.6.1](https://github.com/skyforcetw/Garminuino/releases/download/0.6.1/gmaps_hud-release_v0.6.1.apk)
+Use more robust arrow recognize + Fix lane detect no function bug.
+
 ### [2019-11-11 v0.5.4](https://github.com/skyforcetw/Garminuino/releases/download/0.5.4/gmaps_hud-release_v0.5.4.apk)
 Fix some bugs for traffic detection
 
