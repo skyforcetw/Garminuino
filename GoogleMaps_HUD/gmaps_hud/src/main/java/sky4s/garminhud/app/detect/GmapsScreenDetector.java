@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import sky4s.garminhud.ImageUtils;
 import sky4s.garminhud.app.MainActivity;
 import sky4s.garminhud.app.R;
-//import sky4s.garminhud.app.Rect;
 import sky4s.garminhud.eLane;
+
+//import sky4s.garminhud.app.Rect;
 
 enum GmapsTheme {
     DayV1, NightV1, V2, Unknow
@@ -19,10 +20,7 @@ enum GmapsTheme {
 
 
 public class GmapsScreenDetector extends ScreenDetector {
-    //    private MainActivity activity;
-//    private MainActivityPostman postman;
     private static final String TAG = GmapsScreenDetector.class.getSimpleName();
-//    private HUDInterface hud;
 
     public final static String GmapImage = "gmap.png";
     public final static String MapImage = "map.png";
@@ -61,8 +59,6 @@ public class GmapsScreenDetector extends ScreenDetector {
 
     GmapsScreenDetector(MainActivity activity) {
         super(activity);
-//        this.activity = activity;
-//        this.hud = activity.hud;
         if (null != activity) {
             Resources resource = activity.getResources();
             if (null != resource) {
@@ -72,9 +68,6 @@ public class GmapsScreenDetector extends ScreenDetector {
 //                UPDATE_INTERVAL = resource.getInteger(R.integer.detect_update_interval);
             }
         }
-//        postman = MainActivityPostman.toMainActivityInstance(activity, activity.getString(R.string.broadcast_sender_image_detect));
-
-
     }
 
     /**
@@ -304,114 +297,6 @@ public class GmapsScreenDetector extends ScreenDetector {
 
         return result;
     }
-
-//
-//    private boolean isSameRGB(int color1, int color2) {
-//        return Color.red(color1) == Color.red(color2) &&
-//                Color.green(color1) == Color.green(color2) &&
-//                Color.blue(color1) == Color.blue(color2);
-//    }
-//
-//
-//    private boolean isSameRGB(int color1, int color2, int tolerance) {
-//        boolean same = Color.red(color1) == Color.red(color2) &&
-//                Color.green(color1) == Color.green(color2) &&
-//                Color.blue(color1) == Color.blue(color2);
-//
-//        int deltaR = Math.abs(Color.red(color1) - Color.red(color2));
-//        int deltaG = Math.abs(Color.green(color1) - Color.green(color2));
-//        int deltaB = Math.abs(Color.blue(color1) - Color.blue(color2));
-//        boolean similarColor = deltaR <= tolerance && deltaG <= tolerance && deltaB <= tolerance;
-//
-//        return same || similarColor;
-//    }
-//
-//    private int findColor(Bitmap image, int color, boolean vertical, boolean up, boolean left, boolean printDetail, int findWidth) {
-//        int width = image.getWidth();
-//        int height = image.getHeight();
-//        int totalSize = width * height;
-//        if (null == pixelsInFindColor || totalSize != pixelsInFindColor.length) {
-//            pixelsInFindColor = null;
-//            pixelsInFindColor = new int[width * height];
-//        }
-//
-//        image.getPixels(pixelsInFindColor, 0, width, 0, 0, width, height);
-//
-//        int inc = 1;
-//
-//        int h_start = vertical ? (up ? 0 : height - findWidth) : 0;
-//        int h_inc = (vertical ? up ? 1 : -1 : 1) * inc;
-//        int h_end = vertical ? (up ? height - findWidth : 0) : height - 1;
-//
-//        int w_start = vertical ? 0 : left ? 0 : width - findWidth;
-//        int w_inc = (vertical ? 1 : left ? 1 : -1) * inc;
-//        int w_end = vertical ? width - findWidth : left ? width - 1 : 0 + findWidth;
-//
-//        int w0_end = vertical ? w_start + w_inc : w_end;
-//        int w1_end = vertical ? w_end : w_start + w_inc;
-//
-//        /**
-//         *  w0
-//         *     h
-//         *        w1
-//         */
-//
-//        for (int w0 = w_start; w0 != w0_end; w0 += w_inc) {
-//            for (int h = h_start; h != h_end; h += h_inc) {
-//                for (int w1 = w_start; w1 != w1_end; w1 += w_inc) {
-//                    int w = vertical ? w1 : w0;
-//
-//                    boolean allSameColor = true;
-//                    for (int x = 0; x < findWidth; x++) {
-//                        int hh = vertical ? h : h + x;
-//                        int ww = vertical ? w + x : w;
-//                        int pixel = pixelsInFindColor[ww + hh * width];
-//                        final int tolerance = 1;
-//                        allSameColor = allSameColor && isSameRGB(pixel, color, tolerance);
-//                    }
-//
-//                    boolean sameColor = allSameColor;
-//
-//                    if (sameColor) {
-//                        if (vertical) {
-//                            if (printDetail)
-//                                Log.i(TAG, "vertical: " + h + "," + w);
-//                            return h;
-//                        } else {
-//                            if (printDetail)
-//                                Log.i(TAG, "horizontal: " + h + "," + w);
-//                            return w;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return -1;
-//    }
-//
-//    private Rect getRoi(Bitmap image, int... colors) {
-//        return getRoi(1, image, colors);
-//    }
-//
-//    private Rect getRoi(int findWidth, Bitmap image, int... colors) {
-//        for (int x = 0; x < colors.length; x++) {
-//            int color = colors[x];
-//            Rect rect = getRoi(findWidth, image, color, false);
-//            if (-1 != rect.x) {
-//                return rect;
-//            }
-//        }
-//        return new Rect(-1, -1, 0, 0);
-//    }
-//
-//
-//    private Rect getRoi(int findWidth, Bitmap image, int color, boolean printDetail) {
-//        int top = findColor(image, color, true, true, false, printDetail, findWidth);
-//        int bottom = findColor(image, color, true, false, false, printDetail, findWidth);
-//        int left = findColor(image, color, false, true, true, printDetail, findWidth);
-//        int right = findColor(image, color, false, true, false, printDetail, findWidth);
-//        return new Rect(left, top, right - left, bottom - top);
-//    }
 
     private boolean landDetectToHUD(ArrayList<Boolean> laneDetectResult) {
         final int lanes = laneDetectResult.size();
