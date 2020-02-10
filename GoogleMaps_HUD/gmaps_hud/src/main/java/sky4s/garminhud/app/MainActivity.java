@@ -1,10 +1,12 @@
 package sky4s.garminhud.app;
 
 import android.Manifest;
+//import android.app.Activity;
+//import android.app.Activity;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
+//import android.app.Fragment;
+//import android.app.FragmentManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -36,19 +38,6 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
-import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -62,6 +51,23 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;
 import java.io.Serializable;
@@ -81,6 +87,17 @@ import sky4s.garminhud.eOutAngle;
 import sky4s.garminhud.eUnits;
 import sky4s.garminhud.hud.DummyHUD;
 import sky4s.garminhud.hud.HUDInterface;
+
+//import android.support.design.widget.NavigationView;
+//import android.support.design.widget.TabLayout;
+//import android.support.v13.app.FragmentPagerAdapter;
+//import androidx.core.view.ViewPager;
+//import androidx.core.widget.DrawerLayout;
+//import android.support.v7.app.ActionBar;
+//import android.support.v7.app.ActionBarDrawerToggle;
+//import android.support.v7.app.AppCompatActivity;
+//import android.support.v7.app.AppCompatDelegate;
+//import android.support.v7.widget.Toolbar;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -201,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
     //===============================================================================================
     // location
     //===============================================================================================
-    private boolean locationServiceConnected;
+    private boolean locationServiceConnected = false;
     private boolean useLocationService;
     private LocationService locationService;
     private LocationManager locationManager;
@@ -419,7 +436,7 @@ public class MainActivity extends AppCompatActivity {
         // Connect the ViewPager to our custom PagerAdapter. The PagerAdapter supplies the pages
         // (fragments) to the ViewPager, which the ViewPager needs to display.
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
-        mViewPager.setAdapter(new MyPagerAdapter(getFragmentManager()));
+        mViewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
 
         // Connect the tabs with the ViewPager (the setupWithViewPager method does this for us in
         // both directions, i.e. when a new tab is selected, the ViewPager switches to this page,
@@ -428,8 +445,12 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
         //========================================================================================
 
-
-        startService(new Intent(this, NotificationCollectorMonitorService.class));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(new Intent(this, NotificationCollectorMonitorService.class));
+        } else {
+            startService(new Intent(this, NotificationCollectorMonitorService.class));
+        }
+//        startService(new Intent(this, NotificationCollectorMonitorService.class));
 
         //========================================================================================
         // BT related
@@ -1105,12 +1126,16 @@ public class MainActivity extends AppCompatActivity {
 
     // Check permission for location (and ask user for permission)
     private boolean checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
+            // Permission is not granted
+            // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
                 String message = getString(R.string.message_enable_location_access);
                 new AlertDialog.Builder(this)
                         .setTitle("Location Permission")
@@ -1119,9 +1144,17 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(MainActivity.this,
-                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                        MY_PERMISSIONS_REQUEST_LOCATION);
+//                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//                                    ActivityCompat.requestPermissions(MainActivity.this,
+//                                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+//                                                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+//                                            },
+//                                            MY_PERMISSIONS_REQUEST_LOCATION);
+//                                } else {
+//                                    ActivityCompat.requestPermissions(MainActivity.this,
+//                                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+//                                            MY_PERMISSIONS_REQUEST_LOCATION);
+//                                }
                             }
                         })
                         .create()
@@ -1129,12 +1162,14 @@ public class MainActivity extends AppCompatActivity {
 
 
             } else {
+                // No explanation needed; request the permission
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
             return false;
         } else {
+            // Permission has already been granted
             return true;
         }
     }
@@ -1276,8 +1311,12 @@ public class MainActivity extends AppCompatActivity {
             super(fragmentManager);
         }
 
+
+        //        public Fragment getItem(int position) {
+//            return PAGES[position];
+//        }
         @Override
-        public Fragment getItem(int position) {
+        public androidx.fragment.app.Fragment getItem(int position) {
             return PAGES[position];
         }
 
@@ -1525,7 +1564,7 @@ public class MainActivity extends AppCompatActivity {
 
         final String channelID = "id";
 
-        android.support.v4.media.app.NotificationCompat.MediaStyle style = new android.support.v4.media.app.NotificationCompat.MediaStyle();
+//        androidx.core.media.app.NotificationCompat.MediaStyle style = new androidx.core.media.app.NotificationCompat.MediaStyle();
 
         notification
                 = new NotificationCompat.Builder(MainActivity.this, channelID)
@@ -1544,7 +1583,7 @@ public class MainActivity extends AppCompatActivity {
                 .addAction(R.drawable.baseline_traffic_24, getString(R.string.notify_switch_detect), switchDetectPendingIntent)
 
                 .setChannelId(channelID)
-                .setStyle(style)
+//                .setStyle(style)
 
                 .build();
 

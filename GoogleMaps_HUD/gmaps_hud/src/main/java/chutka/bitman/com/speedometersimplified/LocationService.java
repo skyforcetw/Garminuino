@@ -6,7 +6,7 @@ import android.location.Location;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
+//import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -17,6 +17,7 @@ import com.google.android.gms.location.LocationServices;
 import sky4s.garminhud.app.NotificationMonitor;
 import sky4s.garminhud.app.R;
 import sky4s.garminhud.eUnits;
+import androidx.annotation.Nullable;
 
 /**
  * Created by vipul on 12/13/2015.
@@ -55,14 +56,7 @@ public class LocationService extends Service implements
     @Override
     public void onCreate() {
         super.onCreate();
-        //========================================================================================
-        // messageer
-        //========================================================================================
-//        msgReceiver = new MsgReceiver();
-//        IntentFilter intentFilter = new IntentFilter();
-//        intentFilter.addAction(getString(R.string.broadcast_receiver_location_service));
-//        registerReceiver(msgReceiver, intentFilter);
-        //========================================================================================
+
     }
 
     @Override

@@ -28,11 +28,11 @@
       <configuration version="3" platform="JVM 1.6" allPlatforms="JVM [1.6]" useProjectSettings="false" pureKotlinSourceFolders="D:\workspace\github\Garminuino\GoogleMaps_HUD\gmaps_hud\src\debug\kotlin;D:\workspace\github\Garminuino\GoogleMaps_HUD\gmaps_hud\src\debug\java;D:\workspace\github\Garminuino\GoogleMaps_HUD\gmaps_hud\src\release\kotlin;D:\workspace\github\Garminuino\GoogleMaps_HUD\gmaps_hud\src\release\java;D:\workspace\github\Garminuino\GoogleMaps_HUD\gmaps_hud\src\debugAndroidTest\kotlin;D:\workspace\github\Garminuino\GoogleMaps_HUD\gmaps_hud\src\debugUnitTest\kotlin;D:\workspace\github\Garminuino\GoogleMaps_HUD\gmaps_hud\src\releaseUnitTest\kotlin">
         <compilerSettings />
         <compilerArguments>
-          <option name="destination" value="$MODULE_DIR$/build/tmp/kotlin-classes/debug" />
-          <option name="classpath" value="$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0918aae1e6e078aa7567ef4c94a2b0f4/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/c70a86a8300b95e85b0a083bd3104d61/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/214e21bfdf1d70f899d043da55f28990/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/1337541ded8f78f7560ac8cc899e2f8b/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/e5d9a25b40218f614fd05197069ccc93/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/83b2c04c411642b2191493cd61e1461e/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/59d7dca657008be8cdd1bcc805e4bce9/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/d32c4821d0795ac0027bf012522fb222/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/e9c10f3f76bdc53b28de98224f8ababa/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/f7f8a3a0313ac9a08b6b8fcdfc7435b9/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/5d2a46b159b45b347e6ce72ef5db94a6/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/e29e308af570e4fcdad1f21e2a9fa0ad/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/7bf48c355da8b8bcdbe3de8e0d9d6278/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/fcce83d44cb45eec75d1126f308a8835/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/4075bc3552cbcef1745b6e66c4958be7/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/648925922e401410ebf9067783060330/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/1ccbb30536d8f1137df1d46e63dadb31/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/659f9934ea08ca7f03e5e5ad9536e7de/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/58b3fc6d5f70206a55c9abc3c0e9c414/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/7dbbd7364c7d9c318ac106115e90f60f/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/2fbc42d28c3b354147bd6293bfea2b1b/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/a7032b904b1df68bb19504e513025491/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/27c8416b8a2a6d60394ed98469e1c016/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/697266932c2f739970903fc38e4c803f/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/4d93fd97eefc033a6494edbd60078af2/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/465ebf37ccdf7daa67a262dd67ae5aef/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/ae2dbe95a4e6f913a256ccc3f667d1a1/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/modules-2/files-2.1/com.android.support/collections/28.0.0/c1bcdade4d3cc2836130424a3f3e4182c666a745/collections-28.0.0.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/4fcf3b3ab6b4791eed7f4b241c039043/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/e95ca9f4e67494bd596e8a55f9f1857b/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/14bfb1a7ffab53f4b060c272126ca0d3/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/a8452e2bb7570967c5c790e74eb3f6fe/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/872062843e0cd358f8d737f143340e3a/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/f8e50395de0cd2582df4ec2563a2b6fd/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/a7dd20f8b70a874cead84ab002764145/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/86f04dfdd0a32af09118976716a7bcd1/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/86a3239a9d6dd1b802ed9b90eaee1750/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/modules-2/files-2.1/android.arch.lifecycle/common/1.1.1/207a6efae6a3555e326de41f76bdadd9a239cbce/common-1.1.1.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/fe2377de0530b3673ad4993cc9737875/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/modules-2/files-2.1/android.arch.core/common/1.1.1/e55b70d1f5620db124b3e85a7f4bdc7bd48d9f95/common-1.1.1.jar;C:/Users/skyforce.shen/.gradle/caches/modules-2/files-2.1/com.android.support/support-annotations/28.0.0/ed73f5337a002d1fd24339d5fb08c2c9d9ca60d8/support-annotations-28.0.0.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/02b327bacc67d8e2d9464769f02bb3c6/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/c427a114bd73de13dbc63ce3157e6629/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/modules-2/files-2.1/com.android.support.constraint/constraint-layout-solver/1.1.3/bde0667d7414c16ed62d3cfe993cff7f9d732373/constraint-layout-solver-1.1.3.jar;D:/workspace/github/Garminuino/GoogleMaps_HUD/bt-spp-library/build/intermediates/compile_library_classes/debug/classes.jar;D:/users/skyforce.shen/AppData/Local/Android/sdk/platforms/android-28/android.jar;D:/users/skyforce.shen/AppData/Local/Android/sdk/build-tools/28.0.3/core-lambda-stubs.jar" />
+          <option name="destination" value="$MODULE_DIR$/build/tmp/kotlin-classes/release" />
+          <option name="classpath" value="$USER_HOME$/.gradle/caches/transforms-2/files-2.1/763e79b3d6e36cd1c21efddd7e57f676/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/bda4e36ad879423c90fd080711b2e2f4/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/3041c5877c117c3a7ea3ac6fc41c059b/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/86dbb505a963eed92f472f77be33c78a/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/8c1b804888c9ace63a760b9e748466d8/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/49c15c88cd5ea1427f80f2ae6f547a78/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/71ed269e24b8671b7987d8d362028ec2/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/9ff2023dfd29975696dbaa24529c182e/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/11401c72478bc6daca8806a9d0776ecb/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/dd8b9965b40a666d825ee1e19ff78b53/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/1c690ea9c4050c2e53e6ab8d46cd3ee6/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/e83cc15f328b2b67bcf506e592c61d97/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/215913c3e5fe509cea58da641eeb7d57/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/ed1271346d4d094374bbf0e8d0eb97fd/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/ef8c40614d95a819846ecacd230999f9/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/43c1fe4a59d46c668f04ce7680e624b9/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/324d666998d3c5d769ee3adee6f21368/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/9f96ac6a80260a7f45f07416332a9ed2/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/a794d5ca76ab63f87a08fc4dbd3dc7b2/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/29855c4ecab7ec625268ce023b4a2e40/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/7a092e78ad11e556670b2e1be0117a46/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/b62c6cf023a5994668ad67b237318e6a/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/ace4a696c740c926713f2a0e09a61a4a/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/52a611c8805559cbea304e4976921579/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/4a3c18fd51963eaadb021cf7adbd643c/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/81fc6da28e263480a97c7bc9e6f7e7d0/jars/classes.jar;D:/workspace/github/Garminuino/GoogleMaps_HUD/bt-spp-library/build/intermediates/compile_library_classes/release/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/bbbc24944588b12b7ddb5629ebd1f9e4/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/ee79939a6681857f2246c927a873403c/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/5ddf82c549c0e6273ec838fda4433ba7/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/modules-2/files-2.1/androidx.collection/collection/1.0.0/42858b26cafdaa69b6149f45dfc2894007bc2c7a/collection-1.0.0.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/dbf429669e788bdfaf56a8129dafca7f/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/9fd416e61cf38a3ff9e9122d8546d9a3/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/51ecc6c0860bd13dc0e4ce603c13d59c/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/81ee2ffb069bbeff0c9582bf8610baf9/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/fd46d74744aa98950bd9f10cb392417f/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/5d14a80e6a4ca133bdb15f2734f415d7/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/33f827f1a8ac1597ead7e1a3381902a1/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/c9711a9b0dee87fa5254ab79cf72df83/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/e4d75e3e05478af70b724e5e6ff081eb/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/0b736eb0585e9edaddf170166db52c1f/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/modules-2/files-2.1/androidx.lifecycle/lifecycle-common/2.0.0/e070ffae07452331bc5684734fce6831d531785c/lifecycle-common-2.0.0.jar;C:/Users/skyforce.shen/.gradle/caches/transforms-2/files-2.1/c0ac392cb76ae8ea7ca52ee1fc350980/jars/classes.jar;C:/Users/skyforce.shen/.gradle/caches/modules-2/files-2.1/androidx.arch.core/core-common/2.0.0/bb21b9a11761451b51624ac428d1f1bb5deeac38/core-common-2.0.0.jar;C:/Users/skyforce.shen/.gradle/caches/modules-2/files-2.1/androidx.annotation/annotation/1.0.0/45599f2cd5965ac05a1488fa2a5c0cdd7c499ead/annotation-1.0.0.jar;C:/Users/skyforce.shen/.gradle/caches/modules-2/files-2.1/androidx.constraintlayout/constraintlayout-solver/1.1.3/54abe9ffb22cc9019b0b6fcc10f185cc4e67b34e/constraintlayout-solver-1.1.3.jar;D:/users/skyforce.shen/AppData/Local/Android/sdk/platforms/android-29/android.jar;D:/users/skyforce.shen/AppData/Local/Android/sdk/build-tools/29.0.3/core-lambda-stubs.jar" />
           <option name="noStdlib" value="true" />
           <option name="noReflect" value="true" />
-          <option name="moduleName" value="gmaps_hud_debug" />
+          <option name="moduleName" value="gmaps_hud_release" />
           <option name="pluginOptions">
             <array />
           </option>
@@ -95,52 +95,55 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/shaders" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 28 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android API 29 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Gradle: com.android.support:collections:28.0.0@jar" level="project" />
-    <orderEntry type="library" name="Gradle: android.arch.lifecycle:common:1.1.1@jar" level="project" />
-    <orderEntry type="library" name="Gradle: android.arch.core:common:1.1.1@jar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:support-annotations:28.0.0@jar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support.constraint:constraint-layout-solver:1.1.3@jar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-location:12.0.1@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:support-v13:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:design:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-base:12.0.1@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-tasks:12.0.1@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-basement:12.0.1@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:support-v4:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:support-media-compat:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:appcompat-v7:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:support-fragment:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:recyclerview-v7:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:animated-vector-drawable:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:support-core-ui:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:support-core-utils:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:transition:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:viewpager:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:coordinatorlayout:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:drawerlayout:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:slidingpanelayout:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:customview:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:swiperefreshlayout:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:asynclayoutinflater:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:loader:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:support-vector-drawable:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:support-compat:28.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.collection:collection:1.0.0@jar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-common:2.0.0@jar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.arch.core:core-common:2.0.0@jar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.annotation:annotation:1.0.0@jar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.constraintlayout:constraintlayout-solver:1.1.3@jar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-location:17.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.legacy:legacy-support-v13:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.material:material:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.legacy:legacy-support-v4:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-base:17.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-places-placereport:17.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-tasks:17.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-basement:17.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.appcompat:appcompat:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.fragment:fragment:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.recyclerview:recyclerview:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.vectordrawable:vectordrawable-animated:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.legacy:legacy-support-core-ui:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.drawerlayout:drawerlayout:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.media:media:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.viewpager:viewpager:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.coordinatorlayout:coordinatorlayout:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.slidingpanelayout:slidingpanelayout:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.customview:customview:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.legacy:legacy-support-core-utils:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.transition:transition:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.swiperefreshlayout:swiperefreshlayout:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.asynclayoutinflater:asynclayoutinflater:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.loader:loader:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.vectordrawable:vectordrawable:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.core:core:1.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: uk.co.samuelwall:material-tap-target-prompt:2.14.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support.constraint:constraint-layout:1.1.3@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:cardview-v7:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:versionedparcelable:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: android.arch.lifecycle:runtime:1.1.1@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:interpolator:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:cursoradapter:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:documentfile:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:localbroadcastmanager:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:print:28.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: android.arch.lifecycle:viewmodel:1.1.1@aar" level="project" />
-    <orderEntry type="library" name="Gradle: android.arch.lifecycle:livedata:1.1.1@aar" level="project" />
-    <orderEntry type="library" name="Gradle: android.arch.lifecycle:livedata-core:1.1.1@aar" level="project" />
-    <orderEntry type="library" name="Gradle: android.arch.core:runtime:1.1.1@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.constraintlayout:constraintlayout:1.1.3@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.versionedparcelable:versionedparcelable:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.cardview:cardview:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-runtime:2.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.interpolator:interpolator:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.cursoradapter:cursoradapter:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.documentfile:documentfile:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.localbroadcastmanager:localbroadcastmanager:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.print:print:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-viewmodel:2.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-livedata:2.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-livedata-core:2.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.arch.core:core-runtime:2.0.0@aar" level="project" />
+    <orderEntry type="module" module-name="bt-spp-library" />
+    <orderEntry type="module" module-name="bt-spp-library" />
     <orderEntry type="module" module-name="bt-spp-library" />
   </component>
 </module>
