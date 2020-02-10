@@ -1,12 +1,8 @@
 package sky4s.garminhud.app;
 
 import android.Manifest;
-//import android.app.Activity;
-//import android.app.Activity;
 import android.app.Activity;
 import android.app.AlertDialog;
-//import android.app.Fragment;
-//import android.app.FragmentManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -87,6 +83,11 @@ import sky4s.garminhud.eOutAngle;
 import sky4s.garminhud.eUnits;
 import sky4s.garminhud.hud.DummyHUD;
 import sky4s.garminhud.hud.HUDInterface;
+
+//import android.app.Activity;
+//import android.app.Activity;
+//import android.app.Fragment;
+//import android.app.FragmentManager;
 
 //import android.support.design.widget.NavigationView;
 //import android.support.design.widget.TabLayout;
@@ -1144,17 +1145,17 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
-//                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//                                    ActivityCompat.requestPermissions(MainActivity.this,
-//                                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-//                                                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
-//                                            },
-//                                            MY_PERMISSIONS_REQUEST_LOCATION);
-//                                } else {
-//                                    ActivityCompat.requestPermissions(MainActivity.this,
-//                                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-//                                            MY_PERMISSIONS_REQUEST_LOCATION);
-//                                }
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                    ActivityCompat.requestPermissions(MainActivity.this,
+                                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                                                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                                            },
+                                            MY_PERMISSIONS_REQUEST_LOCATION);
+                                } else {
+                                    ActivityCompat.requestPermissions(MainActivity.this,
+                                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                            MY_PERMISSIONS_REQUEST_LOCATION);
+                                }
                             }
                         })
                         .create()
