@@ -593,6 +593,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (requestCode == SCREENCAP_REQUEST_CODE) {
+
             sMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
 
             if (sMediaProjection != null) {
@@ -1276,7 +1277,8 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //            }
 //=======================================================================
-            if (intent.hasExtra(getString(R.string.option_arrow_type))) { //re-sync arrow type between ui & notify monitor
+            if (intent.hasExtra(getString(R.string.option_arrow_type)) && null != switchArrowType) { //re-sync arrow type between ui & notify monitor
+
                 boolean arrowTypeV2_in_ui = switchArrowType.isChecked();
                 boolean arrowTypeV2_in_notify_monitor = intent.getBooleanExtra((getString(R.string.option_arrow_type)), arrowTypeV2_in_ui);
 
@@ -1356,12 +1358,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceConnected(String name, String address) {
             hudConnected = true;
-            switchHudConnected.setText(getString(R.string.layout_element_hud_success_connected, name));
-            if (sharedPref.getInt(getString(R.string.state_dark_mode)
-                    , AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
-                switchHudConnected.setTextColor(Color.BLACK);
-            switchHudConnected.setChecked(true);
 
+            if (null != switchHudConnected) {
+                switchHudConnected.setText(getString(R.string.layout_element_hud_success_connected, name));
+                if (sharedPref.getInt(getString(R.string.state_dark_mode)
+                        , AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
+                    switchHudConnected.setTextColor(Color.BLACK);
+                switchHudConnected.setChecked(true);
+            }
             log("onDeviceConnected");
 
             if (useLocationService && !locationServiceConnected) {

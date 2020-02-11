@@ -211,20 +211,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="false"
+
+                android:enabled="false"
                 android:paddingTop="@dimen/option_padding_top"
                 android:text="@string/layout_element_traffic_lane_det"
-                android:textSize="@dimen/option_text_size" />
-
-<!--            <Switch-->
-<!--                android:id="@+id/switchAlertYellowTraffic"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_weight="1"-->
-<!--                android:checked="false"-->
-<!--                android:paddingTop="@dimen/option_padding_top"-->
-<!--                android:paddingBottom="@dimen/option_padding_bottom"-->
-<!--                android:text="@string/layout_element_yellow_traffic"-->
-<!--                android:textSize="@dimen/option_text_size" />-->
+                android:textSize="@dimen/option_text_size"
+                android:visibility="visible" />
 
             <View
                 android:layout_width="fill_parent"
