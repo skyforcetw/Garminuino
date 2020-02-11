@@ -11,6 +11,7 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetSequence;
@@ -71,7 +72,8 @@ public class Page1Fragment extends Fragment {
     }
 
     private MaterialTapTargetSequence prompt(MaterialTapTargetSequence sequence, final int target, String text) {
-        sequence.addPrompt(new MaterialTapTargetPrompt.Builder(getActivity())
+        FragmentActivity activity = getActivity();
+        sequence.addPrompt(new MaterialTapTargetPrompt.Builder(activity)
                 .setTarget(target)
                 .setPrimaryText(text)
                 .setPromptBackground(new RectanglePromptBackground())
