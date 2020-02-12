@@ -145,6 +145,8 @@ public class MainActivity extends AppCompatActivity {
     Switch switchDarkModeAuto;
     Switch switchDarkModeManual;
 
+    static  Intent mainIntent;
+
     public HUDInterface hud = new DummyHUD();
     public boolean is_in_navigation = false;
 
@@ -445,7 +447,7 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(mViewPager);
         //========================================================================================
-
+        mainIntent = this.getIntent();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(new Intent(this, NotificationCollectorMonitorService.class));
         } else {
@@ -654,7 +656,7 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(screenReceiver);
         unregisterReceiver(notificationSwitchReceiver);
 
-        stopNotification();
+//        stopNotification();
     }
 
     @Override
@@ -976,19 +978,19 @@ public class MainActivity extends AppCompatActivity {
     Does we need restartNotificationListenerService here?
     It should be NotificaitonCollectorMonitorService's work.
      */
-    private void restartNotificationListenerService(Context context) {
-        //worked!
-        //NotificationMonitor
-        stopService(new Intent(this, NotificationMonitor.class));
-        startService(new Intent(this, NotificationMonitor.class));
-
-        PackageManager pm = getPackageManager();
-        pm.setComponentEnabledSetting(new ComponentName(this, NotificationMonitor.class),
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-        pm.setComponentEnabledSetting(new ComponentName(this, NotificationMonitor.class),
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-
-    }
+//    private void restartNotificationListenerService(Context context) {
+//        //worked!
+//        //NotificationMonitor
+//        stopService(new Intent(this, NotificationMonitor.class));
+//        startService(new Intent(this, NotificationMonitor.class));
+//
+//        PackageManager pm = getPackageManager();
+//        pm.setComponentEnabledSetting(new ComponentName(this, NotificationMonitor.class),
+//                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+//        pm.setComponentEnabledSetting(new ComponentName(this, NotificationMonitor.class),
+//                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+//
+//    }
 
     private boolean isNLSEnabled() {
         String pkgName = getPackageName();
@@ -1568,9 +1570,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         final String channelID = "id";
-
-//        androidx.core.media.app.NotificationCompat.MediaStyle style = new androidx.core.media.app.NotificationCompat.MediaStyle();
-
         notification
                 = new NotificationCompat.Builder(MainActivity.this, channelID)
                 .setSmallIcon(R.mipmap.ic_notification_foreground)
