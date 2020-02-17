@@ -44,6 +44,13 @@ public class NotificationCollectorMonitorService extends Service {
         ensureCollectorRunning();
 
         startNotification();
+//        startForeground(1, notification);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopForeground(true);
     }
 
     private Notification notification;
@@ -104,8 +111,15 @@ public class NotificationCollectorMonitorService extends Service {
         }
 
         // 把指定ID的通知持久的發送到狀態條上.
-        mNotificationManager.notify(R.integer.notify_id, notification);
+//        mNotificationManager.notify(R.integer.notify_id, notification);
         startForeground(1, notification);
+    }
+
+    private void stopNotification() {
+//        log("stopNotification");
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotificationManager.cancelAll();
     }
 
     @Override
