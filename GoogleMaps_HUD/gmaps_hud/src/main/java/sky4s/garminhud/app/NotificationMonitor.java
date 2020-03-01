@@ -684,7 +684,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
                     if (null != bitmapImage) {
                         if (STORE_IMG) {
-                            if(!ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow0.png")) {
+                            if (!ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow0.png")) {
                                 Log.d(TAG, "Store arrow bitmap failed.");
                             }
                         }
@@ -832,9 +832,9 @@ public class NotificationMonitor extends NotificationListenerService {
                 int pixel2 = image2.getPixel(w, h);
                 int green1 = Color.green(pixel1);
                 int green2 = Color.green(pixel2);
-                if( green1 == green2 && green1 >=250) {
+                if (green1 == green2 && green1 >= 250) {
 
-                }else {
+                } else {
                     sad++;
                 }
 //                sad += Math.abs(green1 - green2);
@@ -1314,6 +1314,9 @@ public class NotificationMonitor extends NotificationListenerService {
                     remainMinute = timeToDest.substring(hour_index + getString(R.string.hour).length(), minute_index).trim();
                     remainHour = remainHour.replaceAll("\u00A0", ""); // Remove spaces, .trim() seems not working
                     remainMinute = remainMinute.replaceAll("\u00A0", "");
+                } else if (-1 != hour_index && -1 == minute_index) {
+                    remainHour = timeSplit[0].trim();
+                    remainMinute = "0";
                 } else {
                     remainMinute = timeSplit[0].trim();
                     remainMinute = remainMinute.replaceAll("\u00A0", "");
