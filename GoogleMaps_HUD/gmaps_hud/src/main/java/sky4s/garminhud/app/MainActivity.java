@@ -145,6 +145,8 @@ public class MainActivity extends AppCompatActivity {
     Switch switchDarkModeAuto;
     Switch switchDarkModeManual;
 
+    static  Intent mainIntent;
+
     public HUDInterface hud = new DummyHUD();
     public boolean is_in_navigation = false;
 
@@ -171,9 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
     //========================================================================================
     private SharedPreferences sharedPref;
-    //    private DrawerLayout mDrawerLayout;
     private BluetoothConnectionListener btConnectionListener = new BluetoothConnectionListener();
-
     private SeekBar.OnSeekBarChangeListener seekbarBrightnessChangeListener = new SeekBar.OnSeekBarChangeListener() {
 
         @Override
@@ -321,9 +321,9 @@ public class MainActivity extends AppCompatActivity {
         switchDarkModeAuto.setOnCheckedChangeListener(onCheckedChangedListener);
         switchDarkModeManual.setOnCheckedChangeListener(onCheckedChangedListener);
 
-        if (optionShowNotify) {
-            startNotification();
-        }
+//        if (optionShowNotify) {
+//            startNotification();
+//        }
     }
 
     private String initBluetooth() {
@@ -445,13 +445,13 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(mViewPager);
         //========================================================================================
-
+        mainIntent = this.getIntent();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(new Intent(this, NotificationCollectorMonitorService.class));
         } else {
             startService(new Intent(this, NotificationCollectorMonitorService.class));
         }
-//        startService(new Intent(this, NotificationCollectorMonitorService.class));
+
 
         //========================================================================================
         // BT related
@@ -512,11 +512,11 @@ public class MainActivity extends AppCompatActivity {
         };
 
         registerReceiver(screenReceiver, filter);
-        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_speed)));
-        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_auto_brightness)));
-        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_ETA)));
-        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_time)));
-        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_detect)));
+//        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_speed)));
+//        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_auto_brightness)));
+//        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_ETA)));
+//        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_time)));
+//        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_detect)));
 
 
         //========================================================================================
@@ -526,6 +526,7 @@ public class MainActivity extends AppCompatActivity {
         //========================================================================================
         // call for the projection notifyManager
         mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+
         // start capture handling thread
         new Thread() {
             @Override
@@ -537,10 +538,6 @@ public class MainActivity extends AppCompatActivity {
         }.start();
         detectListener = new ImageDetectListener(this);
         //========================================================================================
-
-        //experiment:
-//        startNotification();
-
 
     }
 
@@ -652,9 +649,10 @@ public class MainActivity extends AppCompatActivity {
 
         unregisterReceiver(msgReceiver);
         unregisterReceiver(screenReceiver);
-        unregisterReceiver(notificationSwitchReceiver);
+//        unregisterReceiver(notificationSwitchReceiver);
 
-        stopNotification();
+        this.stopService(new Intent(this, NotificationCollectorMonitorService.class));
+//        stopNotification();
     }
 
     @Override
@@ -814,11 +812,11 @@ public class MainActivity extends AppCompatActivity {
                     final boolean isShowNotify = ((Switch) view).isChecked();
 //                    useBTAddressReconnectThread = isBindAddress;
                     storeOptions(R.string.option_show_notify, isShowNotify);
-                    if (isShowNotify) {
-                        startNotification();
-                    } else {
-                        stopNotification();
-                    }
+//                    if (isShowNotify) {
+//                        startNotification();
+//                    } else {
+//                        stopNotification();
+//                    }
                     break;
 
                 case R.id.switchDarkModeAuto:
@@ -976,19 +974,19 @@ public class MainActivity extends AppCompatActivity {
     Does we need restartNotificationListenerService here?
     It should be NotificaitonCollectorMonitorService's work.
      */
-    private void restartNotificationListenerService(Context context) {
-        //worked!
-        //NotificationMonitor
-        stopService(new Intent(this, NotificationMonitor.class));
-        startService(new Intent(this, NotificationMonitor.class));
-
-        PackageManager pm = getPackageManager();
-        pm.setComponentEnabledSetting(new ComponentName(this, NotificationMonitor.class),
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-        pm.setComponentEnabledSetting(new ComponentName(this, NotificationMonitor.class),
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-
-    }
+//    private void restartNotificationListenerService(Context context) {
+//        //worked!
+//        //NotificationMonitor
+//        stopService(new Intent(this, NotificationMonitor.class));
+//        startService(new Intent(this, NotificationMonitor.class));
+//
+//        PackageManager pm = getPackageManager();
+//        pm.setComponentEnabledSetting(new ComponentName(this, NotificationMonitor.class),
+//                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+//        pm.setComponentEnabledSetting(new ComponentName(this, NotificationMonitor.class),
+//                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+//
+//    }
 
     private boolean isNLSEnabled() {
         String pkgName = getPackageName();
@@ -1486,12 +1484,11 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
-
+/*
     class NotificationSwitchReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(final Context context, final Intent intent) {
-//            final int event = intent.getIntExtra(getString(R.string.notify_switch_event), 0);
             final Serializable s = intent.getSerializableExtra(getString(R.string.notify_switch_event));
             final boolean canGo = s instanceof SwitchEvent;
             if (canGo) {
@@ -1545,7 +1542,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private NotificationSwitchReceiver notificationSwitchReceiver = new NotificationSwitchReceiver();
-
     private PendingIntent getPendingIntentForNotify(String action, SwitchEvent switchEvent) {
         Intent intent = new Intent(action);
         intent.putExtra(getString(R.string.notify_switch_event), switchEvent);
@@ -1568,9 +1564,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         final String channelID = "id";
-
-//        androidx.core.media.app.NotificationCompat.MediaStyle style = new androidx.core.media.app.NotificationCompat.MediaStyle();
-
         notification
                 = new NotificationCompat.Builder(MainActivity.this, channelID)
                 .setSmallIcon(R.mipmap.ic_notification_foreground)
@@ -1630,7 +1623,7 @@ public class MainActivity extends AppCompatActivity {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mNotificationManager.cancelAll();
     }
-
+*/
 
     /****************************************** UI Widget Callbacks *******************************/
     boolean projecting = false;

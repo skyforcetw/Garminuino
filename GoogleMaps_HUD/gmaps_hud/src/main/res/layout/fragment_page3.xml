@@ -139,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:enabled="true"
+                android:enabled="false"
                 android:paddingTop="@dimen/option_padding_top"
                 android:paddingBottom="@dimen/option_padding_bottom"
                 android:text="@string/layout_element_notify"
