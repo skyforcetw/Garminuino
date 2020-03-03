@@ -10,29 +10,29 @@
     </facet>
     <facet type="android" name="Android">
       <configuration>
-        <option name="SELECTED_BUILD_VARIANT" value="release" />
-        <option name="ASSEMBLE_TASK_NAME" value="assembleRelease" />
-        <option name="COMPILE_JAVA_TASK_NAME" value="compileReleaseSources" />
+        <option name="SELECTED_BUILD_VARIANT" value="debug" />
+        <option name="ASSEMBLE_TASK_NAME" value="assembleDebug" />
+        <option name="COMPILE_JAVA_TASK_NAME" value="compileDebugSources" />
         <afterSyncTasks>
-          <task>generateReleaseSources</task>
+          <task>generateDebugSources</task>
         </afterSyncTasks>
         <option name="ALLOW_USER_CONFIGURATION" value="false" />
         <option name="MANIFEST_FILE_RELATIVE_PATH" value="/src/main/AndroidManifest.xml" />
         <option name="RES_FOLDER_RELATIVE_PATH" value="/src/main/res" />
-        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res;file://$MODULE_DIR$/build/generated/res/resValues/release" />
+        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res" />
         <option name="TEST_RES_FOLDERS_RELATIVE_PATH" value="" />
         <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/src/main/assets" />
       </configuration>
     </facet>
     <facet type="kotlin-language" name="Kotlin">
-      <configuration version="3" platform="JVM 1.6" allPlatforms="JVM [1.6]" useProjectSettings="false" pureKotlinSourceFolders="D:\workspace\github\Garminuino\GoogleMaps_HUD\gmaps_hud\src\debug\kotlin;D:\workspace\github\Garminuino\GoogleMaps_HUD\gmaps_hud\src\debug\java;D:\workspace\github\Garminuino\GoogleMaps_HUD\gmaps_hud\src\release\kotlin;D:\workspace\github\Garminuino\GoogleMaps_HUD\gmaps_hud\src\release\java;D:\workspace\github\Garminuino\GoogleMaps_HUD\gmaps_hud\src\debugAndroidTest\kotlin;D:\workspace\github\Garminuino\GoogleMaps_HUD\gmaps_hud\src\debugUnitTest\kotlin;D:\workspace\github\Garminuino\GoogleMaps_HUD\gmaps_hud\src\releaseUnitTest\kotlin">
+      <configuration version="3" platform="JVM 1.6" allPlatforms="JVM [1.6]" useProjectSettings="false">
         <compilerSettings />
         <compilerArguments>
-          <option name="destination" value="$MODULE_DIR$/build/tmp/kotlin-classes/release" />
-          <option name="classpath" value="$USER_HOME$/.gradle/caches/transforms-2/files-2.1/908ec4f7fa56c594a026c30bdd390200/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/c36ba7860ed3f7c80c4131fd0415e153/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/bd7088e2b7515e1c2b3ccb238a9b4bf5/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/864300cd62a3d6463a31ab8635c920e3/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/61ba49ad251041317268c9644f03ffcd/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/3ca492687932c7931ed561cda03a75f9/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/2f4c6e2b9eb8ca9dae57016d0a5cb74f/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/a9b1eae6c6b630de8c68cbe5846929e7/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/dd7a24b75724e4fe544f2b3a2381481c/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/b2bbe1192dd026ec59766eb3e4156700/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/bacfa90fb8c3d15d7799591cdfcdf963/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/886c750c094ff26be778e1162614315b/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/8777d876d00b0c151da7b007774a58f1/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/b1ea0fbf008de3d1a9409bf65ccf4fd5/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/f16ce3f0e55987c52cb78d488da61216/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/82a69121233bf9f5f0df99d3567b9f64/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/b1107bc5e9e0a619667bd1f0ad262234/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/a243517fdb493d22e3066ede92be3ade/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/ef1d1c6a0c1c163a0cba3803721aefc8/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/c75d8385cb2af177f828138e8205965b/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/fa69b44fbf4d51a35a886d7bafd7fa74/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/29e5f2dbee8b22071b39d59f34145c74/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/df3e2acd156eeefd42c7d533c732b0b7/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/1ff55033d421b7af8ab90c0f3d01a8b3/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/11779b1d7eb1da1744a6057581f7121d/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/80e50ab70ff64c23dded0bee73d3d3a1/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/ec2a6cbe2b251415d9749e42a55f1369/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/15423ebdb02a5e6f1cb4e8042eb28d0e/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/ecd706143fd4ec3361f80d6cfd141b32/jars/classes.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/androidx.collection/collection/1.0.0/42858b26cafdaa69b6149f45dfc2894007bc2c7a/collection-1.0.0.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/00a6409a87b277ced8e9ff3b0ea8ed2f/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/ab2599e9eb1796428330471f8894afcc/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/a96012feab28564797705fbd61e7ffa6/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/5b3e319c15b9c247026940b67630b873/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/fae20167a11a870c6fa9a15b77c9bcca/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/ab843779dd81809048399eff70b40d5d/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/e2132d14dd83d6e3c9edbf7c6b0c3dc9/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/aafe993e34f18fd6f671f28ce969756c/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/40e97854111a8ade3eb91b913edc5336/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/749298c5b36dbd8902cd46701cb8c180/jars/classes.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/androidx.lifecycle/lifecycle-common/2.0.0/e070ffae07452331bc5684734fce6831d531785c/lifecycle-common-2.0.0.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/7d4df2d5228ef57b9f1a6fa5c146216b/jars/classes.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/androidx.arch.core/core-common/2.0.0/bb21b9a11761451b51624ac428d1f1bb5deeac38/core-common-2.0.0.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/androidx.annotation/annotation/1.1.0/e3a6fb2f40e3a3842e6b7472628ba4ce416ea4c8/annotation-1.1.0.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/androidx.constraintlayout/constraintlayout-solver/1.1.3/54abe9ffb22cc9019b0b6fcc10f185cc4e67b34e/constraintlayout-solver-1.1.3.jar;C:/Users/skyfo/AppData/Local/Android/Sdk/platforms/android-29/android.jar;C:/Users/skyfo/AppData/Local/Android/Sdk/build-tools/29.0.3/core-lambda-stubs.jar" />
+          <option name="destination" value="$MODULE_DIR$/build/tmp/kotlin-classes/debug" />
+          <option name="classpath" value="$USER_HOME$/.gradle/caches/transforms-2/files-2.1/908ec4f7fa56c594a026c30bdd390200/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/61ba49ad251041317268c9644f03ffcd/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/bd7088e2b7515e1c2b3ccb238a9b4bf5/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/c36ba7860ed3f7c80c4131fd0415e153/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/864300cd62a3d6463a31ab8635c920e3/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/3ca492687932c7931ed561cda03a75f9/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/2f4c6e2b9eb8ca9dae57016d0a5cb74f/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/a9b1eae6c6b630de8c68cbe5846929e7/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/dd7a24b75724e4fe544f2b3a2381481c/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/b2bbe1192dd026ec59766eb3e4156700/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/bacfa90fb8c3d15d7799591cdfcdf963/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/886c750c094ff26be778e1162614315b/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/8777d876d00b0c151da7b007774a58f1/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/b1ea0fbf008de3d1a9409bf65ccf4fd5/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/f16ce3f0e55987c52cb78d488da61216/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/82a69121233bf9f5f0df99d3567b9f64/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/b1107bc5e9e0a619667bd1f0ad262234/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/a243517fdb493d22e3066ede92be3ade/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/ef1d1c6a0c1c163a0cba3803721aefc8/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/c75d8385cb2af177f828138e8205965b/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/fa69b44fbf4d51a35a886d7bafd7fa74/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/29e5f2dbee8b22071b39d59f34145c74/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/df3e2acd156eeefd42c7d533c732b0b7/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/1ff55033d421b7af8ab90c0f3d01a8b3/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/11779b1d7eb1da1744a6057581f7121d/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/80e50ab70ff64c23dded0bee73d3d3a1/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/ecd706143fd4ec3361f80d6cfd141b32/jars/classes.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/androidx.collection/collection/1.0.0/42858b26cafdaa69b6149f45dfc2894007bc2c7a/collection-1.0.0.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/00a6409a87b277ced8e9ff3b0ea8ed2f/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/ab2599e9eb1796428330471f8894afcc/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/a96012feab28564797705fbd61e7ffa6/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/5b3e319c15b9c247026940b67630b873/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/fae20167a11a870c6fa9a15b77c9bcca/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/ab843779dd81809048399eff70b40d5d/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/e2132d14dd83d6e3c9edbf7c6b0c3dc9/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/aafe993e34f18fd6f671f28ce969756c/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/40e97854111a8ade3eb91b913edc5336/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/749298c5b36dbd8902cd46701cb8c180/jars/classes.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/androidx.lifecycle/lifecycle-common/2.0.0/e070ffae07452331bc5684734fce6831d531785c/lifecycle-common-2.0.0.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/7d4df2d5228ef57b9f1a6fa5c146216b/jars/classes.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/androidx.arch.core/core-common/2.0.0/bb21b9a11761451b51624ac428d1f1bb5deeac38/core-common-2.0.0.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/androidx.annotation/annotation/1.1.0/e3a6fb2f40e3a3842e6b7472628ba4ce416ea4c8/annotation-1.1.0.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/ec2a6cbe2b251415d9749e42a55f1369/jars/classes.jar;C:/Users/skyfo/.gradle/caches/transforms-2/files-2.1/15423ebdb02a5e6f1cb4e8042eb28d0e/jars/classes.jar;C:/Users/skyfo/.gradle/caches/modules-2/files-2.1/androidx.constraintlayout/constraintlayout-solver/1.1.3/54abe9ffb22cc9019b0b6fcc10f185cc4e67b34e/constraintlayout-solver-1.1.3.jar;C:/Users/skyfo/AppData/Local/Android/Sdk/platforms/android-29/android.jar;C:/Users/skyfo/AppData/Local/Android/Sdk/build-tools/29.0.3/core-lambda-stubs.jar" />
           <option name="noStdlib" value="true" />
           <option name="noReflect" value="true" />
-          <option name="moduleName" value="gmaps_hud_release" />
+          <option name="moduleName" value="gmaps_hud_debug" />
           <option name="languageVersion" value="1.3" />
           <option name="apiVersion" value="1.3" />
           <option name="pluginOptions">
@@ -49,31 +49,44 @@
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
-    <output url="file://$MODULE_DIR$/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes" />
-    <output-test url="file://$MODULE_DIR$/build/intermediates/javac/releaseUnitTest/compileReleaseUnitTestJavaWithJavac/classes" />
+    <output url="file://$MODULE_DIR$/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes" />
+    <output-test url="file://$MODULE_DIR$/build/intermediates/javac/debugUnitTest/compileDebugUnitTestJavaWithJavac/classes" />
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/apt/release" isTestSource="false" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/aidl_source_output_dir/release/compileReleaseAidl/out" isTestSource="false" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/buildConfig/release" isTestSource="false" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/renderscript_source_output_dir/release/compileReleaseRenderscript/out" isTestSource="false" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/rs/release" type="java-resource" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/resValues/release" type="java-resource" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/apt/test/release" isTestSource="true" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/release/res" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/release/resources" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/release/assets" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/release/aidl" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/release/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/release/rs" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/release/shaders" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testRelease/res" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testRelease/resources" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testRelease/assets" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testRelease/aidl" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testRelease/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testRelease/rs" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testRelease/shaders" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/apt/debug" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/aidl_source_output_dir/debug/compileDebugAidl/out" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/buildConfig/debug" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/renderscript_source_output_dir/debug/compileDebugRenderscript/out" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/rs/debug" type="java-resource" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/resValues/debug" type="java-resource" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/apt/androidTest/debug" isTestSource="true" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/aidl_source_output_dir/debugAndroidTest/compileDebugAndroidTestAidl/out" isTestSource="true" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/buildConfig/androidTest/debug" isTestSource="true" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/renderscript_source_output_dir/debugAndroidTest/compileDebugAndroidTestRenderscript/out" isTestSource="true" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/rs/androidTest/debug" type="java-test-resource" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/resValues/androidTest/debug" type="java-test-resource" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/apt/test/debug" isTestSource="true" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/debug/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/debug/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/debug/assets" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/debug/aidl" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/debug/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/debug/rs" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/debug/shaders" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/res" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/assets" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/aidl" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/rs" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/shaders" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testDebug/res" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testDebug/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testDebug/assets" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testDebug/aidl" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testDebug/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testDebug/rs" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testDebug/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/assets" type="java-resource" />
@@ -105,10 +118,10 @@
     <orderEntry type="library" name="Gradle: androidx.annotation:annotation:1.1.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.constraintlayout:constraintlayout-solver:1.1.3@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-location:17.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: androidx.legacy:legacy-support-v13:1.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.material:material:1.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: androidx.legacy:legacy-support-v4:1.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-base:17.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.material:material:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.legacy:legacy-support-v13:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.legacy:legacy-support-v4:1.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-places-placereport:17.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-tasks:17.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-basement:17.0.0@aar" level="project" />
@@ -130,8 +143,6 @@
     <orderEntry type="library" name="Gradle: androidx.loader:loader:1.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.vectordrawable:vectordrawable:1.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.core:core:1.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: uk.co.samuelwall:material-tap-target-prompt:3.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: androidx.constraintlayout:constraintlayout:1.1.3@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.versionedparcelable:versionedparcelable:1.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.cardview:cardview:1.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-runtime:2.0.0@aar" level="project" />
@@ -144,6 +155,8 @@
     <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-livedata:2.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-livedata-core:2.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.arch.core:core-runtime:2.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: uk.co.samuelwall:material-tap-target-prompt:3.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.constraintlayout:constraintlayout:1.1.3@aar" level="project" />
     <orderEntry type="module" module-name="bt-spp-library" />
   </component>
 </module>
