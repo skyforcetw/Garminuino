@@ -456,7 +456,7 @@ public class MainActivity extends AppCompatActivity {
         //========================================================================================
         // BT related
         //========================================================================================
-        String bt_status = initBluetooth();
+//        String bt_status = initBluetooth();
         //========================================================================================
 
         //=======================================================================================
@@ -525,7 +525,7 @@ public class MainActivity extends AppCompatActivity {
         // MediaProjection
         //========================================================================================
         // call for the projection notifyManager
-        mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+//        mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
         // start capture handling thread
         new Thread() {
@@ -826,7 +826,7 @@ public class MainActivity extends AppCompatActivity {
                     if (isDarkModeAuto)
                         storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
                     else {
-                        final boolean isDarkModeManualEnabled = sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false);
+                        final boolean isDarkModeManualEnabled =null!=sharedPref? sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false) :false;
                         if (isDarkModeManualEnabled)
                             storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_YES);
                         else
@@ -1359,7 +1359,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (null != switchHudConnected) {
                 switchHudConnected.setText(getString(R.string.layout_element_hud_success_connected, name));
-                if (sharedPref.getInt(getString(R.string.state_dark_mode)
+                if (null!=sharedPref &&sharedPref.getInt(getString(R.string.state_dark_mode)
                         , AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
                     switchHudConnected.setTextColor(Color.BLACK);
                 switchHudConnected.setChecked(true);
@@ -1667,28 +1667,28 @@ public class MainActivity extends AppCompatActivity {
     //================================================================================
     private boolean btTeconnectThreadEN = true;
 
-    private class BTReconnectThread extends Thread {
-        public void run() {
-            try {
-                final int interval = getResources().getInteger(R.integer.bt_reconnect_interval);
-                Thread.sleep(interval);
-            } catch (Exception e) {
-                log(e);
-            }
-
-            if (!hudConnected && btTeconnectThreadEN) {
-                String reconnectAddress = sharedPref.getString(getString(R.string.bt_bind_address_key), null);
-                log("reconnect address:" + reconnectAddress);
-                if (null != reconnectAddress) {
-                    bt.connect(reconnectAddress);
-                }
-            }
-
-        }
-    }
+//    private class BTReconnectThread extends Thread {
+//        public void run() {
+//            try {
+//                final int interval = getResources().getInteger(R.integer.bt_reconnect_interval);
+//                Thread.sleep(interval);
+//            } catch (Exception e) {
+//                log(e);
+//            }
+//
+//            if (!hudConnected && btTeconnectThreadEN) {
+//                String reconnectAddress = sharedPref.getString(getString(R.string.bt_bind_address_key), null);
+//                log("reconnect address:" + reconnectAddress);
+//                if (null != reconnectAddress) {
+//                    bt.connect(reconnectAddress);
+//                }
+//            }
+//
+//        }
+//    }
 
     private boolean useBTAddressReconnectThread = false;
-    private Thread btReconnectThread;
+//    private Thread btReconnectThread;
 
     private void resetBT() {
         if (useBTAddressReconnectThread && null != bt) {
@@ -1696,8 +1696,8 @@ public class MainActivity extends AppCompatActivity {
             bt.setBluetoothConnectionListener(btConnectionListener);
             bt.setAutoConnectionListener(btConnectionListener);
 
-            btReconnectThread = new BTReconnectThread();
-            btReconnectThread.start();
+//            btReconnectThread = new BTReconnectThread();
+//            btReconnectThread.start();
         }
     }
 }
