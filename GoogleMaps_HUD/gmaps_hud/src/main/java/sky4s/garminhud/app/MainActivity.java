@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
     Switch switchDarkModeAuto;
     Switch switchDarkModeManual;
 
-    static  Intent mainIntent;
+    static Intent mainIntent;
 
     public HUDInterface hud = new DummyHUD();
     public boolean is_in_navigation = false;
@@ -330,9 +330,9 @@ public class MainActivity extends AppCompatActivity {
         String bt_status = "";
         if (!IGNORE_BT_DEVICE) {
             if (null == bt) {
-                bt = new BluetoothSPP(this);
+                bt = new BluetoothSPP(this); //first route
             } else {
-                bt.disconnect();
+//                bt.disconnect(); //other route
             }
             bt.setBluetoothConnectionListener(btConnectionListener);
             bt.setAutoConnectionListener(btConnectionListener);
@@ -356,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
                 boolean isBindName = false;
                 if (null != switchBtBindAddress) {
                     boolean isBindAddress = switchBtBindAddress.isChecked();
-                    if (isBindAddress) {
+                    if (isBindAddress && null !=sharedPref) {
                         String bindAddress = sharedPref.getString(getString(R.string.bt_bind_address_key), null);
                         if (null != bindAddress) {
                             bt.connect(bindAddress);
@@ -368,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
                     isBindName = true;
                 }
 
-                if (isBindName) {
+                if (isBindName && null != sharedPref) {
                     String bindName = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
                     if (null != bindName) {
                         bt.autoConnect(bindName);
@@ -826,7 +826,7 @@ public class MainActivity extends AppCompatActivity {
                     if (isDarkModeAuto)
                         storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
                     else {
-                        final boolean isDarkModeManualEnabled =null!=sharedPref? sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false) :false;
+                        final boolean isDarkModeManualEnabled = null != sharedPref ? sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false) : false;
                         if (isDarkModeManualEnabled)
                             storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_YES);
                         else
@@ -955,7 +955,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void scanBluetooth() {
 
-        if (!bt.isBluetoothAvailable()) {
+        if (null == bt || !bt.isBluetoothAvailable()) {
             Toast.makeText(getApplicationContext()
                     , getString(R.string.message_bt_not_avialable)
                     , Toast.LENGTH_SHORT).show();
@@ -1359,7 +1359,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (null != switchHudConnected) {
                 switchHudConnected.setText(getString(R.string.layout_element_hud_success_connected, name));
-                if (null!=sharedPref &&sharedPref.getInt(getString(R.string.state_dark_mode)
+                if (null != sharedPref && sharedPref.getInt(getString(R.string.state_dark_mode)
                         , AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
                     switchHudConnected.setTextColor(Color.BLACK);
                 switchHudConnected.setChecked(true);
