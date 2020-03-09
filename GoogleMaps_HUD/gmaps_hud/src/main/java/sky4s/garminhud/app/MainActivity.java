@@ -3,10 +3,7 @@ package sky4s.garminhud.app;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -54,7 +51,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -66,7 +62,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -329,11 +324,11 @@ public class MainActivity extends AppCompatActivity {
     private String initBluetooth() {
         String bt_status = "";
         if (!IGNORE_BT_DEVICE) {
-            if (null == bt) {
-                bt = new BluetoothSPP(this); //first route
-            } else {
-//                bt.disconnect(); //other route
-            }
+//            if (null == bt) {
+            bt = new BluetoothSPP(this); //first route
+//            } else {
+//                bt.disconnect(); //other route, this cause app crash when 2nd connection
+//            }
             bt.setBluetoothConnectionListener(btConnectionListener);
             bt.setAutoConnectionListener(btConnectionListener);
             if (!bt.isBluetoothAvailable()) {
@@ -356,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
                 boolean isBindName = false;
                 if (null != switchBtBindAddress) {
                     boolean isBindAddress = switchBtBindAddress.isChecked();
-                    if (isBindAddress && null !=sharedPref) {
+                    if (isBindAddress && null != sharedPref) {
                         String bindAddress = sharedPref.getString(getString(R.string.bt_bind_address_key), null);
                         if (null != bindAddress) {
                             bt.connect(bindAddress);
