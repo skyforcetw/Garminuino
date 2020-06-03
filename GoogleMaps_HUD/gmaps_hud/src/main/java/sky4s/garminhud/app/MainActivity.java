@@ -507,13 +507,6 @@ public class MainActivity extends AppCompatActivity {
         };
 
         registerReceiver(screenReceiver, filter);
-//        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_speed)));
-//        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_auto_brightness)));
-//        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_ETA)));
-//        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_time)));
-//        registerReceiver(notificationSwitchReceiver, new IntentFilter(getString(R.string.broadcast_notification_switch_detect)));
-
-
         //========================================================================================
 
         //========================================================================================
@@ -632,7 +625,7 @@ public class MainActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         btTeconnectThreadEN = false;
-        if (!IGNORE_BT_DEVICE) {
+        if (!IGNORE_BT_DEVICE && null != bt) {
             bt.stopAutoConnect();
             bt.stopService();
         }
@@ -644,10 +637,8 @@ public class MainActivity extends AppCompatActivity {
 
         unregisterReceiver(msgReceiver);
         unregisterReceiver(screenReceiver);
-//        unregisterReceiver(notificationSwitchReceiver);
 
         this.stopService(new Intent(this, NotificationCollectorMonitorService.class));
-//        stopNotification();
     }
 
     @Override
@@ -807,11 +798,6 @@ public class MainActivity extends AppCompatActivity {
                     final boolean isShowNotify = ((Switch) view).isChecked();
 //                    useBTAddressReconnectThread = isBindAddress;
                     storeOptions(R.string.option_show_notify, isShowNotify);
-//                    if (isShowNotify) {
-//                        startNotification();
-//                    } else {
-//                        stopNotification();
-//                    }
                     break;
 
                 case R.id.switchDarkModeAuto:
@@ -1479,7 +1465,8 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
-/*
+/* It's not necessary to have a switch on notification.
+
     class NotificationSwitchReceiver extends BroadcastReceiver {
 
         @Override
@@ -1691,8 +1678,6 @@ public class MainActivity extends AppCompatActivity {
             bt.setBluetoothConnectionListener(btConnectionListener);
             bt.setAutoConnectionListener(btConnectionListener);
 
-//            btReconnectThread = new BTReconnectThread();
-//            btReconnectThread.start();
         }
     }
 }

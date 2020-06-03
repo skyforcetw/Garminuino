@@ -132,14 +132,6 @@ public class LocationService extends Service implements
         }
         sendSpeedExtraByBroadcast(speed);
 
-        //Calling the method below updates the  live values of distance and speed to the TextViews.
-//        updateHUD();
-
-        //send lat/lon for recognize history
-//        sendLocationExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor), getString(R.string.location), location);
-//        final double latitude = location.getLatitude();
-//        final double longitude = location.getLongitude();
-//        this.sendBroadcast();
     }
 
     @Override
