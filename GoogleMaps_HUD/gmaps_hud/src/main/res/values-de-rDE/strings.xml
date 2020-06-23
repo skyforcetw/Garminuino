@@ -77,6 +77,6 @@
     <string name="layout_element_hud_con_failed">Verbindung mit HUD fehlgeschlagen</string>
     <string name="message_enable_location_access">Um die Geschwindigkeit auf dem Garmin HUD anzuzeigen bitte Standort-Bereichtigung zulassen</string>
     <string name="title_enable_location_access">Standort Berechtigung</string>
-    <string name="message_bt_not_avialable">Bluetooth ist nicht verfügbar</string>
+    <string name="message_bt_not_available">Bluetooth ist nicht verfügbar</string>
     <string name="message_bt_not_enabled">Bluetooth wurde nicht aktiviert.</string>
 </resources>

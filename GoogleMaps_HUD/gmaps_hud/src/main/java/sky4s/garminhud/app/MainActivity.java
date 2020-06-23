@@ -333,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
             bt.setAutoConnectionListener(btConnectionListener);
             if (!bt.isBluetoothAvailable()) {
                 Toast.makeText(getApplicationContext()
-                        , "Bluetooth is not available"
+                        ,  getString(R.string.message_bt_not_available)
                         , Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -451,7 +451,7 @@ public class MainActivity extends AppCompatActivity {
         //========================================================================================
         // BT related
         //========================================================================================
-//        String bt_status = initBluetooth();
+        String bt_status = initBluetooth();
         //========================================================================================
 
         //=======================================================================================
@@ -938,7 +938,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (null == bt || !bt.isBluetoothAvailable()) {
             Toast.makeText(getApplicationContext()
-                    , getString(R.string.message_bt_not_avialable)
+                    , getString(R.string.message_bt_not_available)
                     , Toast.LENGTH_SHORT).show();
         } else {
             bt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
