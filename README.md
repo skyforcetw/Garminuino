@@ -23,6 +23,9 @@ Android App: Google Map HUD
 
 ## GoogleMap navigation HUD App Release History ##
 
+### [2020-07-04 v0.7.0](https://github.com/skyforcetw/Garminuino/releases/download/0.7.0/gmaps_hud-release_v0.7.0.apk)
+Fix some bug for BT auto-connection.
+
 ### [2020-03-02 v0.6.4](https://github.com/skyforcetw/Garminuino/releases/download/0.6.4/gmaps_hud-release_v0.6.4.apk)
 Fix time parsing error when XX:00.
 
