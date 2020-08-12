@@ -277,8 +277,7 @@ int get_sad_in_not_white_count(cv::Mat image1, cv::Mat image2) {
 	return sad;
 }
 
-int main() {
-
+void pixel_compare_method() {
 	const std::string ref_dir = "./Google_Arrow3 - remove alpha - same size/";
 	//const std::string dir = "./";
 	using namespace cv;
@@ -397,4 +396,16 @@ int main() {
 		}
 		int a = 1;
 	}
+}
+
+void feature_matching_method() {
+
+}
+
+int main() {
+	if (false)
+		pixel_compare_method();
+	if (true)
+		feature_matching_method();
+
 }
