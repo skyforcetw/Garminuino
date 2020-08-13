@@ -266,7 +266,7 @@ int get_sad_in_not_white_count(cv::Mat image1, cv::Mat image2) {
 			auto pixel1 = image1.at<cv::Vec3b>(w, h);
 			auto pixel2 = image2.at<cv::Vec3b>(w, h);
 			//sad += abs(pixel1[0] - pixel2[0]);
-			if (pixel1[1] == pixel2[1] &&  pixel1[1]>=250) {
+			if (pixel1[1] == pixel2[1] && pixel1[1] >= 250) {
 
 			}
 			else {
@@ -398,14 +398,15 @@ void pixel_compare_method() {
 	}
 }
 
+ 
 void feature_matching_method() {
-
+ 
 }
-
+ 
 int main() {
-	if (false)
-		pixel_compare_method();
 	if (true)
+		pixel_compare_method();
+	if (false)
 		feature_matching_method();
 
 }
