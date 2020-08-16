@@ -1,0 +1,4 @@
+.gradle
+.idea
+keystore.properties
+local.properties
