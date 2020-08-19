@@ -400,13 +400,20 @@ void pixel_compare_method() {
 
  
 void feature_matching_method() {
- 
+	const std::string ref_dir = "./Google_Arrow3 - remove alpha - same size/";
+
+	for (auto& filename : getAllImageFileNamesWithinFolder(ref_dir)) {
+		auto& arrow_img = cv::imread(ref_dir + filename);
+		auto height = arrow_img.rows;
+		auto width = arrow_img.cols;
+		int a = 1;
+	}
 }
  
 int main() {
-	if (true)
-		pixel_compare_method();
 	if (false)
+		pixel_compare_method();
+	if (true)
 		feature_matching_method();
 
 }
