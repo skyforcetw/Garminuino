@@ -122,7 +122,12 @@ public class BMWMessage {
     }
 
     public void setDistanceToTurn(double miles) {
-        // TODO: map into 3 distance remaining fields
+        BMWDistance distance = new BMWDistance(miles);
+
+        mBuffer[DIST_TO_TURN_2_OFFSET] = distance.getOffset2();
+        mBuffer[DIST_TO_TURN_1_OFFSET] = distance.getOffset1();
+        mBuffer[DIST_TO_TURN_0_OFFSET] = distance.getOffset0();
+
         updateChecksum();
     }
 
@@ -172,57 +177,12 @@ public class BMWMessage {
         updateChecksum();
     }
 
-    private static byte getRemainingDistanceOffset0(int yards) {
-        // Calculate ourselves because BMW's scaling is weird
-        if (yards < 15) {
-            return 10;
-        } else if (yards < 25) {
-            return 20;
-        } else if (yards < 35) {
-            return 30;
-        } else if (yards < 45) {
-            return 40;
-        } else if (yards < 55) {
-            return 50;
-        } else if (yards < 65) {
-            // 55 makes it display 60 for some reason
-            return 55;
-        } else if (yards < 75) {
-            // 60 makes it display 70 for some reason
-            return 60;
-        } else if (yards < 85) {
-            // 70 makes it display 80 for some reason
-            return 70;
-        } else if (yards < 95) {
-            // 80 makes it display 90 for some reason
-            return 80;
-        } else if (yards < 150) {
-            return 100;
-        } else if (yards < 200) {
-            return (byte) 150;
-        } else if (yards < 250) {
-            return (byte) 200;
-        } else {
-            return (byte) 231;
-        }
-    }
-
     public void setRemainingDistance(double miles) {
-        // TODO: figure out how this works in metric
-        double yards = miles * YARDS_PER_MILE;
-        if (yards < 300) {
-            // REMAINING_DIST_OFFSET_0 displays from 10-250yd
-            mBuffer[REMAINING_DIST_0_OFFSET] = getRemainingDistanceOffset0((int) yards);
-        } else if (miles < 37.5) {
-            // REMAINING_DIST_OFFSET_1 displays fromm 300yd to 37mi
-            miles = Math.round(miles / 0.16);
-            // largest displayable number is 231 (37 miles)
-            miles = Math.max(miles, 231);
-            mBuffer[REMAINING_DIST_1_OFFSET] = (byte) miles;
-        } else {
-            // REMAINING_DIST_OFFSET_2 displays from 37mi+
-            // TODO: Figure out the formula
-        }
+        BMWDistance distance = new BMWDistance(miles);
+
+        mBuffer[REMAINING_DIST_2_OFFSET] = distance.getOffset2();
+        mBuffer[REMAINING_DIST_1_OFFSET] = distance.getOffset1();
+        mBuffer[REMAINING_DIST_0_OFFSET] = distance.getOffset0();
 
         updateChecksum();
     }
@@ -242,6 +202,91 @@ public class BMWMessage {
 
     public byte[] getBytes() {
         return mBuffer;
+    }
+
+    private static class BMWDistance {
+        public BMWDistance(double miles) {
+            // TODO: Calculate in metric if needed
+            if (miles > 41) {
+                // offset2 displays from 5660mi at 139 to 41mi at 1
+                double scaling = (5660.0 - 41.0) / (139 - 1);
+                double distance_component = Math.floor(miles / scaling);
+                double remainder = (miles / scaling) - Math.floor(miles / scaling);
+                mOffset2 = (byte) distance_component;
+                miles = remainder * scaling;
+            }
+
+            if (miles > 0.17) {
+                // offset1 displays from 41mi at 255 to 300yd at 1
+                double scaling = (41.0 - (300.0 / YARDS_PER_MILE)) / (255 - 1);
+                double distance_component = Math.floor(miles / scaling);
+                double remainder = (miles / scaling) - Math.floor(miles / scaling);
+                mOffset1 = (byte) distance_component;
+                miles = remainder * scaling;
+            }
+
+            if (miles > 0) {
+                // offset0 displays from 300yd to 10yd
+                double yards = miles * YARDS_PER_MILE;
+                mOffset0 = getRemainingDistanceYards((int) yards);
+            }
+        }
+
+        // Returns byte value for 41mi to 5660mi component
+        public byte getOffset2() {
+            return mOffset2;
+        }
+
+        // Returns byte value for 300yd to 41mi component
+        public byte getOffset1() {
+            return mOffset1;
+        }
+
+        // Returns byte value for 10yd to 300yd component
+        public byte getOffset0() {
+            return mOffset0;
+        }
+
+        private byte getRemainingDistanceYards(int yards) {
+            // Calculate ourselves because BMW's scaling is weird
+            if (yards < 15) {
+                return 10;
+            } else if (yards < 25) {
+                return 20;
+            } else if (yards < 35) {
+                return 30;
+            } else if (yards < 45) {
+                return 40;
+            } else if (yards < 55) {
+                return 50;
+            } else if (yards < 65) {
+                // 55 makes it display 60 for some reason
+                return 55;
+            } else if (yards < 75) {
+                // 60 makes it display 70 for some reason
+                return 60;
+            } else if (yards < 85) {
+                // 70 makes it display 80 for some reason
+                return 70;
+            } else if (yards < 95) {
+                // 80 makes it display 90 for some reason
+                return 80;
+            } else if (yards < 150) {
+                return 100;
+            } else if (yards < 200) {
+                return (byte) 150;
+            } else if (yards < 250) {
+                return (byte) 200;
+            } else if (yards < 300) {
+                return (byte) 230;
+            } else {
+                return (byte) 255;
+            }
+        }
+
+        private byte mOffset2 = 0x00;
+        private byte mOffset1 = 0x00;
+        private byte mOffset0 = 0x00;
     }
 
     private static Pair<Byte, Byte> calculateChecksum(byte[] msg) {
