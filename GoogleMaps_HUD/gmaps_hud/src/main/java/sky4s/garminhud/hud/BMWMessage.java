@@ -1,5 +1,7 @@
 package sky4s.garminhud.hud;
 
+import android.util.Pair;
+
 public class BMWMessage {
 
     private static final int MSG_BUFFER_SIZE = 26;
@@ -28,6 +30,7 @@ public class BMWMessage {
     private static final int TRAFFIC_DELAY_OFFSET = 0x16;
     private static final int DATA_END_OFFSET = 0x17;
     private static final int CHECKSUM_OFFSET = 0x18;
+    private static final int CHECKSUM_OVERFLOW_OFFSET = 0x19;
 
     private static final int ARROW_BEGIN = 0x00;
     public static final int ARROW_NONE = 0x00;
@@ -100,7 +103,9 @@ public class BMWMessage {
     }
 
     private void updateChecksum() {
-        mBuffer[CHECKSUM_OFFSET] = calculateChecksum(mBuffer);
+        Pair<Byte, Byte> ret = calculateChecksum(mBuffer);
+        mBuffer[CHECKSUM_OFFSET] = ret.first;
+        mBuffer[CHECKSUM_OVERFLOW_OFFSET] = ret.second;
     }
 
     public void setSpeedLimit(int speed, boolean isMetric) {
@@ -239,14 +244,23 @@ public class BMWMessage {
         return mBuffer;
     }
 
-    private static byte calculateChecksum(byte[] msg) {
-        int checksum = 0;
+    private static Pair<Byte, Byte> calculateChecksum(byte[] msg) {
+        int checksum = 0, overflow;
         for (int i = DATA_BEGIN_OFFSET; i < DATA_END_OFFSET; i++) {
             checksum += msg[i];
         }
         checksum -= 0xff;
+
+        if (checksum > 0xff) {
+            overflow = 0x02;
+        } else if (checksum < 0) {
+            overflow = 0x00;
+        } else {
+            overflow = 0x01;
+        }
+
         checksum &= 0xff;
 
-        return (byte) checksum;
+        return new Pair<>((byte) checksum, (byte) overflow);
     }
 }
