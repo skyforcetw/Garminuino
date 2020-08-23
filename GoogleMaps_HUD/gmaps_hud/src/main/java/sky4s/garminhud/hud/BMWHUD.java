@@ -1,10 +1,5 @@
 package sky4s.garminhud.hud;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
 import sky4s.garminhud.eLane;
@@ -13,12 +8,8 @@ import sky4s.garminhud.eOutType;
 import sky4s.garminhud.eUnits;
 
 public class BMWHUD extends HUDAdapter {
-
-    private static final byte[] HUD_ADDRESS = new byte[]{(byte)192, (byte)168, 0, 10};
-    private static final int HUD_PORT = 50007;
-
     private BMWMessage mMsg;
-    private Socket mSocket;
+    private BMWSocketConnection mSocket;
     private boolean mSendResult = false;
     private int mMaxUpdatesPerSecond = 0;
     private long mLastUpdateClearTime = 0;
@@ -26,14 +17,7 @@ public class BMWHUD extends HUDAdapter {
 
     public BMWHUD() {
         mMsg = new BMWMessage();
-
-        // TODO: set up socket connection
-        try {
-            InetAddress hudAddress = InetAddress.getByAddress(HUD_ADDRESS);
-            mSocket = new Socket(hudAddress, HUD_PORT);
-        } catch (IOException e) {
-            // TODO: handle errors
-        }
+        mSocket = new BMWSocketConnection();
     }
 
     @Override
@@ -309,16 +293,6 @@ public class BMWHUD extends HUDAdapter {
             return;
         }
         mUpdateCount++;
-        try {
-            byte[] resp = new byte[1024];
-            OutputStream outStream = mSocket.getOutputStream();
-            InputStream inStream = mSocket.getInputStream();
-            outStream.write(mMsg.getBytes());
-            inStream.read(resp);
-            // TODO: check resp for server ACK
-            mSendResult = true;
-        } catch (IOException e) {
-            // TODO: handle errors
-        }
+        mSendResult = mSocket.send(mMsg.getBytes());
     }
 }
