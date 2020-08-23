@@ -11,6 +11,7 @@ import java.net.UnknownHostException;
 
 public class BMWSocketConnection {
     private static final String TAG = BMWSocketConnection.class.getSimpleName();
+    private static final boolean DEBUG = false;
 
     private static final byte[] HUD_ADDRESS = new byte[]{(byte) 192, (byte) 168, 0, 10};
     private static final int HUD_PORT = 50007;
@@ -25,6 +26,7 @@ public class BMWSocketConnection {
             hudAddress = InetAddress.getByAddress(HUD_ADDRESS);
         } catch (UnknownHostException e) {
             // Should never happen
+            Log.wtf(TAG, "Unable to create reference to HUD address");
         }
         mHudAddress = hudAddress;
     }
@@ -61,6 +63,7 @@ public class BMWSocketConnection {
         try {
             // This constructor will create and connect
             mSocket = new Socket(mHudAddress, HUD_PORT);
+            if (DEBUG) Log.d(TAG, "Connected to BMW HUD");
         } catch (IOException e) {
             Log.e(TAG, "Exception connecting to HUD", e);
             mSocket = null;
@@ -70,6 +73,15 @@ public class BMWSocketConnection {
     private static boolean isOk(byte[] response, int length) {
         if (length != 5) {
             return false;
+        }
+
+        if (DEBUG) {
+            Log.d(TAG, "Received server response: " +
+                    response[0] + ", " +
+                    response[1] + ", " +
+                    response[2] + ", " +
+                    response[3] + ", " +
+                    response[4]);
         }
 
         // Server always responds with this as OK

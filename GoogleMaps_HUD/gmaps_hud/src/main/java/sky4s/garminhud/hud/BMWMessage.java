@@ -1,8 +1,11 @@
 package sky4s.garminhud.hud;
 
+import android.util.Log;
 import android.util.Pair;
 
 public class BMWMessage {
+    private static final String TAG = BMWMessage.class.getSimpleName();
+    private static final boolean DEBUG = false;
 
     private static final int MSG_BUFFER_SIZE = 26;
 
@@ -109,6 +112,7 @@ public class BMWMessage {
     }
 
     public void setSpeedLimit(int speed, boolean isMetric) {
+        if (DEBUG) Log.d(TAG,"setSpeedLimit: " + speed);
         mBuffer[SPEED_LIMIT_OFFSET] = (byte) (speed & 0xff);
         mBuffer[SPEED_LIMIT_METRIC_OFFSET] = (byte) (isMetric ? 1 : 0);
 
@@ -116,12 +120,14 @@ public class BMWMessage {
     }
 
     public void setSpeedCameraEnabled(boolean enabled) {
+        if (DEBUG) Log.d(TAG, "setSpeedCameraEnabled: " + enabled);
         mBuffer[SPEED_CAMERA_OFFSET] = (byte) (enabled ? 1 : 0);
 
         updateChecksum();
     }
 
     public void setDistanceToTurn(double miles) {
+        if (DEBUG) Log.d(TAG, "setDistanceToTurn: " + miles);
         BMWDistance distance = new BMWDistance(miles);
 
         mBuffer[DIST_TO_TURN_2_OFFSET] = distance.getOffset2();
@@ -132,6 +138,7 @@ public class BMWMessage {
     }
 
     public void setArrow(int direction) {
+        if (DEBUG) Log.d(TAG, "setArrow: " + direction);
         if (direction < ARROW_BEGIN || direction > ARROW_END) {
             return;
         }
@@ -141,6 +148,7 @@ public class BMWMessage {
     }
 
     public void setLaneCount(int numLanes) {
+        if (DEBUG) Log.d(TAG, "setLaneCount: " + numLanes);
         if (numLanes < 0 || numLanes > MAX_LANES) {
             return;
         }
@@ -150,6 +158,7 @@ public class BMWMessage {
     }
 
     public void setLaneIndicator(int index, boolean enable) {
+        if (DEBUG) Log.d(TAG, "setLaneIndicator: idx: " + index + ": " + enable);
         byte laneIndex = (byte) index;
         if (laneIndex > (1 << MAX_LANES) - 1) {
             // max lanes is 6, so 2^6 - 1 possible combos
@@ -167,6 +176,7 @@ public class BMWMessage {
     }
 
     public void setArrivalTime(int hours, int minutes, int suffix) {
+        if (DEBUG) Log.d(TAG, "setArrivalTime: " + hours + ":" + minutes);
         if (hours < 0 || hours > 24 || minutes < 0 || minutes > 59) {
             return;
         }
@@ -178,6 +188,7 @@ public class BMWMessage {
     }
 
     public void setRemainingDistance(double miles) {
+        if (DEBUG) Log.d(TAG, "setRemainingDistance: " + miles);
         BMWDistance distance = new BMWDistance(miles);
 
         mBuffer[REMAINING_DIST_2_OFFSET] = distance.getOffset2();
@@ -188,6 +199,7 @@ public class BMWMessage {
     }
 
     public void setTrafficDelay(int minutes) {
+        Log.d(TAG, "setTrafficDelay: " + minutes);
         if (minutes < 0) {
             return;
         }
@@ -211,6 +223,7 @@ public class BMWMessage {
                 // offset2 displays from 5660mi at 139 to 41mi at 1
                 double scaling = (5660.0 - 41.0) / (139 - 1);
                 double distance_component = Math.floor(miles / scaling);
+                if (DEBUG) Log.d(TAG, "distance_2: " + distance_component);
                 double remainder = (miles / scaling) - Math.floor(miles / scaling);
                 mOffset2 = (byte) distance_component;
                 miles = remainder * scaling;
@@ -220,6 +233,7 @@ public class BMWMessage {
                 // offset1 displays from 41mi at 255 to 300yd at 1
                 double scaling = (41.0 - (300.0 / YARDS_PER_MILE)) / (255 - 1);
                 double distance_component = Math.floor(miles / scaling);
+                if (DEBUG) Log.d(TAG, "distance_1: " + distance_component);
                 double remainder = (miles / scaling) - Math.floor(miles / scaling);
                 mOffset1 = (byte) distance_component;
                 miles = remainder * scaling;
@@ -228,6 +242,7 @@ public class BMWMessage {
             if (miles > 0) {
                 // offset0 displays from 300yd to 10yd
                 double yards = miles * YARDS_PER_MILE;
+                if (DEBUG) Log.d(TAG, "distance_0: " + yards);
                 mOffset0 = getRemainingDistanceYards((int) yards);
             }
         }

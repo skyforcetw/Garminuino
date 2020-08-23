@@ -1,5 +1,7 @@
 package sky4s.garminhud.hud;
 
+import android.util.Log;
+
 import java.util.concurrent.TimeUnit;
 
 import sky4s.garminhud.eLane;
@@ -8,6 +10,9 @@ import sky4s.garminhud.eOutType;
 import sky4s.garminhud.eUnits;
 
 public class BMWHUD extends HUDAdapter {
+    private static final String TAG = BMWHUD.class.getSimpleName();
+    private static final boolean DEBUG = false;
+
     private BMWMessage mMsg;
     private BMWSocketConnection mSocket;
     private boolean mSendResult = false;
@@ -16,6 +21,7 @@ public class BMWHUD extends HUDAdapter {
     private int mUpdateCount = 0;
 
     public BMWHUD() {
+        if (DEBUG) Log.d(TAG, "Creating BMWHUD instance");
         mMsg = new BMWMessage();
         mSocket = new BMWSocketConnection();
     }
@@ -42,6 +48,7 @@ public class BMWHUD extends HUDAdapter {
 
     @Override
     public boolean getSendResult() {
+        if (DEBUG) Log.d(TAG, "getSendResult: result: " + mSendResult);
         return mSendResult;
     }
 
@@ -111,6 +118,7 @@ public class BMWHUD extends HUDAdapter {
     @Override
     public void SetAlphabet(char a, char b, char c, char d) {
         // not supported
+        if (DEBUG) Log.w(TAG, "SetAlphabet: Not supported");
     }
 
     @Override
@@ -145,7 +153,7 @@ public class BMWHUD extends HUDAdapter {
                     mMsg.setArrow(BMWMessage.ARROW_ROUNDABOUT_LEFT_45);
                     break;
                 default:
-                    // TODO: Unknown input
+                    Log.e(TAG, "SetDirection: Unhandled left roundabout direction");
                     break;
             }
         } else if (nType == eOutType.RightRoundabout) {
@@ -178,7 +186,7 @@ public class BMWHUD extends HUDAdapter {
                     mMsg.setArrow(BMWMessage.ARROW_ROUNDABOUT_RIGHT_315);
                     break;
                 default:
-                    // TODO: Unknown input
+                    Log.e(TAG, "SetDirection: Unhandled right roundabout direction");
                     break;
             }
         } else {
@@ -212,7 +220,7 @@ public class BMWHUD extends HUDAdapter {
                     mMsg.setArrow(BMWMessage.ARROW_RIGHT_0);
                     break;
                 default:
-                    // TODO: Unknown input
+                    Log.e(TAG, "SetDirection: Unhandled direction");
                     return;
             }
         }
@@ -248,6 +256,7 @@ public class BMWHUD extends HUDAdapter {
     @Override
     public void SetSpeed(int nSpeed, boolean bIcon) {
         // not supported
+        if (DEBUG) Log.w(TAG, "SetSpeed: Not supported");
     }
 
     @Override
@@ -276,16 +285,19 @@ public class BMWHUD extends HUDAdapter {
     @Override
     public void SetGpsLabel(boolean visible) {
         // not supported
+        if (DEBUG) Log.w(TAG, "SetGpsLabel: Not supported");
     }
 
     @Override
     public void SetAutoBrightness() {
         // TODO: decode brightness control
+        if (DEBUG) Log.w(TAG, "SetAutoBrightness: Not implemented");
     }
 
     @Override
     public void SetBrightness(int brightness) {
         // TODO: decode brightness control
+        if (DEBUG) Log.w(TAG, "SetBrightness: Not implemented");
     }
 
     private void sendMessage() {
@@ -294,5 +306,6 @@ public class BMWHUD extends HUDAdapter {
         }
         mUpdateCount++;
         mSendResult = mSocket.send(mMsg.getBytes());
+        if (DEBUG) Log.d(TAG, "sendMessage: Sent message to HUD");
     }
 }
