@@ -171,7 +171,7 @@ public class BMWHUD extends HUDAdapter {
                     mMsg.setArrow(BMWMessage.ARROW_ROUNDABOUT_LEFT_45);
                     break;
                 default:
-                    Log.e(TAG, "SetDirection: Unhandled left roundabout direction");
+                    Log.e(TAG, "SetDirection: Unhandled left roundabout direction: " + nRoundaboutOut);
                     break;
             }
         } else if (nType == eOutType.RightRoundabout) {
@@ -204,7 +204,7 @@ public class BMWHUD extends HUDAdapter {
                     mMsg.setArrow(BMWMessage.ARROW_ROUNDABOUT_RIGHT_315);
                     break;
                 default:
-                    Log.e(TAG, "SetDirection: Unhandled right roundabout direction");
+                    Log.e(TAG, "SetDirection: Unhandled right roundabout direction: " + nRoundaboutOut);
                     break;
             }
         } else {
@@ -238,7 +238,7 @@ public class BMWHUD extends HUDAdapter {
                     mMsg.setArrow(BMWMessage.ARROW_RIGHT_0);
                     break;
                 default:
-                    Log.e(TAG, "SetDirection: Unhandled direction");
+                    Log.e(TAG, "SetDirection: Unhandled direction: " + nDir);
                     return;
             }
         }
