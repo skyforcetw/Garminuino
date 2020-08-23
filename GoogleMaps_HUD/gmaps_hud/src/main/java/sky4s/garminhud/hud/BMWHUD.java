@@ -1,4 +1,4 @@
-package sky4s.garminhud;
+package sky4s.garminhud.hud;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,8 +7,10 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
-import sky4s.garminhud.hud.BMWMessage;
-import sky4s.garminhud.hud.HUDAdapter;
+import sky4s.garminhud.eLane;
+import sky4s.garminhud.eOutAngle;
+import sky4s.garminhud.eOutType;
+import sky4s.garminhud.eUnits;
 
 public class BMWHUD extends HUDAdapter {
 
