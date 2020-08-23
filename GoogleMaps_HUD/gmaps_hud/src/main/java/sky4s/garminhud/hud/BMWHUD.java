@@ -116,19 +116,28 @@ public class BMWHUD extends HUDAdapter {
     @Override
     public void SetDistance(int nDist, eUnits unit, boolean bDecimal, boolean bLeadingZero) {
         // ignore bDecimal and bLeadingZero, BMW HUD does not handle floating point distances
+        if (DEBUG) Log.d(TAG, "SetDistance: nDist: " + nDist +
+                ", unit: " + unit +
+                ", bDecimal: " + bDecimal +
+                ", bLeadingZero: " + bLeadingZero);
         double distToTurnMiles;
+        double divisor = 1.0;
+        if (bDecimal) {
+            // TODO: determine how to divide nDist based on magnitude
+            divisor = 10.0;
+        }
         switch (unit) {
             case Foot:
-                distToTurnMiles = nDist / 5280.0;
+                distToTurnMiles = nDist / divisor / 5280.0;
                 break;
             case Metres:
-                distToTurnMiles = nDist / 1609.344;
+                distToTurnMiles = nDist / divisor / 1609.344;
                 break;
             case Kilometres:
-                distToTurnMiles = nDist / 1.609344;
+                distToTurnMiles = nDist / divisor / 1.609344;
                 break;
             case Miles:
-                distToTurnMiles = nDist;
+                distToTurnMiles = nDist / divisor;
                 break;
             default:
                 // invalid input
