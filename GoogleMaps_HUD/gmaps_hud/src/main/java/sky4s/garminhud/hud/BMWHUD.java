@@ -13,10 +13,12 @@ public class BMWHUD extends HUDAdapter {
     private static final String TAG = BMWHUD.class.getSimpleName();
     private static final boolean DEBUG = false;
 
+    private static final int DEFAULT_MAX_UPDATES = 6;
+
     private BMWMessage mMsg;
     private BMWSocketConnection mSocket;
     private boolean mSendResult = false;
-    private int mMaxUpdatesPerSecond = 0;
+    private int mMaxUpdatesPerSecond = DEFAULT_MAX_UPDATES;
     private long mLastUpdateClearTime = 0;
     private int mUpdateCount = 0;
 
