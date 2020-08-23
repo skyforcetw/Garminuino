@@ -45,6 +45,7 @@ public class BMWHUD extends HUDAdapter {
         if (!updatable) {
             mSendResult = false;
         }
+        if (DEBUG) Log.d(TAG, "isUpdatable: " + updatable);
         return updatable;
     }
 

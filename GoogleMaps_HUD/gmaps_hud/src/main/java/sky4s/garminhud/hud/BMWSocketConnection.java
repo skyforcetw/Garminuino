@@ -32,6 +32,7 @@ public class BMWSocketConnection {
     }
 
     public boolean send(byte[] buffer) {
+        if (DEBUG) Log.d(TAG, "sending message to HUD");
         ensureConnected();
 
         if (mSocket == null) {
@@ -61,6 +62,7 @@ public class BMWSocketConnection {
         }
 
         try {
+            if (DEBUG) Log.d(TAG, "ensureConnected: Connecting to HUD");
             // This constructor will create and connect
             mSocket = new Socket(mHudAddress, HUD_PORT);
             if (DEBUG) Log.d(TAG, "Connected to BMW HUD");
