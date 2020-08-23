@@ -78,6 +78,10 @@
     <string name="layout_element_darkmode_auto">DarkMode by Systemsettings</string>
     <string name="layout_element_darkmode_man">Enable DarkMode manual</string>
 
+    <string name="layout_title_enable_bmw_hud">Enable BMW HUD</string>
+    <string name="layout_element_bmw_hud_disabled">Disabled</string>
+    <string name="layout_element_bmw_hud_enabled">Enabled</string>
+
     <string name="layout_title_arrow_type">Arrow Type</string>
     <string name="layout_element_arrow_type_v1">Arrow V1</string>
     <string name="layout_element_arrow_type_v2">Arrow V2</string>

@@ -5,6 +5,8 @@
     <string name="bt_bind_name_key" translatable="false">bt_bind_name_key</string>
     <string name="bt_bind_address_key" translatable="false">bt_bind_address_key</string>
 
+    <string name="option_bmw_hud_enabled" translatable="false">option_bmw_hud_enabled</string>
+
     <string name="option_show_speed" translatable="false">option_show_speed</string>
 
     <string name="option_traffic_and_lane_detect" translatable="false">option_traffic_and_lane_detect</string>

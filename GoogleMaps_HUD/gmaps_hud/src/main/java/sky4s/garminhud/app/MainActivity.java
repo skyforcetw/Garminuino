@@ -76,6 +76,7 @@ import sky4s.garminhud.ImageUtils;
 import sky4s.garminhud.app.detect.ImageDetectListener;
 import sky4s.garminhud.eOutAngle;
 import sky4s.garminhud.eUnits;
+import sky4s.garminhud.hud.BMWHUD;
 import sky4s.garminhud.hud.DummyHUD;
 import sky4s.garminhud.hud.HUDInterface;
 
@@ -126,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
     //========================================
     // UI for Page3Fragment
     //========================================
+    //BMW HUD
+    Switch switchBMWHUDEnabled;
     //arrow
     Switch switchArrowType;
     //traffic
@@ -267,6 +270,7 @@ public class MainActivity extends AppCompatActivity {
         switchIdleShowCurrentTime.setOnCheckedChangeListener(onCheckedChangedListener);
         switchBtBindAddress.setOnCheckedChangeListener(onCheckedChangedListener);
         switchShowNotify.setOnCheckedChangeListener(onCheckedChangedListener);
+        switchBMWHUDEnabled.setOnCheckedChangeListener(onCheckedChangedListener);
         switchArrowType.setOnCheckedChangeListener(onCheckedChangedListener);
 
         //======================================
@@ -286,6 +290,7 @@ public class MainActivity extends AppCompatActivity {
         final boolean optionDarkModeAuto = sharedPref.getBoolean(getString(R.string.option_dark_mode_auto), false);
         final boolean optionDarkModeMan = sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false);
 
+        final boolean optionBMWHUDEnabled = sharedPref.getBoolean(getString(R.string.option_bmw_hud_enabled), false);
         final boolean optionArrowType = sharedPref.getBoolean(getString(R.string.option_arrow_type), true);
         sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
                 getString(R.string.option_arrow_type), optionArrowType);
@@ -308,6 +313,7 @@ public class MainActivity extends AppCompatActivity {
                 switchDarkModeAuto.setChecked(optionDarkModeAuto);
                 switchDarkModeManual.setChecked(optionDarkModeMan);
 
+                switchBMWHUDEnabled.setChecked(optionBMWHUDEnabled);
                 switchArrowType.setChecked(optionArrowType);
             }
         });
@@ -323,7 +329,9 @@ public class MainActivity extends AppCompatActivity {
 
     private String initBluetooth() {
         String bt_status = "";
-        if (!IGNORE_BT_DEVICE) {
+        if (sharedPref.getBoolean(getString(R.string.option_bmw_hud_enabled), false)) {
+            hud = new BMWHUD();
+        } else if (!IGNORE_BT_DEVICE) {
 //            if (null == bt) {
             bt = new BluetoothSPP(this); //first route
 //            } else {
@@ -371,7 +379,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
-
 
         } else {
             bt_status = "(NO BT)";
@@ -452,6 +459,7 @@ public class MainActivity extends AppCompatActivity {
         // BT related
         //========================================================================================
         String bt_status = initBluetooth();
+
         //========================================================================================
 
         //=======================================================================================
@@ -713,6 +721,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onCheckedChanged(CompoundButton view, boolean b) {
             switch (view.getId()) {
+                case R.id.switchEnableBMWHUD:
+                    final boolean enableBMWHUD = view.isChecked();
+                    // TODO: Broadcast an invalidate for HUD object and reconnect
+                    storeOptions(R.string.option_bmw_hud_enabled, enableBMWHUD);
+                    view.setText(enableBMWHUD ? R.string.layout_element_bmw_hud_enabled : R.string.layout_element_bmw_hud_disabled);
+                    break;
+
                 case R.id.switchArrowType:
                     final boolean arrowType2 = ((Switch) view).isChecked();
                     sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),

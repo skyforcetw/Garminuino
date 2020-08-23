@@ -21,6 +21,28 @@
                 android:background="@color/horizontal_line" />
 
             <TextView
+                android:id="@+id/bmwHudTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/option_padding_top"
+                android:text="@string/layout_title_enable_bmw_hud"
+                android:textSize="@dimen/option_title_size" />
+
+            <Switch
+                android:id="@+id/switchEnableBMWHUD"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+
+                android:paddingTop="@dimen/option_padding_top"
+                android:paddingBottom="@dimen/option_padding_bottom"
+                android:text="@string/layout_element_bmw_hud_disabled"
+
+                android:textSize="@dimen/option_text_size" />
+
+            <TextView
                 android:id="@+id/textView8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

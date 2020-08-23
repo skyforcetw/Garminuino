@@ -136,6 +136,7 @@ public class Page3Fragment extends Fragment {
     {
         super.onActivityCreated(savedInstanceState);
 
+        ((MainActivity) getActivity()).switchBMWHUDEnabled = (Switch) getView().findViewById((R.id.switchEnableBMWHUD));
         ((MainActivity) getActivity()) .switchArrowType =  (Switch) getView().findViewById(R.id.switchArrowType);;
 
         ((MainActivity) getActivity()).switchAlertAnytime =  (Switch) getView().findViewById(R.id.switchAlertAnytime);;
