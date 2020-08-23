@@ -1,9 +1,7 @@
 package sky4s.garminhud.hud;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.concurrent.ExecutionException;
@@ -12,6 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
+import sky4s.garminhud.app.MainActivity;
 import sky4s.garminhud.app.R;
 import sky4s.garminhud.eLane;
 import sky4s.garminhud.eOutAngle;
@@ -89,8 +88,6 @@ public class BMWHUD extends HUDAdapter {
     @Override
     public void SetRemainTime(int nH, int nM, boolean bTraffic) {
         // nH is expected to be 24-hour
-        // TODO: read option_show_eta to determine whether to postfix AM/PM or H
-        // time is in 24-hour clock, fix to within 12 and use AM/PM
         int suffix = 0;
         if (!isShowETAEnabled()) {
             suffix = BMWMessage.TIME_SUFFIX_HOURS;
@@ -342,8 +339,10 @@ public class BMWHUD extends HUDAdapter {
     }
 
     private boolean isShowETAEnabled() {
-        // TODO: gross hack to get same preferences, figure out a better way
-        SharedPreferences sharedPref = ((Activity) mContext).getPreferences(Context.MODE_PRIVATE);
+        // Preferences are stored using Activity.getPreferences
+        // which uses the classname as the preferences name
+        SharedPreferences sharedPref = mContext.getSharedPreferences(
+                MainActivity.class.getSimpleName(), Context.MODE_PRIVATE);
         return sharedPref.getBoolean(mContext.getString(R.string.option_show_eta), false);
     }
 
