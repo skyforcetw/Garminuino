@@ -1,5 +1,8 @@
 package sky4s.garminhud.hud;
 
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import java.io.IOException;
@@ -17,10 +20,12 @@ public class BMWSocketConnection {
     private static final int HUD_PORT = 50007;
     private static final int RESPONSE_BUFFER_SIZE = 1024;
 
+    private Context mContext;
     private Socket mSocket;
     private final InetAddress mHudAddress;
 
-    public BMWSocketConnection() {
+    public BMWSocketConnection(Context context) {
+        mContext = context;
         InetAddress hudAddress = null;
         try {
             hudAddress = InetAddress.getByAddress(HUD_ADDRESS);
@@ -63,12 +68,40 @@ public class BMWSocketConnection {
 
         try {
             if (DEBUG) Log.d(TAG, "ensureConnected: Connecting to HUD");
-            // This constructor will create and connect
-            mSocket = new Socket(mHudAddress, HUD_PORT);
+            // This constructor will create, bind, and connect
+            mSocket = new Socket(mHudAddress, HUD_PORT, getWifiAddress(), 0);
             if (DEBUG) Log.d(TAG, "Connected to BMW HUD");
         } catch (IOException e) {
             Log.e(TAG, "Exception connecting to HUD", e);
             mSocket = null;
+        }
+    }
+
+    private InetAddress getWifiAddress() {
+        WifiManager wifiManager = (WifiManager) mContext
+                .getApplicationContext()
+                .getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        if (wifiInfo == null) {
+            Log.e(TAG, "getWifiInterface: No connection info available");
+            return null;
+        }
+
+        return intToInetAddress(wifiInfo.getIpAddress());
+    }
+
+    private static InetAddress intToInetAddress(int address) {
+        byte[] bytes = new byte[4];
+        for (int i = 0; i < bytes.length; i++) {
+            int shift = i * 8;
+            bytes[i] = (byte) ((address >> shift) & 0xff);
+        }
+        try {
+            return InetAddress.getByAddress(bytes);
+        } catch (UnknownHostException e) {
+            // Should never happen
+            Log.wtf(TAG, "Unable to create WLAN address object");
+            return null;
         }
     }
 

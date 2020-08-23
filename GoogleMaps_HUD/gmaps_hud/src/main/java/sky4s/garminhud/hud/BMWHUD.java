@@ -37,7 +37,7 @@ public class BMWHUD extends HUDAdapter {
         mContext = context;
         mExecutor = Executors.newFixedThreadPool(1);
         mMsg = new BMWMessage();
-        mSocket = new BMWSocketConnection();
+        mSocket = new BMWSocketConnection(mContext);
     }
 
     @Override
