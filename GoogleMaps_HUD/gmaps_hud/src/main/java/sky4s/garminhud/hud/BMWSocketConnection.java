@@ -13,7 +13,7 @@ public class BMWSocketConnection {
     private static final String TAG = BMWSocketConnection.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    private static final byte[] HUD_ADDRESS = new byte[]{(byte) 192, (byte) 168, 0, 10};
+    private static final byte[] HUD_ADDRESS = new byte[]{(byte) 192, (byte) 168, 10, 1};
     private static final int HUD_PORT = 50007;
     private static final int RESPONSE_BUFFER_SIZE = 1024;
 
