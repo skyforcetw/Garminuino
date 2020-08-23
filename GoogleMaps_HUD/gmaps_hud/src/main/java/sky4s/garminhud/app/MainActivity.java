@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
     private String initBluetooth() {
         String bt_status = "";
         if (sharedPref.getBoolean(getString(R.string.option_bmw_hud_enabled), false)) {
-            hud = new BMWHUD();
+            hud = new BMWHUD(this);
         } else if (!IGNORE_BT_DEVICE) {
 //            if (null == bt) {
             bt = new BluetoothSPP(this); //first route

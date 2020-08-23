@@ -1,5 +1,8 @@
 package sky4s.garminhud.hud;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.concurrent.ExecutionException;
@@ -8,6 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
+import sky4s.garminhud.app.R;
 import sky4s.garminhud.eLane;
 import sky4s.garminhud.eOutAngle;
 import sky4s.garminhud.eOutType;
@@ -19,6 +23,7 @@ public class BMWHUD extends HUDAdapter {
 
     private static final int DEFAULT_MAX_UPDATES = 6;
 
+    private Context mContext;
     private BMWMessage mMsg;
     private BMWSocketConnection mSocket;
     private int mMaxUpdatesPerSecond = DEFAULT_MAX_UPDATES;
@@ -27,8 +32,9 @@ public class BMWHUD extends HUDAdapter {
     private ExecutorService mExecutor;
     private FutureTask<Boolean> mSendTask;
 
-    public BMWHUD() {
+    public BMWHUD(Context context) {
         if (DEBUG) Log.d(TAG, "Creating BMWHUD instance");
+        mContext = context;
         mExecutor = Executors.newFixedThreadPool(1);
         mMsg = new BMWMessage();
         mSocket = new BMWSocketConnection();
@@ -83,7 +89,9 @@ public class BMWHUD extends HUDAdapter {
     public void SetRemainTime(int nH, int nM, boolean bTraffic) {
         // nH is expected to be 24-hour
         // TODO: read option_show_eta to determine whether to postfix AM/PM or H
-        int suffix = nH < 12 ? BMWMessage.TIME_SUFFIX_AM : BMWMessage.TIME_SUFFIX_PM;
+        int suffix = isShowETAEnabled() ?
+                BMWMessage.TIME_SUFFIX_HOURS : nH < 12 ?
+                BMWMessage.TIME_SUFFIX_AM : BMWMessage.TIME_SUFFIX_PM;
         mMsg.setArrivalTime(nH, nM, suffix);
 
         // enable separate indicator for traffic delay even though minutes delay isn't available
@@ -316,6 +324,11 @@ public class BMWHUD extends HUDAdapter {
     public void SetBrightness(int brightness) {
         // TODO: decode brightness control
         if (DEBUG) Log.w(TAG, "SetBrightness: Not implemented");
+    }
+
+    private boolean isShowETAEnabled() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        return sharedPref.getBoolean(mContext.getString(R.string.option_show_eta), false);
     }
 
     private void sendMessage() {
