@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.concurrent.TimeUnit;
 
 import sky4s.garminhud.hud.BMWMessage;
 import sky4s.garminhud.hud.HUDAdapter;
@@ -16,7 +17,10 @@ public class BMWHUD extends HUDAdapter {
 
     private BMWMessage mMsg;
     private Socket mSocket;
-    private boolean mSendResult;
+    private boolean mSendResult = false;
+    private int mMaxUpdatesPerSecond = 0;
+    private long mLastUpdateClearTime = 0;
+    private int mUpdateCount = 0;
 
     public BMWHUD() {
         mMsg = new BMWMessage();
@@ -32,13 +36,22 @@ public class BMWHUD extends HUDAdapter {
 
     @Override
     public void setMaxUpdatePerSecond(int max) {
-        // TODO: implement
+        mMaxUpdatesPerSecond = max;
     }
 
     @Override
     public boolean isUpdatable() {
-        // TODO: implement
-        return false;
+        final long now = System.currentTimeMillis();
+        final long interval = now - mLastUpdateClearTime;
+        if (interval > TimeUnit.SECONDS.toMillis(1)) {
+            mLastUpdateClearTime = now;
+            mUpdateCount = 0;
+        }
+        final boolean updatable = mUpdateCount < mMaxUpdatesPerSecond;
+        if (!updatable) {
+            mSendResult = false;
+        }
+        return updatable;
     }
 
     @Override
@@ -290,6 +303,10 @@ public class BMWHUD extends HUDAdapter {
     }
 
     private void sendMessage() {
+        if (!isUpdatable()) {
+            return;
+        }
+        mUpdateCount++;
         try {
             byte[] resp = new byte[1024];
             OutputStream outStream = mSocket.getOutputStream();
