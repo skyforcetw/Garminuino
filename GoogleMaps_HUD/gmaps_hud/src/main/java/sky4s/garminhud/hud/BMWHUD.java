@@ -1,5 +1,6 @@
 package sky4s.garminhud.hud;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -80,7 +81,7 @@ public class BMWHUD extends HUDAdapter {
     public void SetTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
         // function is called through SetCurrentTime, and only used for showing current time when idle
         // nH is expected to be 24-hour
-        mMsg.setArrivalTime(nH, nM, nH < 12 ? BMWMessage.TIME_SUFFIX_AM : BMWMessage.TIME_SUFFIX_PM);
+        mMsg.setArrivalTime(nH % 12, nM, nH < 12 ? BMWMessage.TIME_SUFFIX_AM : BMWMessage.TIME_SUFFIX_PM);
 
         sendMessage();
     }
@@ -89,10 +90,15 @@ public class BMWHUD extends HUDAdapter {
     public void SetRemainTime(int nH, int nM, boolean bTraffic) {
         // nH is expected to be 24-hour
         // TODO: read option_show_eta to determine whether to postfix AM/PM or H
-        int suffix = isShowETAEnabled() ?
-                BMWMessage.TIME_SUFFIX_HOURS : nH < 12 ?
-                BMWMessage.TIME_SUFFIX_AM : BMWMessage.TIME_SUFFIX_PM;
-        mMsg.setArrivalTime(nH, nM, suffix);
+        // time is in 24-hour clock, fix to within 12 and use AM/PM
+        int suffix = 0;
+        if (!isShowETAEnabled()) {
+            suffix = BMWMessage.TIME_SUFFIX_HOURS;
+        } else {
+            suffix = nH < 12 ? BMWMessage.TIME_SUFFIX_AM : BMWMessage.TIME_SUFFIX_PM;
+        }
+        if (DEBUG) Log.d(TAG, "isShowETAEnabled: " + isShowETAEnabled());
+        mMsg.setArrivalTime(nH % 12, nM, suffix);
 
         // enable separate indicator for traffic delay even though minutes delay isn't available
         mMsg.setTrafficDelay(bTraffic ? 1 : 0);
@@ -327,7 +333,8 @@ public class BMWHUD extends HUDAdapter {
     }
 
     private boolean isShowETAEnabled() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        // TODO: gross hack to get same preferences, figure out a better way
+        SharedPreferences sharedPref = ((Activity) mContext).getPreferences(Context.MODE_PRIVATE);
         return sharedPref.getBoolean(mContext.getString(R.string.option_show_eta), false);
     }
 
