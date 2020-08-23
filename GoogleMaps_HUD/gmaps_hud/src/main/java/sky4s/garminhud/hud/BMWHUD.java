@@ -2,6 +2,10 @@ package sky4s.garminhud.hud;
 
 import android.util.Log;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
 import sky4s.garminhud.eLane;
@@ -17,13 +21,15 @@ public class BMWHUD extends HUDAdapter {
 
     private BMWMessage mMsg;
     private BMWSocketConnection mSocket;
-    private boolean mSendResult = false;
     private int mMaxUpdatesPerSecond = DEFAULT_MAX_UPDATES;
     private long mLastUpdateClearTime = 0;
     private int mUpdateCount = 0;
+    private ExecutorService mExecutor;
+    private FutureTask<Boolean> mSendTask;
 
     public BMWHUD() {
         if (DEBUG) Log.d(TAG, "Creating BMWHUD instance");
+        mExecutor = Executors.newFixedThreadPool(1);
         mMsg = new BMWMessage();
         mSocket = new BMWSocketConnection();
     }
@@ -41,18 +47,27 @@ public class BMWHUD extends HUDAdapter {
             mLastUpdateClearTime = now;
             mUpdateCount = 0;
         }
-        final boolean updatable = mUpdateCount < mMaxUpdatesPerSecond;
-        if (!updatable) {
-            mSendResult = false;
-        }
+        final boolean isSending = mSendTask != null && !mSendTask.isDone();
+        if (DEBUG) Log.d(TAG, "isSending: " + isSending);
+        final boolean updatable = mUpdateCount < mMaxUpdatesPerSecond && !isSending;
         if (DEBUG) Log.d(TAG, "isUpdatable: " + updatable);
         return updatable;
     }
 
     @Override
     public boolean getSendResult() {
-        if (DEBUG) Log.d(TAG, "getSendResult: result: " + mSendResult);
-        return mSendResult;
+        if (!isUpdatable()) {
+            return false;
+        }
+
+        try {
+            boolean sendResult = mSendTask.get();
+            if (DEBUG) Log.d(TAG, "getSendResult: result: " + sendResult);
+            return sendResult;
+        } catch (ExecutionException | InterruptedException e) {
+            Log.e(TAG, "getSendResult: ", e);
+            return false;
+        }
     }
 
     @Override
@@ -308,7 +323,12 @@ public class BMWHUD extends HUDAdapter {
             return;
         }
         mUpdateCount++;
-        mSendResult = mSocket.send(mMsg.getBytes());
-        if (DEBUG) Log.d(TAG, "sendMessage: Sent message to HUD");
+
+        mSendTask = new FutureTask<>(() -> {
+            boolean ret = mSocket.send(mMsg.getBytes());
+            if (DEBUG) Log.d(TAG, "sendMessage: Sent message to HUD");
+            return ret;
+        });
+        mExecutor.execute(mSendTask);
     }
 }
