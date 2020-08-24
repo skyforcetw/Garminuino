@@ -186,6 +186,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
     @Override
     public void onDestroy() {
+        unregisterReceiver(msgReceiver);
         super.onDestroy();
     }
 
