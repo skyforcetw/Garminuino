@@ -14,12 +14,12 @@ public abstract class HUDAdapter implements HUDInterface {
 
     @Override
     public final void SetDistance(int nDist, eUnits unit) {
-        SetDistance(nDist, unit, false, false);
+        SetDistance(nDist, unit, false);
     }
 
     @Override
     public final void SetRemainingDistance(int nDist, eUnits unit) {
-        SetRemainingDistance(nDist, unit, false, false);
+        SetRemainingDistance(nDist, unit, false);
     }
 
     @Override

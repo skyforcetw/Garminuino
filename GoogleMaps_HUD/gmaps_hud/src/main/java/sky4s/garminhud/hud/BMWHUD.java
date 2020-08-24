@@ -111,11 +111,10 @@ public class BMWHUD extends HUDAdapter {
     }
 
     @Override
-    public void SetDistance(int nDist, eUnits unit, boolean bDecimal, boolean bLeadingZero) {
+    public void SetDistance(int nDist, eUnits unit, boolean bDecimal) {
         if (DEBUG) Log.d(TAG, "SetDistance: nDist: " + nDist +
                 ", unit: " + unit +
-                ", bDecimal: " + bDecimal +
-                ", bLeadingZero: " + bLeadingZero);
+                ", bDecimal: " + bDecimal);
         double distToTurnMiles;
         // nDist will only ever allow 1 digit after decimal, divide by 10 if bDecimal is set
         double divisor = bDecimal ? 10.0 : 1.0;
@@ -150,11 +149,10 @@ public class BMWHUD extends HUDAdapter {
     }
 
     @Override
-    public void SetRemainingDistance(int nDist, eUnits unit, boolean bDecimal, boolean bLeadingZero) {
+    public void SetRemainingDistance(int nDist, eUnits unit, boolean bDecimal) {
         if (DEBUG) Log.d(TAG, "SetRemainingDistance: nDist: " + nDist +
                 ", unit: " + unit +
-                ", bDecimal: " + bDecimal +
-                ", bLeadingZero: " + bLeadingZero);
+                ", bDecimal: " + bDecimal);
         double distToTurnMiles;
         // nDist will only ever allow 1 digit after decimal, divide by 10 if bDecimal is set
         double divisor = bDecimal ? 10.0 : 1.0;

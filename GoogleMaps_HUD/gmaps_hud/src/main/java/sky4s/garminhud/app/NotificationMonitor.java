@@ -1210,7 +1210,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
             if (null != hud) {
                 if (-1 != int_distance) {
-                    hud.SetDistance(int_distance, units, decimal, false);
+                    hud.SetDistance(int_distance, units, decimal);
                 } else {
                     hud.ClearDistance();
                 }
@@ -1241,7 +1241,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
             if (null != hud) {
                 if (-1 != int_distance) {
-                    hud.SetRemainingDistance(int_distance, units, decimal, false);
+                    hud.SetRemainingDistance(int_distance, units, decimal);
                 } else {
                     hud.ClearRemainingDistance();
                 }

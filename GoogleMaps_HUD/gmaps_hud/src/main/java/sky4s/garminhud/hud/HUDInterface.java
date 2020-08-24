@@ -24,13 +24,13 @@ public interface HUDInterface {
 
     void SetDistance(int nDist, eUnits unit);
 
-    void SetDistance(int nDist, eUnits unit, boolean bDecimal, boolean bLeadingZero);
+    void SetDistance(int nDist, eUnits unit, boolean bDecimal);
 
     void ClearDistance();
 
     void SetRemainingDistance(int nDist, eUnits unit);
 
-    void SetRemainingDistance(int nDist, eUnits unit, boolean bDecimal, boolean bLeadingZero);
+    void SetRemainingDistance(int nDist, eUnits unit, boolean bDecimal);
 
     void ClearRemainingDistance();
 
