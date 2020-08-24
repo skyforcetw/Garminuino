@@ -1,6 +1,11 @@
 package sky4s.garminhud.hud;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.LinkProperties;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
@@ -21,11 +26,66 @@ public class BMWSocketConnection {
     private static final int RESPONSE_BUFFER_SIZE = 1024;
 
     private Context mContext;
+    private boolean mWifiAvailable;
     private Socket mSocket;
     private final InetAddress mHudAddress;
+    private final ConnectivityManager mConnectivityManager;
+
+    private ConnectivityManager.NetworkCallback mNetworkCallback = new ConnectivityManager.NetworkCallback() {
+        @Override
+        public void onAvailable(Network network) {
+            if (DEBUG) Log.d(TAG, "onAvailable: WLAN available");
+            mConnectivityManager.bindProcessToNetwork(network);
+            mWifiAvailable = true;
+            ensureConnected();
+        }
+
+        @Override
+        public void onLosing(Network network, int maxMsToLive) {
+            if (DEBUG) Log.d(TAG, "onLosing: WLAN about to be lost");
+            disconnectNetwork();
+        }
+
+        @Override
+        public void onLost(Network network) {
+            if (DEBUG) Log.d(TAG, "onLost: WLAN lost");
+            disconnectNetwork();
+        }
+
+        @Override
+        public void onUnavailable() {
+            if (DEBUG) Log.d(TAG, "onUnavailable: WLAN unavailable");
+            disconnectNetwork();
+        }
+
+        @Override
+        public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
+            // unused
+        }
+
+        @Override
+        public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
+            // unused
+        }
+
+        @Override
+        public void onBlockedStatusChanged(Network network, boolean blocked) {
+            // unused
+        }
+
+        private void disconnectNetwork() {
+            if (DEBUG) Log.d(TAG, "disconnectNetwork()");
+            mWifiAvailable = false;
+            disconnect();
+            mConnectivityManager.bindProcessToNetwork(null);
+        }
+    };
 
     public BMWSocketConnection(Context context) {
         mContext = context;
+        mConnectivityManager = (ConnectivityManager) mContext.getSystemService(
+                Context.CONNECTIVITY_SERVICE);
+        mWifiAvailable = false;
         InetAddress hudAddress = null;
         try {
             hudAddress = InetAddress.getByAddress(HUD_ADDRESS);
@@ -34,6 +94,7 @@ public class BMWSocketConnection {
             Log.wtf(TAG, "Unable to create reference to HUD address");
         }
         mHudAddress = hudAddress;
+        requestWifiNetwork();
     }
 
     public boolean send(byte[] buffer) {
@@ -61,8 +122,34 @@ public class BMWSocketConnection {
         return true;
     }
 
+    private void disconnect() {
+        if (DEBUG) Log.d(TAG, "disconnect()");
+        if (mSocket == null) {
+            return;
+        }
+        try {
+            mSocket.close();
+        } catch (IOException e) {
+            // nothing to do
+        }
+        mSocket = null;
+    }
+
+    private void requestWifiNetwork() {
+        if (DEBUG) Log.d(TAG, "requestWifiNetwork()");
+        NetworkRequest request = new NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .build();
+        mConnectivityManager.requestNetwork(request, mNetworkCallback);
+    }
+
     private void ensureConnected() {
+        if (DEBUG) Log.d(TAG, "ensureConnected(): mWifiAvailable: " + mWifiAvailable);
+        if (!mWifiAvailable) {
+            return;
+        }
         if (mSocket != null) {
+            if (DEBUG) Log.d(TAG, "ensureConnected(): Socket already connected");
             return;
         }
 
