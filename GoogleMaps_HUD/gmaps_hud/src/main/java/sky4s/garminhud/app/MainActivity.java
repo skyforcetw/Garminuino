@@ -331,6 +331,31 @@ public class MainActivity extends AppCompatActivity {
         String bt_status = "";
         if (sharedPref.getBoolean(getString(R.string.option_bmw_hud_enabled), false)) {
             hud = new BMWHUD(this);
+            //========================================================================================
+            HUDInterface.ConnectionCallback mBMWHUDConnection = state -> {
+                switch (state) {
+                    case CONNECTED:
+                        hudConnected = true;
+                        if (switchHudConnected != null) {
+                            switchHudConnected.setText(getString(
+                                    R.string.layout_element_hud_success_connected, "BMW HUD"));
+                            if (sharedPref != null && sharedPref.getInt(getString(R.string.state_dark_mode),
+                                    AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
+                                switchHudConnected.setTextColor(Color.BLACK);
+                            switchHudConnected.setChecked(true);
+                        }
+                        break;
+                    case DISCONNECTED:
+                        hudConnected = false;
+                        if (switchHudConnected != null) {
+                            switchHudConnected.setText(getString(R.string.layout_element_hud_disconnected));
+                            switchHudConnected.setTextColor(Color.RED);
+                            switchHudConnected.setChecked(false);
+                        }
+                        break;
+                }
+            };
+            hud.registerConnectionCallback(mBMWHUDConnection);
         } else if (!IGNORE_BT_DEVICE) {
 //            if (null == bt) {
             bt = new BluetoothSPP(this); //first route

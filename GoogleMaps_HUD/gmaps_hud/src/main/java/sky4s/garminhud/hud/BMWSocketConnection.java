@@ -28,6 +28,7 @@ public class BMWSocketConnection {
     private Context mContext;
     private boolean mWifiAvailable;
     private Socket mSocket;
+    private HUDInterface.ConnectionCallback mConnectionCallback;
     private final InetAddress mHudAddress;
     private final ConnectivityManager mConnectivityManager;
 
@@ -97,6 +98,16 @@ public class BMWSocketConnection {
         requestWifiNetwork();
     }
 
+    public void registerConnectionCallback(HUDInterface.ConnectionCallback callback) {
+        mConnectionCallback = callback;
+        final boolean isConnected = mSocket != null && mSocket.isConnected();
+        if (mConnectionCallback != null) {
+            mConnectionCallback.onConnectionStateChange(isConnected ?
+                    HUDInterface.ConnectionCallback.ConnectionState.CONNECTED :
+                    HUDInterface.ConnectionCallback.ConnectionState.DISCONNECTED);
+        }
+    }
+
     public boolean send(byte[] buffer) {
         if (DEBUG) Log.d(TAG, "sending message to HUD");
         ensureConnected();
@@ -129,6 +140,10 @@ public class BMWSocketConnection {
         }
         try {
             mSocket.close();
+            if (mConnectionCallback != null) {
+                mConnectionCallback.onConnectionStateChange(
+                        HUDInterface.ConnectionCallback.ConnectionState.DISCONNECTED);
+            }
         } catch (IOException e) {
             // nothing to do
         }
@@ -158,6 +173,10 @@ public class BMWSocketConnection {
             // This constructor will create, bind, and connect
             mSocket = new Socket(mHudAddress, HUD_PORT, getWifiAddress(), 0);
             if (DEBUG) Log.d(TAG, "Connected to BMW HUD");
+            if (mConnectionCallback != null) {
+                mConnectionCallback.onConnectionStateChange(
+                        HUDInterface.ConnectionCallback.ConnectionState.CONNECTED);
+            }
         } catch (IOException e) {
             Log.e(TAG, "Exception connecting to HUD", e);
             mSocket = null;

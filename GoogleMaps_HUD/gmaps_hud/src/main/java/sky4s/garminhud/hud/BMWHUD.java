@@ -46,6 +46,11 @@ public class BMWHUD extends HUDAdapter {
     }
 
     @Override
+    public void registerConnectionCallback(ConnectionCallback callback) {
+        mSocket.registerConnectionCallback(callback);
+    }
+
+    @Override
     public boolean isUpdatable() {
         final long now = System.currentTimeMillis();
         final long interval = now - mLastUpdateClearTime;

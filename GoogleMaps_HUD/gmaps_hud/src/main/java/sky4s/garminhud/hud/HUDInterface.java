@@ -6,7 +6,18 @@ import sky4s.garminhud.eUnits;
 
 public interface HUDInterface {
 
+    interface ConnectionCallback {
+        enum ConnectionState {
+            CONNECTED,
+            DISCONNECTED,
+        };
+
+        void onConnectionStateChange(ConnectionState state);
+    }
+
     void setMaxUpdatePerSecond(int max);
+
+    void registerConnectionCallback(ConnectionCallback callback);
 
     boolean isUpdatable();
 

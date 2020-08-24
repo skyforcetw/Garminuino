@@ -28,6 +28,11 @@ public class GarminHUD extends HUDAdapter {
         maxUpdatePerSecond = max;
     }
 
+    @Override
+    public void registerConnectionCallback(ConnectionCallback callback) {
+        // TODO: Move BluetoothSPP into this class and push connection state through callback
+    }
+
     public boolean isUpdatable() {
         final long now = System.currentTimeMillis();
         final long interval = now - lastUpdateClearTime;

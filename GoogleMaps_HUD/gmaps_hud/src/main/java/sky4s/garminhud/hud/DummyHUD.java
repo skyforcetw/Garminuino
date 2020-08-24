@@ -19,6 +19,12 @@ public class DummyHUD extends HUDAdapter {
     }
 
     @Override
+    public void registerConnectionCallback(ConnectionCallback callback) {
+        // dummy implementation is always connected
+        callback.onConnectionStateChange(ConnectionCallback.ConnectionState.CONNECTED);
+    }
+
+    @Override
     public boolean isUpdatable() {
         return true;
     }
