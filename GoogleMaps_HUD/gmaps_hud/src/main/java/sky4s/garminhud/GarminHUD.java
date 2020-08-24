@@ -186,6 +186,16 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
+    @Override
+    public void SetRemainingDistance(int nDist, eUnits unit, boolean bDecimal, boolean bLeadingZero) {
+        // not supported
+    }
+
+    @Override
+    public void ClearRemainingDistance() {
+        // not supported
+    }
+
     public void SetAlphabet(char a, char b, char c, char d) {
         eUnits unit = eUnits.None;
         boolean bDecimal = false, bLeadingZero = false;

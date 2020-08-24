@@ -28,6 +28,12 @@ public interface HUDInterface {
 
     void ClearDistance();
 
+    void SetRemainingDistance(int nDist, eUnits unit);
+
+    void SetRemainingDistance(int nDist, eUnits unit, boolean bDecimal, boolean bLeadingZero);
+
+    void ClearRemainingDistance();
+
     void SetAlphabet(char a, char b, char c, char d);
 
     void SetDirection(eOutAngle nDir);

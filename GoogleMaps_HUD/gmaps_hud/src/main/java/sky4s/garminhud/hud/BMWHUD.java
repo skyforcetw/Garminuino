@@ -150,6 +150,45 @@ public class BMWHUD extends HUDAdapter {
     }
 
     @Override
+    public void SetRemainingDistance(int nDist, eUnits unit, boolean bDecimal, boolean bLeadingZero) {
+        if (DEBUG) Log.d(TAG, "SetRemainingDistance: nDist: " + nDist +
+                ", unit: " + unit +
+                ", bDecimal: " + bDecimal +
+                ", bLeadingZero: " + bLeadingZero);
+        double distToTurnMiles;
+        // nDist will only ever allow 1 digit after decimal, divide by 10 if bDecimal is set
+        double divisor = bDecimal ? 10.0 : 1.0;
+        switch (unit) {
+            case Foot:
+                distToTurnMiles = nDist / divisor / 5280.0;
+                break;
+            case Metres:
+                distToTurnMiles = nDist / divisor / 1609.344;
+                break;
+            case Kilometres:
+                distToTurnMiles = nDist / divisor / 1.609344;
+                break;
+            case Miles:
+                distToTurnMiles = nDist / divisor;
+                break;
+            default:
+                // invalid input
+                return;
+        }
+        // TODO: handle metric
+        mMsg.setRemainingDistance(distToTurnMiles);
+
+        sendMessage();
+    }
+
+    @Override
+    public void ClearRemainingDistance() {
+        mMsg.setRemainingDistance(0);
+
+        sendMessage();
+    }
+
+    @Override
     public void SetAlphabet(char a, char b, char c, char d) {
         // not supported
         if (DEBUG) Log.w(TAG, "SetAlphabet: Not supported");

@@ -18,6 +18,11 @@ public abstract class HUDAdapter implements HUDInterface {
     }
 
     @Override
+    public final void SetRemainingDistance(int nDist, eUnits unit) {
+        SetRemainingDistance(nDist, unit, false, false);
+    }
+
+    @Override
     public final void SetDirection(eOutAngle nDir) {
         SetDirection(nDir, eOutType.Lane, eOutAngle.AsDirection);
     }

@@ -75,6 +75,16 @@ public class DummyHUD extends HUDAdapter {
     }
 
     @Override
+    public void SetRemainingDistance(int nDist, eUnits unit, boolean bDecimal, boolean bLeadingZero) {
+        log("Remaining distance: " + nDist + " " + unit + " Decimal:" + bDecimal + " Lead0:" + bLeadingZero);
+    }
+
+    @Override
+    public void ClearRemainingDistance() {
+        log("Clear Remaining Distance");
+    }
+
+    @Override
     public void SetAlphabet(char a, char b, char c, char d) {
 
     }

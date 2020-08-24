@@ -1226,6 +1226,37 @@ public class NotificationMonitor extends NotificationListenerService {
         //===================================================================================
 
         //===================================================================================
+        // remaining distance
+        //===================================================================================
+        if (null != remainDistance && null != remainDistanceUnit) {
+            float float_distance = Float.parseFloat(remainDistance);
+            eUnits units = get_eUnits(remainDistanceUnit);
+
+            int int_distance = (int) float_distance;
+            boolean decimal = ((eUnits.Kilometres == units) || (eUnits.Miles == units)) && float_distance < 10;
+
+            if (decimal) { //with floating point
+                int_distance = (int) (float_distance * 10);
+            }
+
+            if (null != hud) {
+                if (-1 != int_distance) {
+                    hud.SetRemainingDistance(int_distance, units, decimal, false);
+                } else {
+                    hud.ClearRemainingDistance();
+                }
+            }
+
+        } else {
+            if (null != hud) {
+                hud.ClearRemainingDistance();
+            }
+        }
+
+        final boolean remainingDistanceSendResult = null != hud && hud.getSendResult();
+        //===================================================================================
+
+        //===================================================================================
         // time
         //===================================================================================
         boolean timeSendResult = false;
@@ -1281,6 +1312,7 @@ public class NotificationMonitor extends NotificationListenerService {
         //===================================================================================
 
         String sendResultInfo = "SendResult dist: " + (distanceSendResult ? '1' : '0')
+                + " remaining dist: " + (remainingDistanceSendResult ? '1' : '0')
                 + " time: " + (timeSendResult ? '1' : '0')
                 + " arrow: " + (arrowSendResult ? '1' : '0');
         logi(sendResultInfo);
