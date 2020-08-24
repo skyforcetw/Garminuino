@@ -1199,18 +1199,12 @@ public class NotificationMonitor extends NotificationListenerService {
         //===================================================================================
         if (null != distanceNum && null != distanceUnit) {
             float float_distance = Float.parseFloat(distanceNum);
-            eUnits units = get_eUnits(distanceUnit);
-
             int int_distance = (int) float_distance;
-            boolean decimal = ((eUnits.Kilometres == units) || (eUnits.Miles == units)) && float_distance < 10;
-
-            if (decimal) { //with floating point
-                int_distance = (int) (float_distance * 10);
-            }
+            eUnits units = get_eUnits(distanceUnit);
 
             if (null != hud) {
                 if (-1 != int_distance) {
-                    hud.SetDistance(int_distance, units, decimal);
+                    hud.SetDistance(float_distance, units);
                 } else {
                     hud.ClearDistance();
                 }
@@ -1230,18 +1224,12 @@ public class NotificationMonitor extends NotificationListenerService {
         //===================================================================================
         if (null != remainDistance && null != remainDistanceUnit) {
             float float_distance = Float.parseFloat(remainDistance);
-            eUnits units = get_eUnits(remainDistanceUnit);
-
             int int_distance = (int) float_distance;
-            boolean decimal = ((eUnits.Kilometres == units) || (eUnits.Miles == units)) && float_distance < 10;
-
-            if (decimal) { //with floating point
-                int_distance = (int) (float_distance * 10);
-            }
+            eUnits units = get_eUnits(remainDistanceUnit);
 
             if (null != hud) {
                 if (-1 != int_distance) {
-                    hud.SetRemainingDistance(int_distance, units, decimal);
+                    hud.SetRemainingDistance(float_distance, units);
                 } else {
                     hud.ClearRemainingDistance();
                 }

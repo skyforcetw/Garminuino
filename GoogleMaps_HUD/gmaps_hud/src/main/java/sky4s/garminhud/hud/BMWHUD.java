@@ -111,25 +111,22 @@ public class BMWHUD extends HUDAdapter {
     }
 
     @Override
-    public void SetDistance(int nDist, eUnits unit, boolean bDecimal) {
+    public void SetDistance(float nDist, eUnits unit) {
         if (DEBUG) Log.d(TAG, "SetDistance: nDist: " + nDist +
-                ", unit: " + unit +
-                ", bDecimal: " + bDecimal);
+                ", unit: " + unit);
         double distToTurnMiles;
-        // nDist will only ever allow 1 digit after decimal, divide by 10 if bDecimal is set
-        double divisor = bDecimal ? 10.0 : 1.0;
         switch (unit) {
             case Foot:
-                distToTurnMiles = nDist / divisor / 5280.0;
+                distToTurnMiles = nDist / 5280.0;
                 break;
             case Metres:
-                distToTurnMiles = nDist / divisor / 1609.344;
+                distToTurnMiles = nDist / 1609.344;
                 break;
             case Kilometres:
-                distToTurnMiles = nDist / divisor / 1.609344;
+                distToTurnMiles = nDist / 1.609344;
                 break;
             case Miles:
-                distToTurnMiles = nDist / divisor;
+                distToTurnMiles = nDist;
                 break;
             default:
                 // invalid input
@@ -149,25 +146,22 @@ public class BMWHUD extends HUDAdapter {
     }
 
     @Override
-    public void SetRemainingDistance(int nDist, eUnits unit, boolean bDecimal) {
+    public void SetRemainingDistance(float nDist, eUnits unit) {
         if (DEBUG) Log.d(TAG, "SetRemainingDistance: nDist: " + nDist +
-                ", unit: " + unit +
-                ", bDecimal: " + bDecimal);
+                ", unit: " + unit);
         double distToTurnMiles;
-        // nDist will only ever allow 1 digit after decimal, divide by 10 if bDecimal is set
-        double divisor = bDecimal ? 10.0 : 1.0;
         switch (unit) {
             case Foot:
-                distToTurnMiles = nDist / divisor / 5280.0;
+                distToTurnMiles = nDist / 5280.0;
                 break;
             case Metres:
-                distToTurnMiles = nDist / divisor / 1609.344;
+                distToTurnMiles = nDist / 1609.344;
                 break;
             case Kilometres:
-                distToTurnMiles = nDist / divisor / 1.609344;
+                distToTurnMiles = nDist / 1.609344;
                 break;
             case Miles:
-                distToTurnMiles = nDist / divisor;
+                distToTurnMiles = nDist;
                 break;
             default:
                 // invalid input

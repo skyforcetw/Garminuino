@@ -65,8 +65,8 @@ public class DummyHUD extends HUDAdapter {
 //    }
 
     @Override
-    public void SetDistance(int nDist, eUnits unit, boolean bDecimal) {
-        log("Distance: " + nDist + " " + unit + " Decimal:" + bDecimal);
+    public void SetDistance(float nDist, eUnits unit) {
+        log("Distance: " + nDist + " " + unit);
     }
 
     @Override
@@ -75,8 +75,8 @@ public class DummyHUD extends HUDAdapter {
     }
 
     @Override
-    public void SetRemainingDistance(int nDist, eUnits unit, boolean bDecimal) {
-        log("Remaining distance: " + nDist + " " + unit + " Decimal:" + bDecimal);
+    public void SetRemainingDistance(float nDist, eUnits unit) {
+        log("Remaining distance: " + nDist + " " + unit);
     }
 
     @Override

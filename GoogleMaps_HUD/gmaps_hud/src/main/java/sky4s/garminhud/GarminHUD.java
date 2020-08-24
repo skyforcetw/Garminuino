@@ -161,10 +161,16 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
-    public void SetDistance(int nDist, eUnits unit, boolean bDecimal) {
+    @Override
+    public void SetDistance(float nDist, eUnits unit) {
+        int int_distance = (int) nDist;
+        boolean decimal = ((eUnits.Kilometres == unit) || (eUnits.Miles == unit)) && nDist < 10;
+        if (decimal) {
+            int_distance *= 10.0;
+        }
         char arr[] = {(char) 0x03,
-                Digit(nDist / 1000), Digit(nDist / 100), Digit(nDist / 10),
-                bDecimal ? (char) 0xff : (char) 0x00, Digit(nDist), (char) unit.value};
+                Digit(int_distance / 1000), Digit(int_distance / 100), Digit(int_distance / 10),
+                decimal ? (char) 0xff : (char) 0x00, Digit(int_distance), (char) unit.value};
 
         if (arr[1] == 0xa) {
             arr[1] = 0;
@@ -175,7 +181,7 @@ public class GarminHUD extends HUDAdapter {
                 }
             }
         }
-        if (bDecimal && ((int) nDist / 10) == 0) // Show leding zero for decimals
+        if (decimal && ((int) nDist / 10) == 0) // Show leding zero for decimals
             arr[3] = 0xa;
 
         SendHud2(arr);
@@ -187,7 +193,7 @@ public class GarminHUD extends HUDAdapter {
     }
 
     @Override
-    public void SetRemainingDistance(int nDist, eUnits unit, boolean bDecimal) {
+    public void SetRemainingDistance(float nDist, eUnits unit) {
         // not supported
     }
 

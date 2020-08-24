@@ -22,15 +22,11 @@ public interface HUDInterface {
 
     void ClearTime();
 
-    void SetDistance(int nDist, eUnits unit);
-
-    void SetDistance(int nDist, eUnits unit, boolean bDecimal);
+    void SetDistance(float nDist, eUnits unit);
 
     void ClearDistance();
 
-    void SetRemainingDistance(int nDist, eUnits unit);
-
-    void SetRemainingDistance(int nDist, eUnits unit, boolean bDecimal);
+    void SetRemainingDistance(float nDist, eUnits unit);
 
     void ClearRemainingDistance();
 
