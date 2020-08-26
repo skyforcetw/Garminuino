@@ -370,6 +370,11 @@ public class BMWHUD extends HUDAdapter {
         if (DEBUG) Log.w(TAG, "SetBrightness: Not implemented");
     }
 
+    @Override
+    public void disconnect() {
+        mSocket.disconnect();
+    }
+
     private boolean isShowETAEnabled() {
         // Preferences are stored using Activity.getPreferences
         // which uses the classname as the preferences name

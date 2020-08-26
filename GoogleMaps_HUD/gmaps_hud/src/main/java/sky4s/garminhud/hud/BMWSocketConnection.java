@@ -142,7 +142,7 @@ public class BMWSocketConnection {
         return true;
     }
 
-    private void disconnect() {
+    public void disconnect() {
         if (DEBUG) Log.d(TAG, "disconnect()");
         if (mSocket == null) {
             return;

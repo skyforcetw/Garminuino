@@ -70,4 +70,6 @@ public interface HUDInterface {
     void SetBrightness(int brightness);
 
     void clear();
+
+    void disconnect();
 }

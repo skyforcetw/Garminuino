@@ -370,4 +370,8 @@ public class GarminHUD extends HUDAdapter {
         sendResult = SendPacket(sendBuf, sendBuf.length);
     }
 
+    @Override
+    public void disconnect() {
+        // TODO: implement
+    }
 }

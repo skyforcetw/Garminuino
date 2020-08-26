@@ -160,6 +160,11 @@ public class DummyHUD extends HUDAdapter {
 
     }
 
+    @Override
+    public void disconnect() {
+        log("Disconnect");
+    }
+
 //    @Override
 //    public void clear() {
 //        log("Clear");

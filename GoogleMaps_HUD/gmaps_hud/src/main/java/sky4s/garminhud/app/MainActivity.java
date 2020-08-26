@@ -330,6 +330,9 @@ public class MainActivity extends AppCompatActivity {
     private String initBluetooth() {
         String bt_status = "";
         if (sharedPref.getBoolean(getString(R.string.option_bmw_hud_enabled), false)) {
+            if (hud != null) {
+                hud.disconnect();
+            }
             hud = new BMWHUD(this);
             //========================================================================================
             HUDInterface.ConnectionCallback mBMWHUDConnection = state -> {
