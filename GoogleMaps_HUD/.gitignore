@@ -1,4 +1,6 @@
 .gradle
 .idea
+bt-spp-library/build
+gmaps_hud/build
 keystore.properties
 local.properties
