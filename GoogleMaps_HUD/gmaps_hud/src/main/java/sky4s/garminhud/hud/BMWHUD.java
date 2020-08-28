@@ -34,7 +34,7 @@ public class BMWHUD extends HUDAdapter {
 
     public BMWHUD(Context context) {
         if (DEBUG) Log.d(TAG, "Creating BMWHUD instance");
-        mContext = context;
+        mContext = context.getApplicationContext();
         mExecutor = Executors.newFixedThreadPool(1);
         mMsg = new BMWMessage();
         mSocket = new BMWSocketConnection(mContext);

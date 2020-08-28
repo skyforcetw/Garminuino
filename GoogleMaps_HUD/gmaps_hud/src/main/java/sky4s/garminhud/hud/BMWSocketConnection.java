@@ -82,7 +82,7 @@ public class BMWSocketConnection {
     };
 
     public BMWSocketConnection(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
         mConnectivityManager = (ConnectivityManager) mContext.getSystemService(
                 Context.CONNECTIVITY_SERVICE);
         mWifiAvailable = false;
