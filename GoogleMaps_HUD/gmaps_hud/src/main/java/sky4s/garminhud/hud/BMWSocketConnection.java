@@ -32,6 +32,8 @@ public class BMWSocketConnection {
     private final InetAddress mHudAddress;
     private final ConnectivityManager mConnectivityManager;
 
+    private static BMWSocketConnection sInstance;
+
     private ConnectivityManager.NetworkCallback mNetworkCallback = new ConnectivityManager.NetworkCallback() {
         @Override
         public void onAvailable(Network network) {
@@ -82,7 +84,7 @@ public class BMWSocketConnection {
         }
     };
 
-    public BMWSocketConnection(Context context) {
+    private BMWSocketConnection(Context context) {
         mContext = context.getApplicationContext();
         mConnectivityManager = (ConnectivityManager) mContext.getSystemService(
                 Context.CONNECTIVITY_SERVICE);
@@ -96,6 +98,13 @@ public class BMWSocketConnection {
         }
         mHudAddress = hudAddress;
         requestWifiNetwork();
+    }
+
+    public static BMWSocketConnection getInstance(Context context) {
+        if (sInstance == null) {
+            sInstance = new BMWSocketConnection(context);
+        }
+        return sInstance;
     }
 
     public void registerConnectionCallback(HUDInterface.ConnectionCallback callback) {
