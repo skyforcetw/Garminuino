@@ -85,7 +85,10 @@ public class BMWHUD extends HUDAdapter {
     public void SetTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
         // function is called through SetCurrentTime, and only used for showing current time when idle
         // nH is expected to be 24-hour
-        mMsg.setArrivalTime(nH % 12, nM, nH < 12 ? BMWMessage.TIME_SUFFIX_AM : BMWMessage.TIME_SUFFIX_PM);
+        final boolean isAm = nH < 12;
+        nH %= 12;
+        nH = (nH == 0) ? 12 : nH;
+        mMsg.setArrivalTime(nH, nM, isAm ? BMWMessage.TIME_SUFFIX_AM : BMWMessage.TIME_SUFFIX_PM);
 
         sendMessage();
     }
@@ -93,14 +96,17 @@ public class BMWHUD extends HUDAdapter {
     @Override
     public void SetRemainTime(int nH, int nM, boolean bTraffic) {
         // nH is expected to be 24-hour
+        final boolean isAm = nH < 12;
+        nH %= 12;
+        nH = (nH == 0) ? 12 : nH;
         int suffix = 0;
         if (!isShowETAEnabled()) {
             suffix = BMWMessage.TIME_SUFFIX_HOURS;
         } else {
-            suffix = nH < 12 ? BMWMessage.TIME_SUFFIX_AM : BMWMessage.TIME_SUFFIX_PM;
+            suffix = isAm ? BMWMessage.TIME_SUFFIX_AM : BMWMessage.TIME_SUFFIX_PM;
         }
         if (DEBUG) Log.d(TAG, "isShowETAEnabled: " + isShowETAEnabled());
-        mMsg.setArrivalTime(nH % 12, nM, suffix);
+        mMsg.setArrivalTime(nH, nM, suffix);
 
         // enable separate indicator for traffic delay even though minutes delay isn't available
         mMsg.setTrafficDelay(bTraffic ? 1 : 0);
