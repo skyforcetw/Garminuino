@@ -70,7 +70,7 @@
                     android:layout_weight="1"
                     android:checked="false"
                     android:clickable="false"
-                    android:text="@string/layout_element_hud_connected"
+                    android:text="@string/layout_element_hud_disconnected"
 
                     android:textSize="@dimen/option_text_size" />
 
