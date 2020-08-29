@@ -756,7 +756,6 @@ public class MainActivity extends AppCompatActivity {
             switch (view.getId()) {
                 case R.id.switchEnableBMWHUD:
                     final boolean enableBMWHUD = view.isChecked();
-                    // TODO: Broadcast an invalidate for HUD object and reconnect
                     storeOptions(R.string.option_bmw_hud_enabled, enableBMWHUD);
                     view.setText(enableBMWHUD ? R.string.layout_element_bmw_hud_enabled : R.string.layout_element_bmw_hud_disabled);
                     break;
