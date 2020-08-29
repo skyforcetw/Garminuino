@@ -307,7 +307,8 @@ public class BMWMessage {
     private static Pair<Byte, Byte> calculateChecksum(byte[] msg) {
         int checksum = 0, overflow;
         for (int i = DATA_BEGIN_OFFSET; i < DATA_END_OFFSET; i++) {
-            checksum += msg[i];
+            // Java bytes are unsigned, cast to int and prevent sign extension
+            checksum += ((int)msg[i]) & 0xff;
         }
         checksum -= 0xff;
 
