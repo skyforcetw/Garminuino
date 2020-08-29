@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
@@ -32,6 +33,7 @@ public class BMWSocketConnection {
     private boolean mWifiAvailable;
     private Socket mSocket;
     private HUDInterface.ConnectionCallback mConnectionCallback;
+    private Network mNetwork;
     private final InetAddress mHudAddress;
     private final ConnectivityManager mConnectivityManager;
 
@@ -41,7 +43,7 @@ public class BMWSocketConnection {
         @Override
         public void onAvailable(Network network) {
             if (DEBUG) Log.d(TAG, "onAvailable: WLAN available");
-            mConnectivityManager.bindProcessToNetwork(network);
+            mNetwork = network;
             mWifiAvailable = true;
             ensureConnected();
         }
@@ -83,7 +85,7 @@ public class BMWSocketConnection {
             if (DEBUG) Log.d(TAG, "disconnectNetwork()");
             mWifiAvailable = false;
             disconnect();
-            mConnectivityManager.bindProcessToNetwork(null);
+            mNetwork = null;
         }
     };
 
@@ -186,8 +188,11 @@ public class BMWSocketConnection {
 
         try {
             if (DEBUG) Log.d(TAG, "ensureConnected: Connecting to HUD");
-            // This constructor will create, bind, and connect
-            mSocket = new Socket(mHudAddress, HUD_PORT, getWifiAddress(), 0);
+            // Must bind socket to current WLAN network before connecting
+            mSocket = new Socket();
+            mNetwork.bindSocket(mSocket);
+            mSocket.bind(new InetSocketAddress(getWifiAddress(), 0));
+            mSocket.connect(new InetSocketAddress(mHudAddress, HUD_PORT));
             if (DEBUG) Log.d(TAG, "Connected to BMW HUD");
             if (mConnectionCallback != null) {
                 mConnectionCallback.onConnectionStateChange(
