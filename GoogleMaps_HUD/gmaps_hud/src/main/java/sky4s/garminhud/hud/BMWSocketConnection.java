@@ -132,6 +132,7 @@ public class BMWSocketConnection {
         try {
             OutputStream out = mSocket.getOutputStream();
             InputStream in = mSocket.getInputStream();
+            if (DEBUG) Log.d(TAG, "send: wrote: " + bytesToHex(buffer));
             out.write(buffer);
             int read = in.read(response);
             if (!isOk(response, read)) {
