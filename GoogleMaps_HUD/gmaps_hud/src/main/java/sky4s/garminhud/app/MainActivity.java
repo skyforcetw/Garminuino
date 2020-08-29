@@ -595,6 +595,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (!IGNORE_BT_DEVICE) {
             if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
                 if (resultCode == Activity.RESULT_OK) {
