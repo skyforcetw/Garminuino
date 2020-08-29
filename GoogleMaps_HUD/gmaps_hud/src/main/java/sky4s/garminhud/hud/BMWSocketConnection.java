@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class BMWSocketConnection {
@@ -227,17 +228,16 @@ public class BMWSocketConnection {
     }
 
     private static boolean isOk(byte[] response, int length) {
-        if (DEBUG) Log.d(TAG, "Received server response: " + bytesToHex(response));
-
-        if (length != 5) {
+        if (length < 0) {
+            Log.e(TAG, "isOk: Server returned no data");
             return false;
         }
 
+        if (DEBUG) Log.d(TAG, "Received server response: " + bytesToHex(response, length));
+
         // Server always responds with this as OK
-        return Arrays.equals(response, NAV_MSG_ACK_OK);
+        return ByteBuffer.wrap(NAV_MSG_ACK_OK).equals(ByteBuffer.wrap(response, 0, length));
     }
-
-
 
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
