@@ -136,10 +136,13 @@ public class BMWSocketConnection {
             int read = in.read(response);
             if (!isOk(response, read)) {
                 Log.e(TAG, "Server responded with error");
+                disconnect();
                 return false;
             }
         } catch (IOException e) {
             Log.e(TAG, "Exception sending message", e);
+            disconnect();
+            return false;
         }
         return true;
     }
