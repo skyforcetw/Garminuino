@@ -338,23 +338,27 @@ public class MainActivity extends AppCompatActivity {
             HUDInterface.ConnectionCallback mBMWHUDConnection = state -> {
                 switch (state) {
                     case CONNECTED:
-                        hudConnected = true;
-                        if (switchHudConnected != null) {
-                            switchHudConnected.setText(getString(
-                                    R.string.layout_element_hud_success_connected, "BMW HUD"));
-                            if (sharedPref != null && sharedPref.getInt(getString(R.string.state_dark_mode),
-                                    AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
-                                switchHudConnected.setTextColor(Color.BLACK);
-                            switchHudConnected.setChecked(true);
-                        }
+                        runOnUiThread(() -> {
+                            hudConnected = true;
+                            if (switchHudConnected != null) {
+                                switchHudConnected.setText(getString(
+                                        R.string.layout_element_hud_success_connected, "BMW HUD"));
+                                if (sharedPref != null && sharedPref.getInt(getString(R.string.state_dark_mode),
+                                        AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
+                                    switchHudConnected.setTextColor(Color.BLACK);
+                                switchHudConnected.setChecked(true);
+                            }
+                        });
                         break;
                     case DISCONNECTED:
-                        hudConnected = false;
-                        if (switchHudConnected != null) {
-                            switchHudConnected.setText(getString(R.string.layout_element_hud_disconnected));
-                            switchHudConnected.setTextColor(Color.RED);
-                            switchHudConnected.setChecked(false);
-                        }
+                        runOnUiThread(() -> {
+                            hudConnected = false;
+                            if (switchHudConnected != null) {
+                                switchHudConnected.setText(getString(R.string.layout_element_hud_disconnected));
+                                switchHudConnected.setTextColor(Color.RED);
+                                switchHudConnected.setChecked(false);
+                            }
+                        });
                         break;
                 }
             };
