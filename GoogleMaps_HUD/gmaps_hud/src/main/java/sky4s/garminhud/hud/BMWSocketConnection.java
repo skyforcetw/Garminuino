@@ -221,17 +221,10 @@ public class BMWSocketConnection {
     }
 
     private static boolean isOk(byte[] response, int length) {
+        if (DEBUG) Log.d(TAG, "Received server response: " + bytesToHex(response));
+
         if (length != 5) {
             return false;
-        }
-
-        if (DEBUG) {
-            Log.d(TAG, "Received server response: " +
-                    response[0] + ", " +
-                    response[1] + ", " +
-                    response[2] + ", " +
-                    response[3] + ", " +
-                    response[4]);
         }
 
         // Server always responds with this as OK
@@ -240,5 +233,17 @@ public class BMWSocketConnection {
                 response[2] == 0x01 &&
                 response[3] == 0x00 &&
                 response[4] == 0x00;
+    }
+
+    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+
+    private static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+        }
+        return new String(hexChars);
     }
 }
