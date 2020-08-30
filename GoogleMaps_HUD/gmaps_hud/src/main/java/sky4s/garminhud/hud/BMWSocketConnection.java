@@ -18,7 +18,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 public class BMWSocketConnection {
     private static final String TAG = BMWSocketConnection.class.getSimpleName();
