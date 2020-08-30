@@ -296,8 +296,11 @@ public class BMWHUD extends HUDAdapter {
                     mMsg.setArrow(BMWMessage.ARROW_RIGHT_0);
                     break;
                 default:
-                    Log.e(TAG, "SetDirection: Unhandled direction: " + nDir);
-                    return;
+                    // Assume this is convergence
+                    mMsg.setArrow(BMWMessage.ARROW_180);
+                    Log.w(TAG, "SetDirection: Unhandled direction: " +
+                            nDir + ", assuming convergence arrow");
+                    break;
             }
         }
 
