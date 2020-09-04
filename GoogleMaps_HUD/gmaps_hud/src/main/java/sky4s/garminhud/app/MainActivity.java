@@ -8,7 +8,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -36,7 +35,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -44,6 +42,14 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
+
+import java.io.File;
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -57,15 +63,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.tabs.TabLayout;
-
-import java.io.File;
-import java.util.Calendar;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.akexorcist.bluetotohspp.library.BluetoothState;
 import app.akexorcist.bluetotohspp.library.DeviceList;
@@ -79,23 +76,6 @@ import sky4s.garminhud.eUnits;
 import sky4s.garminhud.hud.BMWHUD;
 import sky4s.garminhud.hud.DummyHUD;
 import sky4s.garminhud.hud.HUDInterface;
-
-//import android.app.Activity;
-//import android.app.Activity;
-//import android.app.Fragment;
-//import android.app.FragmentManager;
-
-//import android.support.design.widget.NavigationView;
-//import android.support.design.widget.TabLayout;
-//import android.support.v13.app.FragmentPagerAdapter;
-//import androidx.core.view.ViewPager;
-//import androidx.core.widget.DrawerLayout;
-//import android.support.v7.app.ActionBar;
-//import android.support.v7.app.ActionBarDrawerToggle;
-//import android.support.v7.app.AppCompatActivity;
-//import android.support.v7.app.AppCompatDelegate;
-//import android.support.v7.widget.Toolbar;
-
 
 public class MainActivity extends AppCompatActivity {
     //for test with virtual device which no BT device
@@ -151,23 +131,14 @@ public class MainActivity extends AppCompatActivity {
     private boolean isEnabledNLS = false;
     private boolean showCurrentTime = false;
     private BluetoothSPP bt;
-    private NotificationManager notifyManager;
+    private NotificationManager notifyManager = getSystemService(NotificationManager.class);
     private MsgReceiver msgReceiver;
     private boolean lastReallyInNavigation = false;
     private BroadcastReceiver screenReceiver;
     private Timer timer = new Timer(true);
     private TimerTask currentTimeTask;
-    // The ViewPager is responsible for sliding pages (fragments) in and out upon user input
-    private ViewPager mViewPager;
 
-    //    private NavigationItemSelectedListener navigationListener = new NavigationItemSelectedListener();
-    private NavigationView.OnNavigationItemSelectedListener navigationListener = new NavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(MenuItem item) {
-            return false;
-        }
-    };
-
+    private NavigationView.OnNavigationItemSelectedListener navigationListener = item -> false;
 
     //========================================================================================
     private SharedPreferences sharedPref;
@@ -193,8 +164,8 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
-    private SeekBar.OnSeekBarChangeListener seekbarAlertSpeedChangeListener = new SeekBar.OnSeekBarChangeListener() {
 
+    private SeekBar.OnSeekBarChangeListener seekbarAlertSpeedChangeListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             final boolean alertAnytime = switchAlertAnytime.isChecked();
@@ -214,18 +185,16 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
     //===============================================================================================
     // location
     //===============================================================================================
     private boolean locationServiceConnected = false;
     private boolean useLocationService;
-    private LocationService locationService;
     private LocationManager locationManager;
     private ServiceConnection locationServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
-            locationService = binder.getService();
             locationServiceConnected = true;
         }
 
@@ -234,6 +203,9 @@ public class MainActivity extends AppCompatActivity {
             locationServiceConnected = false;
         }
     };
+
+    public MainActivity() {
+    }
 
 
     private boolean isInNavigation() {
@@ -246,19 +218,17 @@ public class MainActivity extends AppCompatActivity {
         sendBroadcast(intent);
     }
 
-    private void setSpeed(int nSpeed, boolean bIcon) {
+    private void setSpeed(int nSpeed) {
         if (null != hud) {
             if (is_in_navigation) {
-                hud.SetSpeed(nSpeed, bIcon);
+                hud.SetSpeed(nSpeed, true);
             } else {
                 hud.SetDistance(nSpeed, eUnits.None);
             }
         }
     }
 
-
     void loadOptions() {
-
         switchShowSpeed.setOnCheckedChangeListener(onCheckedChangedListener);
 
         switchTrafficAndLane.setOnCheckedChangeListener(onCheckedChangedListener);
@@ -296,39 +266,31 @@ public class MainActivity extends AppCompatActivity {
                 getString(R.string.option_arrow_type), optionArrowType);
         //======================================
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                switchShowSpeed.setChecked(optionShowSpeed);
+        runOnUiThread(() -> {
+            switchShowSpeed.setChecked(optionShowSpeed);
 
-                switchTrafficAndLane.setChecked(optionTrafficAndLaneDetect);
-                switchAlertAnytime.setChecked(optionAlertAnytime);
-                seekBarAlertSpeed.setProgress(optionAlertSpeed);
-                switchAlertYellowTraffic.setChecked(optionAlertYellowTraffic);
+            switchTrafficAndLane.setChecked(optionTrafficAndLaneDetect);
+            switchAlertAnytime.setChecked(optionAlertAnytime);
+            seekBarAlertSpeed.setProgress(optionAlertSpeed);
+            switchAlertYellowTraffic.setChecked(optionAlertYellowTraffic);
 
-                switchShowETA.setChecked(optionShowEta);
-                switchIdleShowCurrentTime.setChecked(optionIdleShowTime);
-                switchBtBindAddress.setChecked(optionBtBindAddress);
-                switchShowNotify.setChecked(optionShowNotify);
-                switchDarkModeAuto.setChecked(optionDarkModeAuto);
-                switchDarkModeManual.setChecked(optionDarkModeMan);
+            switchShowETA.setChecked(optionShowEta);
+            switchIdleShowCurrentTime.setChecked(optionIdleShowTime);
+            switchBtBindAddress.setChecked(optionBtBindAddress);
+            switchShowNotify.setChecked(optionShowNotify);
+            switchDarkModeAuto.setChecked(optionDarkModeAuto);
+            switchDarkModeManual.setChecked(optionDarkModeMan);
 
-                switchBMWHUDEnabled.setChecked(optionBMWHUDEnabled);
-                switchArrowType.setChecked(optionArrowType);
-            }
+            switchBMWHUDEnabled.setChecked(optionBMWHUDEnabled);
+            switchArrowType.setChecked(optionArrowType);
         });
 
         // Need to be after initially setChecked to avoid loop 
         switchDarkModeAuto.setOnCheckedChangeListener(onCheckedChangedListener);
         switchDarkModeManual.setOnCheckedChangeListener(onCheckedChangedListener);
-
-//        if (optionShowNotify) {
-//            startNotification();
-//        }
     }
 
-    private String initBluetooth() {
-        String bt_status = "";
+    private void initBluetooth() {
         if (sharedPref.getBoolean(getString(R.string.option_bmw_hud_enabled), false)) {
             if (hud != null) {
                 hud.disconnect();
@@ -339,7 +301,6 @@ public class MainActivity extends AppCompatActivity {
                 switch (state) {
                     case CONNECTED:
                         runOnUiThread(() -> {
-                            hudConnected = true;
                             if (switchHudConnected != null) {
                                 switchHudConnected.setText(getString(
                                         R.string.layout_element_hud_success_connected, "BMW HUD"));
@@ -352,7 +313,6 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case DISCONNECTED:
                         runOnUiThread(() -> {
-                            hudConnected = false;
                             if (switchHudConnected != null) {
                                 switchHudConnected.setText(getString(R.string.layout_element_hud_disconnected));
                                 switchHudConnected.setTextColor(Color.RED);
@@ -364,24 +324,21 @@ public class MainActivity extends AppCompatActivity {
             };
             hud.registerConnectionCallback(mBMWHUDConnection);
         } else if (!IGNORE_BT_DEVICE) {
-//            if (null == bt) {
             bt = new BluetoothSPP(this); //first route
-//            } else {
-//                bt.disconnect(); //other route, this cause app crash when 2nd connection
-//            }
             bt.setBluetoothConnectionListener(btConnectionListener);
             bt.setAutoConnectionListener(btConnectionListener);
             if (!bt.isBluetoothAvailable()) {
                 Toast.makeText(getApplicationContext()
-                        ,  getString(R.string.message_bt_not_available)
+                        , getString(R.string.message_bt_not_available)
                         , Toast.LENGTH_SHORT).show();
                 // Allow no BT to at least access settings to switch HUD type
                 NotificationMonitor.hud = hud;
-                return "(NO BT)";
+                return;
             }
             hud = new GarminHUD(bt);
 
-            if (!bt.isBluetoothEnabled()) { //bt cannot work
+            if (!bt.isBluetoothEnabled()) {
+                //bt cannot work
                 Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
             } else {
@@ -411,27 +368,17 @@ public class MainActivity extends AppCompatActivity {
                         bt.autoConnect(bindName);
                     }
                 }
-
             }
-
-        } else {
-            bt_status = "(NO BT)";
         }
         NotificationMonitor.hud = hud;
-
-        return bt_status;
     }
 
     static Boolean isDebug = null;
 
-    private static boolean isDebug() {
-        return isDebug == null ? false : isDebug.booleanValue();
-    }
-
     /**
      * Sync lib debug with app's debug value. Should be called in module Application
      *
-     * @param context
+     * @param context context
      */
     private static void syncIsDebug(Context context) {
         if (isDebug == null) {
@@ -440,11 +387,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private MyCrashHandler myCrashHandler;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //SCREENCAP_STORE_DIRECTORY =     ///sdcard/Android/data/sky4s.garminhud.app/cache/screenshots
+        //sdcard/Android/data/sky4s.garminhud.app/cache/screenshots
         String sdcardCachePath = getApplicationContext().getExternalCacheDir().getAbsolutePath();
         SCREENCAP_STORE_DIRECTORY = sdcardCachePath + "/screenshots/";
         File screenshotDir = new File(SCREENCAP_STORE_DIRECTORY);
@@ -452,13 +397,10 @@ public class MainActivity extends AppCompatActivity {
             screenshotDir.mkdir();
         }
 
-        String sdcardDocPath = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
-        OCR_STORE_DIRECTORY = sdcardDocPath;
+        OCR_STORE_DIRECTORY = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
         ImageUtils.context = this;
 
-        myCrashHandler = MyCrashHandler.instance();
-
-        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        sharedPref = getPreferences(Context.MODE_PRIVATE);
         final int stateDarkMode = sharedPref.getInt(getString(R.string.state_dark_mode), AppCompatDelegate.MODE_NIGHT_NO);
         AppCompatDelegate.setDefaultNightMode(stateDarkMode);
 
@@ -472,13 +414,14 @@ public class MainActivity extends AppCompatActivity {
         //========================================================================================
         // Connect the ViewPager to our custom PagerAdapter. The PagerAdapter supplies the pages
         // (fragments) to the ViewPager, which the ViewPager needs to display.
-        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        // The ViewPager is responsible for sliding pages (fragments) in and out upon user input
+        ViewPager mViewPager = findViewById(R.id.viewpager);
         mViewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
 
         // Connect the tabs with the ViewPager (the setupWithViewPager method does this for us in
         // both directions, i.e. when a new tab is selected, the ViewPager switches to this page,
         // and when the ViewPager switches to a new page, the corresponding tab is selected)
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(mViewPager);
         //========================================================================================
         mainIntent = this.getIntent();
@@ -488,41 +431,40 @@ public class MainActivity extends AppCompatActivity {
             startService(new Intent(this, NotificationCollectorMonitorService.class));
         }
 
-
         //========================================================================================
         // BT related
         //========================================================================================
-        String bt_status = initBluetooth();
-
+        initBluetooth();
         //========================================================================================
 
         //=======================================================================================
         // toolbar
         //========================================================================================
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar); //when pass toolbar as actionBar, toolbar has title
         ActionBar actionBar = getSupportActionBar();
         String versionName = BuildConfig.VERSION_NAME;
 
-        String title = actionBar.getTitle() + " v" + versionName;// + " (b" + versionCode + ")" + bt_status;
+        String title = actionBar.getTitle() + " v" + versionName;
+        // + " (b" + versionCode + ")" + bt_status;
         actionBar.setTitle(title);
         //========================================================================================
 
         //========================================================================================
         // NavigationView
         //========================================================================================
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(navigationListener);
         //========================================================================================
 
         //========================================================================================
-        // messageer
+        // message receiver
         //========================================================================================
         msgReceiver = new MsgReceiver();
         IntentFilter intentFilter = new IntentFilter();
@@ -535,16 +477,6 @@ public class MainActivity extends AppCompatActivity {
         screenReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                    if (useLocationService) {
-
-                    }
-                    // DO WHATEVER YOU NEED TO DO HERE
-//                wasScreenOn = false;
-                } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                    // AND DO WHATEVER YOU NEED TO DO HERE
-//                wasScreenOn = true;
-                }
             }
         };
 
@@ -554,9 +486,6 @@ public class MainActivity extends AppCompatActivity {
         //========================================================================================
         // MediaProjection
         //========================================================================================
-        // call for the projection notifyManager
-//        mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-
         // start capture handling thread
         new Thread() {
             @Override
@@ -568,37 +497,32 @@ public class MainActivity extends AppCompatActivity {
         }.start();
         detectListener = new ImageDetectListener(this);
         //========================================================================================
-
     }
-
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {//捕捉返回鍵
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            ConfirmExit();//按返回鍵，則執行退出確認
+            //按返回鍵，則執行退出確認
+            ConfirmExit();
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
 
-    public void ConfirmExit() {//退出確認
+    public void ConfirmExit() {
+        //退出確認
         AlertDialog.Builder ad = new AlertDialog.Builder(MainActivity.this);
         ad.setTitle("Exit");
         ad.setMessage("Leave GoogleMaps HUD app?");
-        ad.setPositiveButton("Yes", new DialogInterface.OnClickListener() {//退出按鈕
-            public void onClick(DialogInterface dialog, int i) {
-                // TODO Auto-generated method stub
-                MainActivity.this.finish();//關閉activity
-            }
+        //退出按鈕
+        ad.setPositiveButton("Yes", (dialog, i) -> {
+            MainActivity.this.finish();//關閉activity
         });
-        ad.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int i) {
-                //不退出不用執行任何操作
-            }
+        ad.setNegativeButton("No", (dialog, i) -> {
+            //不退出不用執行任何操作
         });
         ad.show();//顯示對話框
     }
-
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -621,9 +545,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (requestCode == SCREENCAP_REQUEST_CODE) {
-
             sMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
-
             if (sMediaProjection != null) {
                 String state = Environment.getExternalStorageState();
                 if ("mounted".equals(state)) {
@@ -662,12 +584,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void onStop() {
         super.onStop();
-
     }
 
     public void onDestroy() {
         super.onDestroy();
-        btTeconnectThreadEN = false;
+
+        //================================================================================
+        // bt reconnect
+        //================================================================================
         if (!IGNORE_BT_DEVICE && null != bt) {
             bt.stopAutoConnect();
             bt.stopService();
@@ -681,27 +605,12 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(msgReceiver);
         unregisterReceiver(screenReceiver);
 
-        this.stopService(new Intent(this, NotificationCollectorMonitorService.class));
+        stopService(new Intent(this, NotificationCollectorMonitorService.class));
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        final boolean bypassBtInitOnStart = true;
-        if (!bypassBtInitOnStart) {
-            if (!IGNORE_BT_DEVICE) {
-                if (!bt.isBluetoothEnabled()) {
-                    Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    //there comes twice bt permission dialog
-                    startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
-                } else {
-                    if (!bt.isServiceAvailable()) {
-                        bt.setupService();
-                        bt.startService(BluetoothState.DEVICE_OTHER);
-                    }
-                }
-            }
-        }
     }
 
     @Override
@@ -712,15 +621,11 @@ public class MainActivity extends AppCompatActivity {
         if (!isEnabledNLS) {
             showConfirmDialog();
         }
-
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //move register/unregister from   onPause/onResume to onCreate/onDestroy,insure got broadcast when in background
-
     }
 
     private int getGammaBrightness() {
@@ -728,8 +633,7 @@ public class MainActivity extends AppCompatActivity {
         float progress_normal = progress * 1.0f / seekBarBrightness.getMax();
         final float gamma = 0.45f;
         float progress_gamma = (float) Math.pow(progress_normal, gamma);
-        int gamma_brightness = Math.round(progress_gamma * seekBarBrightness.getMax());
-        return gamma_brightness;
+        return Math.round(progress_gamma * seekBarBrightness.getMax());
     }
 
     private void storeOptions(int optionID, boolean option) {
@@ -749,10 +653,7 @@ public class MainActivity extends AppCompatActivity {
      * We recommend use "button click" with buttonOnClicked.
      * Other UI (like switch) use OnCheckedChangedListener.
      */
-    private OnCheckedChangedListener onCheckedChangedListener = new OnCheckedChangedListener();
-
-    private class OnCheckedChangedListener implements CompoundButton.OnCheckedChangeListener {
-
+    private CompoundButton.OnCheckedChangeListener onCheckedChangedListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton view, boolean b) {
             switch (view.getId()) {
@@ -763,7 +664,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.switchArrowType:
-                    final boolean arrowType2 = ((Switch) view).isChecked();
+                    final boolean arrowType2 = view.isChecked();
                     sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
                             getString(R.string.option_arrow_type), arrowType2);
                     storeOptions(R.string.option_arrow_type, arrowType2);
@@ -771,23 +672,23 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.switchShowSpeed:
-                    final boolean canShowSpeed = showSpeed(((Switch) view).isChecked());
+                    final boolean canShowSpeed = showSpeed(view.isChecked());
                     if (!canShowSpeed) {
-                        ((Switch) view).setChecked(false);
+                        view.setChecked(false);
                     }
-                    storeOptions(R.string.option_show_speed, ((Switch) view).isChecked());
+                    storeOptions(R.string.option_show_speed, view.isChecked());
                     break;
 
                 case R.id.switchTrafficAndLane:
-                    if (((Switch) view).isChecked()) {
+                    if (view.isChecked()) {
                         startProjection();
                     } else {
                         stopProjection();
                     }
-                    storeOptions(R.string.option_traffic_and_lane_detect, ((Switch) view).isChecked());
+                    storeOptions(R.string.option_traffic_and_lane_detect, view.isChecked());
                     break;
 
-                case R.id.switchAlertAnytime: {
+                case R.id.switchAlertAnytime:
                     Switch switchAlertAnytime = (Switch) view;
                     final boolean alertAnytime = switchAlertAnytime.isChecked();
                     if (!alertAnytime) { //if need speed info, must check gps status
@@ -803,22 +704,21 @@ public class MainActivity extends AppCompatActivity {
                     seekBarAlertSpeed.setEnabled(!alertAnytime);
                     seekBarAlertSpeed.setOnSeekBarChangeListener(seekbarAlertSpeedChangeListener);
                     storeOptions(R.string.option_alert_anytime, alertAnytime);
-                }
-                break;
+                    break;
 
                 case R.id.switchAlertYellowTraffic:
-                    alertYellowTraffic = ((Switch) view).isChecked();
-                    storeOptions(R.string.option_alert_yellow_traffic, ((Switch) view).isChecked());
+                    alertYellowTraffic = view.isChecked();
+                    storeOptions(R.string.option_alert_yellow_traffic, view.isChecked());
                     break;
 
                 case R.id.switchShowETA:
                     sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
-                            getString(R.string.option_show_eta), ((Switch) view).isChecked());
-                    storeOptions(R.string.option_show_eta, ((Switch) view).isChecked());
+                            getString(R.string.option_show_eta), view.isChecked());
+                    storeOptions(R.string.option_show_eta, view.isChecked());
                     break;
 
                 case R.id.switchIdleShowCurrentTime:
-                    showCurrentTime = ((Switch) view).isChecked();
+                    showCurrentTime = view.isChecked();
                     if (showCurrentTime && null == currentTimeTask) {
                         currentTimeTask = new TimerTask() {
                             @Override
@@ -834,54 +734,52 @@ public class MainActivity extends AppCompatActivity {
 
                         timer.schedule(currentTimeTask, 1000, 1000);
                     }
-                    storeOptions(R.string.option_idle_show_current_time, ((Switch) view).isChecked());
+                    storeOptions(R.string.option_idle_show_current_time, view.isChecked());
                     break;
 
                 case R.id.switchBtBindAddress:
-                    final boolean isBindAddress = ((Switch) view).isChecked();
+                    final boolean isBindAddress = view.isChecked();
                     useBTAddressReconnectThread = isBindAddress;
                     storeOptions(R.string.option_bt_bind_address, isBindAddress);
                     break;
 
                 case R.id.switchShowNotify:
-                    final boolean isShowNotify = ((Switch) view).isChecked();
-//                    useBTAddressReconnectThread = isBindAddress;
+                    final boolean isShowNotify = view.isChecked();
                     storeOptions(R.string.option_show_notify, isShowNotify);
                     break;
 
                 case R.id.switchDarkModeAuto:
-                    final boolean isDarkModeAuto = ((Switch) view).isChecked();
+                    final boolean isDarkModeAuto = view.isChecked();
                     switchDarkModeManual.setEnabled(!isDarkModeAuto);
                     storeOptions(R.string.option_dark_mode_auto, isDarkModeAuto);
-                    if (isDarkModeAuto)
+                    if (isDarkModeAuto) {
                         storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-                    else {
-                        final boolean isDarkModeManualEnabled = null != sharedPref ? sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false) : false;
-                        if (isDarkModeManualEnabled)
-                            storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_YES);
-                        else
-                            storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_NO);
+                    } else {
+                        final boolean isDarkModeManualEnabled = null != sharedPref &&
+                                sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false);
+                        storeIntOptions(R.string.state_dark_mode, isDarkModeManualEnabled ?
+                                AppCompatDelegate.MODE_NIGHT_YES :
+                                AppCompatDelegate.MODE_NIGHT_NO);
                         recreate();
                     }
                     break;
 
                 case R.id.switchDarkModeMan:
-                    final boolean isDarkModeManualEnabled = ((Switch) view).isChecked();
+                    final boolean isDarkModeManualEnabled = view.isChecked();
                     storeOptions(R.string.option_dark_mode_man, isDarkModeManualEnabled);
-                    if (isDarkModeManualEnabled)
-                        storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_YES);
-                    else
-                        storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_NO);
+                    storeIntOptions(R.string.state_dark_mode, isDarkModeManualEnabled ?
+                            AppCompatDelegate.MODE_NIGHT_YES :
+                            AppCompatDelegate.MODE_NIGHT_NO);
                     recreate();
                     break;
 
-                case R.id.switchAutoBrightness: {
+                case R.id.switchAutoBrightness:
                     Switch theAutoBrightness = (Switch) view;
                     final boolean autoBrightness = theAutoBrightness.isChecked();
 
-                    final int progress = seekBarBrightness.getProgress();
+                    final int brightnessProgress = seekBarBrightness.getProgress();
                     theAutoBrightness.setText(autoBrightness ? getString(R.string.layout_element_auto_brightness)
-                            : getString(R.string.layout_seekbar_brightness) + " " + (progress * 10) + "%");
+                            : getString(R.string.layout_seekbar_brightness) + " " + (brightnessProgress * 10) + "%");
 
                     seekBarBrightness.setEnabled(!autoBrightness);
                     seekBarBrightness.setOnSeekBarChangeListener(seekbarBrightnessChangeListener);
@@ -894,29 +792,28 @@ public class MainActivity extends AppCompatActivity {
                             hud.SetBrightness(brightness);
                         }
                     }
-                }
-                break;
+                    break;
 
                 default:
                     break;
             }
         }
-    }
-
+    };
 
     public void buttonOnClicked(View view) {
         switch (view.getId()) {
-
             case R.id.button1:
                 if (null != NotificationMonitor.getStaticInstance()) {
                     NotificationMonitor.getStaticInstance().updateArrow(Arrow.Convergence);
                 }
                 break;
+
             case R.id.button2:
                 if (null != NotificationMonitor.getStaticInstance()) {
                     NotificationMonitor.getStaticInstance().updateArrow(Arrow.LeaveRoundaboutSharpRightCC);
                 }
                 break;
+
             case R.id.button3:
                 if (null != NotificationMonitor.getStaticInstance()) {
                     NotificationMonitor.getStaticInstance().updateArrow(Arrow.LeaveRoundaboutSharpRight);
@@ -942,7 +839,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
 
-
             default:
                 break;
         }
@@ -960,14 +856,14 @@ public class MainActivity extends AppCompatActivity {
             if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 return false;
             }
-            if (false == locationServiceConnected) {
+            if (!locationServiceConnected) {
                 //Here, the Location Service gets bound and the GPS Speedometer gets Active.
                 bindLocationService();
                 useLocationService = true;
             }
         } else {
             //do not show speed
-            if (true == locationServiceConnected) {
+            if (locationServiceConnected) {
                 unbindLocationService();
             }
             if (null != hud) {
@@ -984,7 +880,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void scanBluetooth() {
-
         if (null == bt || !bt.isBluetoothAvailable()) {
             Toast.makeText(getApplicationContext()
                     , getString(R.string.message_bt_not_available)
@@ -996,27 +891,8 @@ public class MainActivity extends AppCompatActivity {
 
             Intent intent = new Intent(getApplicationContext(), DeviceList.class);
             startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
-
         }
     }
-
-    /*
-    Does we need restartNotificationListenerService here?
-    It should be NotificaitonCollectorMonitorService's work.
-     */
-//    private void restartNotificationListenerService(Context context) {
-//        //worked!
-//        //NotificationMonitor
-//        stopService(new Intent(this, NotificationMonitor.class));
-//        startService(new Intent(this, NotificationMonitor.class));
-//
-//        PackageManager pm = getPackageManager();
-//        pm.setComponentEnabledSetting(new ComponentName(this, NotificationMonitor.class),
-//                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-//        pm.setComponentEnabledSetting(new ComponentName(this, NotificationMonitor.class),
-//                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-//
-//    }
 
     private boolean isNLSEnabled() {
         String pkgName = getPackageName();
@@ -1024,8 +900,8 @@ public class MainActivity extends AppCompatActivity {
                 ENABLED_NOTIFICATION_LISTENERS);
         if (!TextUtils.isEmpty(flat)) {
             final String[] names = flat.split(":");
-            for (int i = 0; i < names.length; i++) {
-                final ComponentName cn = ComponentName.unflattenFromString(names[i]);
+            for (String name : names) {
+                final ComponentName cn = ComponentName.unflattenFromString(name);
                 if (cn != null) {
                     if (TextUtils.equals(pkgName, cn.getPackageName())) {
                         return true;
@@ -1036,20 +912,19 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-
     private String getCurrentNotificationString() {
-        String listNos = "";
+        StringBuilder listNos = new StringBuilder();
         StatusBarNotification[] currentNos = NotificationMonitor.getCurrentNotifications();
         if (currentNos != null) {
             for (int i = 0; i < currentNos.length; i++) {
-                listNos += Integer.toString(i + 1) + " " + currentNos[i].getPackageName() + "\n";
+                listNos.append(i + 1).append(" ").append(currentNos[i].getPackageName()).append("\n");
             }
         }
-        return listNos;
+        return listNos.toString();
     }
 
     private void listCurrentNotification() {
-        String result = "";
+        String result;
         if (isEnabledNLS) {
             if (NotificationMonitor.getCurrentNotifications() == null) {
                 result = "No Notifications Capture!!!\nSometimes reboot device or re-install app can resolve this problem.";
@@ -1061,7 +936,7 @@ public class MainActivity extends AppCompatActivity {
             if (n == 0) {
                 result = getResources().getString(R.string.active_notification_count_zero);
             } else {
-                result = String.format(getResources().getQuantityString(R.plurals.active_notification_count_nonzero, n, n));
+                result = getResources().getQuantityString(R.plurals.active_notification_count_nonzero, n, n);
             }
             result = result + "\n" + getCurrentNotificationString();
             CharSequence text = textViewDebug.getText();
@@ -1084,16 +959,10 @@ public class MainActivity extends AppCompatActivity {
                 .setIconAttribute(android.R.attr.alertDialogIcon)
                 .setCancelable(true)
                 .setPositiveButton(android.R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                openNotificationAccess();
-                            }
-                        })
+                        (dialog, id) -> openNotificationAccess())
                 .setNegativeButton(android.R.string.cancel,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // do nothing
-                            }
+                        (dialog, id) -> {
+                            // do nothing
                         })
                 .create().show();
     }
@@ -1102,11 +971,11 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, object.toString());
     }
 
-
     // bind/activate LocationService
     void bindLocationService() {
-        if (true == locationServiceConnected)
+        if (locationServiceConnected) {
             return;
+        }
         Intent i = new Intent(getApplicationContext(), LocationService.class);
         bindService(i, locationServiceConnection, BIND_AUTO_CREATE);
         locationServiceConnected = true;
@@ -1114,8 +983,9 @@ public class MainActivity extends AppCompatActivity {
 
     // unbind/deactivate LocationService
     void unbindLocationService() {
-        if (false == locationServiceConnected)
+        if (!locationServiceConnected) {
             return;
+        }
         unbindService(locationServiceConnection);
         locationServiceConnected = false;
     }
@@ -1137,19 +1007,13 @@ public class MainActivity extends AppCompatActivity {
         alertDialogBuilder.setMessage("Enable GPS to Show Speed")
                 .setCancelable(false)
                 .setPositiveButton("Enable GPS",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Intent callGPSSettingIntent = new Intent(
-                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivity(callGPSSettingIntent);
-                            }
+                        (dialog, id) -> {
+                            Intent callGPSSettingIntent = new Intent(
+                                    Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(callGPSSettingIntent);
                         });
         alertDialogBuilder.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
+                (dialog, id) -> dialog.cancel());
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
     }
@@ -1170,27 +1034,22 @@ public class MainActivity extends AppCompatActivity {
                 new AlertDialog.Builder(this)
                         .setTitle("Location Permission")
                         .setMessage(message)
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                //Prompt the user once explanation has been shown
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                    ActivityCompat.requestPermissions(MainActivity.this,
-                                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                                                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                                            },
-                                            MY_PERMISSIONS_REQUEST_LOCATION);
-                                } else {
-                                    ActivityCompat.requestPermissions(MainActivity.this,
-                                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                            MY_PERMISSIONS_REQUEST_LOCATION);
-                                }
+                        .setPositiveButton("Ok", (dialogInterface, i) -> {
+                            //Prompt the user once explanation has been shown
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                ActivityCompat.requestPermissions(MainActivity.this,
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                                                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                                        },
+                                        MY_PERMISSIONS_REQUEST_LOCATION);
+                            } else {
+                                ActivityCompat.requestPermissions(MainActivity.this,
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        MY_PERMISSIONS_REQUEST_LOCATION);
                             }
                         })
                         .create()
                         .show();
-
-
             } else {
                 // No explanation needed; request the permission
                 ActivityCompat.requestPermissions(this,
@@ -1204,7 +1063,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     private void updateTextViewDebug(String msg) {
         CharSequence orignal_text = textViewDebug.getText();
         orignal_text = orignal_text.length() > 1000 ? "" : orignal_text;
@@ -1214,14 +1072,12 @@ public class MainActivity extends AppCompatActivity {
     private class MsgReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            //for debug
-            String whoami = intent.getStringExtra(getString(R.string.whoami));
-
             //=======================================================================
             // for debug message
             //=======================================================================
             boolean has_notify_msg = intent.hasExtra(getString(R.string.notify_msg));
-            if (has_notify_msg) { //if recv notify message,  display it then return (jump out)
+            if (has_notify_msg) {
+                //if recv notify message,  display it then return (jump out)
                 String notify_msg = intent.getStringExtra(getString(R.string.notify_msg));
                 if (null != textViewDebug) {
                     updateTextViewDebug(notify_msg);
@@ -1240,13 +1096,14 @@ public class MainActivity extends AppCompatActivity {
 
                 final boolean show_speed = switchShowSpeed.isChecked();
                 if (show_speed) {
-                    setSpeed(int_speed, true);
+                    setSpeed(int_speed);
                 }
 
                 CharSequence orignal_text = textViewDebug.getText();
                 textViewDebug.setText("speed: " + int_speed + "\n\n" + orignal_text);
                 return;
             }
+
             //=======================================================================
             // for UI usage, parse notify_parse_failed first
             //=======================================================================
@@ -1261,52 +1118,42 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 //pass success
                 final boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched),
-                        null != switchNotificationCaught ? switchNotificationCaught.isChecked() : false);
+                        null != switchNotificationCaught && switchNotificationCaught.isChecked());
                 final boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched),
-                        null != switchGmapsNotificationCaught ? switchGmapsNotificationCaught.isChecked() : false);
+                        null != switchGmapsNotificationCaught && switchGmapsNotificationCaught.isChecked());
 
 
                 final boolean is_in_navigation_in_intent = intent.getBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
 
                 if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
-                    if (!notify_catched) { //no notify catched
+                    if (!notify_catched) {
+                        //no notify catched
                         switchNotificationCaught.setChecked(false);
                         switchGmapsNotificationCaught.setChecked(false);
                     } else {
-                        switchNotificationCaught.setChecked(notify_catched);
-                        // we need two condition to confirm in navagating:   1. gmaps's notify  2. in_navigation from notify monitor
+                        switchNotificationCaught.setChecked(true);
+                        // we need two condition to confirm in navagating:
+                        // 1. gmaps's notify
+                        // 2. in_navigation from notify monitor
                         final boolean is_really_in_navigation = gmaps_notify_catched && is_in_navigation_in_intent;
                         switchGmapsNotificationCaught.setChecked(is_really_in_navigation);
 
                         if (lastReallyInNavigation != is_really_in_navigation &&
-                                false == is_really_in_navigation &&
+                                !is_really_in_navigation &&
                                 null != hud) {
                             //exit navigation
-                            hud.SetDirection(eOutAngle.AsDirection); //maybe in this line
+                            hud.SetDirection(eOutAngle.AsDirection);
+                            //maybe in this line
                         }
                         is_in_navigation = is_really_in_navigation;
                         lastReallyInNavigation = is_really_in_navigation;
                     }
                 }
             }
+
             //=======================================================================
-
-            //no recommend use this feature, because of it bring app to front when projecting
-//            final boolean do_auto_project_by_navigation = false;
-//            if (do_auto_project_by_navigation) {
-//                if (null != switchTrafficAndLane && switchTrafficAndLane.isChecked()) {
-//                    if (is_in_navigation) {
-//                        if (!projecting) {
-//                            startProjection();
-//                        }
-//                    } else {
-//                        stopProjection();
-//                    }
-//                }
-//            }
-//=======================================================================
-            if (intent.hasExtra(getString(R.string.option_arrow_type)) && null != switchArrowType) { //re-sync arrow type between ui & notify monitor
-
+            if (intent.hasExtra(getString(R.string.option_arrow_type)) && null != switchArrowType) {
+                //re-sync arrow type between ui & notify monitor
                 boolean arrowTypeV2_in_ui = switchArrowType.isChecked();
                 boolean arrowTypeV2_in_notify_monitor = intent.getBooleanExtra((getString(R.string.option_arrow_type)), arrowTypeV2_in_ui);
 
@@ -1328,6 +1175,7 @@ public class MainActivity extends AppCompatActivity {
             "Setup",
             "Debug"
     };
+
     // The fragments that are used as the individual pages
     private final Fragment[] PAGES = new Fragment[]{
             new Page1Fragment(),
@@ -1335,17 +1183,12 @@ public class MainActivity extends AppCompatActivity {
             new Page2Fragment()
     };
 
-    /* PagerAdapter for supplying the ViewPager with the pages (fragments) to display. */
+    // PagerAdapter for supplying the ViewPager with the pages (fragments) to display.
     private class MyPagerAdapter extends FragmentPagerAdapter {
-
         public MyPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
         }
 
-
-        //        public Fragment getItem(int position) {
-//            return PAGES[position];
-//        }
         @Override
         public androidx.fragment.app.Fragment getItem(int position) {
             return PAGES[position];
@@ -1363,12 +1206,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private boolean hudConnected;
-
     private class BluetoothConnectionListener implements BluetoothSPP.BluetoothConnectionListener, BluetoothSPP.AutoConnectionListener {
         @Override
         public void onAutoConnectionStarted() {
-            int a = 1;
+
         }
 
         @Override
@@ -1376,17 +1217,8 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        /*
-        talk about location service:
-        only work when device connected.
-        not work when device disconnected or panel off => can android send location to garmin hud when panel off?
-
-         */
-
         @Override
         public void onDeviceConnected(String name, String address) {
-            hudConnected = true;
-
             if (null != switchHudConnected) {
                 switchHudConnected.setText(getString(R.string.layout_element_hud_success_connected, name));
                 if (null != sharedPref && sharedPref.getInt(getString(R.string.state_dark_mode)
@@ -1423,7 +1255,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceDisconnected() {
-            hudConnected = false;
             switchHudConnected.setText(getString(R.string.layout_element_hud_disconnected));
             switchHudConnected.setTextColor(Color.RED);
             switchHudConnected.setChecked(false);
@@ -1434,7 +1265,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceConnectionFailed() {
-            hudConnected = false;
             String text = getString(R.string.layout_element_hud_con_failed);
             if (null != switchHudConnected) {
                 switchHudConnected.setText(text);
@@ -1447,11 +1277,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     //================================================================================
-    // media proejct
+    // media projection
     //================================================================================
-    private MediaProjectionManager mProjectionManager;
+    private MediaProjectionManager mProjectionManager =
+            (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
     private ImageReader mImageReader;
     private Handler mProjectionHandler;
     private Display mDisplay;
@@ -1474,7 +1304,6 @@ public class MainActivity extends AppCompatActivity {
     private static MediaProjection sMediaProjection;
 
     private class OrientationChangeCallback extends OrientationEventListener {
-
         OrientationChangeCallback(Context context) {
             super(context);
         }
@@ -1498,188 +1327,34 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     private class MediaProjectionStopCallback extends MediaProjection.Callback {
         @Override
         public void onStop() {
             Log.e("ScreenCapture", "stopping projection.");
-            mProjectionHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (mVirtualDisplay != null) mVirtualDisplay.release();
-                    if (mImageReader != null) mImageReader.setOnImageAvailableListener(null, null);
-                    if (mOrientationChangeCallback != null) mOrientationChangeCallback.disable();
-                    sMediaProjection.unregisterCallback(MediaProjectionStopCallback.this);
-                }
+            mProjectionHandler.post(() -> {
+                if (mVirtualDisplay != null) mVirtualDisplay.release();
+                if (mImageReader != null) mImageReader.setOnImageAvailableListener(null, null);
+                if (mOrientationChangeCallback != null) mOrientationChangeCallback.disable();
+                sMediaProjection.unregisterCallback(MediaProjectionStopCallback.this);
             });
         }
     }
-/* It's not necessary to have a switch on notification.
-
-    class NotificationSwitchReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-            final Serializable s = intent.getSerializableExtra(getString(R.string.notify_switch_event));
-            final boolean canGo = s instanceof SwitchEvent;
-            if (canGo) {
-                SwitchEvent event = (SwitchEvent) s;
-                switch (event) {
-
-                    case Speed: {
-                        final boolean now = !switchShowSpeed.isChecked();
-                        switchShowSpeed.setChecked(now);
-                        notification = getNormalNotification("Show Speed: "
-                                + (now ? "On" : "Off"));
-                        mNotificationManager.notify(R.integer.notify_id, notification);
-                    }
-                    break;
-                    case AutoBrightness: {
-                        final boolean now = !switchAutoBrightness.isChecked();
-                        switchAutoBrightness.setChecked(now);
-                        notification = getNormalNotification("Auto Brightness: "
-                                + (now ? "On" : "Off"));
-                        mNotificationManager.notify(R.integer.notify_id, notification);
-                    }
-                    break;
-                    case ETA: {
-                        final boolean now = !switchShowETA.isChecked();
-                        switchShowETA.setChecked(now);
-                        notification = getNormalNotification("Show ETA: "
-                                + (now ? "On" : "Off"));
-                        mNotificationManager.notify(R.integer.notify_id, notification);
-                    }
-                    break;
-                    case Time: {
-                        final boolean now = !switchIdleShowCurrentTime.isChecked();
-                        switchIdleShowCurrentTime.setChecked(now);
-                        notification = getNormalNotification("Show Current Time: "
-                                + (now ? "On" : "Off"));
-                        mNotificationManager.notify(R.integer.notify_id, notification);
-                    }
-                    break;
-                    case LaneTrafficDetect: {
-                        final boolean now = !switchTrafficAndLane.isChecked();
-                        switchTrafficAndLane.setChecked(now);
-                        notification = getNormalNotification("Traffic & Lane Detection: "
-                                + (now ? "On" : "Off"));
-                        mNotificationManager.notify(R.integer.notify_id, notification);
-                    }
-                    break;
-                }
-
-            }
-        }
-    }
-
-    private NotificationSwitchReceiver notificationSwitchReceiver = new NotificationSwitchReceiver();
-    private PendingIntent getPendingIntentForNotify(String action, SwitchEvent switchEvent) {
-        Intent intent = new Intent(action);
-        intent.putExtra(getString(R.string.notify_switch_event), switchEvent);
-        final PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        return pendingIntent;
-    }
-
-
-    private Notification getNormalNotification(String contentText) {
-        final Intent mainIntent = getIntent(); // 目前Activity的Intent
-        int flags = PendingIntent.FLAG_CANCEL_CURRENT; // ONE_SHOT：PendingIntent只使用一次；CANCEL_CURRENT：PendingIntent執行前會先結束掉之前的；NO_CREATE：沿用先前的PendingIntent，不建立新的PendingIntent；UPDATE_CURRENT：更新先前PendingIntent所帶的額外資料，並繼續沿用
-        final PendingIntent pendingMainIntent = PendingIntent.getActivity(getApplicationContext(), 0, mainIntent, flags); // 取得PendingIntent
-
-
-        final PendingIntent switchSpeedPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_speed), SwitchEvent.Speed);
-        final PendingIntent switchAutoBrightnessPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_auto_brightness), SwitchEvent.AutoBrightness);
-        final PendingIntent switchETAPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_ETA), SwitchEvent.ETA);
-        final PendingIntent switchTimePendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_time), SwitchEvent.Time);
-        final PendingIntent switchDetectPendingIntent = getPendingIntentForNotify(getString(R.string.broadcast_notification_switch_detect), SwitchEvent.LaneTrafficDetect);
-
-
-        final String channelID = "id";
-        notification
-                = new NotificationCompat.Builder(MainActivity.this, channelID)
-                .setSmallIcon(R.mipmap.ic_notification_foreground)
-//                .setTicker("notification on status bar.") // 設置狀態列的顯示的資訊
-                .setAutoCancel(false) // 設置通知被使用者點擊後是否清除  //notification.flags = Notification.FLAG_AUTO_CANCEL;
-//                .setContentTitle(getString(R.string.app_name)) // 設置下拉清單裡的標題
-                .setContentText(contentText)// 設置上下文內容
-                .setOngoing(true)      //true使notification變為ongoing，用戶不能手動清除// notification.flags = Notification.FLAG_ONGOING_EVENT; notification.flags = Notification.FLAG_NO_CLEAR;
-                .setContentIntent(pendingMainIntent)
-
-                .addAction(R.drawable.baseline_av_timer_24, getString(R.string.notify_switch_speed), switchSpeedPendingIntent)
-                .addAction(R.drawable.baseline_brightness_auto_24, "Auto Brightness", switchAutoBrightnessPendingIntent)
-                .addAction(R.drawable.baseline_drive_eta_24, getString(R.string.notify_switch_ETA), switchETAPendingIntent)
-                .addAction(R.drawable.baseline_access_time_24, "Current Time", switchTimePendingIntent)
-                .addAction(R.drawable.baseline_traffic_24, getString(R.string.notify_switch_detect), switchDetectPendingIntent)
-
-                .setChannelId(channelID)
-//                .setStyle(style)
-
-                .build();
-
-        return notification;
-    }
-
-    private Notification notification;
-    private NotificationManager mNotificationManager;
-
-    private void startNotification() {
-        log("startNotification");
-        //Step1. 初始化NotificationManager，取得Notification服務
-        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notification = getNormalNotification("");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            final String channelID = "id";
-            NotificationChannel channel = new NotificationChannel(
-                    channelID,
-                    "Channel",
-                    NotificationManager.IMPORTANCE_MAX);
-            channel.enableLights(false);
-            //it had a bug which is vibration cannot be disabled normally.
-            channel.setVibrationPattern(new long[]{0});
-            channel.enableVibration(true);
-
-            mNotificationManager.createNotificationChannel(channel);
-        } else {
-            notification.vibrate = new long[]{0};
-        }
-
-        // 把指定ID的通知持久的發送到狀態條上.
-        mNotificationManager.notify(R.integer.notify_id, notification);
-    }
-
-    private void stopNotification() {
-        log("stopNotification");
-
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mNotificationManager.cancelAll();
-    }
-*/
 
     /****************************************** UI Widget Callbacks *******************************/
-    boolean projecting = false;
-
     private void startProjection() {
-//        if (is_in_navigation) {
         startActivityForResult(mProjectionManager.createScreenCaptureIntent(), SCREENCAP_REQUEST_CODE);
-        projecting = true;
-//        }
     }
 
     private void stopProjection() {
-        projecting = false;
-        mProjectionHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (sMediaProjection != null) {
-                    sMediaProjection.stop();
-                }
+        mProjectionHandler.post(() -> {
+            if (sMediaProjection != null) {
+                sMediaProjection.stop();
             }
         });
     }
 
     /****************************************** Factoring Virtual Display creation ****************/
-    private ImageDetectListener detectListener;//= new ImageDetectListener(this);
+    private ImageDetectListener detectListener;
 
     private void createVirtualDisplay() {
         DisplayMetrics dm = new DisplayMetrics();
@@ -1693,33 +1368,7 @@ public class MainActivity extends AppCompatActivity {
         mImageReader.setOnImageAvailableListener(detectListener, mProjectionHandler);
     }
 
-    //================================================================================
-    // bt reconnect
-    //================================================================================
-    private boolean btTeconnectThreadEN = true;
-
-//    private class BTReconnectThread extends Thread {
-//        public void run() {
-//            try {
-//                final int interval = getResources().getInteger(R.integer.bt_reconnect_interval);
-//                Thread.sleep(interval);
-//            } catch (Exception e) {
-//                log(e);
-//            }
-//
-//            if (!hudConnected && btTeconnectThreadEN) {
-//                String reconnectAddress = sharedPref.getString(getString(R.string.bt_bind_address_key), null);
-//                log("reconnect address:" + reconnectAddress);
-//                if (null != reconnectAddress) {
-//                    bt.connect(reconnectAddress);
-//                }
-//            }
-//
-//        }
-//    }
-
     private boolean useBTAddressReconnectThread = false;
-//    private Thread btReconnectThread;
 
     private void resetBT() {
         if (useBTAddressReconnectThread && null != bt) {
@@ -1730,8 +1379,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-
-
-enum SwitchEvent {
-    Speed, AutoBrightness, ETA, Time, LaneTrafficDetect
-};
