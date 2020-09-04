@@ -375,7 +375,9 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext()
                         ,  getString(R.string.message_bt_not_available)
                         , Toast.LENGTH_SHORT).show();
-                finish();
+                // Allow no BT to at least access settings to switch HUD type
+                NotificationMonitor.hud = hud;
+                return "(NO BT)";
             }
             hud = new GarminHUD(bt);
 
