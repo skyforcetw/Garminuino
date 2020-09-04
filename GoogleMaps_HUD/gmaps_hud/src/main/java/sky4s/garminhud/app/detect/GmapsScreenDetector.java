@@ -183,7 +183,7 @@ public class GmapsScreenDetector extends ScreenDetector {
             //=====================================
             if (road_detect_result && arrow_detect_result) {
                 if (arrow_detect_result) {
-                    busyTraffic = busyTrafficDetect(map_roi_image, activity.alertYellowTraffic, activity.alertSpeedExceeds, activity.gpsSpeed, theme);
+                    busyTraffic = busyTrafficDetect(map_roi_image, activity.mAlertYellowTraffic, activity.mAlertSpeedExceeds, activity.mGpsSpeed, theme);
                     String msg = "busy:" + busyTraffic + " theme" + theme;
                     postman.addStringExtra(activity.getString(R.string.notify_msg), msg);
                     postman.sendIntent2MainActivity();

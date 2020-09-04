@@ -24,7 +24,7 @@ public class Page2Fragment extends Fragment {
     {
         super.onActivityCreated(savedInstanceState);
         TextView textView = (TextView) getView().findViewById(R.id.textViewDebug);
-        ((MainActivity)getActivity()).textViewDebug = textView;
+        ((MainActivity)getActivity()).mDebugTextView = textView;
 
     }
 }

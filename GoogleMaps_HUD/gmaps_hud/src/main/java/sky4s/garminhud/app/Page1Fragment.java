@@ -30,20 +30,20 @@ public class Page1Fragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ((MainActivity) getActivity()).switchHudConnected = (Switch) getView().findViewById(R.id.switchHudConnected);
-        ((MainActivity) getActivity()).switchNotificationCaught = (Switch) getView().findViewById(R.id.switchNotificationCaught);
-        ((MainActivity) getActivity()).switchGmapsNotificationCaught = (Switch) getView().findViewById(R.id.switchGmapsNotificationCaught);
+        ((MainActivity) getActivity()).mHudConnectedSwitch = (Switch) getView().findViewById(R.id.switchHudConnected);
+        ((MainActivity) getActivity()).mNotificationCaughtSwitch = (Switch) getView().findViewById(R.id.switchNotificationCaught);
+        ((MainActivity) getActivity()).mGmapsNotificationCaughtSwitch = (Switch) getView().findViewById(R.id.switchGmapsNotificationCaught);
 
-        ((MainActivity) getActivity()).switchShowSpeed = (Switch) getView().findViewById(R.id.switchShowSpeed);
-        ((MainActivity) getActivity()).switchAutoBrightness =  (Switch) getView().findViewById(R.id.switchAutoBrightness);;
+        ((MainActivity) getActivity()).mShowSpeedSwitch = (Switch) getView().findViewById(R.id.switchShowSpeed);
+        ((MainActivity) getActivity()).mAutoBrightnessSwitch =  (Switch) getView().findViewById(R.id.switchAutoBrightness);;
         SeekBar seekBarBrightness= (SeekBar) getView().findViewById(R.id.seekBarBrightness);
         seekBarBrightness.setEnabled(false);
-        ((MainActivity) getActivity()).seekBarBrightness = seekBarBrightness;
+        ((MainActivity) getActivity()).mBrightnessSeekbar = seekBarBrightness;
 
-        ((MainActivity) getActivity()).switchShowETA = (Switch) getView().findViewById(R.id.switchShowETA);
-        ((MainActivity) getActivity()).switchIdleShowCurrentTime = (Switch) getView().findViewById(R.id.switchIdleShowCurrentTime);
+        ((MainActivity) getActivity()).mShowETASwitch = (Switch) getView().findViewById(R.id.switchShowETA);
+        ((MainActivity) getActivity()).mIdleShowCurrentTimeSwitch = (Switch) getView().findViewById(R.id.switchIdleShowCurrentTime);
 
-        ((MainActivity) getActivity()).switchTrafficAndLane = (Switch) getView().findViewById(R.id.switchTrafficAndLane);
+        ((MainActivity) getActivity()).mTrafficAndLaneSwitch = (Switch) getView().findViewById(R.id.switchTrafficAndLane);
 //        ((MainActivity) getActivity()).switchAlertYellowTraffic = (Switch) getView().findViewById(R.id.switchAlertYellowTraffic);
 
 //        ((MainActivity) getActivity()).switchBtBindAddress = (Switch) getView().findViewById(R.id.switchBtBindAddress);

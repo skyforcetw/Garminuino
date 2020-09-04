@@ -89,68 +89,68 @@ public class MainActivity extends AppCompatActivity {
     //========================================
     // UI for Page1Fragment
     //========================================
-    TextView textViewDebug;
+    TextView mDebugTextView;
 
     //status
-    Switch switchHudConnected;
-    Switch switchNotificationCaught;
-    Switch switchGmapsNotificationCaught;
+    Switch mHudConnectedSwitch;
+    Switch mNotificationCaughtSwitch;
+    Switch mGmapsNotificationCaughtSwitch;
 
     //setting
-    Switch switchShowSpeed;
-    Switch switchAutoBrightness;
-    SeekBar seekBarBrightness;
+    Switch mShowSpeedSwitch;
+    Switch mAutoBrightnessSwitch;
+    SeekBar mBrightnessSeekbar;
 
-    Switch switchShowETA;
-    Switch switchIdleShowCurrentTime;
-    Switch switchTrafficAndLane;
+    Switch mShowETASwitch;
+    Switch mIdleShowCurrentTimeSwitch;
+    Switch mTrafficAndLaneSwitch;
     //========================================
     // UI for Page3Fragment
     //========================================
     //BMW HUD
-    Switch switchBMWHUDEnabled;
+    Switch mBMWHUDEnabledSwitch;
     //arrow
-    Switch switchArrowType;
+    Switch mArrowTypeSwitch;
     //traffic
-    Switch switchAlertAnytime;
-    SeekBar seekBarAlertSpeed;
-    Switch switchAlertYellowTraffic;
+    Switch mAlertAnytimeSwitch;
+    SeekBar mAlertSpeedSeekbar;
+    Switch mAlertYellowTrafficSwitch;
     //bluetooth
-    Switch switchBtBindAddress;
+    Switch mBindBtAddressSwitch;
     //notification
-    Switch switchShowNotify;
+    Switch mShowNotifySwitch;
     //app-appearance
-    Switch switchDarkModeAuto;
-    Switch switchDarkModeManual;
+    Switch mDarkModeAutoSwitch;
+    Switch mDarkModeManualSwitch;
 
-    static Intent mainIntent;
+    static Intent sMainIntent;
 
-    public HUDInterface hud = new DummyHUD();
-    public boolean is_in_navigation = false;
+    public HUDInterface mHud = new DummyHUD();
+    public boolean mIsNavigating = false;
 
-    private boolean isEnabledNLS = false;
-    private boolean showCurrentTime = false;
-    private BluetoothSPP bt;
-    private NotificationManager notifyManager = getSystemService(NotificationManager.class);
-    private MsgReceiver msgReceiver;
-    private boolean lastReallyInNavigation = false;
-    private BroadcastReceiver screenReceiver;
-    private Timer timer = new Timer(true);
-    private TimerTask currentTimeTask;
+    private boolean mIsNLSEnabled = false;
+    private boolean mShowCurrentTime = false;
+    private BluetoothSPP mBt;
+    private NotificationManager mNotificationManager = getSystemService(NotificationManager.class);
+    private MsgReceiver mMsgReceiver;
+    private boolean mLastReallyInNavigation = false;
+    private BroadcastReceiver mScreenReceiver;
+    private Timer mTimer = new Timer(true);
+    private TimerTask mCurrentTimerTask;
 
-    private NavigationView.OnNavigationItemSelectedListener navigationListener = item -> false;
+    private NavigationView.OnNavigationItemSelectedListener mNavigationListener = item -> false;
 
     //========================================================================================
-    private SharedPreferences sharedPref;
-    private BluetoothConnectionListener btConnectionListener = new BluetoothConnectionListener();
-    private SeekBar.OnSeekBarChangeListener seekbarBrightnessChangeListener = new SeekBar.OnSeekBarChangeListener() {
+    private SharedPreferences mSharedPrefs;
+    private BluetoothConnectionListener mBtConnectionListener = new BluetoothConnectionListener();
+    private SeekBar.OnSeekBarChangeListener mBrightnessSeekbarChangeListener = new SeekBar.OnSeekBarChangeListener() {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            switchAutoBrightness.setText(getString(R.string.layout_seekbar_brightness) + " " + (progress * 10) + "%");
-            if (null != hud) {
+            mAutoBrightnessSwitch.setText(getString(R.string.layout_seekbar_brightness) + " " + (progress * 10) + "%");
+            if (null != mHud) {
                 int brightness = getGammaBrightness();
-                hud.SetBrightness(brightness);
+                mHud.SetBrightness(brightness);
             }
         }
 
@@ -165,12 +165,12 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private SeekBar.OnSeekBarChangeListener seekbarAlertSpeedChangeListener = new SeekBar.OnSeekBarChangeListener() {
+    private SeekBar.OnSeekBarChangeListener mAlertSpeedSeekbarChangeListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            final boolean alertAnytime = switchAlertAnytime.isChecked();
+            final boolean alertAnytime = mAlertAnytimeSwitch.isChecked();
             if (!alertAnytime) {
-                switchAlertAnytime.setText(getString(R.string.layout_element_alert_speed_exceeds) + " " + (progress * 10) + "kph");
+                mAlertAnytimeSwitch.setText(getString(R.string.layout_element_alert_speed_exceeds) + " " + (progress * 10) + "kph");
                 storeIntOptions(R.string.option_alert_speed, progress);
             }
         }
@@ -189,18 +189,18 @@ public class MainActivity extends AppCompatActivity {
     //===============================================================================================
     // location
     //===============================================================================================
-    private boolean locationServiceConnected = false;
-    private boolean useLocationService;
-    private LocationManager locationManager;
-    private ServiceConnection locationServiceConnection = new ServiceConnection() {
+    private boolean mLocationServiceConnected = false;
+    private boolean mUseLocationService;
+    private LocationManager mLocationManager;
+    private ServiceConnection mLocationServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            locationServiceConnected = true;
+            mLocationServiceConnected = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            locationServiceConnected = false;
+            mLocationServiceConnected = false;
         }
     };
 
@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private boolean isInNavigation() {
-        return switchGmapsNotificationCaught.isChecked();
+        return mGmapsNotificationCaughtSwitch.isChecked();
     }
 
     public void sendBooleanExtraByBroadcast(String receiver, String key, boolean b) {
@@ -219,141 +219,141 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setSpeed(int nSpeed) {
-        if (null != hud) {
-            if (is_in_navigation) {
-                hud.SetSpeed(nSpeed, true);
+        if (null != mHud) {
+            if (mIsNavigating) {
+                mHud.SetSpeed(nSpeed, true);
             } else {
-                hud.SetDistance(nSpeed, eUnits.None);
+                mHud.SetDistance(nSpeed, eUnits.None);
             }
         }
     }
 
     void loadOptions() {
-        switchShowSpeed.setOnCheckedChangeListener(onCheckedChangedListener);
+        mShowSpeedSwitch.setOnCheckedChangeListener(mOnCheckedChangedListener);
 
-        switchTrafficAndLane.setOnCheckedChangeListener(onCheckedChangedListener);
-        switchAlertAnytime.setOnCheckedChangeListener(onCheckedChangedListener);
-        switchAlertYellowTraffic.setOnCheckedChangeListener(onCheckedChangedListener);
+        mTrafficAndLaneSwitch.setOnCheckedChangeListener(mOnCheckedChangedListener);
+        mAlertAnytimeSwitch.setOnCheckedChangeListener(mOnCheckedChangedListener);
+        mAlertYellowTrafficSwitch.setOnCheckedChangeListener(mOnCheckedChangedListener);
 
-        switchAutoBrightness.setOnCheckedChangeListener(onCheckedChangedListener);
-        switchShowETA.setOnCheckedChangeListener(onCheckedChangedListener);
-        switchIdleShowCurrentTime.setOnCheckedChangeListener(onCheckedChangedListener);
-        switchBtBindAddress.setOnCheckedChangeListener(onCheckedChangedListener);
-        switchShowNotify.setOnCheckedChangeListener(onCheckedChangedListener);
-        switchBMWHUDEnabled.setOnCheckedChangeListener(onCheckedChangedListener);
-        switchArrowType.setOnCheckedChangeListener(onCheckedChangedListener);
+        mAutoBrightnessSwitch.setOnCheckedChangeListener(mOnCheckedChangedListener);
+        mShowETASwitch.setOnCheckedChangeListener(mOnCheckedChangedListener);
+        mIdleShowCurrentTimeSwitch.setOnCheckedChangeListener(mOnCheckedChangedListener);
+        mBindBtAddressSwitch.setOnCheckedChangeListener(mOnCheckedChangedListener);
+        mShowNotifySwitch.setOnCheckedChangeListener(mOnCheckedChangedListener);
+        mBMWHUDEnabledSwitch.setOnCheckedChangeListener(mOnCheckedChangedListener);
+        mArrowTypeSwitch.setOnCheckedChangeListener(mOnCheckedChangedListener);
 
         //======================================
         // default settings
         //======================================
-        final boolean optionShowSpeed = sharedPref.getBoolean(getString(R.string.option_show_speed), false);
+        final boolean optionShowSpeed = mSharedPrefs.getBoolean(getString(R.string.option_show_speed), false);
 
-        final boolean optionTrafficAndLaneDetect = sharedPref.getBoolean(getString(R.string.option_traffic_and_lane_detect), false);
-        final boolean optionAlertAnytime = sharedPref.getBoolean(getString(R.string.option_alert_anytime), false);
-        final int optionAlertSpeed = sharedPref.getInt(getString(R.string.option_alert_speed), 8);
-        final boolean optionAlertYellowTraffic = sharedPref.getBoolean(getString(R.string.option_alert_yellow_traffic), false);
+        final boolean optionTrafficAndLaneDetect = mSharedPrefs.getBoolean(getString(R.string.option_traffic_and_lane_detect), false);
+        final boolean optionAlertAnytime = mSharedPrefs.getBoolean(getString(R.string.option_alert_anytime), false);
+        final int optionAlertSpeed = mSharedPrefs.getInt(getString(R.string.option_alert_speed), 8);
+        final boolean optionAlertYellowTraffic = mSharedPrefs.getBoolean(getString(R.string.option_alert_yellow_traffic), false);
 
-        final boolean optionShowEta = sharedPref.getBoolean(getString(R.string.option_show_eta), false);
-        final boolean optionIdleShowTime = sharedPref.getBoolean(getString(R.string.option_idle_show_current_time), false);
-        final boolean optionBtBindAddress = sharedPref.getBoolean(getString(R.string.option_bt_bind_address), false);
-        final boolean optionShowNotify = sharedPref.getBoolean(getString(R.string.option_show_notify), false);
-        final boolean optionDarkModeAuto = sharedPref.getBoolean(getString(R.string.option_dark_mode_auto), false);
-        final boolean optionDarkModeMan = sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false);
+        final boolean optionShowEta = mSharedPrefs.getBoolean(getString(R.string.option_show_eta), false);
+        final boolean optionIdleShowTime = mSharedPrefs.getBoolean(getString(R.string.option_idle_show_current_time), false);
+        final boolean optionBtBindAddress = mSharedPrefs.getBoolean(getString(R.string.option_bt_bind_address), false);
+        final boolean optionShowNotify = mSharedPrefs.getBoolean(getString(R.string.option_show_notify), false);
+        final boolean optionDarkModeAuto = mSharedPrefs.getBoolean(getString(R.string.option_dark_mode_auto), false);
+        final boolean optionDarkModeMan = mSharedPrefs.getBoolean(getString(R.string.option_dark_mode_man), false);
 
-        final boolean optionBMWHUDEnabled = sharedPref.getBoolean(getString(R.string.option_bmw_hud_enabled), false);
-        final boolean optionArrowType = sharedPref.getBoolean(getString(R.string.option_arrow_type), true);
+        final boolean optionBMWHUDEnabled = mSharedPrefs.getBoolean(getString(R.string.option_bmw_hud_enabled), false);
+        final boolean optionArrowType = mSharedPrefs.getBoolean(getString(R.string.option_arrow_type), true);
         sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
                 getString(R.string.option_arrow_type), optionArrowType);
         //======================================
 
         runOnUiThread(() -> {
-            switchShowSpeed.setChecked(optionShowSpeed);
+            mShowSpeedSwitch.setChecked(optionShowSpeed);
 
-            switchTrafficAndLane.setChecked(optionTrafficAndLaneDetect);
-            switchAlertAnytime.setChecked(optionAlertAnytime);
-            seekBarAlertSpeed.setProgress(optionAlertSpeed);
-            switchAlertYellowTraffic.setChecked(optionAlertYellowTraffic);
+            mTrafficAndLaneSwitch.setChecked(optionTrafficAndLaneDetect);
+            mAlertAnytimeSwitch.setChecked(optionAlertAnytime);
+            mAlertSpeedSeekbar.setProgress(optionAlertSpeed);
+            mAlertYellowTrafficSwitch.setChecked(optionAlertYellowTraffic);
 
-            switchShowETA.setChecked(optionShowEta);
-            switchIdleShowCurrentTime.setChecked(optionIdleShowTime);
-            switchBtBindAddress.setChecked(optionBtBindAddress);
-            switchShowNotify.setChecked(optionShowNotify);
-            switchDarkModeAuto.setChecked(optionDarkModeAuto);
-            switchDarkModeManual.setChecked(optionDarkModeMan);
+            mShowETASwitch.setChecked(optionShowEta);
+            mIdleShowCurrentTimeSwitch.setChecked(optionIdleShowTime);
+            mBindBtAddressSwitch.setChecked(optionBtBindAddress);
+            mShowNotifySwitch.setChecked(optionShowNotify);
+            mDarkModeAutoSwitch.setChecked(optionDarkModeAuto);
+            mDarkModeManualSwitch.setChecked(optionDarkModeMan);
 
-            switchBMWHUDEnabled.setChecked(optionBMWHUDEnabled);
-            switchArrowType.setChecked(optionArrowType);
+            mBMWHUDEnabledSwitch.setChecked(optionBMWHUDEnabled);
+            mArrowTypeSwitch.setChecked(optionArrowType);
         });
 
         // Need to be after initially setChecked to avoid loop 
-        switchDarkModeAuto.setOnCheckedChangeListener(onCheckedChangedListener);
-        switchDarkModeManual.setOnCheckedChangeListener(onCheckedChangedListener);
+        mDarkModeAutoSwitch.setOnCheckedChangeListener(mOnCheckedChangedListener);
+        mDarkModeManualSwitch.setOnCheckedChangeListener(mOnCheckedChangedListener);
     }
 
     private void initBluetooth() {
-        if (sharedPref.getBoolean(getString(R.string.option_bmw_hud_enabled), false)) {
-            if (hud != null) {
-                hud.disconnect();
+        if (mSharedPrefs.getBoolean(getString(R.string.option_bmw_hud_enabled), false)) {
+            if (mHud != null) {
+                mHud.disconnect();
             }
-            hud = new BMWHUD(this);
+            mHud = new BMWHUD(this);
             //========================================================================================
             HUDInterface.ConnectionCallback mBMWHUDConnection = state -> {
                 switch (state) {
                     case CONNECTED:
                         runOnUiThread(() -> {
-                            if (switchHudConnected != null) {
-                                switchHudConnected.setText(getString(
+                            if (mHudConnectedSwitch != null) {
+                                mHudConnectedSwitch.setText(getString(
                                         R.string.layout_element_hud_success_connected, "BMW HUD"));
-                                if (sharedPref != null && sharedPref.getInt(getString(R.string.state_dark_mode),
+                                if (mSharedPrefs != null && mSharedPrefs.getInt(getString(R.string.state_dark_mode),
                                         AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
-                                    switchHudConnected.setTextColor(Color.BLACK);
-                                switchHudConnected.setChecked(true);
+                                    mHudConnectedSwitch.setTextColor(Color.BLACK);
+                                mHudConnectedSwitch.setChecked(true);
                             }
                         });
                         break;
                     case DISCONNECTED:
                         runOnUiThread(() -> {
-                            if (switchHudConnected != null) {
-                                switchHudConnected.setText(getString(R.string.layout_element_hud_disconnected));
-                                switchHudConnected.setTextColor(Color.RED);
-                                switchHudConnected.setChecked(false);
+                            if (mHudConnectedSwitch != null) {
+                                mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_disconnected));
+                                mHudConnectedSwitch.setTextColor(Color.RED);
+                                mHudConnectedSwitch.setChecked(false);
                             }
                         });
                         break;
                 }
             };
-            hud.registerConnectionCallback(mBMWHUDConnection);
+            mHud.registerConnectionCallback(mBMWHUDConnection);
         } else if (!IGNORE_BT_DEVICE) {
-            bt = new BluetoothSPP(this); //first route
-            bt.setBluetoothConnectionListener(btConnectionListener);
-            bt.setAutoConnectionListener(btConnectionListener);
-            if (!bt.isBluetoothAvailable()) {
+            mBt = new BluetoothSPP(this); //first route
+            mBt.setBluetoothConnectionListener(mBtConnectionListener);
+            mBt.setAutoConnectionListener(mBtConnectionListener);
+            if (!mBt.isBluetoothAvailable()) {
                 Toast.makeText(getApplicationContext()
                         , getString(R.string.message_bt_not_available)
                         , Toast.LENGTH_SHORT).show();
                 // Allow no BT to at least access settings to switch HUD type
-                NotificationMonitor.hud = hud;
+                NotificationMonitor.hud = mHud;
                 return;
             }
-            hud = new GarminHUD(bt);
+            mHud = new GarminHUD(mBt);
 
-            if (!bt.isBluetoothEnabled()) {
+            if (!mBt.isBluetoothEnabled()) {
                 //bt cannot work
                 Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
             } else {
-                if (!bt.isServiceAvailable()) {
-                    bt.setupService();
-                    bt.startService(BluetoothState.DEVICE_OTHER);
+                if (!mBt.isServiceAvailable()) {
+                    mBt.setupService();
+                    mBt.startService(BluetoothState.DEVICE_OTHER);
                 }
 
                 boolean isBindName = false;
-                if (null != switchBtBindAddress) {
-                    boolean isBindAddress = switchBtBindAddress.isChecked();
-                    if (isBindAddress && null != sharedPref) {
-                        String bindAddress = sharedPref.getString(getString(R.string.bt_bind_address_key), null);
+                if (null != mBindBtAddressSwitch) {
+                    boolean isBindAddress = mBindBtAddressSwitch.isChecked();
+                    if (isBindAddress && null != mSharedPrefs) {
+                        String bindAddress = mSharedPrefs.getString(getString(R.string.bt_bind_address_key), null);
                         if (null != bindAddress) {
-                            bt.connect(bindAddress);
+                            mBt.connect(bindAddress);
                         }
                     } else {
                         isBindName = true;
@@ -362,18 +362,18 @@ public class MainActivity extends AppCompatActivity {
                     isBindName = true;
                 }
 
-                if (isBindName && null != sharedPref) {
-                    String bindName = sharedPref.getString(getString(R.string.bt_bind_name_key), null);
+                if (isBindName && null != mSharedPrefs) {
+                    String bindName = mSharedPrefs.getString(getString(R.string.bt_bind_name_key), null);
                     if (null != bindName) {
-                        bt.autoConnect(bindName);
+                        mBt.autoConnect(bindName);
                     }
                 }
             }
         }
-        NotificationMonitor.hud = hud;
+        NotificationMonitor.hud = mHud;
     }
 
-    static Boolean isDebug = null;
+    static Boolean sIsDebug = null;
 
     /**
      * Sync lib debug with app's debug value. Should be called in module Application
@@ -381,8 +381,8 @@ public class MainActivity extends AppCompatActivity {
      * @param context context
      */
     private static void syncIsDebug(Context context) {
-        if (isDebug == null) {
-            isDebug = context.getApplicationInfo() != null &&
+        if (sIsDebug == null) {
+            sIsDebug = context.getApplicationInfo() != null &&
                     (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         }
     }
@@ -400,8 +400,8 @@ public class MainActivity extends AppCompatActivity {
         OCR_STORE_DIRECTORY = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
         ImageUtils.context = this;
 
-        sharedPref = getPreferences(Context.MODE_PRIVATE);
-        final int stateDarkMode = sharedPref.getInt(getString(R.string.state_dark_mode), AppCompatDelegate.MODE_NIGHT_NO);
+        mSharedPrefs = getPreferences(Context.MODE_PRIVATE);
+        final int stateDarkMode = mSharedPrefs.getInt(getString(R.string.state_dark_mode), AppCompatDelegate.MODE_NIGHT_NO);
         AppCompatDelegate.setDefaultNightMode(stateDarkMode);
 
         super.onCreate(savedInstanceState);
@@ -424,7 +424,7 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(mViewPager);
         //========================================================================================
-        mainIntent = this.getIntent();
+        sMainIntent = this.getIntent();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(new Intent(this, NotificationCollectorMonitorService.class));
         } else {
@@ -460,27 +460,27 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(navigationListener);
+        navigationView.setNavigationItemSelectedListener(mNavigationListener);
         //========================================================================================
 
         //========================================================================================
         // message receiver
         //========================================================================================
-        msgReceiver = new MsgReceiver();
+        mMsgReceiver = new MsgReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(getString(R.string.broadcast_receiver_main_activity));
-        registerReceiver(msgReceiver, intentFilter);
+        registerReceiver(mMsgReceiver, intentFilter);
 
         // INITIALIZE RECEIVER
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-        screenReceiver = new BroadcastReceiver() {
+        mScreenReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
             }
         };
 
-        registerReceiver(screenReceiver, filter);
+        registerReceiver(mScreenReceiver, filter);
         //========================================================================================
 
         //========================================================================================
@@ -495,7 +495,7 @@ public class MainActivity extends AppCompatActivity {
                 Looper.loop();
             }
         }.start();
-        detectListener = new ImageDetectListener(this);
+        mImageDetectListener = new ImageDetectListener(this);
         //========================================================================================
     }
 
@@ -503,13 +503,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {//捕捉返回鍵
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
             //按返回鍵，則執行退出確認
-            ConfirmExit();
+            confirmExit();
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
 
-    public void ConfirmExit() {
+    public void confirmExit() {
         //退出確認
         AlertDialog.Builder ad = new AlertDialog.Builder(MainActivity.this);
         ad.setTitle("Exit");
@@ -529,12 +529,12 @@ public class MainActivity extends AppCompatActivity {
         if (!IGNORE_BT_DEVICE) {
             if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
                 if (resultCode == Activity.RESULT_OK) {
-                    bt.connect(data);
+                    mBt.connect(data);
                 }
             } else if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
                 if (resultCode == Activity.RESULT_OK) {
-                    bt.setupService();
-                    bt.startService(BluetoothState.DEVICE_OTHER);
+                    mBt.setupService();
+                    mBt.startService(BluetoothState.DEVICE_OTHER);
                 } else {
                     Toast.makeText(getApplicationContext()
                             , "Bluetooth was not enabled."
@@ -592,18 +592,18 @@ public class MainActivity extends AppCompatActivity {
         //================================================================================
         // bt reconnect
         //================================================================================
-        if (!IGNORE_BT_DEVICE && null != bt) {
-            bt.stopAutoConnect();
-            bt.stopService();
+        if (!IGNORE_BT_DEVICE && null != mBt) {
+            mBt.stopAutoConnect();
+            mBt.stopService();
         }
         unbindLocationService();
-        if (notifyManager != null) {
-            notifyManager.cancel(1);
+        if (mNotificationManager != null) {
+            mNotificationManager.cancel(1);
         }
         stopProjection();
 
-        unregisterReceiver(msgReceiver);
-        unregisterReceiver(screenReceiver);
+        unregisterReceiver(mMsgReceiver);
+        unregisterReceiver(mScreenReceiver);
 
         stopService(new Intent(this, NotificationCollectorMonitorService.class));
     }
@@ -616,9 +616,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        isEnabledNLS = isNLSEnabled();
-        log("isEnabledNLS = " + isEnabledNLS);
-        if (!isEnabledNLS) {
+        mIsNLSEnabled = isNLSEnabled();
+        log("isEnabledNLS = " + mIsNLSEnabled);
+        if (!mIsNLSEnabled) {
             showConfirmDialog();
         }
     }
@@ -629,21 +629,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int getGammaBrightness() {
-        final int progress = seekBarBrightness.getProgress();
-        float progress_normal = progress * 1.0f / seekBarBrightness.getMax();
+        final int progress = mBrightnessSeekbar.getProgress();
+        float progress_normal = progress * 1.0f / mBrightnessSeekbar.getMax();
         final float gamma = 0.45f;
         float progress_gamma = (float) Math.pow(progress_normal, gamma);
-        return Math.round(progress_gamma * seekBarBrightness.getMax());
+        return Math.round(progress_gamma * mBrightnessSeekbar.getMax());
     }
 
     private void storeOptions(int optionID, boolean option) {
-        SharedPreferences.Editor editor = sharedPref.edit();
+        SharedPreferences.Editor editor = mSharedPrefs.edit();
         editor.putBoolean(getString(optionID), option);
         editor.commit();
     }
 
     private void storeIntOptions(int optionID, int option) {
-        SharedPreferences.Editor editor = sharedPref.edit();
+        SharedPreferences.Editor editor = mSharedPrefs.edit();
         editor.putInt(getString(optionID), option);
         editor.commit();
     }
@@ -653,7 +653,7 @@ public class MainActivity extends AppCompatActivity {
      * We recommend use "button click" with buttonOnClicked.
      * Other UI (like switch) use OnCheckedChangedListener.
      */
-    private CompoundButton.OnCheckedChangeListener onCheckedChangedListener = new CompoundButton.OnCheckedChangeListener() {
+    private CompoundButton.OnCheckedChangeListener mOnCheckedChangedListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton view, boolean b) {
             switch (view.getId()) {
@@ -695,19 +695,19 @@ public class MainActivity extends AppCompatActivity {
                         showSpeed(true);
                     }
 
-                    final int progress = seekBarAlertSpeed.getProgress();
+                    final int progress = mAlertSpeedSeekbar.getProgress();
                     final int kph = progress * 10;
-                    alertSpeedExceeds = alertAnytime ? 0 : kph;
+                    mAlertSpeedExceeds = alertAnytime ? 0 : kph;
                     switchAlertAnytime.setText(alertAnytime ? getString(R.string.layout_element_alert_anytime)
                             : getString(R.string.layout_element_alert_speed_exceeds) + " " + kph + "kph");
 
-                    seekBarAlertSpeed.setEnabled(!alertAnytime);
-                    seekBarAlertSpeed.setOnSeekBarChangeListener(seekbarAlertSpeedChangeListener);
+                    mAlertSpeedSeekbar.setEnabled(!alertAnytime);
+                    mAlertSpeedSeekbar.setOnSeekBarChangeListener(mAlertSpeedSeekbarChangeListener);
                     storeOptions(R.string.option_alert_anytime, alertAnytime);
                     break;
 
                 case R.id.switchAlertYellowTraffic:
-                    alertYellowTraffic = view.isChecked();
+                    mAlertYellowTraffic = view.isChecked();
                     storeOptions(R.string.option_alert_yellow_traffic, view.isChecked());
                     break;
 
@@ -718,28 +718,28 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.switchIdleShowCurrentTime:
-                    showCurrentTime = view.isChecked();
-                    if (showCurrentTime && null == currentTimeTask) {
-                        currentTimeTask = new TimerTask() {
+                    mShowCurrentTime = view.isChecked();
+                    if (mShowCurrentTime && null == mCurrentTimerTask) {
+                        mCurrentTimerTask = new TimerTask() {
                             @Override
                             public void run() {
-                                if (null != hud && !isInNavigation() && showCurrentTime) {
+                                if (null != mHud && !isInNavigation() && mShowCurrentTime) {
                                     Calendar c = Calendar.getInstance();
                                     int hour = c.get(Calendar.HOUR_OF_DAY);
                                     int minute = c.get(Calendar.MINUTE);
-                                    hud.SetCurrentTime(hour, minute);
+                                    mHud.SetCurrentTime(hour, minute);
                                 }
                             }
                         };
 
-                        timer.schedule(currentTimeTask, 1000, 1000);
+                        mTimer.schedule(mCurrentTimerTask, 1000, 1000);
                     }
                     storeOptions(R.string.option_idle_show_current_time, view.isChecked());
                     break;
 
                 case R.id.switchBtBindAddress:
                     final boolean isBindAddress = view.isChecked();
-                    useBTAddressReconnectThread = isBindAddress;
+                    mUseBTAddressReconnectThread = isBindAddress;
                     storeOptions(R.string.option_bt_bind_address, isBindAddress);
                     break;
 
@@ -750,13 +750,13 @@ public class MainActivity extends AppCompatActivity {
 
                 case R.id.switchDarkModeAuto:
                     final boolean isDarkModeAuto = view.isChecked();
-                    switchDarkModeManual.setEnabled(!isDarkModeAuto);
+                    mDarkModeManualSwitch.setEnabled(!isDarkModeAuto);
                     storeOptions(R.string.option_dark_mode_auto, isDarkModeAuto);
                     if (isDarkModeAuto) {
                         storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
                     } else {
-                        final boolean isDarkModeManualEnabled = null != sharedPref &&
-                                sharedPref.getBoolean(getString(R.string.option_dark_mode_man), false);
+                        final boolean isDarkModeManualEnabled = null != mSharedPrefs &&
+                                mSharedPrefs.getBoolean(getString(R.string.option_dark_mode_man), false);
                         storeIntOptions(R.string.state_dark_mode, isDarkModeManualEnabled ?
                                 AppCompatDelegate.MODE_NIGHT_YES :
                                 AppCompatDelegate.MODE_NIGHT_NO);
@@ -777,19 +777,19 @@ public class MainActivity extends AppCompatActivity {
                     Switch theAutoBrightness = (Switch) view;
                     final boolean autoBrightness = theAutoBrightness.isChecked();
 
-                    final int brightnessProgress = seekBarBrightness.getProgress();
+                    final int brightnessProgress = mBrightnessSeekbar.getProgress();
                     theAutoBrightness.setText(autoBrightness ? getString(R.string.layout_element_auto_brightness)
                             : getString(R.string.layout_seekbar_brightness) + " " + (brightnessProgress * 10) + "%");
 
-                    seekBarBrightness.setEnabled(!autoBrightness);
-                    seekBarBrightness.setOnSeekBarChangeListener(seekbarBrightnessChangeListener);
+                    mBrightnessSeekbar.setEnabled(!autoBrightness);
+                    mBrightnessSeekbar.setOnSeekBarChangeListener(mBrightnessSeekbarChangeListener);
 
-                    if (null != hud) {
+                    if (null != mHud) {
                         if (autoBrightness) {
-                            hud.SetAutoBrightness();
+                            mHud.SetAutoBrightness();
                         } else {
                             final int brightness = getGammaBrightness();
-                            hud.SetBrightness(brightness);
+                            mHud.SetBrightness(brightness);
                         }
                     }
                     break;
@@ -852,42 +852,42 @@ public class MainActivity extends AppCompatActivity {
             if (!checkGps()) {
                 return false;
             }
-            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 return false;
             }
-            if (!locationServiceConnected) {
+            if (!mLocationServiceConnected) {
                 //Here, the Location Service gets bound and the GPS Speedometer gets Active.
                 bindLocationService();
-                useLocationService = true;
+                mUseLocationService = true;
             }
         } else {
             //do not show speed
-            if (locationServiceConnected) {
+            if (mLocationServiceConnected) {
                 unbindLocationService();
             }
-            if (null != hud) {
+            if (null != mHud) {
                 //clear according to navigate status
                 if (isInNavigation()) {
-                    hud.ClearSpeedandWarning();
+                    mHud.ClearSpeedandWarning();
                 } else {
-                    hud.ClearDistance();
+                    mHud.ClearDistance();
                 }
             }
-            useLocationService = false;
+            mUseLocationService = false;
         }
         return true;
     }
 
     private void scanBluetooth() {
-        if (null == bt || !bt.isBluetoothAvailable()) {
+        if (null == mBt || !mBt.isBluetoothAvailable()) {
             Toast.makeText(getApplicationContext()
                     , getString(R.string.message_bt_not_available)
                     , Toast.LENGTH_SHORT).show();
         } else {
-            bt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
-            bt.setBluetoothConnectionListener(btConnectionListener);
-            bt.setAutoConnectionListener(btConnectionListener);
+            mBt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
+            mBt.setBluetoothConnectionListener(mBtConnectionListener);
+            mBt.setAutoConnectionListener(mBtConnectionListener);
 
             Intent intent = new Intent(getApplicationContext(), DeviceList.class);
             startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
@@ -925,11 +925,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void listCurrentNotification() {
         String result;
-        if (isEnabledNLS) {
+        if (mIsNLSEnabled) {
             if (NotificationMonitor.getCurrentNotifications() == null) {
                 result = "No Notifications Capture!!!\nSometimes reboot device or re-install app can resolve this problem.";
                 log(result);
-                textViewDebug.setText(result);
+                mDebugTextView.setText(result);
                 return;
             }
             int n = NotificationMonitor.mCurrentNotificationsCounts;
@@ -939,11 +939,11 @@ public class MainActivity extends AppCompatActivity {
                 result = getResources().getQuantityString(R.plurals.active_notification_count_nonzero, n, n);
             }
             result = result + "\n" + getCurrentNotificationString();
-            CharSequence text = textViewDebug.getText();
-            textViewDebug.setText(result + "\n\n" + text);
+            CharSequence text = mDebugTextView.getText();
+            mDebugTextView.setText(result + "\n\n" + text);
         } else {
-            textViewDebug.setTextColor(Color.RED);
-            textViewDebug.setText("Please Enable Notification Access");
+            mDebugTextView.setTextColor(Color.RED);
+            mDebugTextView.setText("Please Enable Notification Access");
         }
     }
 
@@ -973,28 +973,28 @@ public class MainActivity extends AppCompatActivity {
 
     // bind/activate LocationService
     void bindLocationService() {
-        if (locationServiceConnected) {
+        if (mLocationServiceConnected) {
             return;
         }
         Intent i = new Intent(getApplicationContext(), LocationService.class);
-        bindService(i, locationServiceConnection, BIND_AUTO_CREATE);
-        locationServiceConnected = true;
+        bindService(i, mLocationServiceConnection, BIND_AUTO_CREATE);
+        mLocationServiceConnected = true;
     }
 
     // unbind/deactivate LocationService
     void unbindLocationService() {
-        if (!locationServiceConnected) {
+        if (!mLocationServiceConnected) {
             return;
         }
-        unbindService(locationServiceConnection);
-        locationServiceConnected = false;
+        unbindService(mLocationServiceConnection);
+        mLocationServiceConnected = false;
     }
 
     // This method check if GPS is activated (and ask user for activation)
     boolean checkGps() {
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             showGPSDisabledAlertToUser();
             return false;
         }
@@ -1064,9 +1064,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateTextViewDebug(String msg) {
-        CharSequence orignal_text = textViewDebug.getText();
+        CharSequence orignal_text = mDebugTextView.getText();
         orignal_text = orignal_text.length() > 1000 ? "" : orignal_text;
-        textViewDebug.setText(msg + "\n\n" + orignal_text);
+        mDebugTextView.setText(msg + "\n\n" + orignal_text);
     }
 
     private class MsgReceiver extends BroadcastReceiver {
@@ -1079,7 +1079,7 @@ public class MainActivity extends AppCompatActivity {
             if (has_notify_msg) {
                 //if recv notify message,  display it then return (jump out)
                 String notify_msg = intent.getStringExtra(getString(R.string.notify_msg));
-                if (null != textViewDebug) {
+                if (null != mDebugTextView) {
                     updateTextViewDebug(notify_msg);
                 }
                 return;
@@ -1092,15 +1092,15 @@ public class MainActivity extends AppCompatActivity {
             if (has_gps_speed) {
                 double speed = intent.getDoubleExtra(getString(R.string.gps_speed), 0);
                 int int_speed = (int) Math.round(speed);
-                gpsSpeed = int_speed;
+                mGpsSpeed = int_speed;
 
-                final boolean show_speed = switchShowSpeed.isChecked();
+                final boolean show_speed = mShowSpeedSwitch.isChecked();
                 if (show_speed) {
                     setSpeed(int_speed);
                 }
 
-                CharSequence orignal_text = textViewDebug.getText();
-                textViewDebug.setText("speed: " + int_speed + "\n\n" + orignal_text);
+                CharSequence orignal_text = mDebugTextView.getText();
+                mDebugTextView.setText("speed: " + int_speed + "\n\n" + orignal_text);
                 return;
             }
 
@@ -1111,50 +1111,50 @@ public class MainActivity extends AppCompatActivity {
 
             if (notify_parse_failed) {
                 //when pass fail
-                if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
-                    switchGmapsNotificationCaught.setChecked(false);
+                if (null != mNotificationCaughtSwitch && null != mGmapsNotificationCaughtSwitch) {
+                    mGmapsNotificationCaughtSwitch.setChecked(false);
                 }
-                is_in_navigation = false;
+                mIsNavigating = false;
             } else {
                 //pass success
                 final boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched),
-                        null != switchNotificationCaught && switchNotificationCaught.isChecked());
+                        null != mNotificationCaughtSwitch && mNotificationCaughtSwitch.isChecked());
                 final boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched),
-                        null != switchGmapsNotificationCaught && switchGmapsNotificationCaught.isChecked());
+                        null != mGmapsNotificationCaughtSwitch && mGmapsNotificationCaughtSwitch.isChecked());
 
 
-                final boolean is_in_navigation_in_intent = intent.getBooleanExtra(getString(R.string.is_in_navigation), is_in_navigation);
+                final boolean is_in_navigation_in_intent = intent.getBooleanExtra(getString(R.string.is_in_navigation), mIsNavigating);
 
-                if (null != switchNotificationCaught && null != switchGmapsNotificationCaught) {
+                if (null != mNotificationCaughtSwitch && null != mGmapsNotificationCaughtSwitch) {
                     if (!notify_catched) {
                         //no notify catched
-                        switchNotificationCaught.setChecked(false);
-                        switchGmapsNotificationCaught.setChecked(false);
+                        mNotificationCaughtSwitch.setChecked(false);
+                        mGmapsNotificationCaughtSwitch.setChecked(false);
                     } else {
-                        switchNotificationCaught.setChecked(true);
+                        mNotificationCaughtSwitch.setChecked(true);
                         // we need two condition to confirm in navagating:
                         // 1. gmaps's notify
                         // 2. in_navigation from notify monitor
                         final boolean is_really_in_navigation = gmaps_notify_catched && is_in_navigation_in_intent;
-                        switchGmapsNotificationCaught.setChecked(is_really_in_navigation);
+                        mGmapsNotificationCaughtSwitch.setChecked(is_really_in_navigation);
 
-                        if (lastReallyInNavigation != is_really_in_navigation &&
+                        if (mLastReallyInNavigation != is_really_in_navigation &&
                                 !is_really_in_navigation &&
-                                null != hud) {
+                                null != mHud) {
                             //exit navigation
-                            hud.SetDirection(eOutAngle.AsDirection);
+                            mHud.SetDirection(eOutAngle.AsDirection);
                             //maybe in this line
                         }
-                        is_in_navigation = is_really_in_navigation;
-                        lastReallyInNavigation = is_really_in_navigation;
+                        mIsNavigating = is_really_in_navigation;
+                        mLastReallyInNavigation = is_really_in_navigation;
                     }
                 }
             }
 
             //=======================================================================
-            if (intent.hasExtra(getString(R.string.option_arrow_type)) && null != switchArrowType) {
+            if (intent.hasExtra(getString(R.string.option_arrow_type)) && null != mArrowTypeSwitch) {
                 //re-sync arrow type between ui & notify monitor
-                boolean arrowTypeV2_in_ui = switchArrowType.isChecked();
+                boolean arrowTypeV2_in_ui = mArrowTypeSwitch.isChecked();
                 boolean arrowTypeV2_in_notify_monitor = intent.getBooleanExtra((getString(R.string.option_arrow_type)), arrowTypeV2_in_ui);
 
                 if (arrowTypeV2_in_notify_monitor != arrowTypeV2_in_ui) {
@@ -1219,35 +1219,35 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceConnected(String name, String address) {
-            if (null != switchHudConnected) {
-                switchHudConnected.setText(getString(R.string.layout_element_hud_success_connected, name));
-                if (null != sharedPref && sharedPref.getInt(getString(R.string.state_dark_mode)
+            if (null != mHudConnectedSwitch) {
+                mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_success_connected, name));
+                if (null != mSharedPrefs && mSharedPrefs.getInt(getString(R.string.state_dark_mode)
                         , AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
-                    switchHudConnected.setTextColor(Color.BLACK);
-                switchHudConnected.setChecked(true);
+                    mHudConnectedSwitch.setTextColor(Color.BLACK);
+                mHudConnectedSwitch.setChecked(true);
             }
             log("onDeviceConnected");
 
-            if (useLocationService && !locationServiceConnected) {
+            if (mUseLocationService && !mLocationServiceConnected) {
                 bindLocationService();
             }
 
-            if (null != hud) {
-                if (null != switchAutoBrightness) {
-                    if (switchAutoBrightness.isChecked()) {
-                        hud.SetAutoBrightness();
+            if (null != mHud) {
+                if (null != mAutoBrightnessSwitch) {
+                    if (mAutoBrightnessSwitch.isChecked()) {
+                        mHud.SetAutoBrightness();
                     } else {
                         final int brightness = getGammaBrightness();
-                        hud.SetBrightness(brightness);
+                        mHud.SetBrightness(brightness);
                     }
                 }
             }
 
-            String connectedDeviceName = bt.getConnectedDeviceName();
-            SharedPreferences.Editor editor = sharedPref.edit();
+            String connectedDeviceName = mBt.getConnectedDeviceName();
+            SharedPreferences.Editor editor = mSharedPrefs.edit();
             editor.putString(getString(R.string.bt_bind_name_key), connectedDeviceName);
 
-            String connectedDeviceAddress = bt.getConnectedDeviceAddress();
+            String connectedDeviceAddress = mBt.getConnectedDeviceAddress();
             editor.putString(getString(R.string.bt_bind_address_key), connectedDeviceAddress);
 
             editor.commit();
@@ -1255,9 +1255,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceDisconnected() {
-            switchHudConnected.setText(getString(R.string.layout_element_hud_disconnected));
-            switchHudConnected.setTextColor(Color.RED);
-            switchHudConnected.setChecked(false);
+            mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_disconnected));
+            mHudConnectedSwitch.setTextColor(Color.RED);
+            mHudConnectedSwitch.setChecked(false);
 
             log("onDeviceDisconnected");
             resetBT();
@@ -1266,10 +1266,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceConnectionFailed() {
             String text = getString(R.string.layout_element_hud_con_failed);
-            if (null != switchHudConnected) {
-                switchHudConnected.setText(text);
-                switchHudConnected.setTextColor(Color.RED);
-                switchHudConnected.setChecked(false);
+            if (null != mHudConnectedSwitch) {
+                mHudConnectedSwitch.setText(text);
+                mHudConnectedSwitch.setTextColor(Color.RED);
+                mHudConnectedSwitch.setChecked(false);
             }
 
             log("onDeviceConnectionFailed");
@@ -1291,9 +1291,9 @@ public class MainActivity extends AppCompatActivity {
     public int mHeight;
     private int mRotation;
     private OrientationChangeCallback mOrientationChangeCallback;
-    public int alertSpeedExceeds = 0;
-    public int gpsSpeed = 0;
-    public boolean alertYellowTraffic = false;
+    public int mAlertSpeedExceeds = 0;
+    public int mGpsSpeed = 0;
+    public boolean mAlertYellowTraffic = false;
 
     private static final int SCREENCAP_REQUEST_CODE = 100;
     private static final String SCREENCAP_NAME = "screencap";
@@ -1354,7 +1354,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /****************************************** Factoring Virtual Display creation ****************/
-    private ImageDetectListener detectListener;
+    private ImageDetectListener mImageDetectListener;
 
     private void createVirtualDisplay() {
         DisplayMetrics dm = new DisplayMetrics();
@@ -1365,16 +1365,16 @@ public class MainActivity extends AppCompatActivity {
         // start capture reader
         mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 2);
         mVirtualDisplay = sMediaProjection.createVirtualDisplay(SCREENCAP_NAME, mWidth, mHeight, mDensity, VIRTUAL_DISPLAY_FLAGS, mImageReader.getSurface(), null, mProjectionHandler);
-        mImageReader.setOnImageAvailableListener(detectListener, mProjectionHandler);
+        mImageReader.setOnImageAvailableListener(mImageDetectListener, mProjectionHandler);
     }
 
-    private boolean useBTAddressReconnectThread = false;
+    private boolean mUseBTAddressReconnectThread = false;
 
     private void resetBT() {
-        if (useBTAddressReconnectThread && null != bt) {
-            bt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
-            bt.setBluetoothConnectionListener(btConnectionListener);
-            bt.setAutoConnectionListener(btConnectionListener);
+        if (mUseBTAddressReconnectThread && null != mBt) {
+            mBt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
+            mBt.setBluetoothConnectionListener(mBtConnectionListener);
+            mBt.setAutoConnectionListener(mBtConnectionListener);
 
         }
     }
