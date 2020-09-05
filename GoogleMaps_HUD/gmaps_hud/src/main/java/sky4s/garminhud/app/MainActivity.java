@@ -332,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
                         , getString(R.string.message_bt_not_available)
                         , Toast.LENGTH_SHORT).show();
                 // Allow no BT to at least access settings to switch HUD type
-                NotificationMonitor.hud = mHud;
+                NotificationMonitor.sHud = mHud;
                 return;
             }
             mHud = new GarminHUD(mBt);
@@ -370,7 +370,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        NotificationMonitor.hud = mHud;
+        NotificationMonitor.sHud = mHud;
     }
 
     static Boolean sIsDebug = null;
@@ -806,20 +806,20 @@ public class MainActivity extends AppCompatActivity {
     public void buttonOnClicked(View view) {
         switch (view.getId()) {
             case R.id.button1:
-                if (null != NotificationMonitor.getStaticInstance()) {
-                    NotificationMonitor.getStaticInstance().updateArrow(Arrow.Convergence);
+                if (null != NotificationMonitor.getInstance()) {
+                    NotificationMonitor.getInstance().updateArrow(Arrow.Convergence);
                 }
                 break;
 
             case R.id.button2:
-                if (null != NotificationMonitor.getStaticInstance()) {
-                    NotificationMonitor.getStaticInstance().updateArrow(Arrow.LeaveRoundaboutSharpRightCC);
+                if (null != NotificationMonitor.getInstance()) {
+                    NotificationMonitor.getInstance().updateArrow(Arrow.LeaveRoundaboutSharpRightCC);
                 }
                 break;
 
             case R.id.button3:
-                if (null != NotificationMonitor.getStaticInstance()) {
-                    NotificationMonitor.getStaticInstance().updateArrow(Arrow.LeaveRoundaboutSharpRight);
+                if (null != NotificationMonitor.getInstance()) {
+                    NotificationMonitor.getInstance().updateArrow(Arrow.LeaveRoundaboutSharpRight);
                 }
                 break;
 
@@ -935,7 +935,7 @@ public class MainActivity extends AppCompatActivity {
                 mDebugTextView.setText(result);
                 return;
             }
-            int n = NotificationMonitor.mCurrentNotificationsCounts;
+            int n = NotificationMonitor.sCurrentNotificationsCounts;
             if (n == 0) {
                 result = getResources().getString(R.string.active_notification_count_zero);
             } else {
