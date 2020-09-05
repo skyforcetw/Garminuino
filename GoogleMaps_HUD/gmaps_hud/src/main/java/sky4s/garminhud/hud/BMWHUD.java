@@ -97,12 +97,12 @@ public class BMWHUD extends HUDAdapter {
     public void SetRemainTime(int nH, int nM, boolean bTraffic) {
         // nH is expected to be 24-hour
         final boolean isAm = nH < 12;
-        nH %= 12;
-        nH = (nH == 0) ? 12 : nH;
         int suffix = 0;
         if (!isShowETAEnabled()) {
             suffix = BMWMessage.TIME_SUFFIX_HOURS;
         } else {
+            nH %= 12;
+            nH = (nH == 0) ? 12 : nH;
             suffix = isAm ? BMWMessage.TIME_SUFFIX_AM : BMWMessage.TIME_SUFFIX_PM;
         }
         if (DEBUG) Log.d(TAG, "isShowETAEnabled: " + isShowETAEnabled());
