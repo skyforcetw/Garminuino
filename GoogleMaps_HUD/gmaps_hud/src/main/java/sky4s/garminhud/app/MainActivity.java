@@ -1,6 +1,7 @@
 package sky4s.garminhud.app;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
@@ -599,12 +600,14 @@ public class MainActivity extends AppCompatActivity {
         return Math.round(progress_gamma * mBrightnessSeekbar.getMax());
     }
 
+    @SuppressLint("ApplySharedPref")
     private void storeOptions(int optionID, boolean option) {
         SharedPreferences.Editor editor = mSharedPrefs.edit();
         editor.putBoolean(getString(optionID), option);
         editor.commit();
     }
 
+    @SuppressLint("ApplySharedPref")
     private void storeIntOptions(int optionID, int option) {
         SharedPreferences.Editor editor = mSharedPrefs.edit();
         editor.putInt(getString(optionID), option);
