@@ -509,7 +509,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    public void confirmExit() {
+    private void confirmExit() {
         //退出確認
         AlertDialog.Builder ad = new AlertDialog.Builder(MainActivity.this);
         ad.setTitle("Exit");
@@ -972,7 +972,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // bind/activate LocationService
-    void bindLocationService() {
+    private void bindLocationService() {
         if (mLocationServiceConnected) {
             return;
         }
@@ -982,7 +982,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // unbind/deactivate LocationService
-    void unbindLocationService() {
+    private void unbindLocationService() {
         if (!mLocationServiceConnected) {
             return;
         }
@@ -991,7 +991,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // This method check if GPS is activated (and ask user for activation)
-    boolean checkGps() {
+    private boolean checkGps() {
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -1170,21 +1170,21 @@ public class MainActivity extends AppCompatActivity {
     // tabs
     //========================================================================================
     // Titles of the individual pages (displayed in tabs)
-    private final String[] PAGE_TITLES = new String[]{
+    private static final String[] PAGE_TITLES = new String[]{
             "Main",
             "Setup",
             "Debug"
     };
 
     // The fragments that are used as the individual pages
-    private final Fragment[] PAGES = new Fragment[]{
+    private static final Fragment[] PAGES = new Fragment[]{
             new Page1Fragment(),
             new Page3Fragment(),
             new Page2Fragment()
     };
 
     // PagerAdapter for supplying the ViewPager with the pages (fragments) to display.
-    private class MyPagerAdapter extends FragmentPagerAdapter {
+    private static class MyPagerAdapter extends FragmentPagerAdapter {
         public MyPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
         }
