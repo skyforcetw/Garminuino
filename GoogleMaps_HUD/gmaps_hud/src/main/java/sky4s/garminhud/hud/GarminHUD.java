@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Toast;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
@@ -24,6 +25,9 @@ public class GarminHUD extends HUDAdapter {
     //===========================================================================================
     // 不與C++共用的部分
     //===========================================================================================
+    private static final String TAG = GarminHUD.class.getSimpleName();
+    private static final boolean DEBUG = false;
+
     private static final int MAX_UPDATES_PER_SECOND = 6;
     private Context mContext;
     private int mUpdateCount = 0;
@@ -35,6 +39,7 @@ public class GarminHUD extends HUDAdapter {
     //===========================================================================================
 
     public GarminHUD(Context context) {
+        if (DEBUG) Log.d(TAG, "Creating GarmingHUD instance");
         mContext = context;
         mBt = new BluetoothSPP(mContext);
         mBt.setBluetoothConnectionListener(mBluetoothConnectionListener);
@@ -159,6 +164,7 @@ public class GarminHUD extends HUDAdapter {
 
         if (mBt.isServiceAvailable()) {
             //judge service exist to avoid => app.akexorcist.bluetotohspp.library.BluetoothService.getState()' on a null object reference
+            if (DEBUG) Log.d(TAG, "sendPacket: sending packet over BT");
             mBt.send(packet, false);
         }
         return true;
@@ -214,6 +220,12 @@ public class GarminHUD extends HUDAdapter {
 
     @Override
     public void setTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
+        if (DEBUG) Log.d(TAG, "setTime: nH: " + nH +
+                ", nM: " + nM +
+                ", bFlag: " + bFlag +
+                ", bTraffic: " + bTraffic +
+                ", bColon: " + bColon +
+                ", bH: " + bH);
         char[] arr = {(char) 0x05,
                 bTraffic ? (char) 0xff : (char) 0x00,
                 toDigit(nH / 10), toDigit(nH), // hour
@@ -369,6 +381,9 @@ public class GarminHUD extends HUDAdapter {
      */
     @Override
     public void setDirection(final eOutAngle nDir, final eOutType nType, final eOutAngle nRoundaboutOut) {
+        if (DEBUG) Log.d(TAG, "setDirection: nDir: " + nDir +
+                ", nType: " + nType +
+                ", nRoundaboutOut: " + nRoundaboutOut);
         char[] arr = {(char) 0x01,
                 (nDir == eOutAngle.LeftDown) ? (char) 0x10 : ((nDir == eOutAngle.RightDown) ? (char) 0x20 : (char) nType.value),
                 (nType == eOutType.RightRoundabout || nType == eOutType.LeftRoundabout) ?
@@ -471,6 +486,7 @@ public class GarminHUD extends HUDAdapter {
 
     @Override
     public void disconnect() {
+        if (DEBUG) Log.d(TAG, "disconnect()");
         mBt.stopAutoConnect();
         mBt.stopService();
     }
@@ -526,6 +542,7 @@ public class GarminHUD extends HUDAdapter {
     private BluetoothSPP.BluetoothConnectionListener mBluetoothConnectionListener = new BluetoothSPP.BluetoothConnectionListener() {
         @Override
         public void onDeviceConnected(String name, String address) {
+            if (DEBUG) Log.d(TAG, "onDeviceConnected: name: " + name + ", address: " + address);
             saveConnectedDevice();
             if (mConnectionCallback != null) {
                 mConnectionCallback.onConnectionStateChange(ConnectionCallback.ConnectionState.CONNECTED);
@@ -535,11 +552,13 @@ public class GarminHUD extends HUDAdapter {
 
         @Override
         public void onDeviceDisconnected() {
+            if (DEBUG) Log.d(TAG, "onDeviceDisconnected()");
             disconnectBluetooth(ConnectionCallback.ConnectionState.DISCONNECTED);
         }
 
         @Override
         public void onDeviceConnectionFailed() {
+            if (DEBUG) Log.d(TAG, "onDeviceConnectionFailed");
             disconnectBluetooth(ConnectionCallback.ConnectionState.FAILED);
         }
 
