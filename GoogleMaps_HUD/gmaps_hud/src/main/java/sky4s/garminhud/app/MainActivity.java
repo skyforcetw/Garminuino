@@ -524,6 +524,7 @@ public class MainActivity extends AppCompatActivity {
         ad.show();//顯示對話框
     }
 
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (!IGNORE_BT_DEVICE) {
@@ -582,10 +583,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
     public void onStop() {
         super.onStop();
     }
 
+    @Override
     public void onDestroy() {
         super.onDestroy();
 
