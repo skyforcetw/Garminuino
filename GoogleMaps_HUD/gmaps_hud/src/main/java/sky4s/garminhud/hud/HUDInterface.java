@@ -54,8 +54,6 @@ public interface HUDInterface {
 
     void SetCameraIcon(boolean visible);
 
-    void ShowGpsLabel();
-
     void SetGpsLabel(boolean visible);
 
     void SetAutoBrightness();

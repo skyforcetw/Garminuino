@@ -20,11 +20,6 @@ public abstract class HUDAdapter implements HUDInterface {
     }
 
     @Override
-    public final void ShowGpsLabel() {
-        SetGpsLabel(true);
-    }
-
-    @Override
     public final void clear() {
         SetCameraIcon(false);
         SetGpsLabel(false);
