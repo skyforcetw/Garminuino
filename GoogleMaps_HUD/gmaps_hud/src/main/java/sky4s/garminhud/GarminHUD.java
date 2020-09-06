@@ -29,6 +29,7 @@ public class GarminHUD extends HUDAdapter {
         // TODO: Move BluetoothSPP into this class and push connection state through callback
     }
 
+    @Override
     public boolean isUpdatable() {
         final long now = System.currentTimeMillis();
         final long interval = now - lastUpdateClearTime;
@@ -71,6 +72,7 @@ public class GarminHUD extends HUDAdapter {
         return true;
     }
 
+    @Override
     public boolean getSendResult() {
         return sendResult;
     }
@@ -120,6 +122,7 @@ public class GarminHUD extends HUDAdapter {
         sendResult = SendPacket(sendBuf, len);
     }
 
+    @Override
     public void setTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
         char arr[] = {(char) 0x05,
                 bTraffic ? (char) 0xff : (char) 0x00,
@@ -131,6 +134,7 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
+    @Override
     public void setRemainTime(int nH, int nM, boolean bTraffic) {
 //        final boolean bTraffic = false;
         final boolean bH = false;
@@ -150,6 +154,7 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
+    @Override
     public void clearTime() {
         char arr[] = {(char) 0x05,
                 0x00,
@@ -188,6 +193,7 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
+    @Override
     public void clearDistance() {
         char arr[] = {(char) 0x03, 0x0, 0x0, 0x0, 0x00, 0, 0};
         SendHud2(arr);
@@ -203,6 +209,7 @@ public class GarminHUD extends HUDAdapter {
         // not supported
     }
 
+    @Override
     public void setAlphabet(char a, char b, char c, char d) {
         eUnits unit = eUnits.None;
         boolean bDecimal = false, bLeadingZero = false;
@@ -271,6 +278,7 @@ public class GarminHUD extends HUDAdapter {
      * @param nType          圓環方向
      * @param nRoundaboutOut 圓環out
      */
+    @Override
     public void setDirection(final eOutAngle nDir, final eOutType nType, final eOutAngle nRoundaboutOut) {
         char arr[] = {(char) 0x01,
                 (nDir == eOutAngle.LeftDown) ? (char) 0x10 : ((nDir == eOutAngle.RightDown) ? (char) 0x20 : (char) nType.value),
@@ -280,11 +288,13 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
+    @Override
     public void setLanes(char nArrow, char nOutline) {
         char arr[] = {0x02, nOutline, nArrow};
         SendHud2(arr);
     }
 
+    @Override
     public void setSpeed(int nSpeed, boolean bIcon) {
         boolean bSlash = false;
         boolean bSpeeding = false;
@@ -309,6 +319,7 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
+    @Override
     public void setSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash) {
         char arr[] = {(char) 0x06,
                 (char) ((nSpeed / 100) % 10), Digit(nSpeed / 10), Digit(nSpeed), bSlash ? (char) 0xff : (char) 0x00,
@@ -318,6 +329,7 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
+    @Override
     public void clearSpeedAndWarning() {
         char arr[] = {(char) 0x06,
                 (char) 0x00, (char) 0x00, (char) 0x00, (char) 0x00,
@@ -326,21 +338,25 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
+    @Override
     public void setCameraIcon(boolean visible) {
         char arr[] = {0x04, (char) (visible ? 1 : 0)};
         SendHud2(arr);
     }
 
+    @Override
     public void setGpsLabel(boolean visible) {
         char arr[] = {0x07, (char) (visible ? 1 : 0)};
         SendHud2(arr);
     }
 
+    @Override
     public void setAutoBrightness() {
         char command_auto_brightness[] = {0x10, 0x7B, 0x0E, 0x08, 0x00, 0x00, 0x00, 0x56, 0x15, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x10, 0x03};
         sendResult = SendPacket(command_auto_brightness, command_auto_brightness.length);
     }
 
+    @Override
     public void setBrightness(int brightness) {
         char sendBuf[] = new char[8];
         int len = 0;
