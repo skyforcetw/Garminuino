@@ -50,8 +50,6 @@ public interface HUDInterface {
 
     void ClearSpeedAndWarning();
 
-    void ShowCameraIcon();
-
     void SetCameraIcon(boolean visible);
 
     void SetGpsLabel(boolean visible);
