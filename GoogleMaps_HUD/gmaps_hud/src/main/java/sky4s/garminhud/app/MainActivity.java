@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean mIsNLSEnabled = false;
     private boolean mShowCurrentTime = false;
-    private NotificationManager mNotificationManager = getSystemService(NotificationManager.class);
+    private NotificationManager mNotificationManager;
     private MsgReceiver mMsgReceiver;
     private boolean mLastReallyInNavigation = false;
     private BroadcastReceiver mScreenReceiver;
@@ -369,6 +369,10 @@ public class MainActivity extends AppCompatActivity {
         if (!screenshotDir.exists()) {
             screenshotDir.mkdir();
         }
+
+        mNotificationManager = getSystemService(NotificationManager.class);
+
+        mProjectionManager = getSystemService(MediaProjectionManager.class);
 
         OCR_STORE_DIRECTORY = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
         ImageUtils.context = this;
@@ -1156,8 +1160,7 @@ public class MainActivity extends AppCompatActivity {
     //================================================================================
     // media projection
     //================================================================================
-    private MediaProjectionManager mProjectionManager =
-            (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+    private MediaProjectionManager mProjectionManager;
     private ImageReader mImageReader;
     private Handler mProjectionHandler;
     private Display mDisplay;
