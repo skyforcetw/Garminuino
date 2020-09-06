@@ -423,7 +423,6 @@ public class MainActivity extends AppCompatActivity {
         String versionName = BuildConfig.VERSION_NAME;
 
         String title = actionBar.getTitle() + " v" + versionName;
-        // + " (b" + versionCode + ")" + bt_status;
         actionBar.setTitle(title);
         //========================================================================================
 
