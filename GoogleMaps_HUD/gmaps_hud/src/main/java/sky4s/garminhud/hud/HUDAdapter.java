@@ -15,11 +15,6 @@ public abstract class HUDAdapter implements HUDInterface {
     }
 
     @Override
-    public final void SetSpeedAndWarning(int nSpeed, int nLimit) {
-        SetSpeedWarning(nSpeed, nLimit, false, true, true);
-    }
-
-    @Override
     public final void ShowCameraIcon() {
         SetCameraIcon(true);
     }

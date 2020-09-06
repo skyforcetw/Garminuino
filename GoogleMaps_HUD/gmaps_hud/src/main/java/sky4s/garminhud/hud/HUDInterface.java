@@ -46,8 +46,6 @@ public interface HUDInterface {
 
     void SetSpeed(int nSpeed, boolean bIcon);
 
-    void SetSpeedAndWarning(int nSpeed, int nLimit);
-
     void SetSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash);
 
     void ClearSpeedAndWarning();
