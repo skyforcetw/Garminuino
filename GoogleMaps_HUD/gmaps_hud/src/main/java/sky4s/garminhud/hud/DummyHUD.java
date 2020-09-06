@@ -29,26 +29,10 @@ public class DummyHUD extends HUDAdapter {
         return true;
     }
 
-//    @Override
-//    public void SetTime(int nH, int nM, boolean bH, boolean bFlag) {
-//        SetTime(nH, nM, bFlag, false, true, bH);
-//    }
-
-//    @Override
-//    public void SetTime(int nH, int nM, boolean bH) {
-//        log("Time: " + nH + ":" + nM + (bH ? "h" : ""));
-//    }
-
-
     @Override
     public void SetTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
         log("Time: " + nH + (bColon ? ":" : " ") + nM + (bH ? "h" : "") + " Flag" + bFlag + " Traffic" + bTraffic);
     }
-
-//    @Override
-//    public void SetRemainTime(int nH, int nM) {
-//        log("Remain Time: " + nH + ":" + nM);
-//    }
 
     @Override
     public final void SetRemainTime(int nH, int nM, boolean bTraffic) {
@@ -59,11 +43,6 @@ public class DummyHUD extends HUDAdapter {
     public void ClearTime() {
         log("Clear Time");
     }
-
-//    @Override
-//    public void SetDistance(int nDist, eUnits unit) {
-//        log("Distance: " + nDist + " " + unit);
-//    }
 
     @Override
     public void SetDistance(float nDist, eUnits unit) {
@@ -90,11 +69,6 @@ public class DummyHUD extends HUDAdapter {
 
     }
 
-//    @Override
-//    public void SetDirection(eOutAngle nDir) {
-//
-//    }
-
     @Override
     public void SetDirection(eOutAngle nDir, eOutType nType, eOutAngle nRoundaboutOut) {
 
@@ -110,11 +84,6 @@ public class DummyHUD extends HUDAdapter {
         log("Speed: " + nSpeed + " " + bIcon);
     }
 
-//    @Override
-//    public void SetSpeedAndWarning(int nSpeed, int nLimit) {
-//        log("Speed: " + nSpeed + " / " + nLimit);
-//    }
-
     @Override
     public void SetSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash) {
         log("Speed: " + nSpeed + " / " + nLimit + " " + bSpeeding + " " + bIcon + " " + bSlash);
@@ -125,20 +94,10 @@ public class DummyHUD extends HUDAdapter {
         log("Clear Speed & Warning");
     }
 
-//    @Override
-//    public void ShowCameraIcon() {
-//
-//    }
-
     @Override
     public void SetCameraIcon(boolean visible) {
 
     }
-
-//    @Override
-//    public void ShowGpsLabel() {
-//
-//    }
 
     @Override
     public void SetGpsLabel(boolean visible) {
@@ -159,9 +118,4 @@ public class DummyHUD extends HUDAdapter {
     public void disconnect() {
         log("Disconnect");
     }
-
-//    @Override
-//    public void clear() {
-//        log("Clear");
-//    }
 }
