@@ -3,6 +3,8 @@ package sky4s.garminhud.hud;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.wifi.WifiManager;
+import android.provider.Settings;
 import android.util.Log;
 
 import java.util.concurrent.ExecutionException;
@@ -24,6 +26,8 @@ public class BMWHUD extends HUDAdapter {
 
     private static final int MAX_UPDATES_PER_SECOND = 6;
 
+    private static final int BMW_HUD_ACTION_WIFI_RESULT = 31337;
+
     private Context mContext;
     private BMWMessage mMsg;
     private BMWSocketConnection mSocket;
@@ -34,10 +38,17 @@ public class BMWHUD extends HUDAdapter {
 
     public BMWHUD(Context context) {
         if (DEBUG) Log.d(TAG, "Creating BMWHUD instance");
-        mContext = context.getApplicationContext();
+        mContext = context;
         mExecutor = Executors.newFixedThreadPool(1);
         mMsg = new BMWMessage();
         mSocket = BMWSocketConnection.getInstance(mContext);
+
+        WifiManager wifiManager =
+                (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (wifiManager.getWifiState() != WifiManager.WIFI_STATE_ENABLED) {
+            // Bring up WLAN panel if not connected
+            scanForHud();
+        }
     }
 
     @Override
@@ -47,13 +58,14 @@ public class BMWHUD extends HUDAdapter {
 
     @Override
     public boolean handleActivityResult(int requestCode, int resultCode, Intent data) {
-        return false;
+        return requestCode == BMW_HUD_ACTION_WIFI_RESULT;
     }
 
     @Override
     public void scanForHud() {
-        // Called when the scan button is pressed
-        // TODO: show WLAN settings panel
+        // Called when scan button is pressed, bring up WLAN panel
+        Intent intent = new Intent(Settings.Panel.ACTION_WIFI);
+        startActivityForResult(intent, BMW_HUD_ACTION_WIFI_RESULT);
     }
 
     @Override
@@ -396,6 +408,10 @@ public class BMWHUD extends HUDAdapter {
         SharedPreferences sharedPref = mContext.getSharedPreferences(
                 MainActivity.class.getSimpleName(), Context.MODE_PRIVATE);
         return sharedPref.getBoolean(mContext.getString(R.string.option_show_eta), false);
+    }
+
+    private void startActivityForResult(Intent intent, int requestCode) {
+        ((MainActivity) mContext).startActivityForResult(intent, requestCode);
     }
 
     private void sendMessage() {
