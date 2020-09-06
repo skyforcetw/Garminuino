@@ -10,7 +10,7 @@ public interface HUDInterface {
         enum ConnectionState {
             CONNECTED,
             DISCONNECTED,
-        };
+        }
 
         void onConnectionStateChange(ConnectionState state);
     }
