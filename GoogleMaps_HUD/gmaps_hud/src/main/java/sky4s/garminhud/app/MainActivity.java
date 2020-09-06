@@ -283,92 +283,71 @@ public class MainActivity extends AppCompatActivity {
         mDarkModeManualSwitch.setOnCheckedChangeListener(mOnCheckedChangedListener);
     }
 
+    private HUDInterface.ConnectionCallback mHudConnectionCallback = new HUDInterface.ConnectionCallback() {
+        @Override
+        public void onConnectionStateChange(ConnectionState state) {
+            switch (state) {
+                case CONNECTED:
+                    runOnUiThread(() -> {
+                        if (mHudConnectedSwitch != null) {
+                            String hudName = isBMW() ? "BMW HUD" : "Garmin HUD";
+                            mHudConnectedSwitch.setText(getString(
+                                    R.string.layout_element_hud_success_connected, hudName));
+                            if (mSharedPrefs != null && mSharedPrefs.getInt(getString(R.string.state_dark_mode),
+                                    AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
+                                mHudConnectedSwitch.setTextColor(Color.BLACK);
+                            mHudConnectedSwitch.setChecked(true);
+                        }
+                        if (mUseLocationService && !mLocationServiceConnected) {
+                            bindLocationService();
+                        }
+                        if (mAutoBrightnessSwitch != null) {
+                            if (mAutoBrightnessSwitch.isChecked()) {
+                                mHud.setAutoBrightness();
+                            } else {
+                                final int brightness = getGammaBrightness();
+                                mHud.setBrightness(brightness);
+                            }
+                        }
+                    });
+                    break;
+                case DISCONNECTED:
+                    runOnUiThread(() -> {
+                        if (mHudConnectedSwitch != null) {
+                            mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_disconnected));
+                            mHudConnectedSwitch.setTextColor(Color.RED);
+                            mHudConnectedSwitch.setChecked(false);
+                        }
+                    });
+                    break;
+                case FAILED:
+                    runOnUiThread(() -> {
+                        if (mHudConnectedSwitch != null) {
+                            mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_con_failed));
+                            mHudConnectedSwitch.setTextColor(Color.RED);
+                            mHudConnectedSwitch.setChecked(false);
+                        }
+                    });
+                    break;
+            }
+        }
+    };
+
     private void initBluetooth() {
-        if (mSharedPrefs.getBoolean(getString(R.string.option_bmw_hud_enabled), false)) {
+        if (isBMW()) {
             if (mHud != null) {
                 mHud.disconnect();
             }
             mHud = new BMWHUD(this);
-            //========================================================================================
-            HUDInterface.ConnectionCallback mBMWHUDConnection = state -> {
-                switch (state) {
-                    case CONNECTED:
-                        runOnUiThread(() -> {
-                            if (mHudConnectedSwitch != null) {
-                                mHudConnectedSwitch.setText(getString(
-                                        R.string.layout_element_hud_success_connected, "BMW HUD"));
-                                if (mSharedPrefs != null && mSharedPrefs.getInt(getString(R.string.state_dark_mode),
-                                        AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
-                                    mHudConnectedSwitch.setTextColor(Color.BLACK);
-                                mHudConnectedSwitch.setChecked(true);
-                            }
-                        });
-                        break;
-                    case DISCONNECTED:
-                        runOnUiThread(() -> {
-                            if (mHudConnectedSwitch != null) {
-                                mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_disconnected));
-                                mHudConnectedSwitch.setTextColor(Color.RED);
-                                mHudConnectedSwitch.setChecked(false);
-                            }
-                        });
-                        break;
-                }
-            };
-            mHud.registerConnectionCallback(mBMWHUDConnection);
         } else if (!IGNORE_BT_DEVICE) {
             mHud = new GarminHUD(this);
-            // TODO: share this with BMWHUD
-            HUDInterface.ConnectionCallback mGarminHUDConnection = state -> {
-                switch (state) {
-                    case CONNECTED:
-                        runOnUiThread(() -> {
-                            if (mHudConnectedSwitch != null) {
-                                mHudConnectedSwitch.setText(getString(
-                                        R.string.layout_element_hud_success_connected, "Garmin HUD"));
-                                if (mSharedPrefs != null && mSharedPrefs.getInt(getString(R.string.state_dark_mode),
-                                        AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
-                                    mHudConnectedSwitch.setTextColor(Color.BLACK);
-                                mHudConnectedSwitch.setChecked(true);
-                            }
-                            if (mUseLocationService && !mLocationServiceConnected) {
-                                bindLocationService();
-                            }
-                            if (mAutoBrightnessSwitch != null) {
-                                if (mAutoBrightnessSwitch.isChecked()) {
-                                    mHud.setAutoBrightness();
-                                } else {
-                                    final int brightness = getGammaBrightness();
-                                    mHud.setBrightness(brightness);
-                                }
-                            }
-                        });
-                        break;
-                    case DISCONNECTED:
-                        runOnUiThread(() -> {
-                            if (mHudConnectedSwitch != null) {
-                                mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_disconnected));
-                                mHudConnectedSwitch.setTextColor(Color.RED);
-                                mHudConnectedSwitch.setChecked(false);
-                            }
-                        });
-                        break;
-                    case FAILED:
-                        runOnUiThread(() -> {
-                            if (mHudConnectedSwitch != null) {
-                                mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_con_failed));
-                                mHudConnectedSwitch.setTextColor(Color.RED);
-                                mHudConnectedSwitch.setChecked(false);
-                            }
-                        });
-                        break;
-                }
-            };
-            mHud.registerConnectionCallback(mGarminHUDConnection);
-
-
         }
+        mHud.registerConnectionCallback(mHudConnectionCallback);
         NotificationMonitor.sHud = mHud;
+    }
+
+    private boolean isBMW() {
+        return mSharedPrefs.getBoolean(getString(R.string.option_bmw_hud_enabled), false);
     }
 
     static Boolean sIsDebug = null;
