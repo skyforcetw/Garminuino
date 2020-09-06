@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -46,6 +47,9 @@ public class BMWHUD extends HUDAdapter {
         WifiManager wifiManager =
                 (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (wifiManager.getWifiState() != WifiManager.WIFI_STATE_ENABLED) {
+            Toast.makeText(mContext.getApplicationContext(),
+                    mContext.getString(R.string.message_enable_wlan),
+                    Toast.LENGTH_SHORT).show();
             // Bring up WLAN panel if not connected
             scanForHud();
         }
@@ -64,6 +68,9 @@ public class BMWHUD extends HUDAdapter {
     @Override
     public void scanForHud() {
         // Called when scan button is pressed, bring up WLAN panel
+        Toast.makeText(mContext.getApplicationContext(),
+                mContext.getString(R.string.message_connect_to_bmw_hud_network),
+                Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(Settings.Panel.ACTION_WIFI);
         startActivityForResult(intent, BMW_HUD_ACTION_WIFI_RESULT);
     }

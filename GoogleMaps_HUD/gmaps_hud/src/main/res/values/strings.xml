@@ -102,6 +102,8 @@
     <string name="title_enable_location_access">Location Permission</string>
     <string name="message_bt_not_available">Bluetooth is not available</string>
     <string name="message_bt_not_enabled">Bluetooth was not enabled.</string>
+    <string name="message_enable_wlan">Please enable WLAN</string>
+    <string name="message_connect_to_bmw_hud_network">Please connect to Head-Up Display network</string>
     <string name="layout_title_notify">Notification</string>
     <string name="layout_element_notify">Show Notification</string>
 
