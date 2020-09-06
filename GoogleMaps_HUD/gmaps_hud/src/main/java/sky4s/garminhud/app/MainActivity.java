@@ -899,7 +899,9 @@ public class MainActivity extends AppCompatActivity {
             mDebugTextView.setText(result + "\n\n" + text);
         } else {
             mDebugTextView.setTextColor(Color.RED);
-            mDebugTextView.setText("Please Enable Notification Access");
+            mDebugTextView.setText(
+                    getString(R.string.message_enable_notification_access,
+                            getString(R.string.app_name)));
         }
     }
 
