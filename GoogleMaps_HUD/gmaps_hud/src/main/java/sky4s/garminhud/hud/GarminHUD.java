@@ -98,9 +98,9 @@ public class GarminHUD extends HUDAdapter {
                 mBt.setupService();
                 mBt.startService(BluetoothState.DEVICE_OTHER);
             } else {
-                Toast.makeText(mContext.getApplicationContext()
-                        , "Bluetooth was not enabled."
-                        , Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext.getApplicationContext(),
+                        mContext.getString(R.string.message_bt_not_enabled),
+                        Toast.LENGTH_SHORT).show();
 
             }
             return true;
