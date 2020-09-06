@@ -119,6 +119,7 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 /* Fragment used as page 3 */
@@ -136,20 +137,20 @@ public class Page3Fragment extends Fragment {
     {
         super.onActivityCreated(savedInstanceState);
 
-        ((MainActivity) getActivity()).mBMWHUDEnabledSwitch = (Switch) getView().findViewById((R.id.switchEnableBMWHUD));
-        ((MainActivity) getActivity()) .mArrowTypeSwitch =  (Switch) getView().findViewById(R.id.switchArrowType);;
+        ((MainActivity) getActivity()).mBMWHUDEnabledSwitch = getView().findViewById((R.id.switchEnableBMWHUD));
+        ((MainActivity) getActivity()) .mArrowTypeSwitch =  getView().findViewById(R.id.switchArrowType);;
 
-        ((MainActivity) getActivity()).mAlertAnytimeSwitch =  (Switch) getView().findViewById(R.id.switchAlertAnytime);;
+        ((MainActivity) getActivity()).mAlertAnytimeSwitch =  getView().findViewById(R.id.switchAlertAnytime);;
         SeekBar seekBarAlertSpeed= (SeekBar) getView().findViewById(R.id.seekBarAlertSpeed);
         seekBarAlertSpeed.setEnabled(false);
         ((MainActivity) getActivity()).mAlertSpeedSeekbar =seekBarAlertSpeed;
-        ((MainActivity) getActivity()).mAlertYellowTrafficSwitch = (Switch) getView().findViewById(R.id.switchAlertYellowTraffic);
+        ((MainActivity) getActivity()).mAlertYellowTrafficSwitch = getView().findViewById(R.id.switchAlertYellowTraffic);
 
-        ((MainActivity) getActivity()).mBindBtAddressSwitch = (Switch) getView().findViewById(R.id.switchBtBindAddress);
-        ((MainActivity) getActivity()).mShowNotifySwitch = (Switch) getView().findViewById(R.id.switchShowNotify);
+        ((MainActivity) getActivity()).mBindBtAddressSwitch =  getView().findViewById(R.id.switchBtBindAddress);
+        ((MainActivity) getActivity()).mShowNotifySwitch =  getView().findViewById(R.id.switchShowNotify);
 
-        ((MainActivity) getActivity()).mDarkModeAutoSwitch = (Switch) getView().findViewById(R.id.switchDarkModeAuto);
-        ((MainActivity) getActivity()).mDarkModeManualSwitch = (Switch) getView().findViewById(R.id.switchDarkModeMan);
+        ((MainActivity) getActivity()).mDarkModeAutoSwitch = getView().findViewById(R.id.switchDarkModeAuto);
+        ((MainActivity) getActivity()).mDarkModeManualSwitch = getView().findViewById(R.id.switchDarkModeMan);
 
         ((MainActivity) getActivity()).loadOptions();
 

@@ -38,7 +38,6 @@ import android.view.OrientationEventListener;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
@@ -53,6 +52,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -87,36 +87,36 @@ public class MainActivity extends AppCompatActivity {
     TextView mDebugTextView;
 
     //status
-    Switch mHudConnectedSwitch;
-    Switch mNotificationCaughtSwitch;
-    Switch mGmapsNotificationCaughtSwitch;
+    SwitchCompat mHudConnectedSwitch;
+    SwitchCompat mNotificationCaughtSwitch;
+    SwitchCompat mGmapsNotificationCaughtSwitch;
 
     //setting
-    Switch mShowSpeedSwitch;
-    Switch mAutoBrightnessSwitch;
+    SwitchCompat mShowSpeedSwitch;
+    SwitchCompat mAutoBrightnessSwitch;
     SeekBar mBrightnessSeekbar;
 
-    Switch mShowETASwitch;
-    Switch mIdleShowCurrentTimeSwitch;
-    Switch mTrafficAndLaneSwitch;
+    SwitchCompat mShowETASwitch;
+    SwitchCompat mIdleShowCurrentTimeSwitch;
+    SwitchCompat mTrafficAndLaneSwitch;
     //========================================
     // UI for Page3Fragment
     //========================================
     //BMW HUD
-    Switch mBMWHUDEnabledSwitch;
+    SwitchCompat mBMWHUDEnabledSwitch;
     //arrow
-    Switch mArrowTypeSwitch;
+    SwitchCompat mArrowTypeSwitch;
     //traffic
-    Switch mAlertAnytimeSwitch;
+    SwitchCompat mAlertAnytimeSwitch;
     SeekBar mAlertSpeedSeekbar;
-    Switch mAlertYellowTrafficSwitch;
+    SwitchCompat mAlertYellowTrafficSwitch;
     //bluetooth
-    Switch mBindBtAddressSwitch;
+    SwitchCompat mBindBtAddressSwitch;
     //notification
-    Switch mShowNotifySwitch;
+    SwitchCompat mShowNotifySwitch;
     //app-appearance
-    Switch mDarkModeAutoSwitch;
-    Switch mDarkModeManualSwitch;
+    SwitchCompat mDarkModeAutoSwitch;
+    SwitchCompat mDarkModeManualSwitch;
 
     static Intent sMainIntent;
 
@@ -653,7 +653,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.switchAlertAnytime:
-                    Switch switchAlertAnytime = (Switch) view;
+                    SwitchCompat switchAlertAnytime = (SwitchCompat) view;
                     final boolean alertAnytime = switchAlertAnytime.isChecked();
                     if (!alertAnytime) { //if need speed info, must check gps status
                         showSpeed(true);
@@ -737,7 +737,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.switchAutoBrightness:
-                    Switch theAutoBrightness = (Switch) view;
+                    SwitchCompat theAutoBrightness = (SwitchCompat) view;
                     final boolean autoBrightness = theAutoBrightness.isChecked();
 
                     final int brightnessProgress = mBrightnessSeekbar.getProgress();

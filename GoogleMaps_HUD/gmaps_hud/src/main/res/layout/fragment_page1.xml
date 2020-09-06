@@ -63,7 +63,7 @@
                     android:text="@string/layout_title_status"
                     android:textSize="@dimen/option_title_size" />
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switchHudConnected"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
 
                     android:textSize="@dimen/option_text_size" />
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switchNotificationCaught"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
                     android:text="@string/layout_element_notification_caputre"
                     android:textSize="@dimen/option_text_size" />
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switchGmapsNotificationCaught"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
                 android:text="@string/layout_title_settings"
                 android:textSize="@dimen/option_title_size" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switchShowSpeed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -121,7 +121,7 @@
                 android:text="@string/layout_element_show_speed"
                 android:textSize="@dimen/option_text_size" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switchAutoBrightness"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -155,7 +155,7 @@
                 android:text="@string/layout_title_when_navigating"
                 android:textSize="@dimen/option_title_size" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switchNavShowSpeed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -164,7 +164,7 @@
                 android:textSize="@dimen/option_text_size"
                 android:visibility="gone" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switchShowETA"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -182,7 +182,7 @@
                 android:textSize="@dimen/option_title_size" />
 
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switchIdleShowCurrentTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -205,7 +205,7 @@
                 android:text="@string/layout_title_traffic"
                 android:textSize="@dimen/option_title_size" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switchTrafficAndLane"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
