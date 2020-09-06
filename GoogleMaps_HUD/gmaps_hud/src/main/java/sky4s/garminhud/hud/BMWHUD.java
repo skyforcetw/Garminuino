@@ -341,7 +341,7 @@ public class BMWHUD extends HUDAdapter {
     }
 
     @Override
-    public void ClearSpeedandWarning() {
+    public void ClearSpeedAndWarning() {
         // TODO: handle isMetric parameter
         mMsg.setSpeedLimit(0, false);
 

@@ -318,7 +318,7 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
-    public void ClearSpeedandWarning() {
+    public void ClearSpeedAndWarning() {
         char arr[] = {(char) 0x06,
                 (char) 0x00, (char) 0x00, (char) 0x00, (char) 0x00,
                 (char) 0x00, (char) 0x00, (char) 0x00, (char) 0x00,

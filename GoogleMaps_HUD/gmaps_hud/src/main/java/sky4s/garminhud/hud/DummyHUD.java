@@ -121,7 +121,7 @@ public class DummyHUD extends HUDAdapter {
     }
 
     @Override
-    public void ClearSpeedandWarning() {
+    public void ClearSpeedAndWarning() {
         log("Clear Speed & Warning");
     }
 

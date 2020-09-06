@@ -53,7 +53,7 @@ public interface HUDInterface {
 
     void SetSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash);
 
-    void ClearSpeedandWarning();
+    void ClearSpeedAndWarning();
 
     void ShowCameraIcon();
 

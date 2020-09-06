@@ -872,7 +872,7 @@ public class MainActivity extends AppCompatActivity {
             if (null != mHud) {
                 //clear according to navigate status
                 if (isInNavigation()) {
-                    mHud.ClearSpeedandWarning();
+                    mHud.ClearSpeedAndWarning();
                 } else {
                     mHud.ClearDistance();
                 }
