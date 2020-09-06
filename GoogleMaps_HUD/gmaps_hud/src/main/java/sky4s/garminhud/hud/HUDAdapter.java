@@ -14,9 +14,4 @@ public abstract class HUDAdapter implements HUDInterface {
         SetDirection(nDir, eOutType.Lane, eOutAngle.AsDirection);
     }
 
-    @Override
-    public final void clear() {
-        SetCameraIcon(false);
-        SetGpsLabel(false);
-    }
 }
