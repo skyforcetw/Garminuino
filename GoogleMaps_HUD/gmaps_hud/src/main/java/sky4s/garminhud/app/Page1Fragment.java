@@ -57,7 +57,7 @@ public class Page1Fragment extends Fragment {
         if (showPrompt) {
             MaterialTapTargetSequence sequence = new MaterialTapTargetSequence();
             prompt(sequence, R.id.switchHudConnected, getString(R.string.prompt_switch_hud_connected));
-            prompt(sequence, R.id.btnScanBT, getString(R.string.prompt_btn_scan_bt));
+            prompt(sequence, R.id.btnScanHUD, getString(R.string.prompt_btn_scan_bt));
             prompt(sequence, R.id.switchNotificationCaught, getString(R.string.prompt_switch_notification_catched));
             prompt(sequence, R.id.switchGmapsNotificationCaught, getString(R.string.prompt_switch_gmaps_navigation_catched));
             prompt(sequence, R.id.layoutStatus, getString(R.string.prompt_layout_status));

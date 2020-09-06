@@ -30,8 +30,8 @@
     <string name="layout_tab_main">Main</string>
 
     <string name="layout_tab_setup">Einstellungen</string>
-    <string name="layout_button_scan_bt">Gerät suchen</string>
-    <string name="layout_button_reset_bt">Bluetooth zurücksetzen</string>
+    <string name="layout_button_scan_hud">Gerät suchen</string>
+    <string name="layout_button_reset_hud">Bluetooth zurücksetzen</string>
 
     <string name="layout_title_status">Status</string>
     <string name="layout_element_hud_connected">HUD verbunden</string>

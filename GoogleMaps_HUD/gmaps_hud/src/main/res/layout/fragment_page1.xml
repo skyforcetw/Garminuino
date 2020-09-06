@@ -22,21 +22,21 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/btnScanBT"
+                    android:id="@+id/btnScanHUD"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:onClick="buttonOnClicked"
-                    android:text="@string/layout_button_scan_bt"
+                    android:text="@string/layout_button_scan_hud"
                     android:textSize="@dimen/option_text_size" />
 
                 <Button
-                    android:id="@+id/btnResetBT"
+                    android:id="@+id/btnResetHUD"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:onClick="buttonOnClicked"
-                    android:text="@string/layout_button_reset_bt"
+                    android:text="@string/layout_button_reset_hud"
                     android:textSize="@dimen/option_text_size" />
 
             </LinearLayout>

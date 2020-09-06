@@ -329,7 +329,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void initBluetooth() {
+    private void initializeHUD() {
         if (isBMW()) {
             if (mHud != null) {
                 mHud.disconnect();
@@ -409,9 +409,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //========================================================================================
-        // BT related
+        // HUD connection
         //========================================================================================
-        initBluetooth();
+        initializeHUD();
         //========================================================================================
 
         //=======================================================================================
@@ -625,7 +625,7 @@ public class MainActivity extends AppCompatActivity {
                     final boolean enableBMWHUD = view.isChecked();
                     storeOptions(R.string.option_bmw_hud_enabled, enableBMWHUD);
                     view.setText(enableBMWHUD ? R.string.layout_element_bmw_hud_enabled : R.string.layout_element_bmw_hud_disabled);
-                    initBluetooth();
+                    initializeHUD();
                     break;
 
                 case R.id.switchArrowType:
@@ -789,8 +789,8 @@ public class MainActivity extends AppCompatActivity {
                 listCurrentNotification();
                 break;
 
-            case R.id.btnScanBT:
-                log("Scan Bluetooth...");
+            case R.id.btnScanHUD:
+                log("Scan for HUD...");
                 if (!IGNORE_BT_DEVICE) {
                     if (mHud != null) {
                         // TODO: Rename strings to not directly reference BT
@@ -799,10 +799,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
 
-            case R.id.btnResetBT:
-                log("Reset Bluetooth...");
+            case R.id.btnResetHUD:
+                log("Reset HUD...");
                 if (!IGNORE_BT_DEVICE) {
-                    initBluetooth();
+                    initializeHUD();
                 }
                 break;
 

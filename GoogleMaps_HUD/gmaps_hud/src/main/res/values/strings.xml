@@ -49,8 +49,8 @@
     <string name="layout_tab_main">Main</string>
 
     <string name="layout_tab_setup">Setup</string>
-    <string name="layout_button_scan_bt">Scan Bluetooth</string>
-    <string name="layout_button_reset_bt">Reset Bluetooth</string>
+    <string name="layout_button_scan_hud">Scan for HUD</string>
+    <string name="layout_button_reset_hud">Reset HUD</string>
 
     <string name="layout_title_status">Status</string>
     <string name="layout_element_hud_connected">HUD Connected</string>
