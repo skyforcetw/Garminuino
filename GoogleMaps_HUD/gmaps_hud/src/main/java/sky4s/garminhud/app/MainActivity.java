@@ -197,10 +197,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    public MainActivity() {
-    }
-
-
     private boolean isInNavigation() {
         return mGmapsNotificationCaughtSwitch.isChecked();
     }
