@@ -330,10 +330,10 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void initializeHUD() {
+        if (mHud != null) {
+            mHud.disconnect();
+        }
         if (isBMW()) {
-            if (mHud != null) {
-                mHud.disconnect();
-            }
             mHud = new BMWHUD(this);
         } else if (!IGNORE_BT_DEVICE) {
             mHud = new GarminHUD(this);
