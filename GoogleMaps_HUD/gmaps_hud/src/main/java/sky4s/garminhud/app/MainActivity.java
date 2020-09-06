@@ -68,7 +68,7 @@ import app.akexorcist.bluetotohspp.library.BluetoothState;
 import app.akexorcist.bluetotohspp.library.DeviceList;
 import chutka.bitman.com.speedometersimplified.LocationService;
 import sky4s.garminhud.Arrow;
-import sky4s.garminhud.GarminHUD;
+import sky4s.garminhud.hud.GarminHUD;
 import sky4s.garminhud.ImageUtils;
 import sky4s.garminhud.app.detect.ImageDetectListener;
 import sky4s.garminhud.eOutAngle;

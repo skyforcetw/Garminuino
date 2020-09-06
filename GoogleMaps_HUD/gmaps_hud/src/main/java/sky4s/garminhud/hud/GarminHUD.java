@@ -1,7 +1,10 @@
-package sky4s.garminhud;
+package sky4s.garminhud.hud;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import sky4s.garminhud.app.MainActivity;
+import sky4s.garminhud.eOutAngle;
+import sky4s.garminhud.eOutType;
+import sky4s.garminhud.eUnits;
 import sky4s.garminhud.hud.HUDAdapter;
 
 /**
