@@ -8,9 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <LinearLayout
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -71,7 +69,6 @@
                     android:checked="false"
                     android:clickable="false"
                     android:text="@string/layout_element_hud_disconnected"
-
                     android:textSize="@dimen/option_text_size" />
 
                 <androidx.appcompat.widget.SwitchCompat
@@ -117,7 +114,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClick="buttonOnClicked"
-
                 android:text="@string/layout_element_show_speed"
                 android:textSize="@dimen/option_text_size" />
 
@@ -127,7 +123,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-
                 android:paddingTop="@dimen/option_padding_top"
                 android:text="@string/layout_element_auto_brightness"
                 android:textSize="@dimen/option_text_size" />
@@ -138,13 +133,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-
                 android:max="10"
-
                 android:paddingRight="80dp"
                 android:progress="0"
                 android:textSize="@dimen/option_text_size" />
-
 
             <TextView
                 android:id="@+id/textView5"
@@ -181,7 +173,6 @@
                 android:text="@string/layout_title_when_nav_done"
                 android:textSize="@dimen/option_title_size" />
 
-
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switchIdleShowCurrentTime"
                 android:layout_width="match_parent"
@@ -211,7 +202,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="false"
-
                 android:enabled="false"
                 android:paddingTop="@dimen/option_padding_top"
                 android:text="@string/layout_element_traffic_lane_det"
@@ -223,11 +213,6 @@
                 android:layout_height="2dip"
                 android:background="@color/horizontal_line" />
 
-
-
-
         </LinearLayout>
-
     </ScrollView>
-
 </FrameLayout>

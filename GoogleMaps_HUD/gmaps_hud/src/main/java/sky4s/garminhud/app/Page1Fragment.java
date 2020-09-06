@@ -1,6 +1,5 @@
 package sky4s.garminhud.app;
 
-//import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,12 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
-import android.widget.Switch;
 
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetSequence;
 import uk.co.samuelwall.materialtaptargetprompt.extras.backgrounds.RectanglePromptBackground;
@@ -24,8 +20,7 @@ public class Page1Fragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_page1, container, false);
-        return rootView;
+        return inflater.inflate(R.layout.fragment_page1, container, false);
     }
 
     @Override
@@ -36,8 +31,8 @@ public class Page1Fragment extends Fragment {
         ((MainActivity) getActivity()).mGmapsNotificationCaughtSwitch = getView().findViewById(R.id.switchGmapsNotificationCaught);
 
         ((MainActivity) getActivity()).mShowSpeedSwitch = getView().findViewById(R.id.switchShowSpeed);
-        ((MainActivity) getActivity()).mAutoBrightnessSwitch = getView().findViewById(R.id.switchAutoBrightness);;
-        SeekBar seekBarBrightness= (SeekBar) getView().findViewById(R.id.seekBarBrightness);
+        ((MainActivity) getActivity()).mAutoBrightnessSwitch = getView().findViewById(R.id.switchAutoBrightness);
+        SeekBar seekBarBrightness = getView().findViewById(R.id.seekBarBrightness);
         seekBarBrightness.setEnabled(false);
         ((MainActivity) getActivity()).mBrightnessSeekbar = seekBarBrightness;
 
@@ -52,7 +47,7 @@ public class Page1Fragment extends Fragment {
 //        ((MainActivity) getActivity()).switchDarkModeAuto = (Switch) getView().findViewById(R.id.switchDarkModeAuto);
 //        ((MainActivity) getActivity()).switchDarkModeManual = (Switch) getView().findViewById(R.id.switchDarkModeMan);
 
-        SharedPreferences sharedPref = ((MainActivity) getActivity()).getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         boolean showPrompt = sharedPref.getBoolean(getString(R.string.option_show_prompt), true);
         //first lesson for GarminHUD app
         if (showPrompt) {
@@ -68,11 +63,9 @@ public class Page1Fragment extends Fragment {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(getString(R.string.option_show_prompt), false);
         editor.commit();
-
-//        ((MainActivity) getActivity()).loadOptions();
     }
 
-    private MaterialTapTargetSequence prompt(MaterialTapTargetSequence sequence, final int target, String text) {
+    private void prompt(MaterialTapTargetSequence sequence, final int target, String text) {
         FragmentActivity activity = getActivity();
         sequence.addPrompt(new MaterialTapTargetPrompt.Builder(activity)
                 .setTarget(target)
@@ -80,9 +73,6 @@ public class Page1Fragment extends Fragment {
                 .setPromptBackground(new RectanglePromptBackground())
                 .setPromptFocal(new RectanglePromptFocal())
                 .create());
-        return sequence;
 
     }
-
-
 }

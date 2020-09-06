@@ -3,16 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_below="@+id/tab_layout"
-    >
+    android:layout_below="@+id/tab_layout">
 
     <LinearLayout
         android:id="@+id/finalLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
-
+        android:orientation="vertical">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -67,12 +64,7 @@
                         android:text="BUTTON 3" />
 
                 </LinearLayout>
-
             </LinearLayout>
         </ScrollView>
-
-
     </LinearLayout>
-
-
 </FrameLayout>

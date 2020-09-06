@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-     android:layout_below="@+id/tab_layout">
+    android:layout_below="@+id/tab_layout">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -35,11 +33,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="false"
-
                 android:paddingTop="@dimen/option_padding_top"
                 android:paddingBottom="@dimen/option_padding_bottom"
                 android:text="@string/layout_element_bmw_hud_disabled"
-
                 android:textSize="@dimen/option_text_size" />
 
             <TextView
@@ -57,18 +53,15 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="false"
-
                 android:paddingTop="@dimen/option_padding_top"
                 android:paddingBottom="@dimen/option_padding_bottom"
                 android:text="@string/layout_element_arrow_type_v1"
-
                 android:textSize="@dimen/option_text_size" />
 
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="2dip"
                 android:background="@color/horizontal_line" />
-
 
             <TextView
                 android:id="@+id/textView2"
@@ -116,8 +109,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="2dip"
                 android:background="@color/horizontal_line" />
-
-
 
             <TextView
                 android:id="@+id/textView4"
@@ -204,5 +195,4 @@
 
         </LinearLayout>
     </ScrollView>
-
 </FrameLayout>
