@@ -66,17 +66,17 @@ public class DummyHUD extends HUDAdapter {
 
     @Override
     public void SetAlphabet(char a, char b, char c, char d) {
-
+        log("SetAlphabet: " + a + " " + b + " " + c + " " + d);
     }
 
     @Override
     public void SetDirection(eOutAngle nDir, eOutType nType, eOutAngle nRoundaboutOut) {
-
+        log("SetDirection: " + nDir + ", " + nType + ", " + nRoundaboutOut);
     }
 
     @Override
     public void SetLanes(char nArrow, char nOutline) {
-
+        log("SetLanes: " + nArrow + ", " + nOutline);
     }
 
     @Override
@@ -96,22 +96,22 @@ public class DummyHUD extends HUDAdapter {
 
     @Override
     public void SetCameraIcon(boolean visible) {
-
+        log("SetCameraIcon: visible: " + visible);
     }
 
     @Override
     public void SetGpsLabel(boolean visible) {
-
+        log("SetGpsLabel: visible: " + visible);
     }
 
     @Override
     public void SetAutoBrightness() {
-
+        log("SetAutoBrightness");
     }
 
     @Override
     public void SetBrightness(int brightness) {
-
+        log("SetBrightness: " + brightness);
     }
 
     @Override
