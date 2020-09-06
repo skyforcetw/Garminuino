@@ -76,7 +76,7 @@ public class BMWHUD extends HUDAdapter {
     }
 
     @Override
-    public void SetTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
+    public void setTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
         // function is called through SetCurrentTime, and only used for showing current time when idle
         // nH is expected to be 24-hour
         final boolean isAm = nH < 12;
@@ -88,7 +88,7 @@ public class BMWHUD extends HUDAdapter {
     }
 
     @Override
-    public void SetRemainTime(int nH, int nM, boolean bTraffic) {
+    public void setRemainTime(int nH, int nM, boolean bTraffic) {
         // nH is expected to be 24-hour
         final boolean isAm = nH < 12;
         int suffix = 0;
@@ -109,14 +109,14 @@ public class BMWHUD extends HUDAdapter {
     }
 
     @Override
-    public void ClearTime() {
+    public void clearTime() {
         mMsg.setArrivalTime(0, 0, BMWMessage.TIME_SUFFIX_AM);
 
         sendMessage();
     }
 
     @Override
-    public void SetDistance(float nDist, eUnits unit) {
+    public void setDistance(float nDist, eUnits unit) {
         if (DEBUG) Log.d(TAG, "SetDistance: nDist: " + nDist +
                 ", unit: " + unit);
         double distToTurnMiles;
@@ -144,14 +144,14 @@ public class BMWHUD extends HUDAdapter {
     }
 
     @Override
-    public void ClearDistance() {
+    public void clearDistance() {
         mMsg.setDistanceToTurn(0);
 
         sendMessage();
     }
 
     @Override
-    public void SetRemainingDistance(float nDist, eUnits unit) {
+    public void setRemainingDistance(float nDist, eUnits unit) {
         if (DEBUG) Log.d(TAG, "SetRemainingDistance: nDist: " + nDist +
                 ", unit: " + unit);
         double distToTurnMiles;
@@ -179,20 +179,20 @@ public class BMWHUD extends HUDAdapter {
     }
 
     @Override
-    public void ClearRemainingDistance() {
+    public void clearRemainingDistance() {
         mMsg.setRemainingDistance(0);
 
         sendMessage();
     }
 
     @Override
-    public void SetAlphabet(char a, char b, char c, char d) {
+    public void setAlphabet(char a, char b, char c, char d) {
         // not supported
         if (DEBUG) Log.w(TAG, "SetAlphabet: Not supported");
     }
 
     @Override
-    public void SetDirection(final eOutAngle nDir, final eOutType nType, final eOutAngle nRoundaboutOut) {
+    public void setDirection(final eOutAngle nDir, final eOutType nType, final eOutAngle nRoundaboutOut) {
         if (nType == eOutType.LeftRoundabout) {
             switch (nRoundaboutOut) {
                 case Down:
@@ -302,7 +302,7 @@ public class BMWHUD extends HUDAdapter {
     }
 
     @Override
-    public void SetLanes(char nArrow, char nOutline) {
+    public void setLanes(char nArrow, char nOutline) {
         if (nArrow == 0 && nOutline == 0) {
             // disable lane indicator if zeroes are set
             mMsg.setLaneCount(0);
@@ -327,13 +327,13 @@ public class BMWHUD extends HUDAdapter {
     }
 
     @Override
-    public void SetSpeed(int nSpeed, boolean bIcon) {
+    public void setSpeed(int nSpeed, boolean bIcon) {
         // not supported
         if (DEBUG) Log.w(TAG, "SetSpeed: Not supported");
     }
 
     @Override
-    public void SetSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash) {
+    public void setSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash) {
         // TODO: handle isMetric parameter
         mMsg.setSpeedLimit(nLimit, false);
 
@@ -341,7 +341,7 @@ public class BMWHUD extends HUDAdapter {
     }
 
     @Override
-    public void ClearSpeedAndWarning() {
+    public void clearSpeedAndWarning() {
         // TODO: handle isMetric parameter
         mMsg.setSpeedLimit(0, false);
 
@@ -349,26 +349,26 @@ public class BMWHUD extends HUDAdapter {
     }
 
     @Override
-    public void SetCameraIcon(boolean visible) {
+    public void setCameraIcon(boolean visible) {
         mMsg.setSpeedCameraEnabled(visible);
 
         sendMessage();
     }
 
     @Override
-    public void SetGpsLabel(boolean visible) {
+    public void setGpsLabel(boolean visible) {
         // not supported
         if (DEBUG) Log.w(TAG, "SetGpsLabel: Not supported");
     }
 
     @Override
-    public void SetAutoBrightness() {
+    public void setAutoBrightness() {
         // TODO: decode brightness control
         if (DEBUG) Log.w(TAG, "SetAutoBrightness: Not implemented");
     }
 
     @Override
-    public void SetBrightness(int brightness) {
+    public void setBrightness(int brightness) {
         // TODO: decode brightness control
         if (DEBUG) Log.w(TAG, "SetBrightness: Not implemented");
     }

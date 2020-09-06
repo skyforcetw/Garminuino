@@ -120,7 +120,7 @@ public class GarminHUD extends HUDAdapter {
         sendResult = SendPacket(sendBuf, len);
     }
 
-    public void SetTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
+    public void setTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
         char arr[] = {(char) 0x05,
                 bTraffic ? (char) 0xff : (char) 0x00,
                 Digit(nH / 10), Digit(nH), // hour
@@ -131,7 +131,7 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
-    public void SetRemainTime(int nH, int nM, boolean bTraffic) {
+    public void setRemainTime(int nH, int nM, boolean bTraffic) {
 //        final boolean bTraffic = false;
         final boolean bH = false;
         final boolean bFlag = true;
@@ -150,7 +150,7 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
-    public void ClearTime() {
+    public void clearTime() {
         char arr[] = {(char) 0x05,
                 0x00,
                 0, 0,
@@ -163,7 +163,7 @@ public class GarminHUD extends HUDAdapter {
     }
 
     @Override
-    public void SetDistance(float nDist, eUnits unit) {
+    public void setDistance(float nDist, eUnits unit) {
         int int_distance = (int) nDist;
         boolean decimal = ((eUnits.Kilometres == unit) || (eUnits.Miles == unit)) && nDist < 10;
         if (decimal) {
@@ -188,22 +188,22 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
-    public void ClearDistance() {
+    public void clearDistance() {
         char arr[] = {(char) 0x03, 0x0, 0x0, 0x0, 0x00, 0, 0};
         SendHud2(arr);
     }
 
     @Override
-    public void SetRemainingDistance(float nDist, eUnits unit) {
+    public void setRemainingDistance(float nDist, eUnits unit) {
         // not supported
     }
 
     @Override
-    public void ClearRemainingDistance() {
+    public void clearRemainingDistance() {
         // not supported
     }
 
-    public void SetAlphabet(char a, char b, char c, char d) {
+    public void setAlphabet(char a, char b, char c, char d) {
         eUnits unit = eUnits.None;
         boolean bDecimal = false, bLeadingZero = false;
 
@@ -271,7 +271,7 @@ public class GarminHUD extends HUDAdapter {
      * @param nType          圓環方向
      * @param nRoundaboutOut 圓環out
      */
-    public void SetDirection(final eOutAngle nDir, final eOutType nType, final eOutAngle nRoundaboutOut) {
+    public void setDirection(final eOutAngle nDir, final eOutType nType, final eOutAngle nRoundaboutOut) {
         char arr[] = {(char) 0x01,
                 (nDir == eOutAngle.LeftDown) ? (char) 0x10 : ((nDir == eOutAngle.RightDown) ? (char) 0x20 : (char) nType.value),
                 (nType == eOutType.RightRoundabout || nType == eOutType.LeftRoundabout) ?
@@ -280,12 +280,12 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
-    public void SetLanes(char nArrow, char nOutline) {
+    public void setLanes(char nArrow, char nOutline) {
         char arr[] = {0x02, nOutline, nArrow};
         SendHud2(arr);
     }
 
-    public void SetSpeed(int nSpeed, boolean bIcon) {
+    public void setSpeed(int nSpeed, boolean bIcon) {
         boolean bSlash = false;
         boolean bSpeeding = false;
 
@@ -309,7 +309,7 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
-    public void SetSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash) {
+    public void setSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash) {
         char arr[] = {(char) 0x06,
                 (char) ((nSpeed / 100) % 10), Digit(nSpeed / 10), Digit(nSpeed), bSlash ? (char) 0xff : (char) 0x00,
                 (char) ((nLimit / 100) % 10), Digit(nLimit / 10), Digit(nLimit), bSpeeding ? (char) 0xff : (char) 0x00,
@@ -318,7 +318,7 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
-    public void ClearSpeedAndWarning() {
+    public void clearSpeedAndWarning() {
         char arr[] = {(char) 0x06,
                 (char) 0x00, (char) 0x00, (char) 0x00, (char) 0x00,
                 (char) 0x00, (char) 0x00, (char) 0x00, (char) 0x00,
@@ -326,22 +326,22 @@ public class GarminHUD extends HUDAdapter {
         SendHud2(arr);
     }
 
-    public void SetCameraIcon(boolean visible) {
+    public void setCameraIcon(boolean visible) {
         char arr[] = {0x04, (char) (visible ? 1 : 0)};
         SendHud2(arr);
     }
 
-    public void SetGpsLabel(boolean visible) {
+    public void setGpsLabel(boolean visible) {
         char arr[] = {0x07, (char) (visible ? 1 : 0)};
         SendHud2(arr);
     }
 
-    public void SetAutoBrightness() {
+    public void setAutoBrightness() {
         char command_auto_brightness[] = {0x10, 0x7B, 0x0E, 0x08, 0x00, 0x00, 0x00, 0x56, 0x15, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x10, 0x03};
         sendResult = SendPacket(command_auto_brightness, command_auto_brightness.length);
     }
 
-    public void SetBrightness(int brightness) {
+    public void setBrightness(int brightness) {
         char sendBuf[] = new char[8];
         int len = 0;
         int stuffing_count = 0;

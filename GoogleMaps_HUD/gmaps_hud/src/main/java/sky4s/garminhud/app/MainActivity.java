@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
             mAutoBrightnessSwitch.setText(getString(R.string.layout_seekbar_brightness) + " " + (progress * 10) + "%");
             if (null != mHud) {
                 int brightness = getGammaBrightness();
-                mHud.SetBrightness(brightness);
+                mHud.setBrightness(brightness);
             }
         }
 
@@ -221,9 +221,9 @@ public class MainActivity extends AppCompatActivity {
     private void setSpeed(int nSpeed) {
         if (null != mHud) {
             if (mIsNavigating) {
-                mHud.SetSpeed(nSpeed, true);
+                mHud.setSpeed(nSpeed, true);
             } else {
-                mHud.SetDistance(nSpeed, eUnits.None);
+                mHud.setDistance(nSpeed, eUnits.None);
             }
         }
     }
@@ -730,7 +730,7 @@ public class MainActivity extends AppCompatActivity {
                                     Calendar c = Calendar.getInstance();
                                     int hour = c.get(Calendar.HOUR_OF_DAY);
                                     int minute = c.get(Calendar.MINUTE);
-                                    mHud.SetCurrentTime(hour, minute);
+                                    mHud.setCurrentTime(hour, minute);
                                 }
                             }
                         };
@@ -789,10 +789,10 @@ public class MainActivity extends AppCompatActivity {
 
                     if (null != mHud) {
                         if (autoBrightness) {
-                            mHud.SetAutoBrightness();
+                            mHud.setAutoBrightness();
                         } else {
                             final int brightness = getGammaBrightness();
-                            mHud.SetBrightness(brightness);
+                            mHud.setBrightness(brightness);
                         }
                     }
                     break;
@@ -872,9 +872,9 @@ public class MainActivity extends AppCompatActivity {
             if (null != mHud) {
                 //clear according to navigate status
                 if (isInNavigation()) {
-                    mHud.ClearSpeedAndWarning();
+                    mHud.clearSpeedAndWarning();
                 } else {
-                    mHud.ClearDistance();
+                    mHud.clearDistance();
                 }
             }
             mUseLocationService = false;
@@ -1145,7 +1145,7 @@ public class MainActivity extends AppCompatActivity {
                                 !is_really_in_navigation &&
                                 null != mHud) {
                             //exit navigation
-                            mHud.SetDirection(eOutAngle.AsDirection);
+                            mHud.setDirection(eOutAngle.AsDirection);
                             //maybe in this line
                         }
                         mIsNavigating = is_really_in_navigation;
@@ -1238,10 +1238,10 @@ public class MainActivity extends AppCompatActivity {
             if (null != mHud) {
                 if (null != mAutoBrightnessSwitch) {
                     if (mAutoBrightnessSwitch.isChecked()) {
-                        mHud.SetAutoBrightness();
+                        mHud.setAutoBrightness();
                     } else {
                         final int brightness = getGammaBrightness();
-                        mHud.SetBrightness(brightness);
+                        mHud.setBrightness(brightness);
                     }
                 }
             }

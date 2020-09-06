@@ -20,43 +20,43 @@ public interface HUDInterface {
 
     boolean getSendResult();
 
-    void SetTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH);
+    void setTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH);
 
-    void SetCurrentTime(int nH, int nM);
+    void setCurrentTime(int nH, int nM);
 
-    void SetRemainTime(int nH, int nM, boolean bTraffic);
+    void setRemainTime(int nH, int nM, boolean bTraffic);
 
-    void ClearTime();
+    void clearTime();
 
-    void SetDistance(float nDist, eUnits unit);
+    void setDistance(float nDist, eUnits unit);
 
-    void ClearDistance();
+    void clearDistance();
 
-    void SetRemainingDistance(float nDist, eUnits unit);
+    void setRemainingDistance(float nDist, eUnits unit);
 
-    void ClearRemainingDistance();
+    void clearRemainingDistance();
 
-    void SetAlphabet(char a, char b, char c, char d);
+    void setAlphabet(char a, char b, char c, char d);
 
-    void SetDirection(eOutAngle nDir);
+    void setDirection(eOutAngle nDir);
 
-    void SetDirection(final eOutAngle nDir, final eOutType nType, final eOutAngle nRoundaboutOut);
+    void setDirection(final eOutAngle nDir, final eOutType nType, final eOutAngle nRoundaboutOut);
 
-    void SetLanes(char nArrow, char nOutline);
+    void setLanes(char nArrow, char nOutline);
 
-    void SetSpeed(int nSpeed, boolean bIcon);
+    void setSpeed(int nSpeed, boolean bIcon);
 
-    void SetSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash);
+    void setSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash);
 
-    void ClearSpeedAndWarning();
+    void clearSpeedAndWarning();
 
-    void SetCameraIcon(boolean visible);
+    void setCameraIcon(boolean visible);
 
-    void SetGpsLabel(boolean visible);
+    void setGpsLabel(boolean visible);
 
-    void SetAutoBrightness();
+    void setAutoBrightness();
 
-    void SetBrightness(int brightness);
+    void setBrightness(int brightness);
 
     void disconnect();
 }

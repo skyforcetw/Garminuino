@@ -30,87 +30,87 @@ public class DummyHUD extends HUDAdapter {
     }
 
     @Override
-    public void SetTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
+    public void setTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH) {
         log("Time: " + nH + (bColon ? ":" : " ") + nM + (bH ? "h" : "") + " Flag" + bFlag + " Traffic" + bTraffic);
     }
 
     @Override
-    public final void SetRemainTime(int nH, int nM, boolean bTraffic) {
+    public final void setRemainTime(int nH, int nM, boolean bTraffic) {
         log("Time: " + nH + ":" + nM + " " + bTraffic);
     }
 
     @Override
-    public void ClearTime() {
+    public void clearTime() {
         log("Clear Time");
     }
 
     @Override
-    public void SetDistance(float nDist, eUnits unit) {
+    public void setDistance(float nDist, eUnits unit) {
         log("Distance: " + nDist + " " + unit);
     }
 
     @Override
-    public void ClearDistance() {
+    public void clearDistance() {
         log("Clear Distance");
     }
 
     @Override
-    public void SetRemainingDistance(float nDist, eUnits unit) {
+    public void setRemainingDistance(float nDist, eUnits unit) {
         log("Remaining distance: " + nDist + " " + unit);
     }
 
     @Override
-    public void ClearRemainingDistance() {
+    public void clearRemainingDistance() {
         log("Clear Remaining Distance");
     }
 
     @Override
-    public void SetAlphabet(char a, char b, char c, char d) {
+    public void setAlphabet(char a, char b, char c, char d) {
         log("SetAlphabet: " + a + " " + b + " " + c + " " + d);
     }
 
     @Override
-    public void SetDirection(eOutAngle nDir, eOutType nType, eOutAngle nRoundaboutOut) {
+    public void setDirection(eOutAngle nDir, eOutType nType, eOutAngle nRoundaboutOut) {
         log("SetDirection: " + nDir + ", " + nType + ", " + nRoundaboutOut);
     }
 
     @Override
-    public void SetLanes(char nArrow, char nOutline) {
+    public void setLanes(char nArrow, char nOutline) {
         log("SetLanes: " + nArrow + ", " + nOutline);
     }
 
     @Override
-    public void SetSpeed(int nSpeed, boolean bIcon) {
+    public void setSpeed(int nSpeed, boolean bIcon) {
         log("Speed: " + nSpeed + " " + bIcon);
     }
 
     @Override
-    public void SetSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash) {
+    public void setSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash) {
         log("Speed: " + nSpeed + " / " + nLimit + " " + bSpeeding + " " + bIcon + " " + bSlash);
     }
 
     @Override
-    public void ClearSpeedAndWarning() {
+    public void clearSpeedAndWarning() {
         log("Clear Speed & Warning");
     }
 
     @Override
-    public void SetCameraIcon(boolean visible) {
+    public void setCameraIcon(boolean visible) {
         log("SetCameraIcon: visible: " + visible);
     }
 
     @Override
-    public void SetGpsLabel(boolean visible) {
+    public void setGpsLabel(boolean visible) {
         log("SetGpsLabel: visible: " + visible);
     }
 
     @Override
-    public void SetAutoBrightness() {
+    public void setAutoBrightness() {
         log("SetAutoBrightness");
     }
 
     @Override
-    public void SetBrightness(int brightness) {
+    public void setBrightness(int brightness) {
         log("SetBrightness: " + brightness);
     }
 

@@ -861,151 +861,151 @@ public class NotificationMonitor extends NotificationListenerService {
         }
         switch (arrow) {
             case Arrivals:
-                sHud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
+                sHud.setDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
                 break;
 
             case ArrivalsLeft:
-                sHud.SetDirection(eOutAngle.Left, eOutType.RightFlag, eOutAngle.AsDirection);
+                sHud.setDirection(eOutAngle.Left, eOutType.RightFlag, eOutAngle.AsDirection);
                 break;
 
             case ArrivalsRight:
-                sHud.SetDirection(eOutAngle.Right, eOutType.RightFlag, eOutAngle.AsDirection);
+                sHud.setDirection(eOutAngle.Right, eOutType.RightFlag, eOutAngle.AsDirection);
                 break;
 
             case EasyLeft:
             case KeepLeft:
-                sHud.SetDirection(eOutAngle.EasyLeft);
+                sHud.setDirection(eOutAngle.EasyLeft);
                 break;
 
             case EasyRight:
             case KeepRight:
-                sHud.SetDirection(eOutAngle.EasyRight);
+                sHud.setDirection(eOutAngle.EasyRight);
                 break;
 
             case GoTo:
             case Straight:
-                sHud.SetDirection(eOutAngle.Straight);
+                sHud.setDirection(eOutAngle.Straight);
                 break;
 
             case LeaveRoundabout:
                 //1 checked
             case LeaveRoundaboutLeft:
                 //9 checked
-                sHud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
+                sHud.setDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
                 break;
 
             case LeaveRoundaboutAsUTurn:
-                sHud.SetDirection(eOutAngle.Down, eOutType.LeftRoundabout, eOutAngle.Down);
+                sHud.setDirection(eOutAngle.Down, eOutType.LeftRoundabout, eOutAngle.Down);
                 break;
 
             case LeaveRoundaboutAsUTurnCC:
-                sHud.SetDirection(eOutAngle.Down, eOutType.RightRoundabout, eOutAngle.Down);
+                sHud.setDirection(eOutAngle.Down, eOutType.RightRoundabout, eOutAngle.Down);
                 break;
 
             case LeaveRoundaboutEasyLeft:
                 //4 checked
-                sHud.SetDirection(eOutAngle.EasyLeft, eOutType.LeftRoundabout, eOutAngle.EasyLeft);
+                sHud.setDirection(eOutAngle.EasyLeft, eOutType.LeftRoundabout, eOutAngle.EasyLeft);
                 break;
 
             case LeaveRoundaboutEasyLeftCC:
                 //5 checked
-                sHud.SetDirection(eOutAngle.EasyLeft, eOutType.RightRoundabout, eOutAngle.EasyLeft);
+                sHud.setDirection(eOutAngle.EasyLeft, eOutType.RightRoundabout, eOutAngle.EasyLeft);
                 break;
 
             case LeaveRoundaboutEasyRight:
                 //6 checked
-                sHud.SetDirection(eOutAngle.EasyRight, eOutType.LeftRoundabout, eOutAngle.EasyRight);
+                sHud.setDirection(eOutAngle.EasyRight, eOutType.LeftRoundabout, eOutAngle.EasyRight);
                 break;
 
             case LeaveRoundaboutEasyRightCC:
                 //7 checked
-                sHud.SetDirection(eOutAngle.EasyRight, eOutType.RightRoundabout, eOutAngle.EasyRight);
+                sHud.setDirection(eOutAngle.EasyRight, eOutType.RightRoundabout, eOutAngle.EasyRight);
                 break;
 
             case LeaveRoundaboutCC:
                 //8 checked
-                sHud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
+                sHud.setDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
                 break;
 
             case LeaveRoundaboutLeftCC:
                 //10 checked
-                sHud.SetDirection(eOutAngle.Left, eOutType.RightRoundabout, eOutAngle.Left);
+                sHud.setDirection(eOutAngle.Left, eOutType.RightRoundabout, eOutAngle.Left);
                 break;
 
             case LeaveRoundaboutRight:
                 //11 checked
-                sHud.SetDirection(eOutAngle.Right, eOutType.LeftRoundabout, eOutAngle.Right);
+                sHud.setDirection(eOutAngle.Right, eOutType.LeftRoundabout, eOutAngle.Right);
                 break;
 
             case LeaveRoundaboutRightCC:
                 //12 checked
-                sHud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
+                sHud.setDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
                 break;
 
             case LeaveRoundaboutSharpLeft:
                 //13 checked
-                sHud.SetDirection(eOutAngle.SharpLeft, eOutType.LeftRoundabout, eOutAngle.SharpLeft);
+                sHud.setDirection(eOutAngle.SharpLeft, eOutType.LeftRoundabout, eOutAngle.SharpLeft);
                 break;
 
             case LeaveRoundaboutSharpLeftCC:
                 //14 checked
-                sHud.SetDirection(eOutAngle.SharpLeft, eOutType.RightRoundabout, eOutAngle.SharpLeft);
+                sHud.setDirection(eOutAngle.SharpLeft, eOutType.RightRoundabout, eOutAngle.SharpLeft);
                 break;
 
             case LeaveRoundaboutSharpRight:
                 //15 checked
-                sHud.SetDirection(eOutAngle.SharpRight, eOutType.LeftRoundabout, eOutAngle.SharpRight);
+                sHud.setDirection(eOutAngle.SharpRight, eOutType.LeftRoundabout, eOutAngle.SharpRight);
                 break;
 
             case LeaveRoundaboutSharpRightCC:
                 //16
-                sHud.SetDirection(eOutAngle.SharpRight, eOutType.RightRoundabout, eOutAngle.SharpRight);
+                sHud.setDirection(eOutAngle.SharpRight, eOutType.RightRoundabout, eOutAngle.SharpRight);
                 break;
 
             case LeaveRoundaboutStraight:
-                sHud.SetDirection(eOutAngle.Straight, eOutType.LeftRoundabout, eOutAngle.Straight);
+                sHud.setDirection(eOutAngle.Straight, eOutType.LeftRoundabout, eOutAngle.Straight);
                 break;
 
             case LeaveRoundaboutStraightCC:
-                sHud.SetDirection(eOutAngle.Straight, eOutType.RightRoundabout, eOutAngle.Straight);
+                sHud.setDirection(eOutAngle.Straight, eOutType.RightRoundabout, eOutAngle.Straight);
                 break;
 
             case Left:
-                sHud.SetDirection(eOutAngle.Left);
+                sHud.setDirection(eOutAngle.Left);
                 break;
 
             case LeftDown:
-                sHud.SetDirection(eOutAngle.LeftDown);
+                sHud.setDirection(eOutAngle.LeftDown);
                 break;
 
             case LeftToLeave:
-                sHud.SetDirection(eOutAngle.EasyLeft, eOutType.LongerLane, eOutAngle.AsDirection);
+                sHud.setDirection(eOutAngle.EasyLeft, eOutType.LongerLane, eOutAngle.AsDirection);
                 break;
 
             case Right:
-                sHud.SetDirection(eOutAngle.Right);
+                sHud.setDirection(eOutAngle.Right);
                 break;
 
             case RightDown:
-                sHud.SetDirection(eOutAngle.RightDown);
+                sHud.setDirection(eOutAngle.RightDown);
                 break;
 
             case RightToLeave:
-                sHud.SetDirection(eOutAngle.EasyRight, eOutType.LongerLane, eOutAngle.AsDirection);
+                sHud.setDirection(eOutAngle.EasyRight, eOutType.LongerLane, eOutAngle.AsDirection);
                 break;
 
             case SharpLeft:
-                sHud.SetDirection(eOutAngle.SharpLeft);
+                sHud.setDirection(eOutAngle.SharpLeft);
                 break;
 
             case SharpRight:
-                sHud.SetDirection(eOutAngle.SharpRight);
+                sHud.setDirection(eOutAngle.SharpRight);
                 break;
 
             case Convergence:
             case None:
             default:
-                sHud.SetDirection(eOutAngle.AsDirection);
+                sHud.setDirection(eOutAngle.AsDirection);
                 break;
         }
     }
@@ -1021,137 +1021,137 @@ public class NotificationMonitor extends NotificationListenerService {
         }
         switch (arrow) {
             case ArrivalsLeft:
-                sHud.SetDirection(eOutAngle.Left, eOutType.RightFlag, eOutAngle.AsDirection);
+                sHud.setDirection(eOutAngle.Left, eOutType.RightFlag, eOutAngle.AsDirection);
                 break;
 
             case ArrivalsRight:
-                sHud.SetDirection(eOutAngle.Right, eOutType.RightFlag, eOutAngle.AsDirection);
+                sHud.setDirection(eOutAngle.Right, eOutType.RightFlag, eOutAngle.AsDirection);
                 break;
 
             case EasyLeft:
             case KeepLeft:
-                sHud.SetDirection(eOutAngle.EasyLeft);
+                sHud.setDirection(eOutAngle.EasyLeft);
                 break;
 
             case EasyRight:
             case KeepRight:
-                sHud.SetDirection(eOutAngle.EasyRight);
+                sHud.setDirection(eOutAngle.EasyRight);
                 break;
 
             case GoTo:
             case Straight:
-                sHud.SetDirection(eOutAngle.Straight);
+                sHud.setDirection(eOutAngle.Straight);
                 break;
 
             case LeaveRoundabout:
             case LeaveRoundaboutLeft:
                 //9 checked
                 //1 checked
-                sHud.SetDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
+                sHud.setDirection(eOutAngle.Left, eOutType.LeftRoundabout, eOutAngle.Left);
                 break;
 
             case LeaveRoundaboutAsUTurn:
-                sHud.SetDirection(eOutAngle.Down, eOutType.LeftRoundabout, eOutAngle.Down);
+                sHud.setDirection(eOutAngle.Down, eOutType.LeftRoundabout, eOutAngle.Down);
                 break;
 
             case LeaveRoundaboutAsUTurnCC:
-                sHud.SetDirection(eOutAngle.Down, eOutType.RightRoundabout, eOutAngle.Down);
+                sHud.setDirection(eOutAngle.Down, eOutType.RightRoundabout, eOutAngle.Down);
                 break;
 
             case LeaveRoundaboutEasyLeft:
                 //4 checked
-                sHud.SetDirection(eOutAngle.EasyLeft, eOutType.LeftRoundabout, eOutAngle.EasyLeft);
+                sHud.setDirection(eOutAngle.EasyLeft, eOutType.LeftRoundabout, eOutAngle.EasyLeft);
                 break;
 
             case LeaveRoundaboutEasyLeftCC:
                 //5 checked
-                sHud.SetDirection(eOutAngle.EasyLeft, eOutType.RightRoundabout, eOutAngle.EasyLeft);
+                sHud.setDirection(eOutAngle.EasyLeft, eOutType.RightRoundabout, eOutAngle.EasyLeft);
                 break;
 
             case LeaveRoundaboutEasyRight:
                 //6 checked
-                sHud.SetDirection(eOutAngle.EasyRight, eOutType.LeftRoundabout, eOutAngle.EasyRight);
+                sHud.setDirection(eOutAngle.EasyRight, eOutType.LeftRoundabout, eOutAngle.EasyRight);
                 break;
 
             case LeaveRoundaboutEasyRightCC:
                 //7 checked
-                sHud.SetDirection(eOutAngle.EasyRight, eOutType.RightRoundabout, eOutAngle.EasyRight);
+                sHud.setDirection(eOutAngle.EasyRight, eOutType.RightRoundabout, eOutAngle.EasyRight);
                 break;
 
             case LeaveRoundaboutCC:
                 //8 checked
-                sHud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
+                sHud.setDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
                 break;
 
             case LeaveRoundaboutLeftCC:
                 //10 checked
-                sHud.SetDirection(eOutAngle.Left, eOutType.RightRoundabout, eOutAngle.Left);
+                sHud.setDirection(eOutAngle.Left, eOutType.RightRoundabout, eOutAngle.Left);
                 break;
 
             case LeaveRoundaboutRight:
                 //11 checked
-                sHud.SetDirection(eOutAngle.Right, eOutType.LeftRoundabout, eOutAngle.Right);
+                sHud.setDirection(eOutAngle.Right, eOutType.LeftRoundabout, eOutAngle.Right);
                 break;
 
             case LeaveRoundaboutRightCC:
                 //12 checked
-                sHud.SetDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
+                sHud.setDirection(eOutAngle.Right, eOutType.RightRoundabout, eOutAngle.Right);
                 break;
 
             case LeaveRoundaboutSharpLeft:
                 //13 checked
-                sHud.SetDirection(eOutAngle.SharpLeft, eOutType.LeftRoundabout, eOutAngle.SharpLeft);
+                sHud.setDirection(eOutAngle.SharpLeft, eOutType.LeftRoundabout, eOutAngle.SharpLeft);
                 break;
 
             case LeaveRoundaboutSharpLeftCC:
                 //14 checked
-                sHud.SetDirection(eOutAngle.SharpLeft, eOutType.RightRoundabout, eOutAngle.SharpLeft);
+                sHud.setDirection(eOutAngle.SharpLeft, eOutType.RightRoundabout, eOutAngle.SharpLeft);
                 break;
 
             case LeaveRoundaboutSharpRight:
                 //15 checked
-                sHud.SetDirection(eOutAngle.SharpRight, eOutType.LeftRoundabout, eOutAngle.SharpRight);
+                sHud.setDirection(eOutAngle.SharpRight, eOutType.LeftRoundabout, eOutAngle.SharpRight);
                 break;
 
             case LeaveRoundaboutSharpRightCC:
                 //16
-                sHud.SetDirection(eOutAngle.SharpRight, eOutType.RightRoundabout, eOutAngle.SharpRight);
+                sHud.setDirection(eOutAngle.SharpRight, eOutType.RightRoundabout, eOutAngle.SharpRight);
                 break;
 
             case LeaveRoundaboutStraight:
-                sHud.SetDirection(eOutAngle.Straight, eOutType.LeftRoundabout, eOutAngle.Straight);
+                sHud.setDirection(eOutAngle.Straight, eOutType.LeftRoundabout, eOutAngle.Straight);
                 break;
 
             case LeaveRoundaboutStraightCC:
-                sHud.SetDirection(eOutAngle.Straight, eOutType.RightRoundabout, eOutAngle.Straight);
+                sHud.setDirection(eOutAngle.Straight, eOutType.RightRoundabout, eOutAngle.Straight);
                 break;
 
             case Left:
-                sHud.SetDirection(eOutAngle.Left);
+                sHud.setDirection(eOutAngle.Left);
                 break;
 
             case LeftDown:
-                sHud.SetDirection(eOutAngle.LeftDown);
+                sHud.setDirection(eOutAngle.LeftDown);
                 break;
 
             case Right:
-                sHud.SetDirection(eOutAngle.Right);
+                sHud.setDirection(eOutAngle.Right);
                 break;
             case RightDown:
-                sHud.SetDirection(eOutAngle.RightDown);
+                sHud.setDirection(eOutAngle.RightDown);
                 break;
 
             case SharpLeft:
-                sHud.SetDirection(eOutAngle.SharpLeft);
+                sHud.setDirection(eOutAngle.SharpLeft);
                 break;
             case SharpRight:
-                sHud.SetDirection(eOutAngle.SharpRight);
+                sHud.setDirection(eOutAngle.SharpRight);
                 break;
 
             case Convergence:
             case None:
             default:
-                sHud.SetDirection(eOutAngle.AsDirection);
+                sHud.setDirection(eOutAngle.AsDirection);
                 break;
         }
     }
@@ -1172,14 +1172,14 @@ public class NotificationMonitor extends NotificationListenerService {
 
             if (null != sHud) {
                 if (-1 != int_distance) {
-                    sHud.SetDistance(float_distance, units);
+                    sHud.setDistance(float_distance, units);
                 } else {
-                    sHud.ClearDistance();
+                    sHud.clearDistance();
                 }
             }
         } else {
             if (null != sHud) {
-                sHud.ClearDistance();
+                sHud.clearDistance();
             }
         }
 
@@ -1196,14 +1196,14 @@ public class NotificationMonitor extends NotificationListenerService {
 
             if (null != sHud) {
                 if (-1 != int_distance) {
-                    sHud.SetRemainingDistance(float_distance, units);
+                    sHud.setRemainingDistance(float_distance, units);
                 } else {
-                    sHud.ClearRemainingDistance();
+                    sHud.clearRemainingDistance();
                 }
             }
         } else {
             if (null != sHud) {
-                sHud.ClearRemainingDistance();
+                sHud.clearRemainingDistance();
             }
         }
 
@@ -1223,7 +1223,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
                     if (!sameAsLast) {
                         if (null != sHud) {
-                            sHud.SetRemainTime(mArrivalHours, mArrivalMinutes, mBusyTraffic);
+                            sHud.setRemainTime(mArrivalHours, mArrivalMinutes, mBusyTraffic);
                         }
                         timeSendResult = (null != sHud) && sHud.getSendResult();
                         mLastArrivalMinutes = mArrivalMinutes;
@@ -1236,7 +1236,7 @@ public class NotificationMonitor extends NotificationListenerService {
                 int mm = Integer.parseInt(mRemainingMinutes);
 
                 if (null != sHud) {
-                    sHud.SetRemainTime(hh, mm, mBusyTraffic);
+                    sHud.setRemainTime(hh, mm, mBusyTraffic);
                 }
                 timeSendResult = (null != sHud) && sHud.getSendResult();
                 String lastRemainMinute = mRemainingMinutes;
@@ -1464,12 +1464,12 @@ public class NotificationMonitor extends NotificationListenerService {
 
                 if (notArrivals) {
                     if (sHud != null) {
-                        sHud.SetDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
-                        sHud.ClearDistance();
+                        sHud.setDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
+                        sHud.clearDistance();
                     }
                 } else {
                     if (sHud != null)
-                        sHud.ClearDistance();
+                        sHud.clearDistance();
                 }
             }
         }
