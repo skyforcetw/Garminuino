@@ -12,7 +12,7 @@ public class GarminHUD extends HUDAdapter {
     //===========================================================================================
     // 不與C++共用的部分
     //===========================================================================================
-    private static int maxUpdatePerSecond = 6;
+    private static final int MAX_UPDATES_PER_SECOND = 6;
     private final boolean FINAL_FLAG_FALSE = false;
     private int updateCount = 0;
     private long lastUpdateClearTime = System.currentTimeMillis();
@@ -22,10 +22,6 @@ public class GarminHUD extends HUDAdapter {
 
     public GarminHUD(BluetoothSPP bt) {
         this.bt = bt;
-    }
-
-    public final void setMaxUpdatePerSecond(int max) {
-        maxUpdatePerSecond = max;
     }
 
     @Override
@@ -41,7 +37,7 @@ public class GarminHUD extends HUDAdapter {
             updateCount = 0;
         }
 
-        final boolean updatable = updateCount < maxUpdatePerSecond;
+        final boolean updatable = updateCount < MAX_UPDATES_PER_SECOND;
         if (!updatable) {
             sendResult = false;
         }

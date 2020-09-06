@@ -15,8 +15,6 @@ public interface HUDInterface {
         void onConnectionStateChange(ConnectionState state);
     }
 
-    void setMaxUpdatePerSecond(int max);
-
     void registerConnectionCallback(ConnectionCallback callback);
 
     boolean isUpdatable();

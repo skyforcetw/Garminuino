@@ -21,12 +21,11 @@ public class BMWHUD extends HUDAdapter {
     private static final String TAG = BMWHUD.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    private static final int DEFAULT_MAX_UPDATES = 6;
+    private static final int MAX_UPDATES_PER_SECOND = 6;
 
     private Context mContext;
     private BMWMessage mMsg;
     private BMWSocketConnection mSocket;
-    private int mMaxUpdatesPerSecond = DEFAULT_MAX_UPDATES;
     private long mLastUpdateClearTime = 0;
     private int mUpdateCount = 0;
     private ExecutorService mExecutor;
@@ -38,11 +37,6 @@ public class BMWHUD extends HUDAdapter {
         mExecutor = Executors.newFixedThreadPool(1);
         mMsg = new BMWMessage();
         mSocket = BMWSocketConnection.getInstance(mContext);
-    }
-
-    @Override
-    public void setMaxUpdatePerSecond(int max) {
-        mMaxUpdatesPerSecond = max;
     }
 
     @Override
@@ -60,7 +54,7 @@ public class BMWHUD extends HUDAdapter {
         }
         final boolean isSending = mSendTask != null && !mSendTask.isDone();
         if (DEBUG) Log.d(TAG, "isSending: " + isSending);
-        final boolean updatable = mUpdateCount < mMaxUpdatesPerSecond && !isSending;
+        final boolean updatable = mUpdateCount < MAX_UPDATES_PER_SECOND && !isSending;
         if (DEBUG) Log.d(TAG, "isUpdatable: " + updatable);
         return updatable;
     }
