@@ -5,7 +5,6 @@ import sky4s.garminhud.eOutType;
 import sky4s.garminhud.eUnits;
 
 public interface HUDInterface {
-
     interface ConnectionCallback {
         enum ConnectionState {
             CONNECTED,
@@ -22,8 +21,6 @@ public interface HUDInterface {
     boolean getSendResult();
 
     void SetTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH);
-
-//    void SetETATime(int nH, int nM,boolean bTraffic);
 
     void SetCurrentTime(int nH, int nM);
 

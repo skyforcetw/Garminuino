@@ -2,11 +2,8 @@ package sky4s.garminhud.hud;
 
 import sky4s.garminhud.eOutAngle;
 import sky4s.garminhud.eOutType;
-import sky4s.garminhud.eUnits;
 
 public abstract class HUDAdapter implements HUDInterface {
-
-
     @Override
     public final void SetCurrentTime(int nH, int nM) {
         SetTime(nH, nM, false, false, true, false);
