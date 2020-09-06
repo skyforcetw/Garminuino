@@ -1,11 +1,20 @@
 package sky4s.garminhud.hud;
 
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.widget.Toast;
+
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
+import app.akexorcist.bluetotohspp.library.BluetoothState;
+import app.akexorcist.bluetotohspp.library.DeviceList;
 import sky4s.garminhud.app.MainActivity;
+import sky4s.garminhud.app.R;
 import sky4s.garminhud.eOutAngle;
 import sky4s.garminhud.eOutType;
 import sky4s.garminhud.eUnits;
-import sky4s.garminhud.hud.HUDAdapter;
 
 /**
  * Created by skyforce on 2018/8/13.
@@ -16,19 +25,99 @@ public class GarminHUD extends HUDAdapter {
     // 不與C++共用的部分
     //===========================================================================================
     private static final int MAX_UPDATES_PER_SECOND = 6;
+    private Context mContext;
     private int mUpdateCount = 0;
     private long mLastUpdateClearTime = System.currentTimeMillis();
     private BluetoothSPP mBt;
+    private ConnectionCallback mConnectionCallback;
+    private boolean mConnected = false;
     private boolean mSendResult = false;
     //===========================================================================================
 
-    public GarminHUD(BluetoothSPP bt) {
-        mBt = bt;
+    public GarminHUD(Context context) {
+        mContext = context;
+        mBt = new BluetoothSPP(mContext);
+        mBt.setBluetoothConnectionListener(mBluetoothConnectionListener);
+        mBt.setAutoConnectionListener(mAutoConnectionListener);
+        if (!mBt.isBluetoothAvailable()) {
+            Toast.makeText(mContext.getApplicationContext(),
+                    mContext.getString(R.string.message_bt_not_available),
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!mBt.isBluetoothEnabled()) {
+            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
+            return;
+        }
+
+        if (!mBt.isServiceAvailable()) {
+            mBt.setupService();
+            mBt.startService(BluetoothState.DEVICE_OTHER);
+        }
+
+        final boolean isBindAddress = isBindAddress();
+        if (isBindAddress) {
+            String bindAddress = getBindAddress();
+            if (bindAddress != null) {
+                mBt.connect(bindAddress);
+            }
+        } else {
+            String bindName = getBindName();
+            if (bindName != null) {
+                mBt.autoConnect(bindName);
+            }
+        }
     }
 
     @Override
     public void registerConnectionCallback(ConnectionCallback callback) {
-        // TODO: Move BluetoothSPP into this class and push connection state through callback
+        mConnectionCallback = callback;
+        if (mConnectionCallback != null) {
+            mConnectionCallback.onConnectionStateChange(mConnected ?
+                    ConnectionCallback.ConnectionState.CONNECTED :
+                    ConnectionCallback.ConnectionState.DISCONNECTED);
+        }
+    }
+
+    @Override
+    public boolean handleActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
+            if (resultCode == Activity.RESULT_OK) {
+                mBt.connect(data);
+            }
+            return true;
+        } else if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
+            if (resultCode == Activity.RESULT_OK) {
+                mBt.setupService();
+                mBt.startService(BluetoothState.DEVICE_OTHER);
+            } else {
+                Toast.makeText(mContext.getApplicationContext()
+                        , "Bluetooth was not enabled."
+                        , Toast.LENGTH_SHORT).show();
+
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void scanForHud() {
+        if (mBt == null || !mBt.isBluetoothAvailable()) {
+            Toast.makeText(mContext.getApplicationContext(),
+                    mContext.getString(R.string.message_bt_not_available),
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        mBt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
+        mBt.setBluetoothConnectionListener(mBluetoothConnectionListener);
+        mBt.setAutoConnectionListener(mAutoConnectionListener);
+
+        Intent intent = new Intent(mContext.getApplicationContext(), DeviceList.class);
+        startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
     }
 
     @Override
@@ -382,6 +471,96 @@ public class GarminHUD extends HUDAdapter {
 
     @Override
     public void disconnect() {
-        // TODO: implement
+        mBt.stopAutoConnect();
+        mBt.stopService();
     }
+
+    private void resetBluetooth() {
+        if (isBindAddress() && mBt != null) {
+            mBt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
+            mBt.setBluetoothConnectionListener(mBluetoothConnectionListener);
+            mBt.setAutoConnectionListener(mAutoConnectionListener);
+        }
+    }
+
+    private boolean isBindAddress() {
+        SharedPreferences sharedPrefs = getMainActivitySharedPreferences();
+        return sharedPrefs.getBoolean(mContext.getString(R.string.option_bt_bind_address), false);
+    }
+
+    private String getBindName() {
+        SharedPreferences sharedPrefs = getMainActivitySharedPreferences();
+        return sharedPrefs.getString(mContext.getString(R.string.bt_bind_name_key), null);
+    }
+
+    private String getBindAddress() {
+        SharedPreferences sharedPrefs = getMainActivitySharedPreferences();
+        return sharedPrefs.getString(mContext.getString(R.string.bt_bind_address_key), null);
+    }
+
+    private void saveConnectedDevice() {
+        // Preferences are stored using Activity.getPreferences
+        // which uses the classname as the preferences name
+        SharedPreferences sharedPrefs = getMainActivitySharedPreferences();
+
+        String connectedDeviceName = mBt.getConnectedDeviceName();
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(mContext.getString(R.string.bt_bind_name_key), connectedDeviceName);
+
+        String connectedDeviceAddress = mBt.getConnectedDeviceAddress();
+        editor.putString(mContext.getString(R.string.bt_bind_address_key), connectedDeviceAddress);
+
+        editor.commit();
+    }
+
+    private SharedPreferences getMainActivitySharedPreferences() {
+        return mContext.getSharedPreferences(
+                MainActivity.class.getSimpleName(), Context.MODE_PRIVATE);
+    }
+
+    private void startActivityForResult(Intent intent, int requestCode) {
+        // HACK: Convert mContext to MainActivity to handle outgoing startActivityForResult calls
+        ((MainActivity) mContext).startActivityForResult(intent, requestCode);
+    }
+
+    private BluetoothSPP.BluetoothConnectionListener mBluetoothConnectionListener = new BluetoothSPP.BluetoothConnectionListener() {
+        @Override
+        public void onDeviceConnected(String name, String address) {
+            saveConnectedDevice();
+            if (mConnectionCallback != null) {
+                mConnectionCallback.onConnectionStateChange(ConnectionCallback.ConnectionState.CONNECTED);
+            }
+            mConnected = true;
+        }
+
+        @Override
+        public void onDeviceDisconnected() {
+            disconnectBluetooth(ConnectionCallback.ConnectionState.DISCONNECTED);
+        }
+
+        @Override
+        public void onDeviceConnectionFailed() {
+            disconnectBluetooth(ConnectionCallback.ConnectionState.FAILED);
+        }
+
+        private void disconnectBluetooth(ConnectionCallback.ConnectionState state) {
+            if (mConnectionCallback != null) {
+                mConnectionCallback.onConnectionStateChange(state);
+            }
+            resetBluetooth();
+            mConnected = false;
+        }
+    };
+
+    private BluetoothSPP.AutoConnectionListener mAutoConnectionListener = new BluetoothSPP.AutoConnectionListener() {
+        @Override
+        public void onAutoConnectionStarted() {
+            // unused
+        }
+
+        @Override
+        public void onNewConnection(String name, String address) {
+            // unused
+        }
+    };
 }

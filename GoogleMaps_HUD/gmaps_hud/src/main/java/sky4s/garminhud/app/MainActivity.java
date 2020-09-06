@@ -1,7 +1,6 @@
 package sky4s.garminhud.app;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
@@ -41,7 +40,6 @@ import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -63,18 +61,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import app.akexorcist.bluetotohspp.library.BluetoothSPP;
-import app.akexorcist.bluetotohspp.library.BluetoothState;
-import app.akexorcist.bluetotohspp.library.DeviceList;
 import chutka.bitman.com.speedometersimplified.LocationService;
 import sky4s.garminhud.Arrow;
-import sky4s.garminhud.hud.GarminHUD;
 import sky4s.garminhud.ImageUtils;
 import sky4s.garminhud.app.detect.ImageDetectListener;
 import sky4s.garminhud.eOutAngle;
 import sky4s.garminhud.eUnits;
 import sky4s.garminhud.hud.BMWHUD;
 import sky4s.garminhud.hud.DummyHUD;
+import sky4s.garminhud.hud.GarminHUD;
 import sky4s.garminhud.hud.HUDInterface;
 
 public class MainActivity extends AppCompatActivity {
@@ -130,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean mIsNLSEnabled = false;
     private boolean mShowCurrentTime = false;
-    private BluetoothSPP mBt;
     private NotificationManager mNotificationManager = getSystemService(NotificationManager.class);
     private MsgReceiver mMsgReceiver;
     private boolean mLastReallyInNavigation = false;
@@ -142,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
 
     //========================================================================================
     private SharedPreferences mSharedPrefs;
-    private BluetoothConnectionListener mBtConnectionListener = new BluetoothConnectionListener();
     private SeekBar.OnSeekBarChangeListener mBrightnessSeekbarChangeListener = new SeekBar.OnSeekBarChangeListener() {
 
         @Override
@@ -324,51 +317,56 @@ public class MainActivity extends AppCompatActivity {
             };
             mHud.registerConnectionCallback(mBMWHUDConnection);
         } else if (!IGNORE_BT_DEVICE) {
-            mBt = new BluetoothSPP(this); //first route
-            mBt.setBluetoothConnectionListener(mBtConnectionListener);
-            mBt.setAutoConnectionListener(mBtConnectionListener);
-            if (!mBt.isBluetoothAvailable()) {
-                Toast.makeText(getApplicationContext()
-                        , getString(R.string.message_bt_not_available)
-                        , Toast.LENGTH_SHORT).show();
-                // Allow no BT to at least access settings to switch HUD type
-                NotificationMonitor.sHud = mHud;
-                return;
-            }
-            mHud = new GarminHUD(mBt);
-
-            if (!mBt.isBluetoothEnabled()) {
-                //bt cannot work
-                Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
-            } else {
-                if (!mBt.isServiceAvailable()) {
-                    mBt.setupService();
-                    mBt.startService(BluetoothState.DEVICE_OTHER);
+            mHud = new GarminHUD(this);
+            // TODO: share this with BMWHUD
+            HUDInterface.ConnectionCallback mGarminHUDConnection = state -> {
+                switch (state) {
+                    case CONNECTED:
+                        runOnUiThread(() -> {
+                            if (mHudConnectedSwitch != null) {
+                                mHudConnectedSwitch.setText(getString(
+                                        R.string.layout_element_hud_success_connected, "Garmin HUD"));
+                                if (mSharedPrefs != null && mSharedPrefs.getInt(getString(R.string.state_dark_mode),
+                                        AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
+                                    mHudConnectedSwitch.setTextColor(Color.BLACK);
+                                mHudConnectedSwitch.setChecked(true);
+                            }
+                            if (mUseLocationService && !mLocationServiceConnected) {
+                                bindLocationService();
+                            }
+                            if (mAutoBrightnessSwitch != null) {
+                                if (mAutoBrightnessSwitch.isChecked()) {
+                                    mHud.setAutoBrightness();
+                                } else {
+                                    final int brightness = getGammaBrightness();
+                                    mHud.setBrightness(brightness);
+                                }
+                            }
+                        });
+                        break;
+                    case DISCONNECTED:
+                        runOnUiThread(() -> {
+                            if (mHudConnectedSwitch != null) {
+                                mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_disconnected));
+                                mHudConnectedSwitch.setTextColor(Color.RED);
+                                mHudConnectedSwitch.setChecked(false);
+                            }
+                        });
+                        break;
+                    case FAILED:
+                        runOnUiThread(() -> {
+                            if (mHudConnectedSwitch != null) {
+                                mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_con_failed));
+                                mHudConnectedSwitch.setTextColor(Color.RED);
+                                mHudConnectedSwitch.setChecked(false);
+                            }
+                        });
+                        break;
                 }
+            };
+            mHud.registerConnectionCallback(mGarminHUDConnection);
 
-                boolean isBindName = false;
-                if (null != mBindBtAddressSwitch) {
-                    boolean isBindAddress = mBindBtAddressSwitch.isChecked();
-                    if (isBindAddress && null != mSharedPrefs) {
-                        String bindAddress = mSharedPrefs.getString(getString(R.string.bt_bind_address_key), null);
-                        if (null != bindAddress) {
-                            mBt.connect(bindAddress);
-                        }
-                    } else {
-                        isBindName = true;
-                    }
-                } else {
-                    isBindName = true;
-                }
 
-                if (isBindName && null != mSharedPrefs) {
-                    String bindName = mSharedPrefs.getString(getString(R.string.bt_bind_name_key), null);
-                    if (null != bindName) {
-                        mBt.autoConnect(bindName);
-                    }
-                }
-            }
         }
         NotificationMonitor.sHud = mHud;
     }
@@ -527,22 +525,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (!IGNORE_BT_DEVICE) {
-            if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
-                if (resultCode == Activity.RESULT_OK) {
-                    mBt.connect(data);
-                }
-            } else if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
-                if (resultCode == Activity.RESULT_OK) {
-                    mBt.setupService();
-                    mBt.startService(BluetoothState.DEVICE_OTHER);
-                } else {
-                    Toast.makeText(getApplicationContext()
-                            , "Bluetooth was not enabled."
-                            , Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            }
+
+        if (mHud != null && mHud.handleActivityResult(requestCode, resultCode, data)) {
+            // Activity result was handled by HUD class, stop processing here
+            return;
         }
 
         if (requestCode == SCREENCAP_REQUEST_CODE) {
@@ -592,12 +578,8 @@ public class MainActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
 
-        //================================================================================
-        // bt reconnect
-        //================================================================================
-        if (!IGNORE_BT_DEVICE && null != mBt) {
-            mBt.stopAutoConnect();
-            mBt.stopService();
+        if (mHud != null) {
+            mHud.disconnect();
         }
         unbindLocationService();
         if (mNotificationManager != null) {
@@ -742,7 +724,6 @@ public class MainActivity extends AppCompatActivity {
 
                 case R.id.switchBtBindAddress:
                     final boolean isBindAddress = view.isChecked();
-                    mUseBTAddressReconnectThread = isBindAddress;
                     storeOptions(R.string.option_bt_bind_address, isBindAddress);
                     break;
 
@@ -831,7 +812,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.btnScanBT:
                 log("Scan Bluetooth...");
                 if (!IGNORE_BT_DEVICE) {
-                    scanBluetooth();
+                    if (mHud != null) {
+                        // TODO: Rename strings to not directly reference BT
+                        mHud.scanForHud();
+                    }
                 }
                 break;
 
@@ -880,21 +864,6 @@ public class MainActivity extends AppCompatActivity {
             mUseLocationService = false;
         }
         return true;
-    }
-
-    private void scanBluetooth() {
-        if (null == mBt || !mBt.isBluetoothAvailable()) {
-            Toast.makeText(getApplicationContext()
-                    , getString(R.string.message_bt_not_available)
-                    , Toast.LENGTH_SHORT).show();
-        } else {
-            mBt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
-            mBt.setBluetoothConnectionListener(mBtConnectionListener);
-            mBt.setAutoConnectionListener(mBtConnectionListener);
-
-            Intent intent = new Intent(getApplicationContext(), DeviceList.class);
-            startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
-        }
     }
 
     private boolean isNLSEnabled() {
@@ -1209,77 +1178,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private class BluetoothConnectionListener implements BluetoothSPP.BluetoothConnectionListener, BluetoothSPP.AutoConnectionListener {
-        @Override
-        public void onAutoConnectionStarted() {
-
-        }
-
-        @Override
-        public void onNewConnection(String name, String address) {
-
-        }
-
-        @Override
-        public void onDeviceConnected(String name, String address) {
-            if (null != mHudConnectedSwitch) {
-                mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_success_connected, name));
-                if (null != mSharedPrefs && mSharedPrefs.getInt(getString(R.string.state_dark_mode)
-                        , AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
-                    mHudConnectedSwitch.setTextColor(Color.BLACK);
-                mHudConnectedSwitch.setChecked(true);
-            }
-            log("onDeviceConnected");
-
-            if (mUseLocationService && !mLocationServiceConnected) {
-                bindLocationService();
-            }
-
-            if (null != mHud) {
-                if (null != mAutoBrightnessSwitch) {
-                    if (mAutoBrightnessSwitch.isChecked()) {
-                        mHud.setAutoBrightness();
-                    } else {
-                        final int brightness = getGammaBrightness();
-                        mHud.setBrightness(brightness);
-                    }
-                }
-            }
-
-            String connectedDeviceName = mBt.getConnectedDeviceName();
-            SharedPreferences.Editor editor = mSharedPrefs.edit();
-            editor.putString(getString(R.string.bt_bind_name_key), connectedDeviceName);
-
-            String connectedDeviceAddress = mBt.getConnectedDeviceAddress();
-            editor.putString(getString(R.string.bt_bind_address_key), connectedDeviceAddress);
-
-            editor.commit();
-        }
-
-        @Override
-        public void onDeviceDisconnected() {
-            mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_disconnected));
-            mHudConnectedSwitch.setTextColor(Color.RED);
-            mHudConnectedSwitch.setChecked(false);
-
-            log("onDeviceDisconnected");
-            resetBT();
-        }
-
-        @Override
-        public void onDeviceConnectionFailed() {
-            String text = getString(R.string.layout_element_hud_con_failed);
-            if (null != mHudConnectedSwitch) {
-                mHudConnectedSwitch.setText(text);
-                mHudConnectedSwitch.setTextColor(Color.RED);
-                mHudConnectedSwitch.setChecked(false);
-            }
-
-            log("onDeviceConnectionFailed");
-            resetBT();
-        }
-    }
-
     //================================================================================
     // media projection
     //================================================================================
@@ -1369,16 +1267,5 @@ public class MainActivity extends AppCompatActivity {
         mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 2);
         mVirtualDisplay = sMediaProjection.createVirtualDisplay(SCREENCAP_NAME, mWidth, mHeight, mDensity, VIRTUAL_DISPLAY_FLAGS, mImageReader.getSurface(), null, mProjectionHandler);
         mImageReader.setOnImageAvailableListener(mImageDetectListener, mProjectionHandler);
-    }
-
-    private boolean mUseBTAddressReconnectThread = false;
-
-    private void resetBT() {
-        if (mUseBTAddressReconnectThread && null != mBt) {
-            mBt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
-            mBt.setBluetoothConnectionListener(mBtConnectionListener);
-            mBt.setAutoConnectionListener(mBtConnectionListener);
-
-        }
     }
 }

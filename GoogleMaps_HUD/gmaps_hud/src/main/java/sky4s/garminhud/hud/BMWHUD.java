@@ -1,6 +1,7 @@
 package sky4s.garminhud.hud;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
@@ -42,6 +43,17 @@ public class BMWHUD extends HUDAdapter {
     @Override
     public void registerConnectionCallback(ConnectionCallback callback) {
         mSocket.registerConnectionCallback(callback);
+    }
+
+    @Override
+    public boolean handleActivityResult(int requestCode, int resultCode, Intent data) {
+        return false;
+    }
+
+    @Override
+    public void scanForHud() {
+        // Called when the scan button is pressed
+        // TODO: show WLAN settings panel
     }
 
     @Override

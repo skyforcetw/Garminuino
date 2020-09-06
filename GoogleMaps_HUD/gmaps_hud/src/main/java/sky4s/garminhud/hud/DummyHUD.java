@@ -1,5 +1,6 @@
 package sky4s.garminhud.hud;
 
+import android.content.Intent;
 import android.util.Log;
 
 import sky4s.garminhud.eOutAngle;
@@ -17,6 +18,16 @@ public class DummyHUD extends HUDAdapter {
     public void registerConnectionCallback(ConnectionCallback callback) {
         // dummy implementation is always connected
         callback.onConnectionStateChange(ConnectionCallback.ConnectionState.CONNECTED);
+    }
+
+    @Override
+    public boolean handleActivityResult(int requestCode, int resultCode, Intent data) {
+        return false;
+    }
+
+    @Override
+    public void scanForHud() {
+        log("scanForHud");
     }
 
     @Override

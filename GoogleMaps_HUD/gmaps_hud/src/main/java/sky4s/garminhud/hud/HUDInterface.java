@@ -1,5 +1,7 @@
 package sky4s.garminhud.hud;
 
+import android.content.Intent;
+
 import sky4s.garminhud.eOutAngle;
 import sky4s.garminhud.eOutType;
 import sky4s.garminhud.eUnits;
@@ -9,12 +11,17 @@ public interface HUDInterface {
         enum ConnectionState {
             CONNECTED,
             DISCONNECTED,
+            FAILED,
         }
 
         void onConnectionStateChange(ConnectionState state);
     }
 
     void registerConnectionCallback(ConnectionCallback callback);
+
+    boolean handleActivityResult(int requestCode, int resultCode, Intent data);
+
+    void scanForHud();
 
     boolean isUpdatable();
 
