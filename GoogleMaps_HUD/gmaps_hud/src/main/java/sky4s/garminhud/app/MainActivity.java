@@ -625,6 +625,7 @@ public class MainActivity extends AppCompatActivity {
                     final boolean enableBMWHUD = view.isChecked();
                     storeOptions(R.string.option_bmw_hud_enabled, enableBMWHUD);
                     view.setText(enableBMWHUD ? R.string.layout_element_bmw_hud_enabled : R.string.layout_element_bmw_hud_disabled);
+                    initBluetooth();
                     break;
 
                 case R.id.switchArrowType:
