@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            mAutoBrightnessSwitch.setText(getString(R.string.layout_seekbar_brightness) + " " + (progress * 10) + "%");
+            mAutoBrightnessSwitch.setText(getString(R.string.layout_seekbar_brightness, progress * 10));
             if (null != mHud) {
                 int brightness = getGammaBrightness();
                 mHud.setBrightness(brightness);
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             final boolean alertAnytime = mAlertAnytimeSwitch.isChecked();
             if (!alertAnytime) {
-                mAlertAnytimeSwitch.setText(getString(R.string.layout_element_alert_speed_exceeds) + " " + (progress * 10) + "kph");
+                mAlertAnytimeSwitch.setText(getString(R.string.layout_element_alert_speed_exceeds, progress * 10));
                 storeIntOptions(R.string.option_alert_speed, progress);
             }
         }
@@ -747,7 +747,7 @@ public class MainActivity extends AppCompatActivity {
 
                     final int brightnessProgress = mBrightnessSeekbar.getProgress();
                     theAutoBrightness.setText(autoBrightness ? getString(R.string.layout_element_auto_brightness)
-                            : getString(R.string.layout_seekbar_brightness) + " " + (brightnessProgress * 10) + "%");
+                            : getString(R.string.layout_seekbar_brightness, brightnessProgress * 10));
 
                     mBrightnessSeekbar.setEnabled(!autoBrightness);
                     mBrightnessSeekbar.setOnSeekBarChangeListener(mBrightnessSeekbarChangeListener);
@@ -896,7 +896,7 @@ public class MainActivity extends AppCompatActivity {
             }
             result = result + "\n" + getCurrentNotificationString();
             CharSequence text = mDebugTextView.getText();
-            mDebugTextView.setText(result + "\n\n" + text);
+            mDebugTextView.setText(getString(R.string.layout_debug_text_concat, result, text));
         } else {
             mDebugTextView.setTextColor(Color.RED);
             mDebugTextView.setText(
@@ -1024,7 +1024,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateTextViewDebug(String msg) {
         CharSequence orignal_text = mDebugTextView.getText();
         orignal_text = orignal_text.length() > 1000 ? "" : orignal_text;
-        mDebugTextView.setText(msg + "\n\n" + orignal_text);
+        mDebugTextView.setText(getString(R.string.layout_debug_text_concat, msg, orignal_text));
     }
 
     private class MsgReceiver extends BroadcastReceiver {
@@ -1058,7 +1058,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 CharSequence orignal_text = mDebugTextView.getText();
-                mDebugTextView.setText("speed: " + int_speed + "\n\n" + orignal_text);
+                mDebugTextView.setText(getString(R.string.layout_debug_text_speed, int_speed, orignal_text));
                 return;
             }
 

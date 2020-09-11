@@ -68,7 +68,7 @@
     <string name="layout_title_traffic">Traffic</string>
     <string name="layout_element_traffic_lane_det">Traffic &amp; Lane Detect (Need Screenshot)</string>
     <string name="layout_element_alert_anytime">Alert anytime</string>
-    <string name="layout_element_alert_speed_exceeds">Alert when speed exceeds</string>
+    <string name="layout_element_alert_speed_exceeds">Alert when speed exceeds %1$dkph</string>
     <string name="layout_element_yellow_traffic">Alert Yellow Traffic</string>
 
     <string name="layout_title_bluetooth">Bluetooth</string>
@@ -91,7 +91,7 @@
     <string name="layout_button">Button</string>
 
     <!-- Messages and variable UI text -->
-    <string name="layout_seekbar_brightness">Brightness</string>
+    <string name="layout_seekbar_brightness">Brightness %1$d\%%</string>
     <string name="message_enable_notification_access">Please enable Notification Access for %1$s.
                         \n\nThis app use Notification to parse Navigation Information.</string>
     <string name="title_enable_notification_access">Notification Access</string>
@@ -106,6 +106,8 @@
     <string name="message_connect_to_bmw_hud_network">Please connect to Head-Up Display network</string>
     <string name="layout_title_notify">Notification</string>
     <string name="layout_element_notify">Show Notification</string>
+    <string name="layout_debug_text_concat">%1$s\n\n%2$s</string>
+    <string name="layout_debug_text_speed">speed %1$d\n\n%2$s</string>
 
 
 </resources>
