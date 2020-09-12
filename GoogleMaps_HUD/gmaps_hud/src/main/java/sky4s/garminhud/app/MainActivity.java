@@ -894,8 +894,7 @@ public class MainActivity extends AppCompatActivity {
                 result = getResources().getQuantityString(R.plurals.active_notification_count_nonzero, n, n);
             }
             result = result + "\n" + getCurrentNotificationString();
-            CharSequence text = mDebugTextView.getText();
-            mDebugTextView.setText(getString(R.string.layout_debug_text_concat, result, text));
+            updateTextViewDebug(result);
         } else {
             mDebugTextView.setTextColor(Color.RED);
             mDebugTextView.setText(
@@ -1021,9 +1020,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateTextViewDebug(String msg) {
-        CharSequence orignal_text = mDebugTextView.getText();
-        orignal_text = orignal_text.length() > 1000 ? "" : orignal_text;
-        mDebugTextView.setText(getString(R.string.layout_debug_text_concat, msg, orignal_text));
+        CharSequence originalText = mDebugTextView.getText();
+        if (msg.length() + originalText.length() > 1000) {
+            mDebugTextView.setText("");
+        }
+        mDebugTextView.append(msg + "\n\n");
     }
 
     private class MsgReceiver extends BroadcastReceiver {
@@ -1056,8 +1057,9 @@ public class MainActivity extends AppCompatActivity {
                     setSpeed(int_speed);
                 }
 
-                CharSequence orignal_text = mDebugTextView.getText();
-                mDebugTextView.setText(getString(R.string.layout_debug_text_speed, int_speed, orignal_text));
+                if (mDebugTextView != null) {
+                    updateTextViewDebug(getString(R.string.layout_debug_text_speed, int_speed));
+                }
                 return;
             }
 
