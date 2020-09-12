@@ -521,7 +521,7 @@ public class NotificationMonitor extends NotificationListenerService {
             logParseMessage();
             //can update to garmin hud
             if (0 != updateCount && inNavigation) {
-                updateGaminHudInformation();
+                updateHudInformation();
             }
             return true;
         }
@@ -663,7 +663,7 @@ public class NotificationMonitor extends NotificationListenerService {
                     }
                 }
                 logParseMessage();
-                updateGaminHudInformation();
+                updateHudInformation();
                 mIsNavigating = true;
                 return true;
             } else {
@@ -1161,7 +1161,7 @@ public class NotificationMonitor extends NotificationListenerService {
     private boolean mBusyTraffic = false;
     private boolean mArrowTypeV2 = false;
 
-    private void updateGaminHudInformation() {
+    private void updateHudInformation() {
         Log.i(TAG, "hud: " + sHud);
 
         //===================================================================================
