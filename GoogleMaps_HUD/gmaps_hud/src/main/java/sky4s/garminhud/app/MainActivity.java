@@ -668,7 +668,7 @@ public class MainActivity extends AppCompatActivity {
                     final int kph = progress * 10;
                     mAlertSpeedExceeds = alertAnytime ? 0 : kph;
                     switchAlertAnytime.setText(alertAnytime ? getString(R.string.layout_element_alert_anytime)
-                            : getString(R.string.layout_element_alert_speed_exceeds) + " " + kph + "kph");
+                            : getString(R.string.layout_element_alert_speed_exceeds, kph));
 
                     mAlertSpeedSeekbar.setEnabled(!alertAnytime);
                     mAlertSpeedSeekbar.setOnSeekBarChangeListener(mAlertSpeedSeekbarChangeListener);
