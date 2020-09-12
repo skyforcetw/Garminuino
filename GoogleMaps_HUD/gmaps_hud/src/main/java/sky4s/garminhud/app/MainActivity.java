@@ -286,44 +286,36 @@ public class MainActivity extends AppCompatActivity {
             switch (state) {
                 case CONNECTED:
                     runOnUiThread(() -> {
-                        if (mHudConnectedSwitch != null) {
-                            String hudName = isBMW() ? "BMW HUD" : "Garmin HUD";
-                            mHudConnectedSwitch.setText(getString(
-                                    R.string.layout_element_hud_success_connected, hudName));
-                            if (mSharedPrefs != null && mSharedPrefs.getInt(getString(R.string.state_dark_mode),
-                                    AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
-                                mHudConnectedSwitch.setTextColor(Color.BLACK);
-                            mHudConnectedSwitch.setChecked(true);
-                        }
+                        String hudName = isBMW() ? "BMW HUD" : "Garmin HUD";
+                        mHudConnectedSwitch.setText(getString(
+                                R.string.layout_element_hud_success_connected, hudName));
+                        if (mSharedPrefs.getInt(getString(R.string.state_dark_mode),
+                                AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
+                            mHudConnectedSwitch.setTextColor(Color.BLACK);
+                        mHudConnectedSwitch.setChecked(true);
                         if (mUseLocationService && !mLocationServiceConnected) {
                             bindLocationService();
                         }
-                        if (mAutoBrightnessSwitch != null) {
-                            if (mAutoBrightnessSwitch.isChecked()) {
-                                mHud.setAutoBrightness();
-                            } else {
-                                final int brightness = getGammaBrightness();
-                                mHud.setBrightness(brightness);
-                            }
+                        if (mAutoBrightnessSwitch.isChecked()) {
+                            mHud.setAutoBrightness();
+                        } else {
+                            final int brightness = getGammaBrightness();
+                            mHud.setBrightness(brightness);
                         }
                     });
                     break;
                 case DISCONNECTED:
                     runOnUiThread(() -> {
-                        if (mHudConnectedSwitch != null) {
-                            mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_disconnected));
-                            mHudConnectedSwitch.setTextColor(Color.RED);
-                            mHudConnectedSwitch.setChecked(false);
-                        }
+                        mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_disconnected));
+                        mHudConnectedSwitch.setTextColor(Color.RED);
+                        mHudConnectedSwitch.setChecked(false);
                     });
                     break;
                 case FAILED:
                     runOnUiThread(() -> {
-                        if (mHudConnectedSwitch != null) {
-                            mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_con_failed));
-                            mHudConnectedSwitch.setTextColor(Color.RED);
-                            mHudConnectedSwitch.setChecked(false);
-                        }
+                        mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_con_failed));
+                        mHudConnectedSwitch.setTextColor(Color.RED);
+                        mHudConnectedSwitch.setChecked(false);
                     });
                     break;
             }
@@ -723,7 +715,7 @@ public class MainActivity extends AppCompatActivity {
                     if (isDarkModeAuto) {
                         storeIntOptions(R.string.state_dark_mode, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
                     } else {
-                        final boolean isDarkModeManualEnabled = null != mSharedPrefs &&
+                        final boolean isDarkModeManualEnabled =
                                 mSharedPrefs.getBoolean(getString(R.string.option_dark_mode_man), false);
                         storeIntOptions(R.string.state_dark_mode, isDarkModeManualEnabled ?
                                 AppCompatDelegate.MODE_NIGHT_YES :
@@ -1037,9 +1029,7 @@ public class MainActivity extends AppCompatActivity {
             if (has_notify_msg) {
                 //if recv notify message,  display it then return (jump out)
                 String notify_msg = intent.getStringExtra(getString(R.string.notify_msg));
-                if (null != mDebugTextView) {
-                    updateTextViewDebug(notify_msg);
-                }
+                updateTextViewDebug(notify_msg);
                 return;
             }
 
@@ -1057,9 +1047,7 @@ public class MainActivity extends AppCompatActivity {
                     setSpeed(int_speed);
                 }
 
-                if (mDebugTextView != null) {
-                    updateTextViewDebug(getString(R.string.layout_debug_text_speed, int_speed));
-                }
+                updateTextViewDebug(getString(R.string.layout_debug_text_speed, int_speed));
                 return;
             }
 
@@ -1070,48 +1058,44 @@ public class MainActivity extends AppCompatActivity {
 
             if (notify_parse_failed) {
                 //when pass fail
-                if (null != mNotificationCaughtSwitch && null != mGmapsNotificationCaughtSwitch) {
-                    mGmapsNotificationCaughtSwitch.setChecked(false);
-                }
+                mGmapsNotificationCaughtSwitch.setChecked(false);
                 mIsNavigating = false;
             } else {
                 //pass success
                 final boolean notify_catched = intent.getBooleanExtra(getString(R.string.notify_catched),
-                        null != mNotificationCaughtSwitch && mNotificationCaughtSwitch.isChecked());
+                        mNotificationCaughtSwitch.isChecked());
                 final boolean gmaps_notify_catched = intent.getBooleanExtra(getString(R.string.gmaps_notify_catched),
-                        null != mGmapsNotificationCaughtSwitch && mGmapsNotificationCaughtSwitch.isChecked());
+                        mGmapsNotificationCaughtSwitch.isChecked());
 
 
                 final boolean is_in_navigation_in_intent = intent.getBooleanExtra(getString(R.string.is_in_navigation), mIsNavigating);
 
-                if (null != mNotificationCaughtSwitch && null != mGmapsNotificationCaughtSwitch) {
-                    if (!notify_catched) {
-                        //no notify catched
-                        mNotificationCaughtSwitch.setChecked(false);
-                        mGmapsNotificationCaughtSwitch.setChecked(false);
-                    } else {
-                        mNotificationCaughtSwitch.setChecked(true);
-                        // we need two condition to confirm in navagating:
-                        // 1. gmaps's notify
-                        // 2. in_navigation from notify monitor
-                        final boolean is_really_in_navigation = gmaps_notify_catched && is_in_navigation_in_intent;
-                        mGmapsNotificationCaughtSwitch.setChecked(is_really_in_navigation);
+                if (!notify_catched) {
+                    //no notify catched
+                    mNotificationCaughtSwitch.setChecked(false);
+                    mGmapsNotificationCaughtSwitch.setChecked(false);
+                } else {
+                    mNotificationCaughtSwitch.setChecked(true);
+                    // we need two condition to confirm in navagating:
+                    // 1. gmaps's notify
+                    // 2. in_navigation from notify monitor
+                    final boolean is_really_in_navigation = gmaps_notify_catched && is_in_navigation_in_intent;
+                    mGmapsNotificationCaughtSwitch.setChecked(is_really_in_navigation);
 
-                        if (mLastReallyInNavigation != is_really_in_navigation &&
-                                !is_really_in_navigation &&
-                                null != mHud) {
-                            //exit navigation
-                            mHud.setDirection(eOutAngle.AsDirection);
-                            //maybe in this line
-                        }
-                        mIsNavigating = is_really_in_navigation;
-                        mLastReallyInNavigation = is_really_in_navigation;
+                    if (mLastReallyInNavigation != is_really_in_navigation &&
+                            !is_really_in_navigation &&
+                            null != mHud) {
+                        //exit navigation
+                        mHud.setDirection(eOutAngle.AsDirection);
+                        //maybe in this line
                     }
+                    mIsNavigating = is_really_in_navigation;
+                    mLastReallyInNavigation = is_really_in_navigation;
                 }
             }
 
             //=======================================================================
-            if (intent.hasExtra(getString(R.string.option_arrow_type)) && null != mArrowTypeSwitch) {
+            if (intent.hasExtra(getString(R.string.option_arrow_type))) {
                 //re-sync arrow type between ui & notify monitor
                 boolean arrowTypeV2_in_ui = mArrowTypeSwitch.isChecked();
                 boolean arrowTypeV2_in_notify_monitor = intent.getBooleanExtra((getString(R.string.option_arrow_type)), arrowTypeV2_in_ui);
