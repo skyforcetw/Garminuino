@@ -1,5 +1,6 @@
 package sky4s.garminhud.app;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -40,7 +41,6 @@ import sky4s.garminhud.eOutType;
 import sky4s.garminhud.eUnits;
 import sky4s.garminhud.hud.HUDInterface;
 
-
 public class NotificationMonitor extends NotificationListenerService {
     private static final boolean STORE_IMG = true;
 
@@ -64,6 +64,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
     static HUDInterface sHud = null;
 
+    @SuppressLint("HandlerLeak")
     private Handler mMonitorHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -300,20 +301,19 @@ public class NotificationMonitor extends NotificationListenerService {
 
             String notifyMessage = "Notify parsing failed.";
             mPostman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
-            mPostman.sendIntent2MainActivity();
         } else {
             mPostman.addBooleanExtra(getString(R.string.notify_parse_failed), false);
             mPostman.addBooleanExtra(getString(R.string.gmaps_notify_catched), true);
             mPostman.addBooleanExtra(getString(R.string.is_in_navigation), mIsNavigating);
             mPostman.addBooleanExtra(getString(R.string.option_arrow_type), mArrowTypeV2);
-            mPostman.sendIntent2MainActivity();
         }
+        mPostman.sendIntent2MainActivity();
     }
 
-    private static boolean checkmActions(RemoteViews views) {
+    private static boolean viewsHasActionsField(RemoteViews views) {
         try {
             Class<?> viewsClass = views.getClass();
-            Field fieldActions = viewsClass.getDeclaredField("mActions");
+            viewsClass.getDeclaredField("mActions");
             return true;
         } catch (Exception e) {
             Log.e(TAG, e.toString());
@@ -335,14 +335,14 @@ public class NotificationMonitor extends NotificationListenerService {
     private static RemoteViews getRemoteViews(Notification notification) {
         // We have to extract the information from the view
         RemoteViews views = notification.bigContentView;
-        if (!checkmActions(views)) {
+        if (!viewsHasActionsField(views)) {
             //check mActions is exist, we use it to parse notification
             views = null;
         }
         if (views == null) {
             views = notification.contentView;
         }
-        if (!checkmActions(views)) {
+        if (!viewsHasActionsField(views)) {
             //check mActions again
             views = null;
         }
@@ -377,7 +377,6 @@ public class NotificationMonitor extends NotificationListenerService {
                     // Save strings
                 } else if (methodName.equals("setText")) {
                     if (value instanceof String) {
-                        String str = (String) value;
                         switch (indexOfActions) {
                             case 4:
                                 //distance
@@ -1239,8 +1238,6 @@ public class NotificationMonitor extends NotificationListenerService {
                     sHud.setRemainTime(hh, mm, mBusyTraffic);
                 }
                 timeSendResult = (null != sHud) && sHud.getSendResult();
-                String lastRemainMinute = mRemainingMinutes;
-                String lastRemainHour = mRemainingHours;
             }
         }
         //===================================================================================
@@ -1266,8 +1263,8 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private void parseTimeAndDistanceToDest(String timeDistanceStirng) {
         String[] timeDistanceSplit = timeDistanceStirng.split("·");
-        String arrivalTime = null;
-        mRemainingHours = mRemainingMinutes = mRemainingDistance = mRemainingDistanceUnits = arrivalTime = null;
+        String arrivalTime;
+        mRemainingHours = mRemainingMinutes = mRemainingDistance = mRemainingDistanceUnits = null;
 
         if (3 == timeDistanceSplit.length) {
             String timeToDest = timeDistanceSplit[0].trim();
@@ -1281,7 +1278,8 @@ public class NotificationMonitor extends NotificationListenerService {
             if (4 == timeSplit.length) {
                 mRemainingHours = timeSplit[0].trim();
                 mRemainingMinutes = timeSplit[2].trim();
-                mRemainingHours = mRemainingHours.replaceAll("\u00A0", ""); // Remove spaces, .trim() seems not working
+                // Remove spaces, .trim() seems not working
+                mRemainingHours = mRemainingHours.replaceAll("\u00A0", "");
                 mRemainingMinutes = mRemainingMinutes.replaceAll("\u00A0", "");
             } else if (2 == timeSplit.length) {
                 final int hour_index = timeToDest.indexOf(getString(R.string.hour));
@@ -1289,7 +1287,8 @@ public class NotificationMonitor extends NotificationListenerService {
                 if (-1 != hour_index && -1 != minute_index) {
                     mRemainingHours = timeToDest.substring(0, hour_index).trim();
                     mRemainingMinutes = timeToDest.substring(hour_index + getString(R.string.hour).length(), minute_index).trim();
-                    mRemainingHours = mRemainingHours.replaceAll("\u00A0", ""); // Remove spaces, .trim() seems not working
+                    // Remove spaces, .trim() seems not working
+                    mRemainingHours = mRemainingHours.replaceAll("\u00A0", "");
                     mRemainingMinutes = mRemainingMinutes.replaceAll("\u00A0", "");
                 } else if (-1 != hour_index && -1 == minute_index) {
                     mRemainingHours = timeSplit[0].trim();
@@ -1352,7 +1351,6 @@ public class NotificationMonitor extends NotificationListenerService {
                 int hh = Integer.parseInt(split[0]);
                 if (-1 != pmIndex && 12 != hh) {
                     hh += 12;
-                    arrivalTime = hh + ":" + split[1];
                 }
                 mArrivalHours = hh;
                 mArrivalMinutes = Integer.parseInt(split[1]);
@@ -1468,8 +1466,9 @@ public class NotificationMonitor extends NotificationListenerService {
                         sHud.clearDistance();
                     }
                 } else {
-                    if (sHud != null)
+                    if (sHud != null) {
                         sHud.clearDistance();
+                    }
                 }
             }
         }
