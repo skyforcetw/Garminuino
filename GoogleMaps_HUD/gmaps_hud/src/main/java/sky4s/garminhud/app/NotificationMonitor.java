@@ -30,6 +30,8 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import androidx.annotation.RequiresApi;
 import sky4s.garminhud.Arrow;
@@ -97,6 +99,8 @@ public class NotificationMonitor extends NotificationListenerService {
     private int mLastArrivalHours = -1;
     private int mLastArrivalMinutes = -1;
 
+    private ExecutorService mExecutor;
+
     private static void logi(String msg) {
         Log.i(TAG, msg);
     }
@@ -133,6 +137,7 @@ public class NotificationMonitor extends NotificationListenerService {
     @Override
     public void onCreate() {
         super.onCreate();
+        mExecutor = Executors.newFixedThreadPool(1);
         logi("onCreate...");
         mMonitorHandler.sendMessage(mMonitorHandler.obtainMessage(EVENT_UPDATE_CURRENT_NOS));
 
@@ -178,6 +183,7 @@ public class NotificationMonitor extends NotificationListenerService {
     @Override
     public void onDestroy() {
         unregisterReceiver(mMsgReceiver);
+        mExecutor.shutdown();
         super.onDestroy();
     }
 
@@ -187,42 +193,46 @@ public class NotificationMonitor extends NotificationListenerService {
         return super.onBind(intent);
     }
 
+
     private void processNotification(StatusBarNotification sbn) {
-        mPostman.addBooleanExtra(getString(R.string.notify_catched), true);
-        mPostman.sendIntent2MainActivity();
-
-        Notification notification = sbn.getNotification();
-        if (null != notification) {
-            String packageName = sbn.getPackageName();
-            switch (packageName) {
-                case GOOGLE_MAPS_PACKAGE_NAME:
-                    parseGmapsNotification(notification);
-                    break;
-                    /*
-                case GOOGLE_MAPS_GO_PACKAGE_NAME:
-                    parseGmapsGoNotificationByReflection(notification);
-                    break;
-                case OSMAND_PACKAGE_NAME:
-                    parseOsmandNotification(notification);
-                    break;
-                case SYGIC_PACKAGE_NAME:
-                    parseSygicNotification(notification);
-                    break;
-                    */
-                default:
-                    String notifyMessage = "No gmaps' notification found!?!?";
-                    mPostman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
-                    mPostman.sendIntent2MainActivity();
-            }
-        } else {
+        // Parsing a notification may be slow, do this in the background
+        mExecutor.execute(() -> {
             mPostman.addBooleanExtra(getString(R.string.notify_catched), true);
-            mPostman.addBooleanExtra(getString(R.string.is_in_navigation), false);
             mPostman.sendIntent2MainActivity();
 
-            String notifyMessage = "No notification found!?!?";
-            mPostman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
-            mPostman.sendIntent2MainActivity();
-        }
+            Notification notification = sbn.getNotification();
+            if (null != notification) {
+                String packageName = sbn.getPackageName();
+                switch (packageName) {
+                    case GOOGLE_MAPS_PACKAGE_NAME:
+                        parseGmapsNotification(notification);
+                        break;
+                    /*
+                    case GOOGLE_MAPS_GO_PACKAGE_NAME:
+                        parseGmapsGoNotificationByReflection(notification);
+                        break;
+                    case OSMAND_PACKAGE_NAME:
+                        parseOsmandNotification(notification);
+                        break;
+                    case SYGIC_PACKAGE_NAME:
+                        parseSygicNotification(notification);
+                        break;
+                    */
+                    default:
+                        String notifyMessage = "No gmaps' notification found!?!?";
+                        mPostman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
+                        mPostman.sendIntent2MainActivity();
+                }
+            } else {
+                mPostman.addBooleanExtra(getString(R.string.notify_catched), true);
+                mPostman.addBooleanExtra(getString(R.string.is_in_navigation), false);
+                mPostman.sendIntent2MainActivity();
+
+                String notifyMessage = "No notification found!?!?";
+                mPostman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
+                mPostman.sendIntent2MainActivity();
+            }
+        });
     }
 
     private void parseSygicNotification(Notification notification) {
