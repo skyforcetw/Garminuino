@@ -1435,46 +1435,50 @@ public class NotificationMonitor extends NotificationListenerService {
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
-        updateCurrentNotifications();
-        logi("onNotificationPosted...");
-        logi("have " + sCurrentNotificationsCounts + " active notifications");
-        sPostedNotification = sbn;
-        processNotification(sbn);
+        mMonitorHandler.post(() -> {
+            updateCurrentNotifications();
+            logi("onNotificationPosted...");
+            logi("have " + sCurrentNotificationsCounts + " active notifications");
+            sPostedNotification = sbn;
+            processNotification(sbn);
+        });
     }
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-        logi("removed...");
-        logi("have " + sCurrentNotificationsCounts + " active notifications");
-        sRemovedNotification = sbn;
+        mMonitorHandler.post(() -> {
+            logi("removed...");
+            logi("have " + sCurrentNotificationsCounts + " active notifications");
+            sRemovedNotification = sbn;
 
-        String packageName = sbn.getPackageName();
-        if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
-            mPostman.addBooleanExtra(getString(R.string.gmaps_notify_catched), false);
-            mPostman.addBooleanExtra(getString(R.string.is_in_navigation), mIsNavigating);
-            mPostman.sendIntent2MainActivity();
+            String packageName = sbn.getPackageName();
+            if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
+                mPostman.addBooleanExtra(getString(R.string.gmaps_notify_catched), false);
+                mPostman.addBooleanExtra(getString(R.string.is_in_navigation), mIsNavigating);
+                mPostman.sendIntent2MainActivity();
 
-            int hh = null != mRemainingHours ? Integer.parseInt(mRemainingHours) : 0;
-            int mm = null != mRemainingMinutes ? Integer.parseInt(mRemainingMinutes) : -1;
+                int hh = null != mRemainingHours ? Integer.parseInt(mRemainingHours) : 0;
+                int mm = null != mRemainingMinutes ? Integer.parseInt(mRemainingMinutes) : -1;
 
-            // Check if arrival is possible (don't know if mm==0 work always)
-            if (hh == 0 && mm <= 5 && mm != -1) {
-                // Arrived: Delete Distance to turn
-                final boolean notArrivals = mArrowTypeV2 ? (mLastFoundArrowV2 != ArrowV2.ArrivalsLeft) && (mLastFoundArrowV2 != ArrowV2.ArrivalsRight) :
-                        (mLastFoundArrow != Arrow.Arrivals) && (mLastFoundArrow != Arrow.ArrivalsLeft) && (mLastFoundArrow != Arrow.ArrivalsRight);
+                // Check if arrival is possible (don't know if mm==0 work always)
+                if (hh == 0 && mm <= 5 && mm != -1) {
+                    // Arrived: Delete Distance to turn
+                    final boolean notArrivals = mArrowTypeV2 ? (mLastFoundArrowV2 != ArrowV2.ArrivalsLeft) && (mLastFoundArrowV2 != ArrowV2.ArrivalsRight) :
+                            (mLastFoundArrow != Arrow.Arrivals) && (mLastFoundArrow != Arrow.ArrivalsLeft) && (mLastFoundArrow != Arrow.ArrivalsRight);
 
-                if (notArrivals) {
-                    if (sHud != null) {
-                        sHud.setDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
-                        sHud.clearDistance();
-                    }
-                } else {
-                    if (sHud != null) {
-                        sHud.clearDistance();
+                    if (notArrivals) {
+                        if (sHud != null) {
+                            sHud.setDirection(eOutAngle.Straight, eOutType.RightFlag, eOutAngle.AsDirection);
+                            sHud.clearDistance();
+                        }
+                    } else {
+                        if (sHud != null) {
+                            sHud.clearDistance();
+                        }
                     }
                 }
             }
-        }
+        });
     }
 
     private void updateCurrentNotifications() {
