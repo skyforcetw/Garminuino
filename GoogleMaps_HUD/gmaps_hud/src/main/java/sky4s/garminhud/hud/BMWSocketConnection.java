@@ -121,7 +121,7 @@ public class BMWSocketConnection {
         }
     }
 
-    public boolean send(byte[] buffer) {
+    public synchronized boolean send(byte[] buffer) {
         if (DEBUG) Log.d(TAG, "sending message to HUD");
         ensureConnected();
 
@@ -150,7 +150,7 @@ public class BMWSocketConnection {
         return true;
     }
 
-    public void disconnect() {
+    public synchronized void disconnect() {
         if (DEBUG) Log.d(TAG, "disconnect()");
         if (mSocket == null) {
             return;
@@ -175,7 +175,7 @@ public class BMWSocketConnection {
         mConnectivityManager.requestNetwork(request, mNetworkCallback);
     }
 
-    private void ensureConnected() {
+    private synchronized void ensureConnected() {
         if (DEBUG) Log.d(TAG, "ensureConnected(): mWifiAvailable: " + mWifiAvailable);
         if (!mWifiAvailable) {
             return;

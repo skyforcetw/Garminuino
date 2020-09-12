@@ -406,7 +406,7 @@ public class BMWHUD extends HUDAdapter {
 
     @Override
     public void disconnect() {
-        mSocket.disconnect();
+        mExecutor.execute(() -> mSocket.disconnect());
     }
 
     private boolean isShowETAEnabled() {
