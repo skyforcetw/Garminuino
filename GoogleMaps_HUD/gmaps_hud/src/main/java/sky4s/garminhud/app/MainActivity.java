@@ -797,7 +797,6 @@ public class MainActivity extends AppCompatActivity {
                 log("Scan for HUD...");
                 if (!IGNORE_BT_DEVICE) {
                     if (mHud != null) {
-                        // TODO: Rename strings to not directly reference BT
                         mHud.scanForHud();
                     }
                 }
