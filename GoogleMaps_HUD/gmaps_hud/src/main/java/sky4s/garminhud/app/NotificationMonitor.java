@@ -534,10 +534,13 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private void logParseMessage() {
         String arrowString = mArrowTypeV2 ? mFoundArrowV2.toString() : mFoundArrow.toString();
-        String notifyMessage = arrowString + "(" + (mArrowTypeV2 ? "v2:" : "v1:") + sArrowMinSad + ") " + mDistanceNum + "/" + mDistanceUnit +
-                " " + (null == mRemainingHours ? 0 : mRemainingHours) + ":" + mRemainingMinutes + " " + mRemainingDistance + mRemainingDistanceUnits + " " + mArrivalHours + ":" + mArrivalMinutes
-                + " busy" + (mBusyTraffic ? "1" : "0")
-                + " (period: " + mNotifyPeriodTime + ")";
+        String notifyMessage = arrowString + "(" + (mArrowTypeV2 ? "v2:" : "v1:") + sArrowMinSad + ") " +
+                mDistanceNum + "/" + mDistanceUnit + " " +
+                (null == mRemainingHours ? 0 : mRemainingHours) + ":" + mRemainingMinutes + " " +
+                mRemainingDistance + mRemainingDistanceUnits + " " +
+                mArrivalHours + ":" + mArrivalMinutes +
+                " busy: " + (mBusyTraffic ? "1" : "0") +
+                " (period: " + mNotifyPeriodTime + ")";
         logi(notifyMessage);
 
         mPostman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
