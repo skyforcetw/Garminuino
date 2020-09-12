@@ -108,6 +108,9 @@
     <string name="layout_element_notify">Show Notification</string>
     <string name="layout_debug_text_concat">%1$s\n\n%2$s</string>
     <string name="layout_debug_text_speed">speed %1$d\n\n%2$s</string>
+    <string name="button_1">BUTTON 1</string>
+    <string name="button_2">BUTTON 2</string>
+    <string name="button_3">BUTTON 3</string>
 
 
 </resources>

@@ -47,21 +47,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:onClick="buttonOnClicked"
-                        android:text="BUTTON 1" />
+                        android:text="@string/button_1" />
 
                     <Button
                         android:id="@+id/button2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:onClick="buttonOnClicked"
-                        android:text="BUTTON 2" />
+                        android:text="@string/button_2" />
 
                     <Button
                         android:id="@+id/button3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:onClick="buttonOnClicked"
-                        android:text="BUTTON 3" />
+                        android:text="@string/button_3" />
 
                 </LinearLayout>
             </LinearLayout>
