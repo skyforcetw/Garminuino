@@ -286,17 +286,19 @@ public class MainActivity extends AppCompatActivity {
             switch (state) {
                 case CONNECTED:
                     runOnUiThread(() -> {
-                        String hudName = isBMW() ? "BMW HUD" : "Garmin HUD";
-                        mHudConnectedSwitch.setText(getString(
-                                R.string.layout_element_hud_success_connected, hudName));
-                        if (mSharedPrefs.getInt(getString(R.string.state_dark_mode),
-                                AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
-                            mHudConnectedSwitch.setTextColor(Color.BLACK);
-                        mHudConnectedSwitch.setChecked(true);
+                        if (mHudConnectedSwitch != null) {
+                            String hudName = isBMW() ? "BMW HUD" : "Garmin HUD";
+                            mHudConnectedSwitch.setText(getString(
+                                    R.string.layout_element_hud_success_connected, hudName));
+                            if (mSharedPrefs.getInt(getString(R.string.state_dark_mode),
+                                    AppCompatDelegate.MODE_NIGHT_NO) == AppCompatDelegate.MODE_NIGHT_NO)
+                                mHudConnectedSwitch.setTextColor(Color.BLACK);
+                            mHudConnectedSwitch.setChecked(true);
+                        }
                         if (mUseLocationService && !mLocationServiceConnected) {
                             bindLocationService();
                         }
-                        if (mAutoBrightnessSwitch.isChecked()) {
+                        if (mAutoBrightnessSwitch != null && mAutoBrightnessSwitch.isChecked()) {
                             mHud.setAutoBrightness();
                         } else {
                             final int brightness = getGammaBrightness();
@@ -306,16 +308,20 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case DISCONNECTED:
                     runOnUiThread(() -> {
-                        mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_disconnected));
-                        mHudConnectedSwitch.setTextColor(Color.RED);
-                        mHudConnectedSwitch.setChecked(false);
+                        if (mHudConnectedSwitch != null) {
+                            mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_disconnected));
+                            mHudConnectedSwitch.setTextColor(Color.RED);
+                            mHudConnectedSwitch.setChecked(false);
+                        }
                     });
                     break;
                 case FAILED:
                     runOnUiThread(() -> {
-                        mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_con_failed));
-                        mHudConnectedSwitch.setTextColor(Color.RED);
-                        mHudConnectedSwitch.setChecked(false);
+                        if (mHudConnectedSwitch != null) {
+                            mHudConnectedSwitch.setText(getString(R.string.layout_element_hud_con_failed));
+                            mHudConnectedSwitch.setTextColor(Color.RED);
+                            mHudConnectedSwitch.setChecked(false);
+                        }
                     });
                     break;
             }
