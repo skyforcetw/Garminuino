@@ -32,6 +32,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.RequiresApi;
 import sky4s.garminhud.Arrow;
@@ -100,6 +104,7 @@ public class NotificationMonitor extends NotificationListenerService {
     private int mLastArrivalMinutes = -1;
 
     private ExecutorService mExecutor;
+    private RejectedExecutionHandler mRejectHandler = new ThreadPoolExecutor.DiscardOldestPolicy();
 
     private static void logi(String msg) {
         Log.i(TAG, msg);
@@ -137,7 +142,11 @@ public class NotificationMonitor extends NotificationListenerService {
     @Override
     public void onCreate() {
         super.onCreate();
-        mExecutor = Executors.newFixedThreadPool(1);
+        mExecutor = new ThreadPoolExecutor(1, 1,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(10),
+                mRejectHandler);
+
         logi("onCreate...");
         mMonitorHandler.sendMessage(mMonitorHandler.obtainMessage(EVENT_UPDATE_CURRENT_NOS));
 
