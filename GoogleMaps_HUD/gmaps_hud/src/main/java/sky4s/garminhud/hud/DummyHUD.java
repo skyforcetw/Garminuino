@@ -31,6 +31,11 @@ public class DummyHUD extends HUDAdapter {
     }
 
     @Override
+    public int getMaxUpdatesPerSecond() {
+        return 1;
+    }
+
+    @Override
     public boolean isUpdatable() {
         return true;
     }

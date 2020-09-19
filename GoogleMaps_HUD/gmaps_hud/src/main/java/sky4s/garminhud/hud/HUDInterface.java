@@ -23,6 +23,8 @@ public interface HUDInterface {
 
     void scanForHud();
 
+    int getMaxUpdatesPerSecond();
+
     boolean isUpdatable();
 
     boolean getSendResult();

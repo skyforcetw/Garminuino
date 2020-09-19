@@ -76,6 +76,11 @@ public class BMWHUD extends HUDAdapter {
     }
 
     @Override
+    public int getMaxUpdatesPerSecond() {
+        return MAX_UPDATES_PER_SECOND;
+    }
+
+    @Override
     public boolean isUpdatable() {
         final long now = System.currentTimeMillis();
         final long interval = now - mLastUpdateClearTime;
