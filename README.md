@@ -130,6 +130,9 @@ Works just like garmin streetpilot with Garmin HUD.
 * **Niklas04** - help improve parsing & add German language support
 [github](https://github.com/Niklas04) 
 
+* **intervigilium** - add support for BMW HUD 
+[github](https://github.com/intervigilium) 
+
 * **Android-BluetoothSPPLibrary** - Bluetooth SPP Library, use to link Garmin HUD.
 [github](https://github.com/akexorcist/Android-BluetoothSPPLibrary) 
 
