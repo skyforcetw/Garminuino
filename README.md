@@ -23,6 +23,9 @@ Android App: Google Map HUD
 
 ## GoogleMap navigation HUD App Release History ##
 
+### [2020-09-26 v0.8.0](https://github.com/skyforcetw/Garminuino/releases/download/0.8.0/gmaps_hud-release_v0.8.0.apk)
+Add support for BMW HUD , thanks for intervigilium's contribution.
+
 ### [2020-07-04 v0.7.0](https://github.com/skyforcetw/Garminuino/releases/download/0.7.0/gmaps_hud-release_v0.7.0.apk)
 Fix some bug for BT auto-connection.
 
@@ -129,6 +132,9 @@ Works just like garmin streetpilot with Garmin HUD.
 
 * **Niklas04** - help improve parsing & add German language support
 [github](https://github.com/Niklas04) 
+
+* **intervigilium** - add support for BMW HUD 
+[github](https://github.com/intervigilium) 
 
 * **Android-BluetoothSPPLibrary** - Bluetooth SPP Library, use to link Garmin HUD.
 [github](https://github.com/akexorcist/Android-BluetoothSPPLibrary) 
