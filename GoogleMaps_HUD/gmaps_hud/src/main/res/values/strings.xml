@@ -49,8 +49,8 @@
     <string name="layout_tab_main">Main</string>
 
     <string name="layout_tab_setup">Setup</string>
-    <string name="layout_button_scan_bt">Scan Bluetooth</string>
-    <string name="layout_button_reset_bt">Reset Bluetooth</string>
+    <string name="layout_button_scan_hud">Scan for HUD</string>
+    <string name="layout_button_reset_hud">Reset HUD</string>
 
     <string name="layout_title_status">Status</string>
     <string name="layout_element_hud_connected">HUD Connected</string>
@@ -68,7 +68,7 @@
     <string name="layout_title_traffic">Traffic</string>
     <string name="layout_element_traffic_lane_det">Traffic &amp; Lane Detect (Need Screenshot)</string>
     <string name="layout_element_alert_anytime">Alert anytime</string>
-    <string name="layout_element_alert_speed_exceeds">Alert when speed exceeds</string>
+    <string name="layout_element_alert_speed_exceeds">Alert when speed exceeds %1$dkph</string>
     <string name="layout_element_yellow_traffic">Alert Yellow Traffic</string>
 
     <string name="layout_title_bluetooth">Bluetooth</string>
@@ -77,6 +77,10 @@
     <string name="layout_title_design">Design</string>
     <string name="layout_element_darkmode_auto">DarkMode by Systemsettings</string>
     <string name="layout_element_darkmode_man">Enable DarkMode manual</string>
+
+    <string name="layout_title_enable_bmw_hud">Enable BMW HUD</string>
+    <string name="layout_element_bmw_hud_disabled">Disabled</string>
+    <string name="layout_element_bmw_hud_enabled">Enabled</string>
 
     <string name="layout_title_arrow_type">Arrow Type</string>
     <string name="layout_element_arrow_type_v1">Arrow V1</string>
@@ -87,7 +91,7 @@
     <string name="layout_button">Button</string>
 
     <!-- Messages and variable UI text -->
-    <string name="layout_seekbar_brightness">Brightness</string>
+    <string name="layout_seekbar_brightness">Brightness %1$d\%%</string>
     <string name="message_enable_notification_access">Please enable Notification Access for %1$s.
                         \n\nThis app use Notification to parse Navigation Information.</string>
     <string name="title_enable_notification_access">Notification Access</string>
@@ -98,8 +102,14 @@
     <string name="title_enable_location_access">Location Permission</string>
     <string name="message_bt_not_available">Bluetooth is not available</string>
     <string name="message_bt_not_enabled">Bluetooth was not enabled.</string>
+    <string name="message_enable_wlan">Please enable WLAN</string>
+    <string name="message_connect_to_bmw_hud_network">Please connect to Head-Up Display network</string>
     <string name="layout_title_notify">Notification</string>
     <string name="layout_element_notify">Show Notification</string>
+    <string name="layout_debug_text_speed">speed %1$d</string>
+    <string name="button_1">BUTTON 1</string>
+    <string name="button_2">BUTTON 2</string>
+    <string name="button_3">BUTTON 3</string>
 
 
 </resources>

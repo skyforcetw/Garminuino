@@ -11,16 +11,8 @@ public class MainActivityPostman {
     private String toWho;
     private Context context;
 
-    public final static MainActivityPostman toMainActivityInstance(Context context, String whoami) {
-        MainActivityPostman postman =
-                new MainActivityPostman(context, whoami, context.getString(R.string.broadcast_receiver_main_activity));
-        return postman;
-    }
-
-    public final static MainActivityPostman getInstance(Context context, String whoami, String toWho) {
-        MainActivityPostman postman =
-                new MainActivityPostman(context, whoami, toWho);
-        return postman;
+    public static MainActivityPostman toMainActivityInstance(Context context, String whoami) {
+        return new MainActivityPostman(context, whoami, context.getString(R.string.broadcast_receiver_main_activity));
     }
 
     private MainActivityPostman(Context context, String whoami, String toWho) {
@@ -33,7 +25,6 @@ public class MainActivityPostman {
 
     private void checkIntentForExtra() {
         if (null == intent2Main) {
-//            intent2Main = new Intent(context.getString(R.string.broadcast_receiver_main_activity));
             intent2Main = new Intent(toWho);
         }
     }
@@ -54,8 +45,5 @@ public class MainActivityPostman {
             context.sendBroadcast(intent2Main);
             intent2Main = null;
         }
-
     }
-
 }
-

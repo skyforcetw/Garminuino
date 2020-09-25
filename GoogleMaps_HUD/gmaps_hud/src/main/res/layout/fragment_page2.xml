@@ -1,78 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_below="@+id/tab_layout"
-    >
+    android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/finalLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:layout_height="0dp"
+        android:orientation="vertical">
 
-
-        <ScrollView
+        <Button
+            android:id="@+id/btnListNotify"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:onClick="buttonOnClicked"
+            android:text="@string/layout_button_list_not"
+            android:textSize="@dimen/option_text_size" />
 
-            <LinearLayout
+        <TextView
+            android:id="@+id/textViewDebug"
+            android:layout_width="match_parent"
+            android:layout_height="1000dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/button1"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:onClick="buttonOnClicked"
+                android:text="@string/button_1" />
 
-                <Button
-                    android:id="@+id/btnListNotify"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="buttonOnClicked"
-                    android:text="@string/layout_button_list_not"
-                    android:textSize="@dimen/option_text_size" />
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="buttonOnClicked"
+                android:text="@string/button_2" />
 
-                <TextView
-                    android:id="@+id/textViewDebug"
-                    android:layout_width="match_parent"
-                    android:layout_height="1000dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:visibility="visible" />
+            <Button
+                android:id="@+id/button3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="buttonOnClicked"
+                android:text="@string/button_3" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <Button
-                        android:id="@+id/button1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:onClick="buttonOnClicked"
-                        android:text="BUTTON 1" />
-
-                    <Button
-                        android:id="@+id/button2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:onClick="buttonOnClicked"
-                        android:text="BUTTON 2" />
-
-                    <Button
-                        android:id="@+id/button3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:onClick="buttonOnClicked"
-                        android:text="BUTTON 3" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-        </ScrollView>
-
-
+        </LinearLayout>
     </LinearLayout>
-
-
-</FrameLayout>
+</ScrollView>

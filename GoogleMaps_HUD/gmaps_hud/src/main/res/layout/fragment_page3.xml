@@ -1,186 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-     android:layout_below="@+id/tab_layout">
+    android:layout_below="@+id/tab_layout">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dip"
+            android:background="@color/horizontal_line" />
 
+        <TextView
+            android:id="@+id/bmwHudTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_weight="1"
+            android:paddingTop="@dimen/option_padding_top"
+            android:text="@string/layout_title_enable_bmw_hud"
+            android:textSize="@dimen/option_title_size" />
 
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dip"
-                android:background="@color/horizontal_line" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchEnableBMWHUD"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="false"
+            android:paddingTop="@dimen/option_padding_top"
+            android:paddingBottom="@dimen/option_padding_bottom"
+            android:text="@string/layout_element_bmw_hud_disabled"
+            android:textSize="@dimen/option_text_size" />
 
-            <TextView
-                android:id="@+id/textView8"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingTop="@dimen/option_padding_top"
-                android:text="@string/layout_title_arrow_type"
-                android:textSize="@dimen/option_title_size" />
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="@dimen/option_padding_top"
+            android:text="@string/layout_title_arrow_type"
+            android:textSize="@dimen/option_title_size" />
 
-            <Switch
-                android:id="@+id/switchArrowType"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="false"
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchArrowType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="false"
+            android:paddingTop="@dimen/option_padding_top"
+            android:paddingBottom="@dimen/option_padding_bottom"
+            android:text="@string/layout_element_arrow_type_v1"
+            android:textSize="@dimen/option_text_size" />
 
-                android:paddingTop="@dimen/option_padding_top"
-                android:paddingBottom="@dimen/option_padding_bottom"
-                android:text="@string/layout_element_arrow_type_v1"
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dip"
+            android:background="@color/horizontal_line" />
 
-                android:textSize="@dimen/option_text_size" />
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="@dimen/option_padding_top"
+            android:text="@string/layout_title_traffic"
+            android:textSize="@dimen/option_title_size" />
 
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dip"
-                android:background="@color/horizontal_line" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchAlertAnytime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:onClick="buttonOnClicked"
+            android:paddingTop="@dimen/option_padding_top"
+            android:paddingBottom="@dimen/option_padding_bottom"
+            android:text="@string/layout_element_alert_anytime"
+            android:textSize="@dimen/option_text_size" />
 
+        <SeekBar
+            android:id="@+id/seekBarAlertSpeed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:max="15"
+            android:paddingRight="80dp"
+            android:progress="0"
+            android:textSize="@dimen/option_text_size" />
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingTop="@dimen/option_padding_top"
-                android:text="@string/layout_title_traffic"
-                android:textSize="@dimen/option_title_size" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchAlertYellowTraffic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="false"
+            android:paddingTop="@dimen/option_padding_top"
+            android:paddingBottom="@dimen/option_padding_bottom"
+            android:text="@string/layout_element_yellow_traffic"
+            android:textSize="@dimen/option_text_size" />
 
-            <Switch
-                android:id="@+id/switchAlertAnytime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:onClick="buttonOnClicked"
-                android:paddingTop="@dimen/option_padding_top"
-                android:paddingBottom="@dimen/option_padding_bottom"
-                android:text="@string/layout_element_alert_anytime"
-                android:textSize="@dimen/option_text_size" />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dip"
+            android:background="@color/horizontal_line" />
 
-            <SeekBar
-                android:id="@+id/seekBarAlertSpeed"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:max="15"
-                android:paddingRight="80dp"
-                android:progress="0"
-                android:textSize="@dimen/option_text_size" />
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="@dimen/option_padding_top"
+            android:text="@string/layout_title_bluetooth"
+            android:textSize="@dimen/option_title_size" />
 
-            <Switch
-                android:id="@+id/switchAlertYellowTraffic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="false"
-                android:paddingTop="@dimen/option_padding_top"
-                android:paddingBottom="@dimen/option_padding_bottom"
-                android:text="@string/layout_element_yellow_traffic"
-                android:textSize="@dimen/option_text_size" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchBtBindAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="false"
+            android:enabled="false"
+            android:paddingTop="@dimen/option_padding_top"
+            android:paddingBottom="@dimen/option_padding_bottom"
+            android:text="@string/layout_element_bind_address"
+            android:textSize="@dimen/option_text_size" />
 
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dip"
-                android:background="@color/horizontal_line" />
-
-
-
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingTop="@dimen/option_padding_top"
-                android:text="@string/layout_title_bluetooth"
-                android:textSize="@dimen/option_title_size" />
-
-            <Switch
-                android:id="@+id/switchBtBindAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="false"
-                android:enabled="false"
-                android:paddingTop="@dimen/option_padding_top"
-                android:paddingBottom="@dimen/option_padding_bottom"
-                android:text="@string/layout_element_bind_address"
-                android:textSize="@dimen/option_text_size" />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dip"
-                android:background="@color/horizontal_line" />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dip"
+            android:background="@color/horizontal_line" />
 
 
-            <TextView
-                android:id="@+id/textView9"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingTop="@dimen/option_padding_top"
-                android:text="@string/layout_title_notify"
-                android:textSize="@dimen/option_title_size" />
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="@dimen/option_padding_top"
+            android:text="@string/layout_title_notify"
+            android:textSize="@dimen/option_title_size" />
 
-            <Switch
-                android:id="@+id/switchShowNotify"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:enabled="false"
-                android:paddingTop="@dimen/option_padding_top"
-                android:paddingBottom="@dimen/option_padding_bottom"
-                android:text="@string/layout_element_notify"
-                android:textSize="@dimen/option_text_size" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchShowNotify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:enabled="false"
+            android:paddingTop="@dimen/option_padding_top"
+            android:paddingBottom="@dimen/option_padding_bottom"
+            android:text="@string/layout_element_notify"
+            android:textSize="@dimen/option_text_size" />
 
-            <View
-                android:id="@+id/view"
-                android:layout_width="match_parent"
-                android:layout_height="2dip"
-                android:background="@color/horizontal_line" />
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="2dip"
+            android:background="@color/horizontal_line" />
 
-            <TextView
-                android:id="@+id/textView7"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingTop="@dimen/option_padding_top"
-                android:text="@string/layout_title_design"
-                android:textSize="@dimen/option_title_size" />
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="@dimen/option_padding_top"
+            android:text="@string/layout_title_design"
+            android:textSize="@dimen/option_title_size" />
 
-            <Switch
-                android:id="@+id/switchDarkModeAuto"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="false"
-                android:paddingTop="@dimen/option_padding_top"
-                android:text="@string/layout_element_darkmode_auto"
-                android:textSize="@dimen/option_text_size" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchDarkModeAuto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="false"
+            android:paddingTop="@dimen/option_padding_top"
+            android:text="@string/layout_element_darkmode_auto"
+            android:textSize="@dimen/option_text_size" />
 
-            <Switch
-                android:id="@+id/switchDarkModeMan"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="false"
-                android:paddingTop="@dimen/option_padding_top"
-                android:text="@string/layout_element_darkmode_man"
-                android:textSize="@dimen/option_text_size" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchDarkModeMan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="false"
+            android:paddingTop="@dimen/option_padding_top"
+            android:text="@string/layout_element_darkmode_man"
+            android:textSize="@dimen/option_text_size" />
 
-        </LinearLayout>
-    </ScrollView>
-
-</FrameLayout>
+    </LinearLayout>
+</ScrollView>

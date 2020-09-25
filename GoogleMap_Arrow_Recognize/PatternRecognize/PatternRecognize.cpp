@@ -266,7 +266,7 @@ int get_sad_in_not_white_count(cv::Mat image1, cv::Mat image2) {
 			auto pixel1 = image1.at<cv::Vec3b>(w, h);
 			auto pixel2 = image2.at<cv::Vec3b>(w, h);
 			//sad += abs(pixel1[0] - pixel2[0]);
-			if (pixel1[1] == pixel2[1] &&  pixel1[1]>=250) {
+			if (pixel1[1] == pixel2[1] && pixel1[1] >= 250) {
 
 			}
 			else {
@@ -277,8 +277,7 @@ int get_sad_in_not_white_count(cv::Mat image1, cv::Mat image2) {
 	return sad;
 }
 
-int main() {
-
+void pixel_compare_method() {
 	const std::string ref_dir = "./Google_Arrow3 - remove alpha - same size/";
 	//const std::string dir = "./";
 	using namespace cv;
@@ -397,4 +396,24 @@ int main() {
 		}
 		int a = 1;
 	}
+}
+
+ 
+void feature_matching_method() {
+	const std::string ref_dir = "./Google_Arrow3 - remove alpha - same size/";
+
+	for (auto& filename : getAllImageFileNamesWithinFolder(ref_dir)) {
+		auto& arrow_img = cv::imread(ref_dir + filename);
+		auto height = arrow_img.rows;
+		auto width = arrow_img.cols;
+		int a = 1;
+	}
+}
+ 
+int main() {
+	if (false)
+		pixel_compare_method();
+	if (true)
+		feature_matching_method();
+
 }
