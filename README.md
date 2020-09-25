@@ -23,7 +23,7 @@ Android App: Google Map HUD
 
 ## GoogleMap navigation HUD App Release History ##
 
-### [2020-09-26 v0.8.0](https://github.com/skyforcetw/Garminuino/releases/download/0.8.0/gmaps_hud-release_v0.8.0.apk)
+### [2020-09-26 v0.8.1](https://github.com/skyforcetw/Garminuino/releases/download/v0.8.1/gmaps_hud-release_v0.8.1.apk)
 Add support for BMW HUD , thanks for intervigilium's contribution.
 
 ### [2020-07-04 v0.7.0](https://github.com/skyforcetw/Garminuino/releases/download/0.7.0/gmaps_hud-release_v0.7.0.apk)
