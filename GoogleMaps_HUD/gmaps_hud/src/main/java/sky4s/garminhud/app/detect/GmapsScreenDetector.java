@@ -183,7 +183,7 @@ public class GmapsScreenDetector extends ScreenDetector {
             //=====================================
             if (road_detect_result && arrow_detect_result) {
                 if (arrow_detect_result) {
-                    busyTraffic = busyTrafficDetect(map_roi_image, activity.alertYellowTraffic, activity.alertSpeedExceeds, activity.gpsSpeed, theme);
+                    busyTraffic = busyTrafficDetect(map_roi_image, activity.mAlertYellowTraffic, activity.mAlertSpeedExceeds, activity.mGpsSpeed, theme);
                     String msg = "busy:" + busyTraffic + " theme" + theme;
                     postman.addStringExtra(activity.getString(R.string.notify_msg), msg);
                     postman.sendIntent2MainActivity();
@@ -215,15 +215,15 @@ public class GmapsScreenDetector extends ScreenDetector {
                     if (landDetectToHUD(laneDetectResult)) {
 
                     } else {
-                        hud.SetLanes((char) 0, (char) 0);
+                        hud.setLanes((char) 0, (char) 0);
                         ImageUtils.storeBitmap(lane_roi_image, MainActivity.SCREENCAP_STORE_DIRECTORY + "NG_lane.png");
                     }
                 } else {
-                    hud.SetLanes((char) 0, (char) 0);
+                    hud.setLanes((char) 0, (char) 0);
                     ImageUtils.storeBitmap(lane_roi_image, MainActivity.SCREENCAP_STORE_DIRECTORY + "NG_lane.png");
                 }
             } else {
-                hud.SetLanes((char) 0, (char) 0);
+                hud.setLanes((char) 0, (char) 0);
             }
             lane_detect_result = lane_roi_exist;
 
@@ -343,7 +343,7 @@ public class GmapsScreenDetector extends ScreenDetector {
                 hasDrivingLane = true;
             }
         }
-        hud.SetLanes(nArrow, nOutline);
+        hud.setLanes(nArrow, nOutline);
 
         String msg = "";
         for (Boolean b : laneDetectResult) {

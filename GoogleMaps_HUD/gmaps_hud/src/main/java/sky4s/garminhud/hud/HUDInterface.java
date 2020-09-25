@@ -1,60 +1,71 @@
 package sky4s.garminhud.hud;
 
+import android.content.Intent;
+
 import sky4s.garminhud.eOutAngle;
 import sky4s.garminhud.eOutType;
 import sky4s.garminhud.eUnits;
 
 public interface HUDInterface {
+    interface ConnectionCallback {
+        enum ConnectionState {
+            CONNECTED,
+            DISCONNECTED,
+            FAILED,
+        }
 
-    void setMaxUpdatePerSecond(int max);
+        void onConnectionStateChange(ConnectionState state);
+    }
+
+    void registerConnectionCallback(ConnectionCallback callback);
+
+    boolean handleActivityResult(int requestCode, int resultCode, Intent data);
+
+    void scanForHud();
+
+    int getMaxUpdatesPerSecond();
 
     boolean isUpdatable();
 
     boolean getSendResult();
 
-    void SetTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH);
+    void setTime(int nH, int nM, boolean bFlag, boolean bTraffic, boolean bColon, boolean bH);
 
-//    void SetETATime(int nH, int nM,boolean bTraffic);
+    void setCurrentTime(int nH, int nM);
 
-    void SetCurrentTime(int nH, int nM);
+    void setRemainTime(int nH, int nM, boolean bTraffic);
 
-    void SetRemainTime(int nH, int nM, boolean bTraffic);
+    void clearTime();
 
-    void ClearTime();
+    void setDistance(float nDist, eUnits unit);
 
-    void SetDistance(int nDist, eUnits unit);
+    void clearDistance();
 
-    void SetDistance(int nDist, eUnits unit, boolean bDecimal, boolean bLeadingZero);
+    void setRemainingDistance(float nDist, eUnits unit);
 
-    void ClearDistance();
+    void clearRemainingDistance();
 
-    void SetAlphabet(char a, char b, char c, char d);
+    void setAlphabet(char a, char b, char c, char d);
 
-    void SetDirection(eOutAngle nDir);
+    void setDirection(eOutAngle nDir);
 
-    void SetDirection(final eOutAngle nDir, final eOutType nType, final eOutAngle nRoundaboutOut);
+    void setDirection(final eOutAngle nDir, final eOutType nType, final eOutAngle nRoundaboutOut);
 
-    void SetLanes(char nArrow, char nOutline);
+    void setLanes(char nArrow, char nOutline);
 
-    void SetSpeed(int nSpeed, boolean bIcon);
+    void setSpeed(int nSpeed, boolean bIcon);
 
-    void SetSpeedAndWarning(int nSpeed, int nLimit);
+    void setSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash);
 
-    void SetSpeedWarning(int nSpeed, int nLimit, boolean bSpeeding, boolean bIcon, boolean bSlash);
+    void clearSpeedAndWarning();
 
-    void ClearSpeedandWarning();
+    void setCameraIcon(boolean visible);
 
-    void ShowCameraIcon();
+    void setGpsLabel(boolean visible);
 
-    void SetCameraIcon(boolean visible);
+    void setAutoBrightness();
 
-    void ShowGpsLabel();
+    void setBrightness(int brightness);
 
-    void SetGpsLabel(boolean visible);
-
-    void SetAutoBrightness();
-
-    void SetBrightness(int brightness);
-
-    void clear();
+    void disconnect();
 }

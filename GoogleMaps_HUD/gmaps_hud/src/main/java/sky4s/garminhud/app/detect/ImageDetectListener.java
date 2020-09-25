@@ -92,7 +92,7 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
                         wazeDetector.screenDetection(bitmap);
                     }
 
-                    if (!activity.is_in_navigation) {
+                    if (!activity.mIsNavigating) {
                         return;
                     }
                     gmapsDetector.screenDetection(bitmap);

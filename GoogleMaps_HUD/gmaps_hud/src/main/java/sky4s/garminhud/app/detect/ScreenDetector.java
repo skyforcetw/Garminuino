@@ -40,7 +40,7 @@ public abstract class ScreenDetector {
 
     ScreenDetector(MainActivity _activity) {
         activity = _activity;
-        hud = activity.hud;
+        hud = activity.mHud;
         if (null == postman) {
             postman = MainActivityPostman.toMainActivityInstance(activity, activity.getString(R.string.broadcast_sender_image_detect));
         }
