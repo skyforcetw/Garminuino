@@ -114,12 +114,13 @@ Works just like garmin streetpilot with Garmin HUD.
 ## ToDo List
 1. ~~Add auto-connection function.~~
 2. Auto lanunch google map when HUD connected.
-3. Comment source-code.
+3. ~~Comment source-code.
 4. ~~Show some usage infomation when navigation is done, don't make it seems hang when navigating done.~~
 5. ~~Figure out auto connection is working well or not.~~
 6. ~~Lets "Show Speed" function working well.~~
-7. Better auto-connection with GarminHUD
+7. ~~Better auto-connection with GarminHUD
 8. Support Sygic & OsmAnd
+9. Support Android Q's screen capture
 
 ***
 
