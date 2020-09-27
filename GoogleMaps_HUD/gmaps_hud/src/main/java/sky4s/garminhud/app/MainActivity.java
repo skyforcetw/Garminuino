@@ -2,8 +2,10 @@ package sky4s.garminhud.app;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
+import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -62,6 +64,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
 import chutka.bitman.com.speedometersimplified.LocationService;
 import sky4s.garminhud.Arrow;
 import sky4s.garminhud.ImageUtils;
@@ -511,40 +514,49 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (requestCode == SCREENCAP_REQUEST_CODE) {
-            sMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
-            if (sMediaProjection != null) {
-                String state = Environment.getExternalStorageState();
-                if ("mounted".equals(state)) {
-                    File storeDirectory = new File(SCREENCAP_STORE_DIRECTORY);
-                    if (!storeDirectory.exists()) {
-                        boolean success = storeDirectory.mkdirs();
-                        if (!success) {
-                            Log.e(TAG, "failed to create file storage directory.");
-                            return;
-                        }
-                    }
-                } else {
-                    Log.e(TAG, "failed to create file storage directory, external storage is not exist.");
-                    return;
-                }
+            // display metrics
+            DisplayMetrics metrics = getResources().getDisplayMetrics();
+            mDensity = metrics.densityDpi;
+            mDisplay = getWindowManager().getDefaultDisplay();
 
-                // display metrics
-                DisplayMetrics metrics = getResources().getDisplayMetrics();
-                mDensity = metrics.densityDpi;
-                mDisplay = getWindowManager().getDefaultDisplay();
-
-                // create virtual display depending on device width / height
-                createVirtualDisplay();
-
-                // register orientation change callback
-                mOrientationChangeCallback = new OrientationChangeCallback(this);
-                if (mOrientationChangeCallback.canDetectOrientation()) {
-                    mOrientationChangeCallback.enable();
-                }
-
-                // register media projection stop callback
-                sMediaProjection.registerCallback(new MediaProjectionStopCallback(), mProjectionHandler);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(new Intent(this, ScreenRecorderService.class));
+            } else {
+//                startService(new Intent(this, NotificationCollectorMonitorService.class));
             }
+
+//            sMediaProjection = ScreenRecorderService.getInstance().mediaProjection;
+////            sMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
+//            if (sMediaProjection != null) {
+//                String state = Environment.getExternalStorageState();
+//                if ("mounted".equals(state)) {
+//                    File storeDirectory = new File(SCREENCAP_STORE_DIRECTORY);
+//                    if (!storeDirectory.exists()) {
+//                        boolean success = storeDirectory.mkdirs();
+//                        if (!success) {
+//                            Log.e(TAG, "failed to create file storage directory.");
+//                            return;
+//                        }
+//                    }
+//                } else {
+//                    Log.e(TAG, "failed to create file storage directory, external storage is not exist.");
+//                    return;
+//                }
+//
+//
+//
+//                // create virtual display depending on device width / height
+                createVirtualDisplay();
+//
+//                // register orientation change callback
+//                mOrientationChangeCallback = new OrientationChangeCallback(this);
+//                if (mOrientationChangeCallback.canDetectOrientation()) {
+//                    mOrientationChangeCallback.enable();
+//                }
+//
+//                // register media projection stop callback
+//                sMediaProjection.registerCallback(new MediaProjectionStopCallback(), mProjectionHandler);
+//            }
         }
     }
 
@@ -1245,3 +1257,4 @@ public class MainActivity extends AppCompatActivity {
         mImageReader.setOnImageAvailableListener(mImageDetectListener, mProjectionHandler);
     }
 }
+

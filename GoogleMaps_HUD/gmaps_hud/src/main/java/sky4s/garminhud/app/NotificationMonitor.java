@@ -143,7 +143,7 @@ public class NotificationMonitor extends NotificationListenerService {
     public void onCreate() {
         super.onCreate();
         // Ensure queue notifications are around 1 second old
-        int maxQueueSize = sHud.getMaxUpdatesPerSecond();
+        final int maxQueueSize = sHud.getMaxUpdatesPerSecond();
         mExecutor = new ThreadPoolExecutor(1, 1,
                 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(maxQueueSize),

@@ -198,7 +198,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:checked="false"
-            android:enabled="true"
+            android:enabled="false"
             android:paddingTop="@dimen/option_padding_top"
             android:text="@string/layout_element_traffic_lane_det"
             android:textSize="@dimen/option_text_size"

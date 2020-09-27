@@ -1,5 +1,6 @@
 package sky4s.garminhud.app;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -10,6 +11,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Process;
@@ -169,3 +172,4 @@ public class NotificationCollectorMonitorService extends Service {
         return null;
     }
 }
+

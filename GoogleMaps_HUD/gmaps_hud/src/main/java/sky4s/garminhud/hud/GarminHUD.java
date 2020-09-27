@@ -277,7 +277,7 @@ public class GarminHUD extends HUDAdapter {
         int distance = (int) nDist;
         boolean hasDecimal = ((eUnits.Kilometres == unit) || (eUnits.Miles == unit)) && nDist < 10;
         if (hasDecimal) {
-            distance *= 10.0;
+            distance = (int) ( nDist * 10.0);
         }
         char[] arr = {(char) 0x03,
                 toDigit(distance / 1000), toDigit(distance / 100), toDigit(distance / 10),
@@ -292,7 +292,7 @@ public class GarminHUD extends HUDAdapter {
                 }
             }
         }
-        if (hasDecimal && ((int) nDist / 10) == 0) {
+        if (hasDecimal && (  distance / 10) == 0) {
             // Show leding zero for decimals
             arr[3] = 0xa;
         }

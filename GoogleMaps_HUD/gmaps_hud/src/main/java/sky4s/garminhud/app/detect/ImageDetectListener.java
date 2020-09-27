@@ -23,11 +23,11 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
     private MainActivity activity;
     private static final String TAG = ImageDetectListener.class.getSimpleName();
     private GmapsScreenDetector gmapsDetector;
-    private WazeScreenDetector wazeDetector;
+//    private WazeScreenDetector wazeDetector;
 
     public ImageDetectListener(MainActivity activity) {
         gmapsDetector = new GmapsScreenDetector(activity);
-        wazeDetector = new WazeScreenDetector(activity);
+//        wazeDetector = new WazeScreenDetector(activity);
         this.activity = activity;
 
         if (null != activity) {
@@ -89,7 +89,7 @@ public class ImageDetectListener implements ImageReader.OnImageAvailableListener
 
                     final boolean wazeDetection = false;
                     if (wazeDetection) {
-                        wazeDetector.screenDetection(bitmap);
+//                        wazeDetector.screenDetection(bitmap);
                     }
 
                     if (!activity.mIsNavigating) {
