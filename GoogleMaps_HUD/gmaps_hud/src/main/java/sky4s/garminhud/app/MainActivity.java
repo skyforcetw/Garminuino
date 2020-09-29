@@ -369,13 +369,12 @@ public class MainActivity extends AppCompatActivity {
         SCREENCAP_STORE_DIRECTORY = sdcardCachePath + "/screenshots/";
         File screenshotDir = new File(SCREENCAP_STORE_DIRECTORY);
         if (!screenshotDir.exists()) {
-            screenshotDir.mkdir();
+            final boolean mk_result = screenshotDir.mkdir();
+            int a=1;
         }
 
         mNotificationManager = getSystemService(NotificationManager.class);
-
         mProjectionManager = getSystemService(MediaProjectionManager.class);
-
         OCR_STORE_DIRECTORY = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
         ImageUtils.context = this;
 
