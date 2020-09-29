@@ -119,8 +119,9 @@ Works just like garmin streetpilot with Garmin HUD.
 5. ~~Figure out auto connection is working well or not.~~
 6. ~~Lets "Show Speed" function working well.~~
 7. ~~Better auto-connection with GarminHUD
-8. Support Sygic & OsmAnd
-9. Support Android Q's screen capture
+8. ~~Support Sygic & OsmAnd (GIVE UP! Cause of bad text recongnition).
+9. Support Android Q's screen capture.
+10.Improve arrow recognition.
 
 ***
 
