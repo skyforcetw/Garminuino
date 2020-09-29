@@ -414,6 +414,10 @@ void feature_matching_method() {
 		std::vector<cv::KeyPoint> kp;  //特徵點向量
 		cv::FastFeatureDetector fast(32);  //FAST特徵檢測器， 32為閾值，閾值越大，特徵點越少
 		fast.detect(gray, kp);  //檢測fast特徵點
+
+
+		//cv::DescriptorExtractor
+
 		cv::drawKeypoints(arrow_img, kp, arrow_img, cv::Scalar(0, 255, 0), cv::DrawMatchesFlags::DRAW_OVER_OUTIMG);  //畫特徵點
 		cv::namedWindow("img", cv::WINDOW_NORMAL);
 		cv::imshow("img", arrow_img);
