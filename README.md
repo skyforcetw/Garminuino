@@ -121,7 +121,7 @@ Works just like garmin streetpilot with Garmin HUD.
 7. ~~Better auto-connection with GarminHUD
 8. ~~Support Sygic & OsmAnd (GIVE UP! Cause of bad text recongnition).
 9. Support Android Q's screen capture.
-10.Improve arrow recognition.
+10. Improve arrow recognition.
 
 ***
 
