@@ -668,6 +668,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
                     if (null != bitmapImage) {
                         if (STORE_IMG) {
+//                            if (!ImageUtils.storeBitmapQ(bitmapImage, "arrow0.png")) {
                             if (!ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow0.png")) {
                                 Log.d(TAG, "Store arrow bitmap failed.");
                             }

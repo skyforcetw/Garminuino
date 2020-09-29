@@ -1,25 +1,17 @@
 package sky4s.garminhud;
 
-import android.Manifest;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
 
-import androidx.core.content.ContextCompat;
-
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 public class ImageUtils {
     public static int getGreenAlpha(int pixel) {
@@ -87,39 +79,25 @@ public class ImageUtils {
 
 
     public static boolean storeBitmapQ(Bitmap bmp, String filename) {
-        ContentValues values;
-        // 向 Media Store 插入標記為待定的空白檔案
-        values = new ContentValues();
-        values.put(MediaStore.Images.ImageColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES); // 不同型別檔案可用 RELATIVE_PATH 不用，具體請參閱 MediaProvider 原始碼
-        values.put(MediaStore.Images.ImageColumns.DISPLAY_NAME, filename);
-        values.put(MediaStore.Images.ImageColumns.IS_PENDING, true);
-        Uri uri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-        if (uri == null) {
-            return false;
-        }
-        // 寫入檔案內容
-//        InputStream is = new FileInputStream(image);
-        OutputStream os = null;
+        File cacheFile = new File(context.getCacheDir(), filename);
+        FileOutputStream out = null;
         try {
-            os = context.getContentResolver().openOutputStream(uri, "rw");
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, os); // bmp is your Bitmap instance
-            os.flush();
-            os.close();
+            out = new FileOutputStream(cacheFile);
+            final boolean compress_result = bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+            return true;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-//        byte[] b = new byte[8192];
-//        for (int r; (r = is.read(b)) != -1; ) {
-//            os.write(b, 0, r);
-//        }
-
-//        is.close();
-        // 移除待定標記，其他應用可訪問該檔案
-        values = new ContentValues();
-        values.put(MediaStore.Images.ImageColumns.IS_PENDING, false);
-        return context.getContentResolver().update(uri, values, null, null) == 1;
+        return false;
     }
 
     public static boolean storeBitmap(Bitmap bmp, String dirname, String filename) {

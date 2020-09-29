@@ -370,7 +370,6 @@ public class MainActivity extends AppCompatActivity {
         File screenshotDir = new File(SCREENCAP_STORE_DIRECTORY);
         if (!screenshotDir.exists()) {
             final boolean mk_result = screenshotDir.mkdir();
-            int a=1;
         }
 
         mNotificationManager = getSystemService(NotificationManager.class);
@@ -524,26 +523,6 @@ public class MainActivity extends AppCompatActivity {
 //                startService(new Intent(this, NotificationCollectorMonitorService.class));
             }
 
-//            sMediaProjection = ScreenRecorderService.getInstance().mediaProjection;
-////            sMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
-//            if (sMediaProjection != null) {
-//                String state = Environment.getExternalStorageState();
-//                if ("mounted".equals(state)) {
-//                    File storeDirectory = new File(SCREENCAP_STORE_DIRECTORY);
-//                    if (!storeDirectory.exists()) {
-//                        boolean success = storeDirectory.mkdirs();
-//                        if (!success) {
-//                            Log.e(TAG, "failed to create file storage directory.");
-//                            return;
-//                        }
-//                    }
-//                } else {
-//                    Log.e(TAG, "failed to create file storage directory, external storage is not exist.");
-//                    return;
-//                }
-//
-//
-//
 //                // create virtual display depending on device width / height
                 createVirtualDisplay();
 //
