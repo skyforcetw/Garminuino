@@ -7,8 +7,14 @@ There has two sub-project use GarminHUD as:
    * [First Use.](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/FIRST_USE.md)  
    * [Instruction.](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/INSTRUCTIONv052.md)  
  * [Android Auto Cooperation.](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/AndroidAuto.md)
-2. a speedometer HUD  (Arduino+GarminHUD, STOP MAINTAIN)
  
+ * GoogleMap navigation HUD App Release
+   * [2020-09-29 v0.8.2](https://github.com/skyforcetw/Garminuino/releases/download/0.8.2/gmaps_hud-release_v0.8.2.apk)
+Fix arrivals arrow.
+ 
+2. a speedometer HUD  (Arduino+GarminHUD, STOP MAINTAIN)
+
+***
 
 Belows are two sub-proejct put together: GoogleMap navigation HUD(Left)+ Speedometer HUD(Center)
 <img src="./pics/124220.jpg" alt="Two Garmin HUD application" width="500"/>
@@ -20,10 +26,6 @@ GoogleMap navigation HUD(Left1)+ Speedometer HUD(Left2) + Android auto(Right1)<b
 Android App: Google Map HUD
 
 <img src="./pics/451627.jpg" alt="App layout" width="400"/>
-
-## GoogleMap navigation HUD App Release ##
-### [2020-09-29 v0.8.2](https://github.com/skyforcetw/Garminuino/releases/download/0.8.2/gmaps_hud-release_v0.8.2.apk)
-Fix arrivals arrow.
 
 ***
 
@@ -60,6 +62,14 @@ Fix arrivals arrow.
 * ~~**Android-BluetoothSPPLibrary** - Bluetooth SPP Library also, which fixed issue of auto connection.
 [github](https://github.com/naevtamarkus/Android-BluetoothSPPLibrary)~~
 
+***
+### Folder Structure
+    .
+    ├── GoogleMap_Arrow_Recognize   # Arrow Recognize Experimental Project for Visual Studio C++
+    ├── GoogleMaps_HUD              # Pure Android App based Google Maps HUD
+    ├── navigation HUD              # Arduino based Googoogle Maps HUD (deprecated)
+    ├── pics                        # Some pictures for README usage
+    └── speedometer HUD             # Arduino based Speedmeter with Garmin HUD
 ***
 
 Hence the information below is not necessary anymore, but I still keep it for commemorative.
