@@ -230,7 +230,7 @@ public class NotificationMonitor extends NotificationListenerService {
                         break;
                     */
                     default:
-                        String notifyMessage = "No gmaps' notification found!?!?";
+                        String notifyMessage = "No gmaps' notification!?!?" +" (found: "+packageName+")";
                         mPostman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
                         mPostman.sendIntent2MainActivity();
                 }
@@ -675,6 +675,9 @@ public class NotificationMonitor extends NotificationListenerService {
                         }
 
                         if (mArrowTypeV2) {
+                            mPostman.addParcelableExtra( getString(R.string.arrow_bitmap) ,bitmapImage);
+                            mPostman.sendIntent2MainActivity();
+
                             mFoundArrowV2 = getArrowV2(bitmapImage);
                             mLastFoundArrowV2 = mFoundArrowV2;
                         } else {

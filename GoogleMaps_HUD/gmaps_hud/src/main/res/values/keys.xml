@@ -26,6 +26,7 @@
     <string name="state_dark_mode" translatable="false">state_dark_mode</string>
 
     <string name="option_arrow_type" translatable="false">option_arrow_type</string>
+    <string name="option_arrow_debug" translatable="false">option_arrow_debug</string>
 
     <string name="option_show_prompt" translatable="false">option_show_prompt</string>
 
@@ -63,6 +64,8 @@
     <string name="arrivals_msg" translatable="false">arrivals_msg</string>
     <string name="busy_traffic" translatable="false">busy_traffic</string>
     <string name="notify_switch_event" translatable="false">notify_switch_event</string>
+
+    <string name="arrow_bitmap" translatable="false">arrow_bitmap</string>
 
     <integer name="notify_id">1</integer>
 

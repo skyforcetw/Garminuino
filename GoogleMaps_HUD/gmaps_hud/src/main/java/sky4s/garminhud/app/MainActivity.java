@@ -30,6 +30,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.Parcelable;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
@@ -110,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
     SwitchCompat mBMWHUDEnabledSwitch;
     //arrow
     SwitchCompat mArrowTypeSwitch;
+    SwitchCompat mArrowDebugSwitch;
     //traffic
     SwitchCompat mAlertAnytimeSwitch;
     SeekBar mAlertSpeedSeekbar;
@@ -123,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
     SwitchCompat mDarkModeManualSwitch;
 
     static Intent sMainIntent;
+    static NotificationCollectorMonitorService mNCMS;
 
     public HUDInterface mHud = new DummyHUD();
     public boolean mIsNavigating = false;
@@ -235,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
         mShowNotifySwitch.setOnCheckedChangeListener(mOnCheckedChangedListener);
         mBMWHUDEnabledSwitch.setOnCheckedChangeListener(mOnCheckedChangedListener);
         mArrowTypeSwitch.setOnCheckedChangeListener(mOnCheckedChangedListener);
+        mArrowDebugSwitch.setOnCheckedChangeListener(mOnCheckedChangedListener);
 
         //======================================
         // default settings
@@ -255,6 +259,8 @@ public class MainActivity extends AppCompatActivity {
 
         final boolean optionBMWHUDEnabled = mSharedPrefs.getBoolean(getString(R.string.option_bmw_hud_enabled), false);
         final boolean optionArrowType = mSharedPrefs.getBoolean(getString(R.string.option_arrow_type), true);
+        final boolean optionArrowDebug = mSharedPrefs.getBoolean(getString(R.string.option_arrow_debug), false);
+
         sendBooleanExtraByBroadcast(getString(R.string.broadcast_receiver_notification_monitor),
                 getString(R.string.option_arrow_type), optionArrowType);
         //======================================
@@ -276,6 +282,7 @@ public class MainActivity extends AppCompatActivity {
 
             mBMWHUDEnabledSwitch.setChecked(optionBMWHUDEnabled);
             mArrowTypeSwitch.setChecked(optionArrowType);
+            mArrowDebugSwitch.setChecked(optionArrowDebug);
         });
 
         // Need to be after initially setChecked to avoid loop 
@@ -524,7 +531,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
 //                // create virtual display depending on device width / height
-                createVirtualDisplay();
+            createVirtualDisplay();
 //
 //                // register orientation change callback
 //                mOrientationChangeCallback = new OrientationChangeCallback(this);
@@ -560,6 +567,7 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(mScreenReceiver);
 
         stopService(new Intent(this, NotificationCollectorMonitorService.class));
+
     }
 
     @Override
@@ -626,6 +634,11 @@ public class MainActivity extends AppCompatActivity {
                             getString(R.string.option_arrow_type), arrowType2);
                     storeOptions(R.string.option_arrow_type, arrowType2);
                     view.setText(arrowType2 ? R.string.layout_element_arrow_type_v2 : R.string.layout_element_arrow_type_v1);
+                    break;
+
+                case R.id.switchArrowDebug:
+                    final boolean arrowDebug = view.isChecked();
+                    storeOptions(R.string.option_arrow_debug, arrowDebug);
                     break;
 
                 case R.id.switchShowSpeed:
@@ -1018,6 +1031,20 @@ public class MainActivity extends AppCompatActivity {
     private class MsgReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            //=======================================================================
+            // receive arrow bitmap
+            //=======================================================================
+            boolean has_arrow_bitmap = intent.hasExtra(getString(R.string.arrow_bitmap));
+            if (has_arrow_bitmap) {
+                if (null != mArrowDebugSwitch && mArrowDebugSwitch.isChecked()) {
+                    Parcelable p = intent.getParcelableExtra(getString(R.string.arrow_bitmap));
+                    if (null != mNCMS && p instanceof android.graphics.Bitmap) {
+                        mNCMS.startNotification((android.graphics.Bitmap) p);
+                    }
+                }
+                return;
+            }
+
             //=======================================================================
             // for debug message
             //=======================================================================

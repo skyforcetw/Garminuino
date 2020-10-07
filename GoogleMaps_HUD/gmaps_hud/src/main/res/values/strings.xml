@@ -85,6 +85,7 @@
     <string name="layout_title_arrow_type">Arrow Type</string>
     <string name="layout_element_arrow_type_v1">Arrow V1</string>
     <string name="layout_element_arrow_type_v2">Arrow V2</string>
+    <string name="layout_element_arrow_debug">Arrow debug</string>
 
     <string name="layout_tab_debug">Debug</string>
     <string name="layout_button_list_not">List of Notification</string>

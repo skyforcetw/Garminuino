@@ -133,6 +133,7 @@ public class Page3Fragment extends Fragment {
 
         ((MainActivity) getActivity()).mBMWHUDEnabledSwitch = getView().findViewById((R.id.switchEnableBMWHUD));
         ((MainActivity) getActivity()).mArrowTypeSwitch = getView().findViewById(R.id.switchArrowType);
+        ((MainActivity) getActivity()).mArrowDebugSwitch = getView().findViewById(R.id.switchArrowDebug);
 
         ((MainActivity) getActivity()).mAlertAnytimeSwitch = getView().findViewById(R.id.switchAlertAnytime);
         SeekBar seekBarAlertSpeed = (SeekBar) getView().findViewById(R.id.seekBarAlertSpeed);

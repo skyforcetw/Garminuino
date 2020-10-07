@@ -2,6 +2,7 @@ package sky4s.garminhud.app;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 
 /**
  * For other class can send message to Main Activity
@@ -37,6 +38,11 @@ public class MainActivityPostman {
     public void addStringExtra(String key, String string) {
         checkIntentForExtra();
         intent2Main.putExtra(key, string);
+    }
+
+    public void addParcelableExtra(String key, Parcelable p) {
+        checkIntentForExtra();
+        intent2Main.putExtra(key,p);
     }
 
     public void sendIntent2MainActivity() {

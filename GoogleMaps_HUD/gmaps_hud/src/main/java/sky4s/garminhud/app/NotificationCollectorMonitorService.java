@@ -11,6 +11,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
@@ -46,7 +47,7 @@ public class NotificationCollectorMonitorService extends Service {
         Log.d(TAG, "onCreate() called");
         ensureCollectorRunning();
 
-        startNotification();
+        startNotification(null);
 //        startForeground(1, notification);
     }
 
@@ -59,14 +60,15 @@ public class NotificationCollectorMonitorService extends Service {
     private Notification notification;
     private NotificationManager mNotificationManager;
 
-    private Notification getNormalNotification(String contentText) {
+    private Notification getNormalNotification(String contentText, Bitmap icon) {
         final Intent mainIntent = MainActivity.sMainIntent;
+        MainActivity.mNCMS = this;
         int flags = PendingIntent.FLAG_CANCEL_CURRENT; // ONE_SHOT：PendingIntent只使用一次；CANCEL_CURRENT：PendingIntent執行前會先結束掉之前的；NO_CREATE：沿用先前的PendingIntent，不建立新的PendingIntent；UPDATE_CURRENT：更新先前PendingIntent所帶的額外資料，並繼續沿用
         final PendingIntent pendingMainIntent = PendingIntent.getActivity(getApplicationContext(), 0, mainIntent, flags); // 取得PendingIntent
 
 
         final String channelID = "id";
-
+/*
         notification
                 = new NotificationCompat.Builder(this, channelID)
                 .setSmallIcon(R.mipmap.ic_notification_foreground)
@@ -86,16 +88,31 @@ public class NotificationCollectorMonitorService extends Service {
                 .setChannelId(channelID)
 //                .setStyle(style)
 
-                .build();
+                .build();*/
 
+
+        NotificationCompat.Builder builder
+                = new NotificationCompat.Builder(this, channelID)
+                .setSmallIcon(R.mipmap.ic_notification_foreground)
+                .setAutoCancel(false) // 設置通知被使用者點擊後是否清除  //notification.flags = Notification.FLAG_AUTO_CANCEL;
+                .setContentText(contentText)// 設置上下文內容
+                .setOngoing(true)      //true使notification變為ongoing，用戶不能手動清除// notification.flags = Notification.FLAG_ONGOING_EVENT; notification.flags = Notification.FLAG_NO_CLEAR;
+                .setContentIntent(pendingMainIntent)
+                .setChannelId(channelID);
+//                .build();
+        if (null != icon) {
+            builder.setLargeIcon(icon);
+        }
+        notification = builder.build();
         return notification;
     }
 
-    private void startNotification() {
+
+    void startNotification(Bitmap icon) {
 //        log("startNotification");
         //Step1. 初始化NotificationManager，取得Notification服務
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notification = getNormalNotification("GMaps Notify Monitor Service");
+        notification = getNormalNotification("GMaps Notify Monitor Service",icon);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             final String channelID = "id";

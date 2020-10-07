@@ -54,6 +54,17 @@
             android:text="@string/layout_element_arrow_type_v1"
             android:textSize="@dimen/option_text_size" />
 
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchArrowDebug"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="false"
+            android:paddingTop="@dimen/option_padding_top"
+            android:paddingBottom="@dimen/option_padding_bottom"
+            android:text="@string/layout_element_arrow_debug"
+            android:textSize="@dimen/option_text_size" />
+
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dip"
