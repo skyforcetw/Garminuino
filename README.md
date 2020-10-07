@@ -10,7 +10,9 @@ There has two sub-project use GarminHUD as:
  
  * Newest App Release
    * [2020-09-29 v0.8.2](https://github.com/skyforcetw/Garminuino/releases/download/0.8.2/gmaps_hud-release_v0.8.2.apk)
-Fix arrivals arrow.
+   Fix arrivals arrow.
+   * [Release History](https://github.com/skyforcetw/Garminuino/blob/master/ReleaseHistory.md)
+
  
 2. a speedometer HUD  (Arduino+GarminHUD, STOP MAINTAIN)
 
