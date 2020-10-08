@@ -633,7 +633,7 @@ public class NotificationMonitor extends NotificationListenerService {
             String subText = parseString(subTextObj);
             subText = null == subText ? text : subText;
 
-            String textOnGmapsNotify = subText + " " + title + " " + text;
+            String textOnGmapsNotify = title;//subText + " " + title + " " + text;
 
             // Check if subText is empty (" ·  · ") --> don't parse subText
             // Occurs for example on NavigationChanged
