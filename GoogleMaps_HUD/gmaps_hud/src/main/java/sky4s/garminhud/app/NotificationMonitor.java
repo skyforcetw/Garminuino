@@ -230,7 +230,7 @@ public class NotificationMonitor extends NotificationListenerService {
                         break;
                     */
                     default:
-                        String notifyMessage = "No gmaps' notification!?!?" +" (found: "+packageName+")";
+                        String notifyMessage = "No gmaps' notification!?!?" + " (found: " + packageName + ")";
                         mPostman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
                         mPostman.sendIntent2MainActivity();
                 }
@@ -633,6 +633,8 @@ public class NotificationMonitor extends NotificationListenerService {
             String subText = parseString(subTextObj);
             subText = null == subText ? text : subText;
 
+            String textOnGmapsNotify = subText + " " + title + " " + text;
+
             // Check if subText is empty (" ·  · ") --> don't parse subText
             // Occurs for example on NavigationChanged
             boolean subTextEmpty = true;
@@ -675,10 +677,18 @@ public class NotificationMonitor extends NotificationListenerService {
                         }
 
                         if (mArrowTypeV2) {
-                            mPostman.addParcelableExtra( getString(R.string.arrow_bitmap) ,bitmapImage);
+
+
+//                            mFoundArrowV2 = getArrowV2(bitmapImage);
+                            final int index = getArrowV2Index(bitmapImage);
+                            mFoundArrowV2 = ArrowV2.values()[index];
+                            Bitmap foundArrowBitmap = mArrowBitmaps[index];
+
+//                            Bitmap combinedBitmap = ImageUtils.combineBitmaps(bitmapImage, foundArrowBitmap);
+                            mPostman.addParcelableExtra(getString(R.string.arrow_bitmap), foundArrowBitmap);
+                            mPostman.addStringExtra(getString(R.string.gmaps_notify_msg), textOnGmapsNotify);
                             mPostman.sendIntent2MainActivity();
 
-                            mFoundArrowV2 = getArrowV2(bitmapImage);
                             mLastFoundArrowV2 = mFoundArrowV2;
                         } else {
                             ArrowImage arrowImage = new ArrowImage(bitmapImage);
@@ -821,6 +831,40 @@ public class NotificationMonitor extends NotificationListenerService {
             }
         }
         return sad;
+    }
+
+    private int getArrowV2Index(Bitmap image) {
+        if (null == mArrowBitmaps) {
+            return -1;
+        }
+        final ArrowV2[] arrows = ArrowV2.values();
+        if (mArrowBitmaps.length + 1 != arrows.length) {
+            return -1;
+        }
+
+        final int targetWidth = mArrowBitmaps[0].getWidth();
+        final int targetHeight = mArrowBitmaps[0].getHeight();
+        Bitmap scaleImage = ImageUtils.getScaleBitmap(image, targetWidth, targetHeight);
+        scaleImage = ImageUtils.removeAlpha(scaleImage);
+        final int length = mArrowBitmaps.length;
+
+        sArrowMinSad = Integer.MAX_VALUE;
+        int minSADIndex = -1;
+        for (int x = 0; x < length; x++) {
+            int sad = getNotWhiteSAD(scaleImage, mArrowBitmaps[x]);
+            if (-1 != sad && sad < sArrowMinSad) {
+                sArrowMinSad = sad;
+                minSADIndex = x;
+            }
+        }
+
+        ArrowV2 arrow = arrows[minSADIndex];
+        if (0 == sArrowMinSad) {
+            Log.d(TAG, "Recognize " + arrow.name());
+        } else {
+            Log.d(TAG, "No Recognize, minSad: " + sArrowMinSad + " arrow:" + arrow);
+        }
+        return minSADIndex;
     }
 
     private ArrowV2 getArrowV2(Bitmap image) {

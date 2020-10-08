@@ -140,11 +140,35 @@ public class ImageUtils {
         // scale = scale < scale2 ? scale : scale2;
         matrix.postScale(scaleW, scaleH);
         Bitmap bmp = Bitmap.createBitmap(bitmap, 0, 0, w, h, matrix, true);
-        if (bitmap != null && !bitmap.equals(bmp) && !bitmap.isRecycled()) {
-            bitmap.recycle();
-            bitmap = null;
-        }
+//        if (bitmap != null && !bitmap.equals(bmp) && !bitmap.isRecycled()) {
+//            bitmap.recycle();
+//            bitmap = null;
+//        }
         return bmp;// Bitmap.createBitmap(bitmap, 0, 0, w, h, matrix, true);
 
+    }
+
+    /**
+     * <p>This method combines two images into one by rendering them side by side.</p>
+     *
+     * @param left The image that goes on the left side of the combined image.
+     * @param right The image that goes on the right side of the combined image.
+     * @return The combined image.
+     */
+    public static  Bitmap combineBitmaps(final Bitmap left, final Bitmap right){
+        // Get the size of the images combined side by side.
+        int width = left.getWidth() + right.getWidth();
+        int height = left.getHeight() > right.getHeight() ? left.getHeight() : right.getHeight();
+
+        // Create a Bitmap large enough to hold both input images and a canvas to draw to this
+        // combined bitmap.
+        Bitmap combined = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(combined);
+
+        // Render both input images into the combined bitmap and return it.
+        canvas.drawBitmap(left, 0f, 0f, null);
+        canvas.drawBitmap(right, left.getWidth(), 0f, null);
+
+        return combined;
     }
 }

@@ -1039,7 +1039,8 @@ public class MainActivity extends AppCompatActivity {
                 if (null != mArrowDebugSwitch && mArrowDebugSwitch.isChecked()) {
                     Parcelable p = intent.getParcelableExtra(getString(R.string.arrow_bitmap));
                     if (null != mNCMS && p instanceof android.graphics.Bitmap) {
-                        mNCMS.startNotification((android.graphics.Bitmap) p);
+                        String notify_msg = intent.getStringExtra(getString(R.string.gmaps_notify_msg));
+                        mNCMS.startNotification(notify_msg, (android.graphics.Bitmap) p);
                     }
                 }
                 return;

@@ -1,6 +1,5 @@
 package sky4s.garminhud.app;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -12,8 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.media.projection.MediaProjection;
-import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Process;
@@ -47,7 +44,7 @@ public class NotificationCollectorMonitorService extends Service {
         Log.d(TAG, "onCreate() called");
         ensureCollectorRunning();
 
-        startNotification(null);
+        startNotification(null, null);
 //        startForeground(1, notification);
     }
 
@@ -108,11 +105,11 @@ public class NotificationCollectorMonitorService extends Service {
     }
 
 
-    void startNotification(Bitmap icon) {
+    void startNotification(String contentText, Bitmap icon) {
 //        log("startNotification");
         //Step1. 初始化NotificationManager，取得Notification服務
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notification = getNormalNotification("GMaps Notify Monitor Service",icon);
+        notification = getNormalNotification(null == contentText ? "GMaps Notify Monitor Service" : contentText, icon);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             final String channelID = "id";

@@ -66,6 +66,7 @@
     <string name="notify_switch_event" translatable="false">notify_switch_event</string>
 
     <string name="arrow_bitmap" translatable="false">arrow_bitmap</string>
+    <string name="gmaps_notify_msg" translatable="false">gmaps_notify_msg</string>
 
     <integer name="notify_id">1</integer>
 
