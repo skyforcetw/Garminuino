@@ -9,8 +9,8 @@ There has two sub-project use GarminHUD as:
  * [Android Auto Cooperation.](https://github.com/skyforcetw/Garminuino/blob/master/GoogleMaps_HUD/AndroidAuto.md)
  
  * Newest App Release
-   * [2020-09-29 v0.8.2](https://github.com/skyforcetw/Garminuino/releases/download/0.8.2/gmaps_hud-release_v0.8.2.apk)
-   Fix arrivals arrow.
+   * [2020-09-29 v0.8.3](https://github.com/skyforcetw/Garminuino/releases/download/0.8.3/gmaps_hud-release_v0.8.3.apk)
+Change Arrow SAD calculation.
    * [Release History](https://github.com/skyforcetw/Garminuino/blob/master/ReleaseHistory.md)
 
  
