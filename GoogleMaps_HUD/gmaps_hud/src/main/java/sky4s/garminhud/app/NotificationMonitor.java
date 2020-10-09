@@ -844,14 +844,20 @@ public class NotificationMonitor extends NotificationListenerService {
 
         final int targetWidth = mArrowBitmaps[0].getWidth();
         final int targetHeight = mArrowBitmaps[0].getHeight();
-        Bitmap scaleImage = ImageUtils.getScaleBitmap(image, targetWidth, targetHeight);
-        scaleImage = ImageUtils.removeAlpha(scaleImage);
+        Bitmap noAlphaImage = ImageUtils.removeAlpha(image);
+        Bitmap scaleImage = ImageUtils.getScaleBitmap(noAlphaImage, targetWidth, targetHeight);
+//        scaleImage = ImageUtils.removeAlpha(scaleImage);
         final int length = mArrowBitmaps.length;
 
         sArrowMinSad = Integer.MAX_VALUE;
         int minSADIndex = -1;
+        int sadArray[]=new int [mArrowBitmaps.length ];
+
         for (int x = 0; x < length; x++) {
-            int sad = getNotWhiteSAD(scaleImage, mArrowBitmaps[x]);
+//            int sad = getNotWhiteSAD(scaleImage, mArrowBitmaps[x]);
+            //getGreenSAD better than getNotWhiteSAD(?)
+            int sad = getGreenSAD(scaleImage, mArrowBitmaps[x]);
+            sadArray[x] = sad;
             if (-1 != sad && sad < sArrowMinSad) {
                 sArrowMinSad = sad;
                 minSADIndex = x;

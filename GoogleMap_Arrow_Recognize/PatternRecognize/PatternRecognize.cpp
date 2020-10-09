@@ -331,7 +331,7 @@ void pixel_compare_method() {
 		image_recognize(ref_dir);
 	}
 
-	if (false) { //直接用原圖比
+	if (true) { //直接用原圖比
 		string target_filename = "arrow0.png";
 		auto& target_image = cv::imread(target_filename);
 		auto target_size = target_image.size();
@@ -351,6 +351,7 @@ void pixel_compare_method() {
 
 
 			int sad = get_sad_in_green(arrow_img, scale_image);
+			//int sad = get_sad_in_not_white_count(arrow_img, scale_image);
 			if (sad < min_sad) {
 				min_index = index;
 				min_sad = sad;
@@ -358,14 +359,19 @@ void pixel_compare_method() {
 			cout << index << " " << sad << " " << filename << endl;
 			index++;
 		}
+		cout << "min_index: " << min_index << endl;
+		cout << "min_sad: " << min_sad << endl;
 		int a = 1;
 	}
 	if (true) ////直接用原圖比 & scan 
 	{
 
 		int index = 0;
-
-		for (auto& filename : getAllImageFileNamesWithinFolder(ref_dir)) {
+		auto vec = getAllImageFileNamesWithinFolder(ref_dir);
+		auto rit = vec.rbegin();
+		//for (auto& filename : getAllImageFileNamesWithinFolder(ref_dir)) {
+		for(; rit!= vec.rend();rit++) {
+			auto filename = *rit;
 			auto& arrow_img = cv::imread(ref_dir + filename);
 
 			cv::Mat scale_image;
@@ -426,9 +432,9 @@ void feature_matching_method() {
 }
  
 int main() {
-	if (false)
-		pixel_compare_method();
 	if (true)
+		pixel_compare_method();
+	if (false)
 		feature_matching_method();
 
 }
