@@ -21,6 +21,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -142,6 +143,11 @@ public class NotificationMonitor extends NotificationListenerService {
     @Override
     public void onCreate() {
         super.onCreate();
+        // sometime onCreate run before sHud, that should be make garmunino app failed when android booting.
+        // check null on sHud maybe can resolve no notification capture problem!?
+        if (null == sHud) {
+            return;
+        }
         // Ensure queue notifications are around 1 second old
         final int maxQueueSize = sHud.getMaxUpdatesPerSecond();
         mExecutor = new ThreadPoolExecutor(1, 1,
@@ -206,6 +212,9 @@ public class NotificationMonitor extends NotificationListenerService {
 
 
     private void processNotification(StatusBarNotification sbn) {
+        if (null == mExecutor) {
+            return;
+        }
         // Parsing a notification may be slow, do this in the background
         mExecutor.execute(() -> {
             mPostman.addBooleanExtra(getString(R.string.notify_catched), true);
@@ -312,6 +321,10 @@ public class NotificationMonitor extends NotificationListenerService {
         if (!parseResult) {
             //gmap on android 6.0 need parsing by reflection
             parseResult = parseGmapsNotificationByReflection(notification);
+        }
+        if (!parseResult) {
+            //gmap on android 6.0 need parsing by reflection
+            parseResult = parseGmapsNotificationByJavaReflection(notification);
         }
 
         if (!parseResult) {
@@ -466,6 +479,7 @@ public class NotificationMonitor extends NotificationListenerService {
             int indexOfActions = 0;
             int updateCount = 0;
             boolean inNavigation = false;
+            int validActionCount = 0;
 
             // Find the setText() and setTime() reflection actions
             for (Parcelable p : actions) {
@@ -474,6 +488,7 @@ public class NotificationMonitor extends NotificationListenerService {
                     continue;
                 }
                 p.writeToParcel(parcel, 0);
+//                p.writeToParcel(parcel, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
                 parcel.setDataPosition(0);
 
                 // The tag tells which type of action it is (2 is ReflectionAction, from the source)
@@ -484,6 +499,7 @@ public class NotificationMonitor extends NotificationListenerService {
                     continue;
 
                 String methodName = parcel.readString();
+                //methodName = null == methodName ? p.
 
                 if (methodName == null) continue;
                     // Save strings
@@ -509,6 +525,7 @@ public class NotificationMonitor extends NotificationListenerService {
                         default:
                             break;
                     }
+                    validActionCount++;
                 } else if (methodName.equals("setImageBitmap")) {
                     int bitmapId = parcel.readInt();
                     Field fieldBitmapCache = views.getClass().getDeclaredField("mBitmapCache");
@@ -533,6 +550,7 @@ public class NotificationMonitor extends NotificationListenerService {
                         mFoundArrow = getArrow(arrowImage);
                         updateCount++;
                     }
+                    validActionCount++;
                 }
 
                 parcel.recycle();
@@ -544,7 +562,217 @@ public class NotificationMonitor extends NotificationListenerService {
             if (0 != updateCount && inNavigation) {
                 updateHudInformation();
             }
-            return true;
+            return validActionCount != 0;
+        }
+        // It's not usually good style to do this, but then again, neither is the use of reflection...
+        catch (Exception e) {
+            Log.e(TAG, e.toString());
+            return false;
+        }
+    }
+
+    private boolean parseGmapsNotificationByJavaReflection(Notification notification) {
+        RemoteViews views = getRemoteViews(notification);
+        if (views == null) return false;
+
+        int indexOfActions = 0;
+        int updateCount = 0;
+        boolean inNavigation = false;
+        int validActionCount = 0;
+
+        // Use reflection to examine the m_actions member of the given RemoteViews object.
+        // It's not pretty, but it works.
+        try {
+
+            Class<?> viewsClass = views.getClass();
+            Field outerFields[] = viewsClass.getDeclaredFields();
+
+            for (int i = 0; i < outerFields.length; i++) {
+                if (!outerFields[i].getName().equals("mActions")) continue;
+
+                outerFields[i].setAccessible(true);
+
+                ArrayList<Object> actions = (ArrayList<Object>) outerFields[i]
+                        .get(views);
+
+                for (Object action : actions) {
+                    Field innerFields[] = action.getClass().getDeclaredFields();
+
+//                    Object value = null;
+//                    Integer type = null;
+                    Integer viewId = null;
+
+                    int fieldCount = 0;
+                    boolean isText = false;
+                    for (Field field : innerFields) {
+                        field.setAccessible(true);
+                        String fieldName = field.getName();
+                        boolean isImageBitmap = false;
+                        Object fieldOfAction = field.get(action);
+                        if (0 == fieldCount) {
+                            isText = false;
+                        }
+                        if (fieldName.equals("methodName")) {
+                            Object methodName = field.get(action);
+                            if (methodName.equals("setText")) {
+                                isText = true;
+                            } else if (methodName.equals("setImageBitmap")) {
+                                isImageBitmap = true;
+                            }
+
+                        } else if (fieldName.equals("bitmapId")) {
+                            viewId = field.getInt(action);
+                        }
+                        if (isText && 3 == fieldCount) {
+                            Object value = fieldOfAction;
+                            if (value instanceof SpannableString || value instanceof String) {
+                                String t = value.toString().trim();
+                                switch (indexOfActions) {
+                                    case 2:
+                                        inNavigation = t.equalsIgnoreCase(getString(R.string.exit_navigation));
+                                        break;
+                                    case 4:
+                                        //distance to turn
+                                        parseDistanceToTurn(t);
+                                        updateCount++;
+                                        validActionCount++;
+                                        break;
+                                    case 9:
+                                        //time, distance, arrived time
+                                        parseTimeAndDistanceToDest(t);
+                                        updateCount++;
+                                        validActionCount++;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        }
+
+                        if (isImageBitmap) {
+                            Field fieldBitmapCache = views.getClass().getDeclaredField("mBitmapCache");
+                            fieldBitmapCache.setAccessible(true);
+
+                            Object bitmapCache = fieldBitmapCache.get(views);
+                            Field fieldBitmaps = bitmapCache.getClass().getDeclaredField("mBitmaps");
+                            fieldBitmaps.setAccessible(true);
+                            Object bitmapsObject = fieldBitmaps.get(bitmapCache);
+
+                            if (null != bitmapsObject) {
+                                ArrayList<Bitmap> bitmapList = (ArrayList<Bitmap>) bitmapsObject;
+                                Bitmap bitmapImage = bitmapList.get(viewId);
+                                if (STORE_IMG) {
+                                    ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow0.png");
+                                }
+                                bitmapImage = ImageUtils.removeAlpha(bitmapImage);
+                                if (STORE_IMG) {
+                                    ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow.png");
+                                }
+                                ArrowImage arrowImage = new ArrowImage(bitmapImage);
+                                mFoundArrow = getArrow(arrowImage);
+                                validActionCount++;
+                                updateCount++;
+                            }
+
+                        }
+                        fieldCount++;
+                    }
+                    indexOfActions++;
+                }
+            }
+
+//            Field fieldActions = viewsClass.getDeclaredField("mActions");
+//            fieldActions.setAccessible(true);
+//
+//            @SuppressWarnings("unchecked")
+//            ArrayList<Parcelable> actions = (ArrayList<Parcelable>) fieldActions.get(views);
+
+
+            // Find the setText() and setTime() reflection actions
+//            for (Parcelable p : actions) {
+//                Parcel parcel = Parcel.obtain();
+//                if (null == p) {
+//                    continue;
+//                }
+//
+//
+//
+//                //p.writeToParcel(parcel, 0);
+//                p.writeToParcel(parcel, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+//                parcel.setDataPosition(0);
+//
+//                // The tag tells which type of action it is (2 is ReflectionAction, from the source)
+//                int tag = parcel.readInt();
+//                String simpleClassName = p.getClass().getSimpleName();
+//
+//                if ((tag != 2 && tag != 12) && (!simpleClassName.equals("ReflectionAction") && !simpleClassName.equals("BitmapReflectionAction")))
+//                    continue;
+//
+//                String methodName = parcel.readString();
+//                //methodName = null == methodName ? p.
+//
+//                if (methodName == null) continue;
+//                    // Save strings
+//                else if (methodName.equals("setText")) {
+//                    // Parameter type (10 = Character Sequence)
+//                    parcel.readInt();
+//
+//                    // Store the actual string
+//                    String t = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(parcel).toString().trim();
+//                    switch (indexOfActions) {
+//                        case 2:
+//                            inNavigation = t.equalsIgnoreCase(getString(R.string.exit_navigation));
+//                            break;
+//                        case 3:
+//                            //distance to turn
+//                            parseDistanceToTurn(t);
+//                            break;
+//                        case 8:
+//                            //time, distance, arrived time
+//                            parseTimeAndDistanceToDest(t);
+//                            updateCount++;
+//                            break;
+//                        default:
+//                            break;
+//                    }
+//                    validActionCount++;
+//                } else if (methodName.equals("setImageBitmap")) {
+//                    int bitmapId = parcel.readInt();
+//                    Field fieldBitmapCache = views.getClass().getDeclaredField("mBitmapCache");
+//                    fieldBitmapCache.setAccessible(true);
+//
+//                    Object bitmapCache = fieldBitmapCache.get(views);
+//                    Field fieldBitmaps = bitmapCache.getClass().getDeclaredField("mBitmaps");
+//                    fieldBitmaps.setAccessible(true);
+//                    Object bitmapsObject = fieldBitmaps.get(bitmapCache);
+//
+//                    if (null != bitmapsObject) {
+//                        ArrayList<Bitmap> bitmapList = (ArrayList<Bitmap>) bitmapsObject;
+//                        Bitmap bitmapImage = bitmapList.get(bitmapId);
+//                        if (STORE_IMG) {
+//                            ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow0.png");
+//                        }
+//                        bitmapImage = ImageUtils.removeAlpha(bitmapImage);
+//                        if (STORE_IMG) {
+//                            ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow.png");
+//                        }
+//                        ArrowImage arrowImage = new ArrowImage(bitmapImage);
+//                        mFoundArrow = getArrow(arrowImage);
+//                        updateCount++;
+//                    }
+//                    validActionCount++;
+//                }
+//
+//                parcel.recycle();
+//                indexOfActions++;
+//            }
+
+            logParseMessage();
+            //can update to garmin hud
+            if (0 != updateCount && inNavigation) {
+                updateHudInformation();
+            }
+            return validActionCount != 0;
         }
         // It's not usually good style to do this, but then again, neither is the use of reflection...
         catch (Exception e) {
@@ -851,7 +1079,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
         sArrowMinSad = Integer.MAX_VALUE;
         int minSADIndex = -1;
-        int sadArray[]=new int [mArrowBitmaps.length ];
+        int sadArray[] = new int[mArrowBitmaps.length];
 
         for (int x = 0; x < length; x++) {
 //            int sad = getNotWhiteSAD(scaleImage, mArrowBitmaps[x]);
@@ -1528,6 +1756,9 @@ public class NotificationMonitor extends NotificationListenerService {
 
             String packageName = sbn.getPackageName();
             if (packageName.equals(GOOGLE_MAPS_PACKAGE_NAME)) {
+                if (null == mPostman) {
+                    return;
+                }
                 mPostman.addBooleanExtra(getString(R.string.gmaps_notify_catched), false);
                 mPostman.addBooleanExtra(getString(R.string.is_in_navigation), mIsNavigating);
                 mPostman.sendIntent2MainActivity();
