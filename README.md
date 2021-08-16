@@ -16,6 +16,15 @@ Change Arrow SAD calculation.
  
 2. a speedometer HUD  (Arduino+GarminHUD, STOP MAINTAIN)
 
+
+***
+Known Issue:
+* The app will crash after booting on some device (ESPECIALLY ON ANDROID 6.0), then nofication capture will un-work. 
+There has no solution for this bug now. If you encounter this issue, please follow step below to resolve (sometimes works) :
+  1. Uninstall the app
+  2. rebooting
+  3. Install the app after booting. 
+
 ***
 
 Belows are two sub-proejct put together: GoogleMap navigation HUD(Left)+ Speedometer HUD(Center)
