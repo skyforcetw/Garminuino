@@ -61,32 +61,14 @@ public class NotificationCollectorMonitorService extends Service {
         final Intent mainIntent = MainActivity.sMainIntent;
         MainActivity.mNCMS = this;
         int flags = PendingIntent.FLAG_CANCEL_CURRENT; // ONE_SHOT：PendingIntent只使用一次；CANCEL_CURRENT：PendingIntent執行前會先結束掉之前的；NO_CREATE：沿用先前的PendingIntent，不建立新的PendingIntent；UPDATE_CURRENT：更新先前PendingIntent所帶的額外資料，並繼續沿用
-        final PendingIntent pendingMainIntent = PendingIntent.getActivity(getApplicationContext(), 0, mainIntent, flags); // 取得PendingIntent
+        Context context = getApplicationContext();
+        if( null == context) {
+            return null;
+        }
+        final PendingIntent pendingMainIntent = PendingIntent.getActivity(context, 0, mainIntent, flags); // 取得PendingIntent
 
 
         final String channelID = "id";
-/*
-        notification
-                = new NotificationCompat.Builder(this, channelID)
-                .setSmallIcon(R.mipmap.ic_notification_foreground)
-//                .setTicker("notification on status bar.") // 設置狀態列的顯示的資訊
-                .setAutoCancel(false) // 設置通知被使用者點擊後是否清除  //notification.flags = Notification.FLAG_AUTO_CANCEL;
-//                .setContentTitle(getString(R.string.app_name)) // 設置下拉清單裡的標題
-                .setContentText(contentText)// 設置上下文內容
-                .setOngoing(true)      //true使notification變為ongoing，用戶不能手動清除// notification.flags = Notification.FLAG_ONGOING_EVENT; notification.flags = Notification.FLAG_NO_CLEAR;
-                .setContentIntent(pendingMainIntent)
-//
-//                .addAction(R.drawable.baseline_av_timer_24, getString(R.string.notify_switch_speed), switchSpeedPendingIntent)
-//                .addAction(R.drawable.baseline_brightness_auto_24, "Auto Brightness", switchAutoBrightnessPendingIntent)
-//                .addAction(R.drawable.baseline_drive_eta_24, getString(R.string.notify_switch_ETA), switchETAPendingIntent)
-//                .addAction(R.drawable.baseline_access_time_24, "Current Time", switchTimePendingIntent)
-//                .addAction(R.drawable.baseline_traffic_24, getString(R.string.notify_switch_detect), switchDetectPendingIntent)
-
-                .setChannelId(channelID)
-//                .setStyle(style)
-
-                .build();*/
-
 
         NotificationCompat.Builder builder
                 = new NotificationCompat.Builder(this, channelID)

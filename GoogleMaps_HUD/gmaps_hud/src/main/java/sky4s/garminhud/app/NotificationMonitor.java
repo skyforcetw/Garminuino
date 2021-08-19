@@ -239,9 +239,10 @@ public class NotificationMonitor extends NotificationListenerService {
                         break;
                     */
                     default:
-                        String notifyMessage = "No gmaps' notification!?!?" + " (found: " + packageName + ")";
-                        mPostman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
-                        mPostman.sendIntent2MainActivity();
+//                        String notifyMessage = "No gmaps' notification!?!?" + " (found: " + packageName + ")";
+//                        mPostman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
+//                        mPostman.sendIntent2MainActivity();
+                        break;
                 }
             } else {
                 mPostman.addBooleanExtra(getString(R.string.notify_catched), true);
@@ -323,7 +324,7 @@ public class NotificationMonitor extends NotificationListenerService {
             parseResult = parseGmapsNotificationByReflection(notification);
         }
         if (!parseResult) {
-            //gmap on android 6.0 need parsing by reflection
+            //gmap on android 6.0 need parsing by java reflection
             parseResult = parseGmapsNotificationByJavaReflection(notification);
         }
 
@@ -333,7 +334,7 @@ public class NotificationMonitor extends NotificationListenerService {
             mPostman.addBooleanExtra(getString(R.string.is_in_navigation), false);
             mPostman.sendIntent2MainActivity();
 
-            String notifyMessage = "Notify parsing failed.";
+            String notifyMessage = "Notify parsing failed. " +(noViewsSituation?"(No views)":"");
             mPostman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
         } else {
             mPostman.addBooleanExtra(getString(R.string.notify_parse_failed), false);
@@ -375,6 +376,14 @@ public class NotificationMonitor extends NotificationListenerService {
         }
         if (views == null) {
             views = notification.contentView;
+        }
+        if (!viewsHasActionsField(views)) {
+            //check mActions again
+            views = null;
+        }
+
+        if (views == null) {
+            views = notification.headsUpContentView;
         }
         if (!viewsHasActionsField(views)) {
             //check mActions again
@@ -500,7 +509,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
                 String methodName = parcel.readString();
                 //methodName = null == methodName ? p.
-
+                String textOnGmapsNotify = "";
                 if (methodName == null) continue;
                     // Save strings
                 else if (methodName.equals("setText")) {
@@ -509,6 +518,7 @@ public class NotificationMonitor extends NotificationListenerService {
 
                     // Store the actual string
                     String t = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(parcel).toString().trim();
+
                     switch (indexOfActions) {
                         case 2:
                             inNavigation = t.equalsIgnoreCase(getString(R.string.exit_navigation));
@@ -546,8 +556,31 @@ public class NotificationMonitor extends NotificationListenerService {
                         if (STORE_IMG) {
                             ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow.png");
                         }
+
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
-                        mFoundArrow = getArrow(arrowImage);
+//                        mFoundArrow = getArrow(arrowImage);
+
+                        if (mArrowTypeV2) {
+                            final int index = getArrowV2Index(bitmapImage);
+                            mFoundArrowV2 = ArrowV2.values()[index];
+                            mLastFoundArrowV2 = mFoundArrowV2;
+
+                            Bitmap foundArrowBitmap = mArrowBitmaps[index];
+                            mPostman.addParcelableExtra(getString(R.string.arrow_bitmap), foundArrowBitmap);
+                            mPostman.addStringExtra(getString(R.string.gmaps_notify_msg), textOnGmapsNotify);
+                            mPostman.sendIntent2MainActivity();
+                        } else {
+//                            ArrowImage arrowImage = new ArrowImage(bitmapImage);
+                            mFoundArrow = getArrow(arrowImage);
+                            mLastFoundArrow = mFoundArrow;
+
+                            Bitmap foundArrowBitmap = arrowImage.binaryImage;
+                            mPostman.addParcelableExtra(getString(R.string.arrow_bitmap), foundArrowBitmap);
+                            mPostman.addStringExtra(getString(R.string.gmaps_notify_msg), textOnGmapsNotify);
+                            mPostman.sendIntent2MainActivity();
+                        }
+
+
                         updateCount++;
                     }
                     validActionCount++;
@@ -556,8 +589,9 @@ public class NotificationMonitor extends NotificationListenerService {
                 parcel.recycle();
                 indexOfActions++;
             }
-
-            logParseMessage();
+            if(validActionCount != 0) {
+                logParseMessage();
+            }
             //can update to garmin hud
             if (0 != updateCount && inNavigation) {
                 updateHudInformation();
@@ -571,9 +605,17 @@ public class NotificationMonitor extends NotificationListenerService {
         }
     }
 
+    String textOnGmapsNotifyByJavaReflection = "";
+    boolean noViewsSituation = false;
+
     private boolean parseGmapsNotificationByJavaReflection(Notification notification) {
         RemoteViews views = getRemoteViews(notification);
-        if (views == null) return false;
+//        RemoteViews views = notification.bigContentView;
+//        RemoteViews views = notification.contentView;
+        if (views == null) {
+            noViewsSituation = true;
+            return false;
+        }
 
         int indexOfActions = 0;
         int updateCount = 0;
@@ -594,21 +636,20 @@ public class NotificationMonitor extends NotificationListenerService {
 
                 ArrayList<Object> actions = (ArrayList<Object>) outerFields[i]
                         .get(views);
-
+                //String textOnGmapsNotify = "";
                 for (Object action : actions) {
                     Field innerFields[] = action.getClass().getDeclaredFields();
-
-//                    Object value = null;
-//                    Integer type = null;
                     Integer viewId = null;
 
                     int fieldCount = 0;
                     boolean isText = false;
+
                     for (Field field : innerFields) {
                         field.setAccessible(true);
                         String fieldName = field.getName();
                         boolean isImageBitmap = false;
                         Object fieldOfAction = field.get(action);
+
                         if (0 == fieldCount) {
                             isText = false;
                         }
@@ -623,6 +664,7 @@ public class NotificationMonitor extends NotificationListenerService {
                         } else if (fieldName.equals("bitmapId")) {
                             viewId = field.getInt(action);
                         }
+
                         if (isText && 3 == fieldCount) {
                             Object value = fieldOfAction;
                             if (value instanceof SpannableString || value instanceof String) {
@@ -636,12 +678,17 @@ public class NotificationMonitor extends NotificationListenerService {
                                         parseDistanceToTurn(t);
                                         updateCount++;
                                         validActionCount++;
+                                        textOnGmapsNotifyByJavaReflection = t;
+                                        break;
+                                    case 6:
+                                        textOnGmapsNotifyByJavaReflection += " "+t;
                                         break;
                                     case 9:
                                         //time, distance, arrived time
                                         parseTimeAndDistanceToDest(t);
                                         updateCount++;
                                         validActionCount++;
+//                                        textOnGmapsNotifyByJavaReflection += "<br>"+t;
                                         break;
                                     default:
                                         break;
@@ -668,8 +715,26 @@ public class NotificationMonitor extends NotificationListenerService {
                                 if (STORE_IMG) {
                                     ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow.png");
                                 }
-                                ArrowImage arrowImage = new ArrowImage(bitmapImage);
-                                mFoundArrow = getArrow(arrowImage);
+
+
+                                Bitmap foundArrowBitmap = null;
+                                if (mArrowTypeV2) {
+                                    final int index = getArrowV2Index(bitmapImage);
+                                    mFoundArrowV2 = ArrowV2.values()[index];
+                                    mLastFoundArrowV2 = mFoundArrowV2;
+
+                                    foundArrowBitmap = mArrowBitmaps[index];
+                                } else {
+                                    ArrowImage arrowImage = new ArrowImage(bitmapImage);
+                                    mFoundArrow = getArrow(arrowImage);
+                                    mLastFoundArrow = mFoundArrow;
+
+                                    foundArrowBitmap = arrowImage.binaryImage;
+                                }
+                                mPostman.addParcelableExtra(getString(R.string.arrow_bitmap), foundArrowBitmap);
+                                mPostman.addStringExtra(getString(R.string.gmaps_notify_msg), textOnGmapsNotifyByJavaReflection);
+                                mPostman.sendIntent2MainActivity();
+
                                 validActionCount++;
                                 updateCount++;
                             }
@@ -681,93 +746,9 @@ public class NotificationMonitor extends NotificationListenerService {
                 }
             }
 
-//            Field fieldActions = viewsClass.getDeclaredField("mActions");
-//            fieldActions.setAccessible(true);
-//
-//            @SuppressWarnings("unchecked")
-//            ArrayList<Parcelable> actions = (ArrayList<Parcelable>) fieldActions.get(views);
-
-
-            // Find the setText() and setTime() reflection actions
-//            for (Parcelable p : actions) {
-//                Parcel parcel = Parcel.obtain();
-//                if (null == p) {
-//                    continue;
-//                }
-//
-//
-//
-//                //p.writeToParcel(parcel, 0);
-//                p.writeToParcel(parcel, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
-//                parcel.setDataPosition(0);
-//
-//                // The tag tells which type of action it is (2 is ReflectionAction, from the source)
-//                int tag = parcel.readInt();
-//                String simpleClassName = p.getClass().getSimpleName();
-//
-//                if ((tag != 2 && tag != 12) && (!simpleClassName.equals("ReflectionAction") && !simpleClassName.equals("BitmapReflectionAction")))
-//                    continue;
-//
-//                String methodName = parcel.readString();
-//                //methodName = null == methodName ? p.
-//
-//                if (methodName == null) continue;
-//                    // Save strings
-//                else if (methodName.equals("setText")) {
-//                    // Parameter type (10 = Character Sequence)
-//                    parcel.readInt();
-//
-//                    // Store the actual string
-//                    String t = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(parcel).toString().trim();
-//                    switch (indexOfActions) {
-//                        case 2:
-//                            inNavigation = t.equalsIgnoreCase(getString(R.string.exit_navigation));
-//                            break;
-//                        case 3:
-//                            //distance to turn
-//                            parseDistanceToTurn(t);
-//                            break;
-//                        case 8:
-//                            //time, distance, arrived time
-//                            parseTimeAndDistanceToDest(t);
-//                            updateCount++;
-//                            break;
-//                        default:
-//                            break;
-//                    }
-//                    validActionCount++;
-//                } else if (methodName.equals("setImageBitmap")) {
-//                    int bitmapId = parcel.readInt();
-//                    Field fieldBitmapCache = views.getClass().getDeclaredField("mBitmapCache");
-//                    fieldBitmapCache.setAccessible(true);
-//
-//                    Object bitmapCache = fieldBitmapCache.get(views);
-//                    Field fieldBitmaps = bitmapCache.getClass().getDeclaredField("mBitmaps");
-//                    fieldBitmaps.setAccessible(true);
-//                    Object bitmapsObject = fieldBitmaps.get(bitmapCache);
-//
-//                    if (null != bitmapsObject) {
-//                        ArrayList<Bitmap> bitmapList = (ArrayList<Bitmap>) bitmapsObject;
-//                        Bitmap bitmapImage = bitmapList.get(bitmapId);
-//                        if (STORE_IMG) {
-//                            ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow0.png");
-//                        }
-//                        bitmapImage = ImageUtils.removeAlpha(bitmapImage);
-//                        if (STORE_IMG) {
-//                            ImageUtils.storeBitmap(bitmapImage, IMAGE_DIR, "arrow.png");
-//                        }
-//                        ArrowImage arrowImage = new ArrowImage(bitmapImage);
-//                        mFoundArrow = getArrow(arrowImage);
-//                        updateCount++;
-//                    }
-//                    validActionCount++;
-//                }
-//
-//                parcel.recycle();
-//                indexOfActions++;
-//            }
-
-            logParseMessage();
+            if(validActionCount != 0) {
+                logParseMessage();
+            }
             //can update to garmin hud
             if (0 != updateCount && inNavigation) {
                 updateHudInformation();
@@ -903,26 +884,23 @@ public class NotificationMonitor extends NotificationListenerService {
                                 Log.d(TAG, "Store arrow bitmap failed.");
                             }
                         }
-
+                        Bitmap foundArrowBitmap = null;
                         if (mArrowTypeV2) {
-
-
-//                            mFoundArrowV2 = getArrowV2(bitmapImage);
                             final int index = getArrowV2Index(bitmapImage);
                             mFoundArrowV2 = ArrowV2.values()[index];
-                            Bitmap foundArrowBitmap = mArrowBitmaps[index];
-
-//                            Bitmap combinedBitmap = ImageUtils.combineBitmaps(bitmapImage, foundArrowBitmap);
-                            mPostman.addParcelableExtra(getString(R.string.arrow_bitmap), foundArrowBitmap);
-                            mPostman.addStringExtra(getString(R.string.gmaps_notify_msg), textOnGmapsNotify);
-                            mPostman.sendIntent2MainActivity();
-
                             mLastFoundArrowV2 = mFoundArrowV2;
+
+                            foundArrowBitmap = mArrowBitmaps[index];
                         } else {
                             ArrowImage arrowImage = new ArrowImage(bitmapImage);
                             mFoundArrow = getArrow(arrowImage);
                             mLastFoundArrow = mFoundArrow;
+
+                            foundArrowBitmap = arrowImage.binaryImage;
                         }
+                        mPostman.addParcelableExtra(getString(R.string.arrow_bitmap), foundArrowBitmap);
+                        mPostman.addStringExtra(getString(R.string.gmaps_notify_msg), textOnGmapsNotify);
+                        mPostman.sendIntent2MainActivity();
                     }
                 }
                 logParseMessage();

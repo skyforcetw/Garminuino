@@ -591,6 +591,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int getGammaBrightness() {
+        if(null == mBrightnessSeekbar) {
+            return -1;
+        }
+
         final int progress = mBrightnessSeekbar.getProgress();
         float progress_normal = progress * 1.0f / mBrightnessSeekbar.getMax();
         final float gamma = 0.45f;
