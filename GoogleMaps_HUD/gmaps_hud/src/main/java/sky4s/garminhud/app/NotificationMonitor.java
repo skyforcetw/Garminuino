@@ -748,6 +748,9 @@ public class NotificationMonitor extends NotificationListenerService {
 
             if(validActionCount != 0) {
                 logParseMessage();
+                mIsNavigating = true;
+            }else {
+                mIsNavigating = false;
             }
             //can update to garmin hud
             if (0 != updateCount && inNavigation) {
