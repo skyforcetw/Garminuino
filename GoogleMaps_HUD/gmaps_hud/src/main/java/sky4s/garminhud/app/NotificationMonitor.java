@@ -334,7 +334,7 @@ public class NotificationMonitor extends NotificationListenerService {
             mPostman.addBooleanExtra(getString(R.string.is_in_navigation), false);
             mPostman.sendIntent2MainActivity();
 
-            String notifyMessage = "Notify parsing failed. " +(noViewsSituation?"(No views)":"");
+            String notifyMessage = "Notify parsing failed. " +(noViewsSituation?"(non-SDK interface restrictions)":"");
             mPostman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
         } else {
             mPostman.addBooleanExtra(getString(R.string.notify_parse_failed), false);
@@ -370,6 +370,7 @@ public class NotificationMonitor extends NotificationListenerService {
     private static RemoteViews getRemoteViews(Notification notification) {
         // We have to extract the information from the view
         RemoteViews views = notification.bigContentView;
+//        views.writeToParcel();
         if (!viewsHasActionsField(views)) {
             //check mActions is exist, we use it to parse notification
             views = null;
@@ -609,6 +610,20 @@ public class NotificationMonitor extends NotificationListenerService {
     boolean noViewsSituation = false;
 
     private boolean parseGmapsNotificationByJavaReflection(Notification notification) {
+//        RemoteViews p = notification.bigContentView;
+//        Parcel parcel = Parcel.obtain();
+//        if (null == p) {
+//            int a=1;
+//        }
+//        p.writeToParcel(parcel, 0);
+////                p.writeToParcel(parcel, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+//        parcel.setDataPosition(0);
+//
+//        // The tag tells which type of action it is (2 is ReflectionAction, from the source)
+//        int tag = parcel.readInt();
+//        String simpleClassName = p.getClass().getSimpleName();
+//        String method = parcel.readString();
+
         RemoteViews views = getRemoteViews(notification);
 //        RemoteViews views = notification.bigContentView;
 //        RemoteViews views = notification.contentView;
@@ -688,7 +703,7 @@ public class NotificationMonitor extends NotificationListenerService {
                                         parseTimeAndDistanceToDest(t);
                                         updateCount++;
                                         validActionCount++;
-//                                        textOnGmapsNotifyByJavaReflection += "<br>"+t;
+
                                         break;
                                     default:
                                         break;
