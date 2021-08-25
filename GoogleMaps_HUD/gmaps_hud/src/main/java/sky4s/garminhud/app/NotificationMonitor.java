@@ -230,10 +230,10 @@ public class NotificationMonitor extends NotificationListenerService {
                         break;
 
                     case GOOGLE_MAPS_GO_PACKAGE_NAME:
-//                        parseGmapsGoNotificationByReflection(notification);
                         mNotifySource = 1;
-                        mParseMethod = 0;
-                        boolean parseResult = parseGmapsNotificationByExtras(notification);
+//                        mParseMethod = 0;
+//                        boolean parseResult = parseGmapsNotificationByExtras(notification);
+                        parseGmapsNotification(notification);
                         break;
                     /*case OSMAND_PACKAGE_NAME:
                         parseOsmandNotification(notification);
