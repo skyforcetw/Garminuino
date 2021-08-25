@@ -227,11 +227,11 @@ public class NotificationMonitor extends NotificationListenerService {
                     case GOOGLE_MAPS_PACKAGE_NAME:
                         parseGmapsNotification(notification);
                         break;
-                    /*
+
                     case GOOGLE_MAPS_GO_PACKAGE_NAME:
                         parseGmapsGoNotificationByReflection(notification);
                         break;
-                    case OSMAND_PACKAGE_NAME:
+                    /*case OSMAND_PACKAGE_NAME:
                         parseOsmandNotification(notification);
                         break;
                     case SYGIC_PACKAGE_NAME:
@@ -312,18 +312,21 @@ public class NotificationMonitor extends NotificationListenerService {
 
         parseOsmandNotificationByExtras(notification);
     }
-
+    private int mParseMethod = -1;
     private void parseGmapsNotification(Notification notification) {
         long currentTime = System.currentTimeMillis();
         mNotifyPeriodTime = currentTime - mLastNotifyTimeMillis;
         mLastNotifyTimeMillis = currentTime;
 
+        mParseMethod = 0;
         boolean parseResult = parseGmapsNotificationByExtras(notification);
         if (!parseResult) {
-            //gmap on android 6.0 need parsing by reflection
+            mParseMethod = 1;
+            //gmap on android 7.0 need parsing by reflection
             parseResult = parseGmapsNotificationByReflection(notification);
         }
         if (!parseResult) {
+            mParseMethod = 2;
             //gmap on android 6.0 need parsing by java reflection
             parseResult = parseGmapsNotificationByJavaReflection(notification);
         }
@@ -509,6 +512,7 @@ public class NotificationMonitor extends NotificationListenerService {
                     continue;
 
                 String methodName = parcel.readString();
+                String str = p.toString();
                 //methodName = null == methodName ? p.
                 String textOnGmapsNotify = "";
                 if (methodName == null) continue;
@@ -559,7 +563,6 @@ public class NotificationMonitor extends NotificationListenerService {
                         }
 
                         ArrowImage arrowImage = new ArrowImage(bitmapImage);
-//                        mFoundArrow = getArrow(arrowImage);
 
                         if (mArrowTypeV2) {
                             final int index = getArrowV2Index(bitmapImage);
@@ -571,7 +574,6 @@ public class NotificationMonitor extends NotificationListenerService {
                             mPostman.addStringExtra(getString(R.string.gmaps_notify_msg), textOnGmapsNotify);
                             mPostman.sendIntent2MainActivity();
                         } else {
-//                            ArrowImage arrowImage = new ArrowImage(bitmapImage);
                             mFoundArrow = getArrow(arrowImage);
                             mLastFoundArrow = mFoundArrow;
 
@@ -610,23 +612,8 @@ public class NotificationMonitor extends NotificationListenerService {
     boolean noViewsSituation = false;
 
     private boolean parseGmapsNotificationByJavaReflection(Notification notification) {
-//        RemoteViews p = notification.bigContentView;
-//        Parcel parcel = Parcel.obtain();
-//        if (null == p) {
-//            int a=1;
-//        }
-//        p.writeToParcel(parcel, 0);
-////                p.writeToParcel(parcel, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
-//        parcel.setDataPosition(0);
-//
-//        // The tag tells which type of action it is (2 is ReflectionAction, from the source)
-//        int tag = parcel.readInt();
-//        String simpleClassName = p.getClass().getSimpleName();
-//        String method = parcel.readString();
 
         RemoteViews views = getRemoteViews(notification);
-//        RemoteViews views = notification.bigContentView;
-//        RemoteViews views = notification.contentView;
         if (views == null) {
             noViewsSituation = true;
             return false;
@@ -788,6 +775,7 @@ public class NotificationMonitor extends NotificationListenerService {
                 mRemainingDistance + mRemainingDistanceUnits + " " +
                 mArrivalHours + ":" + mArrivalMinutes +
                 " busy: " + (mBusyTraffic ? "1" : "0") +
+                " parseMethod: ("+ mParseMethod + ")" +
                 " (period: " + mNotifyPeriodTime + ")";
         logi(notifyMessage);
 
@@ -848,6 +836,10 @@ public class NotificationMonitor extends NotificationListenerService {
         }
         Bundle extras = notification.extras;
         String group_name = notification.getGroup();
+
+        Object _titleObj = extras.get(Notification.EXTRA_TITLE);
+        Object _textObj = extras.get(Notification.EXTRA_TEXT);
+        Object _subTextObj = extras.get(Notification.EXTRA_SUB_TEXT);
 
         if ((null != extras) && (null != group_name) && group_name.equals(GOOGLE_MAPS_NOTIFICATION_GROUP_NAVIGATION)) {
             //not in navigation(chinese) of title: 參考 Google 地圖行駛
