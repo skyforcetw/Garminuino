@@ -225,11 +225,15 @@ public class NotificationMonitor extends NotificationListenerService {
                 String packageName = sbn.getPackageName();
                 switch (packageName) {
                     case GOOGLE_MAPS_PACKAGE_NAME:
+                        mNotifySource = 0;
                         parseGmapsNotification(notification);
                         break;
 
                     case GOOGLE_MAPS_GO_PACKAGE_NAME:
-                        parseGmapsGoNotificationByReflection(notification);
+//                        parseGmapsGoNotificationByReflection(notification);
+                        mNotifySource = 1;
+                        mParseMethod = 0;
+                        boolean parseResult = parseGmapsNotificationByExtras(notification);
                         break;
                     /*case OSMAND_PACKAGE_NAME:
                         parseOsmandNotification(notification);
@@ -312,7 +316,10 @@ public class NotificationMonitor extends NotificationListenerService {
 
         parseOsmandNotificationByExtras(notification);
     }
+
     private int mParseMethod = -1;
+    private int mNotifySource = -1;
+
     private void parseGmapsNotification(Notification notification) {
         long currentTime = System.currentTimeMillis();
         mNotifyPeriodTime = currentTime - mLastNotifyTimeMillis;
@@ -337,7 +344,7 @@ public class NotificationMonitor extends NotificationListenerService {
             mPostman.addBooleanExtra(getString(R.string.is_in_navigation), false);
             mPostman.sendIntent2MainActivity();
 
-            String notifyMessage = "Notify parsing failed. " +(noViewsSituation?"(non-SDK interface restrictions)":"");
+            String notifyMessage = "Notify parsing failed. " + (noViewsSituation ? "(non-SDK interface restrictions)" : "");
             mPostman.addStringExtra(getString(R.string.notify_msg), notifyMessage);
         } else {
             mPostman.addBooleanExtra(getString(R.string.notify_parse_failed), false);
@@ -592,7 +599,7 @@ public class NotificationMonitor extends NotificationListenerService {
                 parcel.recycle();
                 indexOfActions++;
             }
-            if(validActionCount != 0) {
+            if (validActionCount != 0) {
                 logParseMessage();
             }
             //can update to garmin hud
@@ -683,7 +690,7 @@ public class NotificationMonitor extends NotificationListenerService {
                                         textOnGmapsNotifyByJavaReflection = t;
                                         break;
                                     case 6:
-                                        textOnGmapsNotifyByJavaReflection += " "+t;
+                                        textOnGmapsNotifyByJavaReflection += " " + t;
                                         break;
                                     case 9:
                                         //time, distance, arrived time
@@ -748,10 +755,10 @@ public class NotificationMonitor extends NotificationListenerService {
                 }
             }
 
-            if(validActionCount != 0) {
+            if (validActionCount != 0) {
                 logParseMessage();
                 mIsNavigating = true;
-            }else {
+            } else {
                 mIsNavigating = false;
             }
             //can update to garmin hud
@@ -769,13 +776,15 @@ public class NotificationMonitor extends NotificationListenerService {
 
     private void logParseMessage() {
         String arrowString = mArrowTypeV2 ? mFoundArrowV2.toString() : mFoundArrow.toString();
+        String notifySourceString = mNotifySource == 0 ? "gmaps" : mNotifySource == 1 ? "gmaps go" : "unknow";
         String notifyMessage = arrowString + "(" + (mArrowTypeV2 ? "v2:" : "v1:") + sArrowMinSad + ") " +
                 mDistanceNum + "/" + mDistanceUnit + " " +
                 (null == mRemainingHours ? 0 : mRemainingHours) + ":" + mRemainingMinutes + " " +
                 mRemainingDistance + mRemainingDistanceUnits + " " +
                 mArrivalHours + ":" + mArrivalMinutes +
                 " busy: " + (mBusyTraffic ? "1" : "0") +
-                " parseMethod: ("+ mParseMethod + ")" +
+                " parseMethod: (" + mParseMethod + ")" +
+                " source: (" + notifySourceString + ")" +
                 " (period: " + mNotifyPeriodTime + ")";
         logi(notifyMessage);
 
