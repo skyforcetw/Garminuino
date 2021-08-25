@@ -11,12 +11,6 @@ There has two sub-project use GarminHUD as:
  * Newest App Release
    * [2021-08-25 v0.8.9](https://github.com/skyforcetw/Garminuino/files/7044189/gmaps_hud-release_v0.8.9.zip)
 Add support for google maps go navigation.
-   * [2021-08-20 v0.8.6](https://github.com/skyforcetw/Garminuino/files/7016037/gmaps_hud-release_v0.8.6.zip)
-Fix Arrow v2 at android 6.0.  
-   * [2020-09-29 v0.8.3](https://github.com/skyforcetw/Garminuino/releases/download/0.8.3/gmaps_hud-release_v0.8.3.apk)
-Change Arrow SAD calculation.
-   * [Release History](https://github.com/skyforcetw/Garminuino/blob/master/ReleaseHistory.md)
-
  
 2. a speedometer HUD  (Arduino+GarminHUD, STOP MAINTAIN)
 
