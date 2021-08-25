@@ -1,5 +1,9 @@
 ## GoogleMap navigation HUD App Release History ##
 
+
+### [2021-08-25 v0.8.9](https://github.com/skyforcetw/Garminuino/files/7044189/gmaps_hud-release_v0.8.9.zip)
+Add support for google maps go navigation.
+
 ### [2021-08-20 v0.8.6](https://github.com/skyforcetw/Garminuino/files/7016037/gmaps_hud-release_v0.8.6.zip)
 Fix Arrow v2 at android 6.0. 
 
